@@ -1,0 +1,63 @@
+.img-inicio {
+    background-image: url("/public/back.png");
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+
+/*SweetAlert2*/
+.swal2-title{
+    font-size: 16px;
+}
+.swal2-question{
+    width: 50px;
+    height: 50px;
+}
+.swal2-styled {
+    padding: 6px;
+}
+
+/*transition*/
+.v-enter-active,
+.v-leave-active {
+
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+
+  opacity: 0;
+}
+
+
+/*Tabla */
+
+
+  .arrow {
+    float: right;
+    width: 12px;
+    height: 15px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-y: bottom;
+  }
+
+  /*botones paginacion*/
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.2em 0.5em !important;
+
+}
+
+/*Datapicker next*/
+.mx-datepicker {
+    width: 100% !important;
+  }
+.mx-datepicker-range {
+    width: 100% !important;
+  }
+  .mx-input{
+    height: 36px !important;
+  }

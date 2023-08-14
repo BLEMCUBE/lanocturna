@@ -1,0 +1,6 @@
+images/productos/*
+!/images/productos/sinfoto.png
+images/usuarios/*
+!/images/usuarios/user.png
+
+!/images/logo-example.png
