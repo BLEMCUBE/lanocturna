@@ -56,7 +56,7 @@ table.dataTable tbody td {
 }
 
 table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
-    padding: 5px !important;
+    padding: 3px !important;
   }
 /*Datapicker next*/
 .mx-datepicker {

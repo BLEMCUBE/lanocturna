@@ -115,11 +115,11 @@ const ok = (mensaje) => {
             <div class="ml-4 col-span-full">
 
                 <Breadcrumb>
-                    <BreadcrumbItem href="/" home>
+                    <BreadcrumbItem href="/inicio" home>
                         Inicio
                     </BreadcrumbItem>
                     <BreadcrumbItem>
-                        Usuarios
+                        {{ titulo }}
                     </BreadcrumbItem>
                 </Breadcrumb>
             </div>

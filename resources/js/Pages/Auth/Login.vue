@@ -1,6 +1,9 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import Logo from '/public/images/logo.jpg';
 import { onMounted } from 'vue';
@@ -43,10 +46,10 @@ const submit = () => {
         <section class="h-screen">
             <div class="h-full mx-6">
                 <div v-if="status" class="mb-4 font-medium text-base text-green-600">
-            {{ status }}
-        </div>
+                    {{ status }}
+                </div>
                 <!-- Left column container with background-->
-                <div class="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between">
+                <div class="g-6 flex h-full flex-wrap items-center justify-center lg:justify-center">
                     <div
                         class="shrink-1 mb-12 hidden md:block grow-0 basis-auto md:mb-0 md:w-9/12 md:shrink-0 lg:w-6/12 xl:w-6/12">
                         <img src="https://tecdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
@@ -55,7 +58,7 @@ const submit = () => {
                     </div>
 
                     <!-- Right column container -->
-                    <div class="mb-12 md:mb-0 md:w-8/12 lg:w-5/12 xl:w-5/12">
+                    <div class="mb-12 md:mb-0 md:w-8/12 lg:w-4/12 xl:w-4/12">
                         <div class="sm:mx-auto mb-5 sm:w-full sm:max-w-sm">
                             <img class="mx-auto h-16 w-auto" :src="Logo" alt="Imagen" />
                             <h2
@@ -67,30 +70,34 @@ const submit = () => {
                         </div>
                         <form @submit.prevent="submit" class="space-y-3">
                             <!-- Email input -->
-                            <div class="relative mb-6" data-te-input-wrapper-init>
-                                <input id="login" type="text" v-model="form.login" required placeholder="Usuario"
-                                    class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0" />
-                                <label for="login"
-                                    class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[1.15rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary">Usuario
-                                </label>
+                            <div class="relative mb-6">
+                                <InputLabel for="login" value="Usuario"
+                                    class="block text-base font-bold leading-6 text-gray-900" />
+                                <div class="mt-1">
+                                    <TextInput id="login" type="text" v-model="form.login" required autocomplete="login" />
+                                    <InputError class="mt-2 text-xs" :message="form.errors.login" />
+
+                                </div>
                             </div>
+
 
                             <!-- Password input -->
-                            <div class="relative mb-6" data-te-input-wrapper-init>
-                                <input type="password" required
-                                    class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                                    id="password" placeholder="Contraseña:" v-model="form.password" />
-                                <label for="password"
-                                    class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[1.15rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary">Contraseña
-                                </label>
+                            <div>
+                                <InputLabel for="password" value="Contraseña"
+                                    class="block text-base font-bold leading-6 text-gray-900" />
+                                <div class="mt-1">
+                                    <TextInput id="password" type="password" current-password v-model="form.password"
+                                        required />
+                                    <InputError class="mt-2 text-xs" :message="form.errors.password" />
+                                </div>
                             </div>
-
                             <!-- Login button -->
                             <div class="text-center lg:text-left">
 
-                                <PrimaryButton type="submit" data-te-ripple-init data-te-ripple-color="light"
+                                <PrimaryButton
+                                    class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-base font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                                     :class="{ 'opacity-50': form.processing }" :disabled="form.processing">
-                                    Iniciar Sesión
+                                    Iniciar sesión
                                 </PrimaryButton>
                             </div>
                         </form>

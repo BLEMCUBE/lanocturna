@@ -10,8 +10,8 @@ import { ref, watch } from 'vue';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
-const titulo = "Usuario"
-const ruta = "usuarios"
+const titulo = "Cliente"
+const ruta = "clientes"
 
 //Variables
 const isShowModal = ref(false);
@@ -19,11 +19,13 @@ const fec_nac = ref()
 
 const form = useForm({
     id: '',
-    name: '',
-    username: '',
-    password: '',
-    rol: '',
-
+    nombre: '',
+    telefono: '',
+    email: '',
+    localidad: '',
+    direccion: '',
+    empresa: '',
+    rut: '',
 })
 
 const roles = ref({
@@ -55,15 +57,15 @@ const dataEdit = (id) => {
     axios.get(route(ruta+'.show', id))
   .then(res => {
     isShowModal.value = true;
-    var datos=res.data.usuario
-
+    var datos=res.data.cliente
     form.id=datos.id
-    form.name=datos.name
-    form.username=datos.username
-    form.rol=res.data.id_rol
-    roles.value.options=res.data.lista_roles
-
-
+    form.nombre=datos.nombre
+    form.telefono=datos.telefono
+    form.localidad=datos.localidad
+    form.direccion=datos.direccion
+    form.empresa=datos.empresa
+    form.rut=datos.rut
+    form.email=datos.email
   })
 
 };
@@ -111,7 +113,7 @@ const ok = (mensaje) => {
     <section>
         <button type="button" @click="addCliente"><i class="fas fa-edit"></i></button>
 
-        <Modal :show="isShowModal" @close="closeModal"  maxWidth="lg">
+        <Modal :show="isShowModal" @close="closeModal" maxWidth="lg">
             <div class="p-2">
 
                 <div
@@ -124,37 +126,62 @@ const ok = (mensaje) => {
                 <form @submit.prevent="submit">
                     <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 2xl:gap-6 mb-2">
 
-                        <div class="col-span-6 shadow-default xl:col-span-3">
-                            <InputLabel for="name" value="Nombre"
+                        <div class="col-span-6 shadow-default xl:col-span-6">
+                            <InputLabel for="nombre" value="Nombre"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="name" type="text" v-model="form.name" autocomplete="nombre"
+                            <TextInput id="nombre" type="text" v-model="form.nombre"
                                 placeholder="Ingrese Nombre" />
-                            <InputError class="mt-1 text-xs" :message="form.errors.name" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.nombre" />
+                        </div>
+
+
+
+                        <div class="col-span-6 shadow-default xl:col-span-3">
+                            <InputLabel for="telefono" value="Telefono"
+                                class="block text-base font-medium leading-6 text-gray-900" />
+                            <TextInput id="telefono" type="text" v-model="form.telefono"
+                                placeholder="Ingrese telefono" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.telefono" />
                         </div>
 
                         <div class="col-span-6 shadow-default xl:col-span-3">
-                            <InputLabel for="username" value="Usuario"
+                            <InputLabel for="localidad" value="Localidad"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="username" type="text" @keyup="deleteSpaces" v-model="form.username"
-                                autocomplete="username" placeholder="Ingrese usuario" />
-                            <InputError class="mt-1 text-xs" :message="form.errors.username" />
+                            <TextInput id="localidad" type="text" v-model="form.localidad"
+                                placeholder="Ingrese Localidad" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.localidad" />
                         </div>
 
                         <div class="col-span-6 shadow-default xl:col-span-3">
-                            <InputLabel for="password" value="Contraseña"
+                            <InputLabel for="direccion" value="Dirección"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="password" type="password" v-model="form.password"
-                                placeholder="Ingrese Contraseña"
-                                class="block w-full text-gray-900 border border-gray-300 rounded bg-gray-50 sm:text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                            <InputError class="mt-1 text-xs" :message="form.errors.password" />
+                            <TextInput id="direccion" type="text" v-model="form.direccion"
+                                placeholder="Ingrese Dirección" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.direccion" />
                         </div>
 
                         <div class="col-span-6 shadow-default xl:col-span-3">
-                            <InputLabel for="rol" value="Rol"
+                            <InputLabel for="empresa" value="Empresa"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <Multiselect id="rol" v-model="form.rol" v-bind="roles">
-                            </Multiselect>
-                            <InputError class="mt-1 text-xs" :message="form.errors.rol" />
+                            <TextInput id="empresa" type="text" v-model="form.empresa"
+                                placeholder="Ingrese Empresa" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.empresa" />
+                        </div>
+
+                        <div class="col-span-6 shadow-default xl:col-span-3">
+                            <InputLabel for="rut" value="RUT"
+                                class="block text-base font-medium leading-6 text-gray-900" />
+                            <TextInput id="rut" type="text" v-model="form.rut"
+                                placeholder="Ingrese RUT" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.rut" />
+                        </div>
+
+                        <div class="col-span-6 shadow-default xl:col-span-3">
+                            <InputLabel for="email" value="Email"
+                                class="block text-base font-medium leading-6 text-gray-900" />
+                            <TextInput id="email" type="email" v-model="form.email"
+                                placeholder="Ingrese Email" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.email" />
                         </div>
 
                     </div>

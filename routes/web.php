@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuarioController;
@@ -48,4 +49,14 @@ Route::controller(UsuarioController::class)->group(function () {
     Route::post('/usuarios/store', 'store')->name('usuarios.store')->middleware('auth');
     Route::delete('/usuarios/{id}', 'destroy')->name('usuarios.destroy')->middleware('auth');
 });
+
+Route::controller(ClienteController::class)->group(function () {
+    Route::post('/clientes/update/{id}', 'update')->name('clientes.update')->middleware('auth');
+    Route::get('/clientes', 'index')->name('clientes.index')->middleware('auth');
+    Route::get('/clientes/{id}', 'show')->name('clientes.show')->middleware('auth');
+    Route::post('/clientes/store', 'store')->name('clientes.store')->middleware('auth');
+    Route::delete('/clientes/{id}', 'destroy')->name('clientes.destroy')->middleware('auth');
+});
+
+
 require __DIR__.'/auth.php';

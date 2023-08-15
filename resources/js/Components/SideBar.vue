@@ -73,14 +73,21 @@ export default {
                         <span class="ml-3" sidebar-toggle-item>Usuarios</span>
                     </NavLinkSideBar>
                 </li>
+                <li @click="setMenu('clientes')" v-show="permissions.includes('lista-clientes')">
+                    <NavLinkSideBar icon-class="fas fa-users"
+                        class="flex items-center px-2 py-1.5 text-md text-gray-900 rounded hover:bg-gray-200 group dark:text-gray-200 dark:hover:bg-gray-700"
+                        :href="route('clientes.index')" :active="route().current('clientes.index')">
+                        <span class="ml-3" sidebar-toggle-item>Clientes</span>
+                    </NavLinkSideBar>
+                </li>
 
             </ul>
 
-            <ul class="p-1 space-y-1 font-normal">
+            <ul class="space-y-1 font-normal">
 
                 <li @click="setMenu('roles')" v-show="permissions.includes('ver-roles')">
                     <NavLinkSideBar icon-class="fas fa-user-tag"
-                        class="flex items-center py-1.5 text-md text-gray-900 rounded hover:bg-gray-200 group dark:text-gray-200 dark:hover:bg-gray-700"
+                    class="flex items-center px-2 py-1.5 text-md text-gray-900 rounded hover:bg-gray-200 group dark:text-gray-200 dark:hover:bg-gray-700"
                         :href="route('roles.index')" :active="route().current('roles.index')">
                         <span class="ml-3" sidebar-toggle-item>Roles y Permisos</span>
                     </NavLinkSideBar>
