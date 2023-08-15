@@ -160,7 +160,7 @@ const ok = (mensaje) => {
                     </div>
                     <div class="flex justify-end pt-3">
                         <button @click="closeModal" type="button"
-                            class="inline-block rounded bg-red-600 py-1 px-2 text-sm font-semibold text-white mr-4 mb-1 hover:bg-red-700">
+                        class="inline-block rounded bg-red-700 py-1 px-2 text-sm font-semibold text-white mr-4 mb-1 hover:bg-red-600">
                             Cancelar
                         </button>
                         <PrimaryButton

@@ -74,13 +74,12 @@ onMounted(() => {
                     </BreadcrumbItem>
                 </Breadcrumb>
             </div>
-            <div class=" px-5 col-span-full flex justify-between items-center">
 
-                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Roles</h1>
-
-            </div>
             <div
                 class="px-4 py-0 mb-4 bg-white col-span-6 pb-5 rounded-lg shadow-sm 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+                <div class=" px-5 py-2 col-span-full flex justify-between items-center">
+                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Roles</h1>
+            </div>
                 <div class="overflow-x-auto">
 
                     <div class="inline-block min-w-full align-middle">
@@ -89,21 +88,21 @@ onMounted(() => {
 
                             <table class="w-full text-sm text-left text-gray-600 dark:text-gray-400">
                                 <thead
-                                    class="text-md text-gray-700 bg-gray-200/80 border-2 border-gray-300  dark:border-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                                    class="text-md text-primary-900 border-2 bg-secondary-900  dark:border-gray-700 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
 
                                         <th scope="col"
-                                            class="p-1 text-center border-2 border-gray-300 dark:border-gray-500 w-20">
+                                            class="p-1 text-center border-2 bg-secondary-900 dark:border-gray-500 w-20">
                                             ID
                                         </th>
                                         <th scope="col"
-                                            class="p-1 text-center border-2 border-gray-300 dark:border-gray-500">
+                                            class="p-1 text-center border-2 bg-secondary-900 dark:border-gray-500">
                                             Nombre
                                         </th>
 
 
                                         <th scope="col"
-                                            class="p-1 text-center border-2 border-gray-300 dark:border-gray-500 w-20">
+                                            class="p-1 text-center border-2 bg-secondary-900 dark:border-gray-500 w-20">
                                             <div class="flex justify-center">
                                                 Acciones
                                             </div>
@@ -128,7 +127,7 @@ onMounted(() => {
                                             class="p-1 w-20 border-2  border-gray-300 dark:border-gray-700 text-center">
 
                                             <Link :href="route('roles.edit', id)"
-                                                class="inline-block rounded bg-blue-600 px-2 py-1 text-sm font-semibold text-white mr-1 mb-1 hover:bg-blue-700">
+                                                class="inline-block rounded bg-primary-900 px-2 py-1 text-sm font-semibold text-white mr-1 mb-1 hover:bg-primary-100">
                                             Permisos
                                             </Link>
                                         </td>

@@ -28,7 +28,7 @@ onUnmounted(() => {
     <NavBar></NavBar>
         <SideBar></SideBar>
         <div class="pt-16 sm:ml-56">
-        <div class="grid grid-cols-1 p-2 xl:grid-cols-12 md:grid-span-12 xl:gap-2 dark:bg-gray-900 z-20">
+        <div class="grid grid-cols-1 p-4 xl:grid-cols-12 md:grid-span-12 xl:gap-4 dark:bg-gray-900 z-20">
             <slot />
         </div>
     </div>

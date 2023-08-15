@@ -3,7 +3,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, onMounted, reactive, computed, watch } from 'vue'
-import { Head, usePage, useForm,router } from '@inertiajs/vue3';
+import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import CrearModal from '@/Pages/Cliente/Partials/CrearModal.vue';
 import EditarModal from '@/Pages/Cliente/Partials/EditarModal.vue';
@@ -89,7 +89,7 @@ const eliminar = (id, name) => {
                     onSuccess: () => {
                         ok('Eliminado')
                         router.get(route(ruta + '.index'));
-                     }
+                    }
                 });
         }
     });
@@ -118,26 +118,27 @@ const ok = (mensaje) => {
                         Inicio
                     </BreadcrumbItem>
                     <BreadcrumbItem>
-                        {{titulo}}
+                        {{ titulo }}
                     </BreadcrumbItem>
                 </Breadcrumb>
             </div>
-            <div class=" px-5 col-span-full flex justify-between items-center">
 
-                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">{{ titulo }}</h1>
-                <CrearModal v-if="permissions.includes('crear-clientes')"></CrearModal>
-            </div>
             <div
-                class="px-4 py-0 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-sm 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+                class="px-4 py-3 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-sm 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
                 <!--Contenido-->
+                <div class=" px-5 col-span-full flex justify-between items-center">
+
+                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">{{ titulo }}</h1>
+                    <CrearModal v-if="permissions.includes('crear-clientes')"></CrearModal>
+                </div>
                 <div class="overflow-x-auto">
                     <div class="inline-block min-w-full  mt-4 align-middle">
                         <div class="overflow-hidden">
                             <DataTable :options="{ language, order: [[1, 'asc']] }"
                                 class="pt-3 w-full text-md text-center text-gray-600 dark:text-gray-400">
                                 <thead
-                                    class="text-md text-center text-gray-700 bg-gray-200/80 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr >
+                                    class="text-md text-center text-primary-900 bg-secondary-900 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
                                         <th scope="col" class="border border-gray-300 dark:border-gray-500">
                                             <div class="flex justify-center">
                                                 ID
@@ -190,7 +191,7 @@ const ok = (mensaje) => {
                                 <tbody>
 
                                     <tr :key="id" v-for="{
-                                        id, nombre, localidad, direccion,telefono,empresa,rut,email
+                                        id, nombre, localidad, direccion, telefono, empresa, rut, email
                                     }, index in datosTabla"
                                         class="bg-white border  text-center dark:bg-gray-800 dark:border-gray-700">
                                         <th scope="row"
@@ -222,11 +223,11 @@ const ok = (mensaje) => {
 
                                         <td scope="row" class="p-1 border dark:border-gray-700 w-24">
                                             <span v-if="permissions.includes('editar-clientes')"
-                                                class="inline-block rounded bg-blue-600 px-2 py-1 text-base font-normal text-white mr-1 mb-1 hover:bg-blue-700">
+                                                class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-normal text-white mr-1 mb-1 hover:bg-primary-100">
                                                 <EditarModal :cliente-id="id"></EditarModal>
                                             </span>
                                             <span v-if="permissions.includes('eliminar-clientes')"
-                                                class="inline-block rounded bg-red-600 px-2 py-1 text-base font-normal text-white mr-1 mb-1 hover:bg-red-700">
+                                                class="inline-block rounded bg-red-700 px-2 py-1 text-base font-normal text-white mr-1 mb-1 hover:bg-red-600">
                                                 <button @click.prevent="eliminar(id, nombre)"><i
                                                         class="fas fa-trash-alt"></i></button>
                                             </span>
@@ -250,5 +251,4 @@ const ok = (mensaje) => {
 
 <style type="text/css">
 @import 'datatables.net-dt';
-
 </style>

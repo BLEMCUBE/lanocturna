@@ -76,12 +76,13 @@ const check = (optionId, checked) => {
                     </BreadcrumbItem>
                 </Breadcrumb>
             </div>
-            <div class="px-5 col-span-full flex justify-between items-center">
-                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Permisos de {{ role.name }}</h1>
-            </div>
 
             <div
                 class="px-4 py-2 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-sm 2xl:col-span-12 dark:border-gray-700 sm:p-2 dark:bg-gray-800">
+                <div class="px-5 col-span-full flex justify-between items-center">
+                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Permisos de {{ role.name }}
+                    </h1>
+                </div>
 
                 <form @submit.prevent="submit">
 

@@ -8,7 +8,7 @@ defineProps({
 </script>
 <template>
     <button
-            class="inline-flex items-center  font-medium text-center text-white bg-primary-700 rounded focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+            class="inline-flex items-center  font-medium text-center text-white bg-primary-900 rounded    hover:bg-primary-100">
         <div v-if="isLoading" >
             <svg aria-hidden="true" class="inline w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                 viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
