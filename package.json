@@ -35,9 +35,10 @@
         "datatables.net-select": "^1.7.0",
         "datatables.net-vue3": "^2.1.2",
         "date-fns": "^2.30.0",
+        "flowbite": "^1.8.1",
+        "flowbite-vue": "^0.0.17-next.0",
         "pinia": "^2.1.4",
         "sweetalert2": "^11.6.13",
-        "tw-elements": "^1.0.0-beta3",
         "vue-datepicker-next": "^1.0.3",
         "vue3-apexcharts": "^1.4.4",
         "vue3-google-map": "^0.15.0"

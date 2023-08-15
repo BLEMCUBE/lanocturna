@@ -5,9 +5,10 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
-        './resources/js/**/*.vue',
-        './node_modules/tw-elements/dist/js/**/*.js',
         './resources/**/*.js',
+        './resources/js/**/*.vue',
+        './node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx}',
+        './node_modules/flowbite/**/*.{js,jsx,ts,tsx}'
 
     ],
     theme: {
@@ -61,6 +62,6 @@ export default {
         //preflight: false,
       },
     darkMode: "class",
-    plugins: [require("tw-elements/dist/plugin.cjs")]
+    plugins: [require('flowbite/plugin')]
 
 };

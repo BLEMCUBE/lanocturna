@@ -50,7 +50,14 @@
     padding: 0.2em 0.5em !important;
 
 }
+table.dataTable tbody th,
+table.dataTable tbody td {
+  padding: 1px !important;
+}
 
+table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
+    padding: 5px !important;
+  }
 /*Datapicker next*/
 .mx-datepicker {
     width: 100% !important;

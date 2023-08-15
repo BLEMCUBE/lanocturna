@@ -4,15 +4,11 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import Logo from '/public/images/logo.jpg';
 import { onMounted } from 'vue';
-import {
-    Input,
-    Ripple,
-    initTE,
-} from "tw-elements";
+
 
 
 onMounted(() => {
-    initTE({ Ripple, Input }, true);
+
 })
 
 defineProps({

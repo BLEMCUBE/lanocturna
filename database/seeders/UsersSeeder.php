@@ -23,7 +23,7 @@ class UsersSeeder extends Seeder
         $user->password = Hash::make('Adm1N202E@');
         $user->save();
 
-        //$user->assignRole('Super Administrador');
+        $user->assignRole('Super Administrador');
 
 
         $user = new User;
@@ -33,6 +33,6 @@ class UsersSeeder extends Seeder
         $user->photo    = '/images/usuarios/user.png';
         $user->password = Hash::make('123456789');
         $user->save();
-        //$user->assignRole('Administrador');
+        $user->assignRole('Administrador');
     }
 }
