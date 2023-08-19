@@ -2,26 +2,71 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
-
-import TextInput from '@/Components/TextInput.vue';
-import { useForm, router } from '@inertiajs/vue3';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref,  onMounted, nextTick } from 'vue';
-import Swal from 'sweetalert2';
 import Multiselect from '@vueform/multiselect';
+import TextInput from '@/Components/TextInput.vue';
+import { useForm,router } from '@inertiajs/vue3';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { ref, watch } from 'vue';
+import Swal from 'sweetalert2';
+import axios from 'axios';
 
+const titulo = "Productos"
+const ruta = "productos"
+
+//Variables
 const isShowModal = ref(false);
+const fec_nac = ref()
 
-const titulo = "Cliente"
-const ruta = "clientes"
-
-onMounted(() => {
-
+const form = useForm({
+    id: '',
+    nombre: '',
+    telefono: '',
+    email: '',
+    localidad: '',
+    direccion: '',
+    empresa: '',
+    rut: '',
 })
 
+const roles = ref({
+    value: '',
+    closeOnSelect: true,
+    placeholder: "Seleccione",
+    searchable: true,
+    options: [],
+});
+
+const props = defineProps({
+    clienteId: {
+        type: Number,
+        default: null,
+    },
+
+
+});
+
+
+//Funciones
 
 const addCliente = () => {
+    dataEdit(props.clienteId);
+
+};
+
+const dataEdit = (id) => {
+    axios.get(route(ruta+'.show', id))
+  .then(res => {
     isShowModal.value = true;
+    var datos=res.data.cliente
+    form.id=datos.id
+    form.nombre=datos.nombre
+    form.telefono=datos.telefono
+    form.localidad=datos.localidad
+    form.direccion=datos.direccion
+    form.empresa=datos.empresa
+    form.rut=datos.rut
+    form.email=datos.email
+  })
 
 };
 
@@ -32,67 +77,41 @@ const closeModal = () => {
 };
 
 
-const form = useForm({
-    nombre: '',
-    telefono: '',
-    email: '',
-    localidad: '',
-    direccion: '',
-    empresa: '',
-    rut: '',
-})
-
-
-
 //envio de formulario
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta + '.store'), {
+    form.post(route(ruta+'.update',form.id), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
             isShowModal.value = false
-            ok( titulo+' Creado')
-            router.get(route(ruta + '.index'));
+            ok(titulo+' Editado')
+            //form.reset()
+            router.get(route(ruta+'.index'));
         },
         onFinish: () => {
-
-            //form.reset()
         },
         onError: () => {
 
         }
     });
 
-
-
 };
 
 const ok = (mensaje) => {
     form.reset();
-
     Swal.fire({
         width: 350,
         title: mensaje,
         icon: 'success'
     })
 }
-nextTick(function () {
-
-
-});
-//eliminar espacios
-const deleteSpaces = (e) => {
-    e.target.value = e.target.value.replace(/[^a-z0-9]/gi, '');
-    e.target.value = ("" + e.target.value).replace(/\s+/g, '')
-};
 </script>
 
 <template>
-    <section class="space-y-4">
-
-        <Button size="small"  @click="addCliente" type="button" :label= "'Agregar '+titulo"  severity="success" ></Button>
+    <section>
+        <button type="button" @click="addCliente"><i class="fas fa-edit"></i></button>
 
         <Modal :show="isShowModal" @close="closeModal" maxWidth="lg">
             <div class="p-2">
@@ -100,11 +119,10 @@ const deleteSpaces = (e) => {
                 <div
                     class="p-4 mb-4 rounded-t flex justify-between items-center border-b border-gray-200 dark:border-gray-600">
                     <h2 class="text-lg font-medium text-gray-900">
-                        Crear {{ titulo }}
+                        Editar {{titulo}}
                     </h2>
 
                 </div>
-
                 <form @submit.prevent="submit">
                     <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 2xl:gap-6 mb-2">
 
@@ -169,7 +187,7 @@ const deleteSpaces = (e) => {
                     </div>
                     <div class="flex justify-end pt-3">
                         <button @click="closeModal" type="button"
-                            class="inline-block rounded bg-red-700 py-1 px-2 text-sm font-semibold text-white mr-4 mb-1 hover:bg-red-600">
+                        class="inline-block rounded bg-red-700 py-1 px-2 text-sm font-semibold text-white mr-4 mb-1 hover:bg-red-600">
                             Cancelar
                         </button>
                         <PrimaryButton

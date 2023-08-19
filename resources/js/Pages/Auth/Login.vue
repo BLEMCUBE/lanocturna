@@ -5,7 +5,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
-import Logo from '/public/images/logo.jpg';
+import Logo from '/public/images/logo.png';
 import { onMounted } from 'vue';
 
 
@@ -60,7 +60,7 @@ const submit = () => {
                     <!-- Right column container -->
                     <div class="mb-12 md:mb-0 md:w-8/12 lg:w-4/12 xl:w-4/12">
                         <div class="sm:mx-auto mb-5 sm:w-full sm:max-w-sm">
-                            <img class="mx-auto h-16 w-auto" :src="Logo" alt="Imagen" />
+                            <img class="mx-auto h-36 w-auto" :src="Logo" alt="Imagen" />
                             <h2
                                 class="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
                                 Iniciar Sesión</h2>

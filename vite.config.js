@@ -18,4 +18,36 @@ export default defineConfig({
             },
         }),
     ],
+    /*optimizeDeps: {
+        include: [
+          "@fawmi/vue-google-maps",
+          "fast-deep-equal",
+        ],
+      },*/
+    build: {
+        rollupOptions: {
+
+          input: 'resources/js/app.js',
+          output: {
+
+            entryFileNames: (`[name][hash].js`),
+            chunkFileNames: (`assets/[name][hash].js`),
+            assetFileNames: ({ name }) => {
+              /*if (/\.(gif|jpe?g|png|svg)$/.test(name ?? '')) {
+                return 'assets/images/[name]-[hash][extname]';
+              }
+              if (/\.(json)$/.test(name ?? '')) {
+                return 'assets/[name]-[hash][extname]';
+              }*/
+              if (/\.css$/.test(name ?? '')) {
+                return 'assets/[name]-[hash][extname]';
+              }
+
+              // default value
+              // ref: https://rollupjs.org/guide/en/#outputassetfilenames
+              return 'assets/[name]-[hash][extname]';
+            },
+          }
+        }
+      }
 });

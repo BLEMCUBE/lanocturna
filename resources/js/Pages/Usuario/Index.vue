@@ -7,7 +7,6 @@ import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import CrearModal from '@/Pages/Usuario/Partials/CrearModal.vue';
 import EditarModal from '@/Pages/Usuario/Partials/EditarModal.vue';
-import { Breadcrumb, BreadcrumbItem } from 'flowbite-vue'
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net';
 import language from 'datatables.net-plugins/i18n/es-ES.mjs';
@@ -111,25 +110,15 @@ const ok = (mensaje) => {
     <div>
 
         <Head :title="titulo" />
-        <AuthenticatedLayout>
-            <div class="ml-4 col-span-full">
+        <AuthenticatedLayout :pagina="[{'label':  titulo,link:false }]">
 
-                <Breadcrumb>
-                    <BreadcrumbItem href="/inicio" home>
-                        Inicio
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>
-                        {{ titulo }}
-                    </BreadcrumbItem>
-                </Breadcrumb>
-            </div>
 
             <div
                 class="px-4 py-3 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-sm 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
                 <!--Contenido-->
                 <div class=" px-5 col-span-full flex justify-between items-center">
 
-                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">{{ titulo }}</h1>
+                    <h5 class="text-xl font-semibold">{{ titulo }}</h5>
                     <CrearModal v-if="permissions.includes('crear-usuarios')"></CrearModal>
                 </div>
                 <div class="overflow-x-auto">

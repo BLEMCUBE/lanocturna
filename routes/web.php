@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\OpcionesController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -50,12 +51,25 @@ Route::controller(UsuarioController::class)->group(function () {
     Route::delete('/usuarios/{id}', 'destroy')->name('usuarios.destroy')->middleware('auth');
 });
 
+//Cliente
 Route::controller(ClienteController::class)->group(function () {
     Route::post('/clientes/update/{id}', 'update')->name('clientes.update')->middleware('auth');
     Route::get('/clientes', 'index')->name('clientes.index')->middleware('auth');
     Route::get('/clientes/{id}', 'show')->name('clientes.show')->middleware('auth');
     Route::post('/clientes/store', 'store')->name('clientes.store')->middleware('auth');
     Route::delete('/clientes/{id}', 'destroy')->name('clientes.destroy')->middleware('auth');
+});
+
+//Producto
+Route::controller(ProductoController::class)->group(function () {
+    //Route::get('/productos/descargaurl/', 'descargar')->name('productos.descargar')->middleware('auth');
+    Route::post('/productos/update/{id}', 'update')->name('productos.update')->middleware('auth');
+    Route::get('/productos/paginate', 'paginate')->name('productos.paginate')->middleware('auth');
+    Route::get('/productos/paginateweb', 'paginateWeb')->name('productos.paginateweb')->middleware('auth');
+    Route::get('/productos', 'index')->name('productos.index')->middleware('auth');
+    Route::get('/productos/{id}', 'show')->name('productos.show')->middleware('auth');
+    Route::post('/productos/store', 'store')->name('productos.store')->middleware('auth');
+    Route::delete('/productos/{id}', 'destroy')->name('productos.destroy')->middleware('auth');
 });
 
 

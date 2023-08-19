@@ -18,13 +18,13 @@ const props = defineProps({
 const classes = computed(() =>
     props.active
 
-        ? ' w-full bg-primary-100 dark:bg-gray-700'
-        : ''
+        ? ' w-full bg-secondary-100 text-primary-900 dark:bg-gray-700 hover:bg-secondary-100 hover:text-primary-900 rounded'
+        : '  hover:bg-secondary-100 hover:text-primary-900 rounded text-white rounded'
 );
 const icon = computed(() =>
     props.active
-        ? props.iconClass + ' w-5 h-5 text-white transition duration-75 group-hover:text-white dark:text-white dark:group-hover:text-white'
-        : props.iconClass + ' w-5 h-5 text-white transition duration-75 group-hover:text-white dark:text-gray-400 dark:group-hover:text-white'
+        ? props.iconClass + ' w-5 h-5 text-primary-900 fill-white hover:text-primary-900 fill-primary-900 hover:fill-primary-900 transition duration-75 hover:text-white dark:text-white dark:hover:text-white'
+        : props.iconClass + ' '
 );
 </script>
 <template>

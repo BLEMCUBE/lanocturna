@@ -1,14 +1,14 @@
 
-/** @type {import('tailwindcss').Config} */
+///** @type {import('tailwindcss').Config} */
 export default {
+    important:true,
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/**/*.js',
         './resources/js/**/*.vue',
-        './node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx}',
-        './node_modules/flowbite/**/*.{js,jsx,ts,tsx}'
+        './node_modules/primevue/**/*.{vue,js,ts,jsx,tsx}'
 
     ],
     theme: {
@@ -62,10 +62,10 @@ export default {
 
         },
     },
-    corePlugins: {
-        //preflight: false,
-    },
+    /*corePlugins: {
+        preflight: true,
+    },*/
     darkMode: "class",
-    plugins: [require('flowbite/plugin')]
+
 
 };
