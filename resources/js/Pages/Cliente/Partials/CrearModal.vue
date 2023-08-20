@@ -2,14 +2,12 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
-
 import TextInput from '@/Components/TextInput.vue';
 import { useForm, router } from '@inertiajs/vue3';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref,  onMounted, nextTick } from 'vue';
-import Swal from 'sweetalert2';
-import Multiselect from '@vueform/multiselect';
+import { ref, onMounted } from 'vue';
+import { useToast } from "primevue/usetoast";
 
+const toast = useToast();
 const isShowModal = ref(false);
 
 const titulo = "Cliente"
@@ -25,12 +23,11 @@ const addCliente = () => {
 
 };
 
-
 const closeModal = () => {
-    isShowModal.value = false;
     form.reset();
+    form.clearErrors()
+    isShowModal.value = false;
 };
-
 
 const form = useForm({
     nombre: '',
@@ -53,7 +50,7 @@ const submit = () => {
         forceFormData: true,
         onSuccess: () => {
             isShowModal.value = false
-            ok( titulo+' Creado')
+            show('success', 'Mensaje', 'Se ha creado')
             router.get(route(ruta + '.index'));
         },
         onFinish: () => {
@@ -69,39 +66,23 @@ const submit = () => {
 
 };
 
-const ok = (mensaje) => {
-    form.reset();
-
-    Swal.fire({
-        width: 350,
-        title: mensaje,
-        icon: 'success'
-    })
-}
-nextTick(function () {
-
-
-});
-//eliminar espacios
-const deleteSpaces = (e) => {
-    e.target.value = e.target.value.replace(/[^a-z0-9]/gi, '');
-    e.target.value = ("" + e.target.value).replace(/\s+/g, '')
+const show = (tipo, titulo, mensaje) => {
+    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
+
 </script>
 
 <template>
     <section class="space-y-4">
 
-        <Button size="small"  @click="addCliente" type="button" :label= "'Agregar '+titulo"  severity="success" ></Button>
+        <Button size="small" @click="addCliente" type="button" :label="'Agregar ' + titulo" severity="success"></Button>
 
         <Modal :show="isShowModal" @close="closeModal" maxWidth="lg">
             <div class="p-2">
 
                 <div
                     class="p-4 mb-4 rounded-t flex justify-between items-center border-b border-gray-200 dark:border-gray-600">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Crear {{ titulo }}
-                    </h2>
+                    <h5 class="text-xl font-normal">Crear {{ titulo }}</h5>
 
                 </div>
 
@@ -111,18 +92,14 @@ const deleteSpaces = (e) => {
                         <div class="col-span-6 shadow-default xl:col-span-6">
                             <InputLabel for="nombre" value="Nombre"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="nombre" type="text" v-model="form.nombre"
-                                placeholder="Ingrese Nombre" />
+                            <TextInput id="nombre" type="text" v-model="form.nombre" placeholder="Ingrese Nombre" />
                             <InputError class="mt-1 text-xs" :message="form.errors.nombre" />
                         </div>
-
-
 
                         <div class="col-span-6 shadow-default xl:col-span-3">
                             <InputLabel for="telefono" value="Telefono"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="telefono" type="text" v-model="form.telefono"
-                                placeholder="Ingrese telefono" />
+                            <TextInput id="telefono" type="text" v-model="form.telefono" placeholder="Ingrese telefono" />
                             <InputError class="mt-1 text-xs" :message="form.errors.telefono" />
                         </div>
 
@@ -145,38 +122,29 @@ const deleteSpaces = (e) => {
                         <div class="col-span-6 shadow-default xl:col-span-3">
                             <InputLabel for="empresa" value="Empresa"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="empresa" type="text" v-model="form.empresa"
-                                placeholder="Ingrese Empresa" />
+                            <TextInput id="empresa" type="text" v-model="form.empresa" placeholder="Ingrese Empresa" />
                             <InputError class="mt-1 text-xs" :message="form.errors.empresa" />
                         </div>
 
                         <div class="col-span-6 shadow-default xl:col-span-3">
-                            <InputLabel for="rut" value="RUT"
-                                class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="rut" type="text" v-model="form.rut"
-                                placeholder="Ingrese RUT" />
+                            <InputLabel for="rut" value="RUT" class="block text-base font-medium leading-6 text-gray-900" />
+                            <TextInput id="rut" type="text" v-model="form.rut" placeholder="Ingrese RUT" />
                             <InputError class="mt-1 text-xs" :message="form.errors.rut" />
                         </div>
 
                         <div class="col-span-6 shadow-default xl:col-span-3">
                             <InputLabel for="email" value="Email"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="email" type="email" v-model="form.email"
-                                placeholder="Ingrese Email" />
+                            <TextInput id="email" type="email" v-model="form.email" placeholder="Ingrese Email" />
                             <InputError class="mt-1 text-xs" :message="form.errors.email" />
                         </div>
 
                     </div>
-                    <div class="flex justify-end pt-3">
-                        <button @click="closeModal" type="button"
-                            class="inline-block rounded bg-red-700 py-1 px-2 text-sm font-semibold text-white mr-4 mb-1 hover:bg-red-600">
-                            Cancelar
-                        </button>
-                        <PrimaryButton
-                            class="inline-block rounded bg-blue-600 py-1 px-2 text-sm font-semibold text-white mr-1 mb-1 hover:bg-blue-700"
-                            :class="{ 'opacity-50': form.processing }" :disabled="form.processing">
-                            Guardar
-                        </PrimaryButton>
+                    <div class="flex justify-end py-3">
+                        <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="closeModal"
+                            type="button" />
+                        <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
+                            :disabled="form.processing" />
                     </div>
                 </form>
             </div>

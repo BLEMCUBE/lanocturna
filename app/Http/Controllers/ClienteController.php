@@ -37,7 +37,7 @@ class ClienteController extends Controller
     {
 
         $cliente = Cliente::create($request->all());
-        return Redirect::route('clientes.index');
+        //return Redirect::route('clientes.index');
     }
     public function show($id)
     {
@@ -51,7 +51,7 @@ class ClienteController extends Controller
     {
         $cliente = Cliente::findOrFail($id);
         $cliente->update($request->all());
-        return Redirect::route('clientes.index');
+        //return Redirect::route('clientes.index');
     }
 
 
@@ -59,6 +59,6 @@ class ClienteController extends Controller
     {
         $cliente = Cliente::find($id);
         $cliente->delete();
-        return Redirect::route('clientes.index');
+        //return Redirect::route('clientes.index');
     }
 }

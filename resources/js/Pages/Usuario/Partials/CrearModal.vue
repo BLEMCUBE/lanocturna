@@ -58,7 +58,7 @@ const submit = () => {
 
 
     form.post(route(ruta + '.store'), {
-        //preserveScroll: true,
+        preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
             isShowModal.value = false

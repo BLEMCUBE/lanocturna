@@ -110,7 +110,7 @@ const submit = () => {
 
                 <div
                     class="p-4 mb-4 rounded-t flex justify-between items-center border-b border-gray-200 dark:border-gray-600">
-                    <h5 class="text-xl font-normal">Crear {{ titulo }}</h5>
+                    <h5 class="text-xl font-normal">Editar {{ titulo }}</h5>
                 </div>
 
                 <form @submit.prevent="submit">

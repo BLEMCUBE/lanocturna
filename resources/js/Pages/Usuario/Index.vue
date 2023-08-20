@@ -8,23 +8,16 @@ import Swal from 'sweetalert2';
 import CrearModal from '@/Pages/Usuario/Partials/CrearModal.vue';
 import EditarModal from '@/Pages/Usuario/Partials/EditarModal.vue';
 import { FilterMatchMode } from 'primevue/api';
-import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 
 const tabla_clientes = ref()
 const { permissions } = usePage().props.auth
 const titulo = "Usuarios"
 const ruta = 'usuarios'
-const confirm = useConfirm();
 const toast = useToast();
 
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    'name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    representative: { value: null, matchMode: FilterMatchMode.IN },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
-    verified: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
 
 
@@ -60,7 +53,7 @@ const eliminar = (id, name) => {
                 {
                     preserveScroll: true,
                     onSuccess: () => {
-                        show('error','Eliminado','Se ha eliminado')
+                        show('success','Eliminado','Se ha eliminado')
                         router.get(route(ruta + '.index'));
                     }
                 });
