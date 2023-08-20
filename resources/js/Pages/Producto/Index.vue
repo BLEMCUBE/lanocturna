@@ -5,7 +5,6 @@ import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import CrearModal from '@/Pages/Producto/Partials/CrearModal.vue';
 import EditarModal from '@/Pages/Producto/Partials/EditarModal.vue';
-import language from 'datatables.net-plugins/i18n/es-ES.mjs';
 import axios from 'axios'
 
 import DataTable from 'primevue/datatable';

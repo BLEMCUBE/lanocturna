@@ -20,8 +20,8 @@ export default {
             },
             fontSize: {
                 //'validation': '0.8rem',
-                'xs': '0.82rem',
-                'sm': '0.9rem',
+                'xs': '0.9rem',
+                'sm': '1rem',
             },
             fontFamily: {
                 'body': [

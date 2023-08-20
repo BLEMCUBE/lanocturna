@@ -238,5 +238,5 @@ const ok = (mensaje) => {
 
 
 <style type="text/css">
-@import 'datatables.net-dt';
+
 </style>

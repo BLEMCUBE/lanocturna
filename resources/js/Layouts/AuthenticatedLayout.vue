@@ -12,7 +12,7 @@
                 </Link>
 
                 <a-menu-item key="inicio" class="p-0 m-0 w-full rounded" @click="setMenu('inicio')">
-                    <NavLinkSideBar icon-class="fas fa-home" class="flex items-center px-4 py-1.5 text-base font-normal"
+                    <NavLinkSideBar icon-class="fas fa-home" class="flex items-center px-4 py-1.5 text-base font-semibold"
                         :href="route('inicio')" :active="route().current('inicio')">
                         <span class="ml-2">Inicio</span>
                     </NavLinkSideBar>
@@ -21,7 +21,7 @@
                 <a-menu-item key="usuarios" class="p-0 m-0 w-full rounded" @click="setMenu('usuarios')"
                     v-show="permissions.includes('lista-usuarios')">
                     <NavLinkSideBar icon-class="fas fa-user-friends"
-                        class="flex items-center justify-start px-4 py-1.5 text-base font-normal" :href="route('usuarios.index')"
+                        class="flex items-center justify-start px-4 py-1.5 text-base font-semibold" :href="route('usuarios.index')"
                         :active="route().current('usuarios.index')">
                         <span class="ml-2">Usuarios</span>
                     </NavLinkSideBar>
@@ -29,7 +29,7 @@
 
                 <a-menu-item key="clientes" class="p-0 m-0 w-full rounded" @click="setMenu('clientes')"
                     v-show="permissions.includes('lista-clientes')">
-                    <NavLinkSideBar icon-class="fas fa-users" class="flex items-center justify-start px-4 py-1.5 text-base font-normal"
+                    <NavLinkSideBar icon-class="fas fa-users" class="flex items-center justify-start px-4 py-1.5 text-base font-semibold"
                         :href="route('clientes.index')" :active="route().current('clientes.index')">
                         <span class="ml-2">Clientes</span>
                     </NavLinkSideBar>
@@ -37,15 +37,14 @@
 
                 <a-menu-item key="productos" class="p-0 m-0 w-full rounded" @click="setMenu('productos')"
                     v-show="permissions.includes('lista-productos')">
-                    <NavLinkSideBar icon-class="fas fa-boxes" class="flex items-center justify-start px-4 py-1.5 text-base font-normal"
+                    <NavLinkSideBar icon-class="fas fa-boxes" class="flex items-center justify-start px-4 py-1.5 text-base font-semibold"
                         :href="route('productos.index')" :active="route().current('productos.index')">
                         <span class="ml-2">Productos</span>
                     </NavLinkSideBar>
                 </a-menu-item>
-                <Divider />
                 <a-menu-item key="roles" class="p-0 m-0 w-full rounded" @click="setMenu('roles')"
                     v-show="permissions.includes('ver-roles')">
-                    <NavLinkSideBar icon-class="fas fa-user-tag" class="flex items-center justify-start px-4 py-1.5 text-base font-normal"
+                    <NavLinkSideBar icon-class="fas fa-user-tag" class="flex items-center justify-start px-4 py-1.5 text-base font-semibold"
                         :href="route('roles.index')" :active="route().current('roles.index')">
                         <span class="ml-3" sidebar-toggle-item>Roles y Permisos</span>
                     </NavLinkSideBar>

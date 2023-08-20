@@ -3,7 +3,7 @@ import '../css/app.css';
 import '../css/vue-multiselect.css';
 import '../css/custom.css';
 import '../css/dataTables.tailwindcss.min.css';
-import "primeicons/primeicons.css";
+import 'primeicons/primeicons.css';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -19,10 +19,12 @@ library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch();
 import Antd from 'ant-design-vue';
+import "primevue/resources/primevue.min.css";
 //import 'ant-design-vue/dist/reset.css';
 
 import PrimeVue from "primevue/config";
 import Tailwind_PT from "@/passthrough/tailwind";
+import Tailwind from 'primevue/passthrough/tailwind'
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';

@@ -652,7 +652,7 @@ const Tailwind_PT = {
       container: function container(_ref24) {
         var props = _ref24.props;
         return {
-          "class": ['my-4 rounded-md w-full', {
+          "class": ['my-2 rounded-md w-full', {
             'bg-blue-100 border-solid border-0 border-l-4 border-blue-500 text-blue-700': props.message.severity == 'info',
             'bg-green-100 border-solid border-0 border-l-4 border-green-500 text-green-700': props.message.severity == 'success',
             'bg-orange-100 border-solid border-0 border-l-4 border-orange-500 text-orange-700': props.message.severity == 'warn',
@@ -695,7 +695,7 @@ const Tailwind_PT = {
           "class": ['items-center cursor-pointer inline-flex overflow-hidden relative select-none text-center align-bottom h-full', 'transition duration-200 ease-in-out', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_2px_rgba(255,255,255,1),0_0_0_4px_rgba(157,193,251,1),0_1px_2px_0_rgba(0,0,0,1)] dark:focus:shadow-[0_0_0_2px_rgba(28,33,39,1),0_0_0_4px_rgba(147,197,253,0.7),0_1px_2px_0_rgba(0,0,0,0)]',
           // Primary button focus
           {
-            'text-white bg-blue-500 border border-blue-500 hover:bg-blue-600 hover:border-blue-600': !props.link && props.severity === null && !props.text && !props.outlined && !props.plain,
+            'text-white bg-primary-900 border border-blue-500 hover:bg-blue-600 hover:border-blue-600': !props.link && props.severity === null && !props.text && !props.outlined && !props.plain,
             'text-blue-600 bg-transparent border-transparent': props.link
           }, {
             'text-white bg-gray-500 border border-gray-500 hover:bg-gray-600 hover:border-gray-600': props.severity === 'secondary' && !props.text && !props.outlined && !props.plain,
@@ -732,8 +732,8 @@ const Tailwind_PT = {
             'text-purple-500 border border-purple-500 hover:bg-purple-300/20': props.outlined && props.severity === 'help' && !props.plain,
             'text-red-500 border border-red-500 hover:bg-red-300/20': props.outlined && props.severity === 'danger' && !props.plain
           }, {
-            'px-4 py-3 text-base': props.size === null,
-            'text-xs py-2 px-3': props.size === 'small',
+            'px-2 py-2 text-base': props.size === null,
+            'text-xs py-1 px-2': props.size === 'small',
             'text-xl py-3 px-4': props.size === 'large'
           }, {
             'opacity-60 pointer-events-none cursor-default': context.disabled
@@ -3498,7 +3498,7 @@ const Tailwind_PT = {
       header: function header(_ref170) {
         var props = _ref170.props;
         return {
-          "class": ['bg-secondary-900 text-slate-700 border-secondary-100 font-bold p-1', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
+          "class": ['bg-white text-slate-700 border-white font-bold p-1', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
           // Dark Mode
           props.showGridlines ? 'border-x border-t border-0' : 'border-y border-x-0']
         };
@@ -3563,7 +3563,7 @@ const Tailwind_PT = {
           var props = _ref175.props,
             context = _ref175.context;
           return {
-            "class": ['text-left border-0 border-b border-solid border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
+            "class": ['text-left border-0 border-b border-solid text-sm border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
             // Size
             'dark:text-white/80 dark:border-blue-900/40',
             // Dark Mode

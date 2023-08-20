@@ -142,7 +142,7 @@ class UsuarioController extends Controller
             ]);*/
         }
         $user->syncRoles($rol->name);
-        return Redirect::route('usuarios.index');
+        //return Redirect::route('usuarios.index');
 
     }
 
@@ -158,7 +158,7 @@ class UsuarioController extends Controller
             unlink($url_save);
         }
         $user->delete();
-        return Redirect::route('usuarios.index');
+        //return Redirect::route('usuarios.index');
     }
 
 
