@@ -1,7 +1,7 @@
 
 
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted} from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
@@ -67,24 +67,22 @@ const show = (tipo,titulo,mensaje) => {
 
 </script>
 <template>
-    <div>
 
         <Head :title="titulo" />
-        <AuthenticatedLayout :pagina="[{ 'label': titulo, link: false }]">
+        <AppLayout :pagina="[{ 'label': titulo, link: false }]">
+            <div
+            class="px-4 py-3 mb-4 bg-white col-span-7 pb-2 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+
+            <!--Contenido-->
             <Toast />
-              <div
-                class="px-4 py-3 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-sm 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
-                <!--Contenido-->
-                <div class=" px-5 col-span-full flex justify-between items-center">
+                <div class="px-5 col-span-full flex justify-between items-center">
 
                     <h5 class="text-xl font-semibold">{{ titulo }}</h5>
                     <CrearModal v-if="permissions.includes('crear-usuarios')"></CrearModal>
                 </div>
-                <div class="overflow-x-auto">
-                    <div class="inline-block min-w-full  mt-4 align-middle">
-                        <div class="overflow-hidden">
-                            <div class="card">
-                                <DataTable :rowClass="rowClass" showGridlines size="small" v-model:filters="filters"
+
+                    <div class="inline-block min-w-full mt-4 align-middle">
+                                <DataTable  showGridlines size="small" v-model:filters="filters"
                                     :value="tabla_clientes" :paginator="true" :rows="10"
                                     :rowsPerPageOptions="[5, 10, 20, 50]"
                                     :pt="{bodycell:{class:'bg-red-500'}}"
@@ -117,18 +115,13 @@ const show = (tipo,titulo,mensaje) => {
                                         </template>
                                     </Column>
                                 </DataTable>
-                            </div>
-
-
-                        </div>
                     </div>
-                </div>
                 <!--Contenido-->
             </div>
 
-        </AuthenticatedLayout>
+        </AppLayout>
 
-    </div>
+
 </template>
 
 

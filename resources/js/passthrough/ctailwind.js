@@ -492,7 +492,7 @@ const Tailwind_PT = {
         return {
           "class": ['flex flex-col pointer-events-auto relative transform translate-x-0 translate-y-0 translate-z-0 relative transition-transform duration-300', 'bg-white text-gray-700 border-0 shadow-lg', {
             '!transition-none !transform-none !w-screen !h-screen !max-h-full !top-0 !left-0': props.position == 'full',
-            'h-full w-80': props.position == 'left' || props.position == 'right',
+            'h-full w-52': props.position == 'left' || props.position == 'right',
             'h-40 w-full': props.position == 'top' || props.position == 'bottom'
           }, 'dark:border dark:border-blue-900/40 dark:bg-gray-900 dark:text-white/80']
         };
@@ -652,7 +652,7 @@ const Tailwind_PT = {
       container: function container(_ref24) {
         var props = _ref24.props;
         return {
-          "class": ['my-4 rounded-md w-full', {
+          "class": ['my-2 rounded-md w-full', {
             'bg-blue-100 border-solid border-0 border-l-4 border-blue-500 text-blue-700': props.message.severity == 'info',
             'bg-green-100 border-solid border-0 border-l-4 border-green-500 text-green-700': props.message.severity == 'success',
             'bg-orange-100 border-solid border-0 border-l-4 border-orange-500 text-orange-700': props.message.severity == 'warn',
@@ -695,7 +695,7 @@ const Tailwind_PT = {
           "class": ['items-center cursor-pointer inline-flex overflow-hidden relative select-none text-center align-bottom h-full', 'transition duration-200 ease-in-out', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_2px_rgba(255,255,255,1),0_0_0_4px_rgba(157,193,251,1),0_1px_2px_0_rgba(0,0,0,1)] dark:focus:shadow-[0_0_0_2px_rgba(28,33,39,1),0_0_0_4px_rgba(147,197,253,0.7),0_1px_2px_0_rgba(0,0,0,0)]',
           // Primary button focus
           {
-            'text-white bg-blue-500 border border-blue-500 hover:bg-blue-600 hover:border-blue-600': !props.link && props.severity === null && !props.text && !props.outlined && !props.plain,
+            'text-white bg-primary-900 border border-blue-500 hover:bg-blue-600 hover:border-blue-600': !props.link && props.severity === null && !props.text && !props.outlined && !props.plain,
             'text-blue-600 bg-transparent border-transparent': props.link
           }, {
             'text-white bg-gray-500 border border-gray-500 hover:bg-gray-600 hover:border-gray-600': props.severity === 'secondary' && !props.text && !props.outlined && !props.plain,
@@ -732,8 +732,8 @@ const Tailwind_PT = {
             'text-purple-500 border border-purple-500 hover:bg-purple-300/20': props.outlined && props.severity === 'help' && !props.plain,
             'text-red-500 border border-red-500 hover:bg-red-300/20': props.outlined && props.severity === 'danger' && !props.plain
           }, {
-            'px-4 py-3 text-base': props.size === null,
-            'text-xs py-2 px-3': props.size === 'small',
+            'px-2 py-2 text-base': props.size === null,
+            'text-xs py-1 px-2': props.size === 'small',
             'text-xl py-3 px-4': props.size === 'large'
           }, {
             'opacity-60 pointer-events-none cursor-default': context.disabled
@@ -857,13 +857,13 @@ const Tailwind_PT = {
         var props = _ref35.props,
           context = _ref35.context;
         return {
-          "class": ['m-0', 'font-sans text-gray-600 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-lg', {
+          "class": ['m-2', 'font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md', {
             'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
             'opacity-60 select-none pointer-events-none cursor-default': context.disabled
           }, {
             'text-lg px-4 py-4': props.size == 'large',
             'text-xs px-2 py-2': props.size == 'small',
-            'p-3 text-base': props.size == null
+            'text-sm px-2 py-2': props.size == null
           }]
         };
       }
@@ -1230,7 +1230,7 @@ const Tailwind_PT = {
       root: function root(_ref62) {
         var props = _ref62.props;
         return {
-          "class": ['cursor-pointer inline-flex relative select-none', 'bg-white border border-gray-400 transition-colors duration-200 ease-in-out rounded-md', 'dark:bg-gray-900 dark:border-blue-900/40 dark:hover:border-blue-300', 'w-full md:w-56', 'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
+          "class": ['cursor-pointer inline-flex relative select-none', 'bg-white border border-gray-400 transition-colors duration-200 ease-in-out rounded-md', 'dark:bg-gray-900 dark:border-blue-900/40 dark:hover:border-blue-300', 'w-full md:w-24', 'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
           }]
         };
@@ -1890,7 +1890,7 @@ const Tailwind_PT = {
     //MENU
     breadcrumb: {
       root: {
-        "class": ['overflow-x-auto', 'bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 rounded-md p-4']
+        "class": ['overflow-x-auto', 'bg-transparent dark:bg-gray-900 border-0 border-gray-300 dark:border-blue-900/40 rounded-md px-5 py-3']
       },
       menu: {
         "class": 'm-0 p-0 list-none flex items-center flex-nowrap'
@@ -3191,12 +3191,12 @@ const Tailwind_PT = {
       pagebutton: function pagebutton(_ref150) {
         var context = _ref150.context;
         return {
-          "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-500 min-w-[3rem] h-12 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:border-blue-300 dark:text-white',
+          "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-800 min-w-[3rem] h-8 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:border-blue-300 dark:text-white',
           // Dark Mode
           'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
           // Focus
           {
-            'bg-blue-50 border-blue-50 text-blue-700 dark:bg-blue-300': context.active
+            'bg-primary-900 border-blue-50 text-white dark:bg-blue-300': context.active
           }]
         };
       },
@@ -3205,10 +3205,10 @@ const Tailwind_PT = {
           var props = _ref151.props,
             state = _ref151.state;
           return {
-            "class": ['inline-flex relative cursor-pointer user-none', 'bg-white border rounded-md', 'transition duration-200', 'h-10 mx-2', 'dark:bg-gray-950 dark:border-blue-900/40',
+            "class": ['inline-flex cursor-pointer user-none', 'bg-white border rounded-md', 'transition duration-200', 'h-8 mx-2 w-16', 'dark:bg-gray-950 dark:border-blue-900/40',
             //DarkMode
             {
-              'outline-none outline-offset-0 shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] border-blue-500': state.focused && !props.disabled,
+              'outline-none outline-offset-0 shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] border-primary-100': state.focused && !props.disabled,
               //Focus
               'border-gray-300': !state.focused,
               'hover:border-blue-500': !props.disabled //Hover
@@ -3217,7 +3217,7 @@ const Tailwind_PT = {
         },
 
         input: {
-          "class": ['font-sans text-base text-gray-600 p-3 m-0 rounded-md apperance-none', 'block whitespace-nowrap overflow-hidden flex-auto w-[1%] cursor-pointer text-ellipsis border-0 pr-0', 'focus:outline-none focus:outline-offset-0', 'dark:text-white' //Dark Mode
+          "class": ['font-sans text-base text-primary-900 py-1 px-2 my-auto rounded apperance-none', 'block whitespace-nowrap overflow-hidden flex-auto w-[1%] cursor-pointer text-ellipsis border-0 pr-0', 'focus:outline-none focus:outline-offset-0', 'dark:text-white' //Dark Mode
           ]
         },
 
@@ -3325,7 +3325,7 @@ const Tailwind_PT = {
         "class": 'w-8 h-8'
       },
       header: {
-        "class": ['bg-slate-50 text-slate-700 border border-x-0 border-t-0 border-gray-300 p-2 font-bold', 'dark:bg-gray-900 dark:text-white/70 dark:border-blue-900/40' // Dark Mode
+        "class": ['bg-slate-50 text-slate-700 border border-x-0 border-t-0 border-gray-300 p-3 font-bold', 'dark:bg-gray-900 dark:text-white/70 dark:border-blue-900/40' // Dark Mode
         ]
       },
 
@@ -3393,13 +3393,13 @@ const Tailwind_PT = {
       column: {
         headercell: function headercell(_ref162) {
           var context = _ref162.context;
-          return {
-            "class": ['text-left border-gray-300 border font-bold', 'transition duration-200', context.sorted ? 'bg-blue-50 text-blue-700' : 'bg-secondary-100', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
-            // Size
-            'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
+           return {
+            "class": ['text-left border-gray-300 border font-bold', 'transition duration-200', context.sorted ? 'bg-blue-50 text-blue-700' : 'bg-secondary-100', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',            // Size
+            'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',{'cursor-pointer': context.sortable},
             //Dark Mode
             {
               'flex flex-1 items-center': context.scrollable,
+
               'flex-initial shrink-0': context.scrollable && context.scrollDirection === 'both' && !context.frozen,
               'sticky z-[1]': context.scrollable && context.scrollDirection === 'both' && context.frozen,
               'border-x-0 border-l-0 border-t-0': !context.showGridlines,
@@ -3410,7 +3410,7 @@ const Tailwind_PT = {
         bodycell: function bodycell(_ref163) {
           var context = _ref163.context;
           return {
-            "class": ['text-left border-gray-300 border', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
+            "class": ['text-left border-gray-300 border', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
             // Size
             'dark:border-blue-900/40',
             //Dark Mode
@@ -3498,9 +3498,9 @@ const Tailwind_PT = {
       header: function header(_ref170) {
         var props = _ref170.props;
         return {
-          "class": ['bg-secondary-900 text-slate-700 border-gray-300 font-bold p-1', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
+          "class": ['bg-white text-slate-700 border-white font-bold p-1', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
           // Dark Mode
-          props.showGridlines ? 'border-x border-t border-b-0' : 'border-y border-x-0']
+          props.showGridlines ? 'border-x border-t border-0' : 'border-y border-x-0']
         };
       },
       table: {
@@ -3541,9 +3541,9 @@ const Tailwind_PT = {
           var context = _ref174.context,
             props = _ref174.props;
           return {
-            "class": ['text-left border-0 border-b border-solid border-gray-300 dark:border-blue-900/40 font-bold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
+            "class": ['text-left border-0 border-b cursor-pointer border-solid border-secondary-900 dark:border-blue-900/40 font-bold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
             // Size
-            context.sorted ? 'bg-secondary-100 text-blue-700' : 'bg-secondary-900 text-slate-700',
+            context.sorted ? 'bg-secondary-100 text-slate-700' : 'bg-secondary-900 text-slate-700',
             // Sort
             context.sorted ? 'dark:text-white/80 dark:bg-blue-300' : 'dark:text-white/80 dark:bg-gray-900',
             // Dark Mode
@@ -3563,7 +3563,7 @@ const Tailwind_PT = {
           var props = _ref175.props,
             context = _ref175.context;
           return {
-            "class": ['text-left border-0 border-b border-solid border-gray-300', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
+            "class": ['text-left border-0 border-b border-solid text-sm border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
             // Size
             'dark:text-white/80 dark:border-blue-900/40',
             // Dark Mode
@@ -3778,7 +3778,7 @@ const Tailwind_PT = {
       bodyrow: function bodyrow(_ref185) {
         var context = _ref185.context;
         return {
-          "class": [context.selected ? 'bg-blue-50 text-blue-700 dark:bg-blue-300' : 'bg-white text-gray-600 dark:bg-gray-900', context.stripedRows ? context.index % 2 === 0 ? 'bg-white text-gray-600 dark:bg-gray-900' : 'bg-blue-50/50 text-gray-600 dark:bg-gray-950' : '', 'transition duration-200', 'focus:outline focus:outline-[0.15rem] focus:outline-blue-200 focus:outline-offset-[-0.15rem]',
+          "class": [context.selected ? 'bg-blue-50 text-blue-700 dark:bg-blue-300' : 'bg-white text-black dark:bg-gray-900', context.stripedRows ? context.index % 2 === 0 ? 'bg-white text-gray-600 dark:bg-gray-900' : 'bg-blue-50/50 text-gray-600 dark:bg-gray-950' : '', 'transition duration-200', 'focus:outline focus:outline-[0.15rem] focus:outline-blue-200 focus:outline-offset-[-0.15rem]',
           // Focus
           'dark:text-white/80 dark:focus:outline dark:focus:outline-[0.15rem] dark:focus:outline-blue-300 dark:focus:outline-offset-[-0.15rem]',
           // Dark Mode

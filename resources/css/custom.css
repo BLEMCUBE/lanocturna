@@ -32,39 +32,3 @@
   opacity: 0;
 }
 
-
-/*Tabla */
-
-
-  .arrow {
-    float: right;
-    width: 12px;
-    height: 15px;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position-y: bottom;
-  }
-
-  /*botones paginacion*/
-  .dataTables_wrapper .dataTables_paginate .paginate_button {
-    padding: 0.2em 0.5em !important;
-
-}
-table.dataTable tbody th,
-table.dataTable tbody td {
-  padding: 1px !important;
-}
-
-table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
-    padding: 3px !important;
-  }
-/*Datapicker next*/
-.mx-datepicker {
-    width: 100% !important;
-  }
-.mx-datepicker-range {
-    width: 100% !important;
-  }
-  .mx-input{
-    height: 36px !important;
-  }

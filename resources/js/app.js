@@ -2,7 +2,11 @@ import './bootstrap';
 import '../css/app.css';
 import '../css/vue-multiselect.css';
 import '../css/custom.css';
-import '../css/dataTables.tailwindcss.min.css';
+import '../css/theme.css';
+import '../css/menu.css';
+import '../css/content.css';
+import '../css/topbar.css';
+import '../css/responsive.css';
 import 'primeicons/primeicons.css';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
@@ -18,13 +22,10 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch();
-import Antd from 'ant-design-vue';
-import "primevue/resources/primevue.min.css";
-//import 'ant-design-vue/dist/reset.css';
 
 import PrimeVue from "primevue/config";
 import Tailwind_PT from "@/passthrough/tailwind";
-import Tailwind from 'primevue/passthrough/tailwind'
+//import Tailwind from 'primevue/passthrough/tailwind'
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
@@ -135,8 +136,10 @@ createInertiaApp({
         .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(pinia)
-            .use(Antd)
-            .use(PrimeVue, { unstyled: true, ripple: true,pt: Tailwind_PT  })
+            //.use(Antd)
+            .use(PrimeVue, { unstyled: true, ripple: true,
+                pt: Tailwind_PT
+             })
             .use(ConfirmationService)
             .use(ToastService)
             .use(DialogService)

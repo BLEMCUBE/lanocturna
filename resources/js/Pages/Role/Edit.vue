@@ -1,7 +1,7 @@
 
 
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import CheckboxName from '@/Components/CheckboxName.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { onMounted } from 'vue'
@@ -55,13 +55,12 @@ const show = (tipo,titulo,mensaje) => {
 };
 </script>
 <template>
-    <div>
 
         <Head title="Permisos" />
-        <AuthenticatedLayout :pagina="[{ 'label': titulo, link: false }]">
+        <AppLayout :pagina="[{ 'label': titulo, link: false }]">
             <Toast />
             <div
-                class="px-4 py-2 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-sm 2xl:col-span-12 dark:border-gray-700 sm:p-2 dark:bg-gray-800">
+                class="px-4 py-2 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700 sm:p-2 dark:bg-gray-800">
                 <div class="px-5 col-span-full flex justify-between items-center">
                     <h5 class="text-xl font-semibold">Permisos de {{ role.name }}</h5>
                 </div>
@@ -89,14 +88,9 @@ const show = (tipo,titulo,mensaje) => {
                     </div>
                 </form>
 
-
-
             </div>
 
-
-        </AuthenticatedLayout>
-
-    </div>
+        </AppLayout>
 </template>
 
 
