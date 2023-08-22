@@ -29,21 +29,21 @@ defineProps({
             <Link
                 v-if="$page.props.auth.user"
                 :href="route('inicio')"
-                class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                class="font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                 >Inicio</Link
             >
 
             <template v-else>
                 <Link
                     :href="route('login')"
-                    class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    class="font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                     >Log in</Link
                 >
 
                 <Link
                     v-if="canRegister"
                     :href="route('register')"
-                    class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
+                    class="ml-4 font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                     >Register</Link
                 >
             </template>
@@ -89,7 +89,7 @@ defineProps({
                                 </svg>
                             </div>
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Documentation</h2>
+                            <h2 class="mt-6 text-2xl font-medium text-gray-900 dark:text-white">Documentation</h2>
 
                             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                                 Laravel has wonderful documentation covering every aspect of the framework. Whether you
@@ -135,7 +135,7 @@ defineProps({
                                 </svg>
                             </div>
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laracasts</h2>
+                            <h2 class="mt-6 text-2xl font-medium text-gray-900 dark:text-white">Laracasts</h2>
 
                             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                                 Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript
@@ -182,7 +182,7 @@ defineProps({
                                 </svg>
                             </div>
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laravel News</h2>
+                            <h2 class="mt-6 text-2xl font-medium text-gray-900 dark:text-white">Laravel News</h2>
 
                             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                                 Laravel News is a community driven portal and newsletter aggregating all of the latest
@@ -228,7 +228,7 @@ defineProps({
                                 </svg>
                             </div>
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</h2>
+                            <h2 class="mt-6 text-2xl font-medium text-gray-900 dark:text-white">Vibrant Ecosystem</h2>
 
                             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                                 Laravel's robust library of first-party tools and libraries, such as

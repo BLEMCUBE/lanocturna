@@ -31,7 +31,7 @@ const Tailwind_PT = {
         root: function root(_ref) {
           var context = _ref.context;
           return {
-            "class": ['absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 origin-top-right m-0', 'text-xs leading-6 flex items-center justify-center', 'text-center text-white font-bold', {
+            "class": ['absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 origin-top-right m-0', 'text-xs leading-6 flex items-center justify-center', 'text-center text-white font-semibold', {
               'rounded-full p-0': context.nogutter || context.dot,
               'rounded-[10px] px-2': !context.nogutter && !context.dot,
               'min-w-[0.5rem] w-2 h-2': context.dot,
@@ -84,14 +84,14 @@ const Tailwind_PT = {
           // Dark mode
           {
             'p-5': !props.toggleable,
-            'py-1 px-3': props.toggleable
+            'py-3 px-5': props.toggleable
           } // condition
           ]
         };
       },
 
       title: {
-        "class": 'leading-none font-bold'
+        "class": 'leading-none font-semibold'
       },
       toggler: {
         "class": ['inline-flex items-center justify-center overflow-hidden relative no-underline',
@@ -137,7 +137,7 @@ const Tailwind_PT = {
           return {
             "class": ['flex items-center cursor-pointer relative no-underline select-none',
             // Alignments
-            'p-5 transition duration-200 ease-in-out rounded-t-md font-bold transition-shadow duration-200',
+            'p-5 transition duration-200 ease-in-out rounded-t-md font-semibold transition-shadow duration-200',
             // Padding and transition
             'border border-gray-300 bg-gray-100 text-gray-600',
             // Borders and colors
@@ -182,7 +182,7 @@ const Tailwind_PT = {
       },
       // Padding.
       title: {
-        "class": 'text-2xl font-bold mb-2' // Font size, font weight, and margin bottom.
+        "class": 'text-2xl font-semibold mb-2' // Font size, font weight, and margin bottom.
       },
 
       subtitle: {
@@ -236,7 +236,7 @@ const Tailwind_PT = {
       legend: function legend(_ref8) {
         var props = _ref8.props;
         return {
-          "class": ['border border-gray-300 text-gray-700 bg-gray-50 font-bold rounded-md', 'dark:bg-gray-900 dark:border-blue-900/40 dark:text-white/80 ',
+          "class": ['border border-gray-300 text-gray-700 bg-gray-50 font-semibold rounded-md', 'dark:bg-gray-900 dark:border-blue-900/40 dark:text-white/80 ',
           //dark
           {
             'p-0 transition-none hover:bg-gray-100 hover:border-gray-300 hover:text-gray-900 dark:hover:text-white/80 dark:hover:bg-gray-800/80 dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]': props.toggleable,
@@ -325,7 +325,7 @@ const Tailwind_PT = {
           return {
             "class": ['items-center cursor-pointer flex overflow-hidden relative select-none text-decoration-none user-select-none',
             // Flex and overflow styles.
-            'border-b-2 p-5 font-bold rounded-t-lg transition-shadow duration-200 m-0',
+            'border-b-2 p-5 font-semibold rounded-t-lg transition-shadow duration-200 m-0',
             // Border, padding, font, and transition styles.
             'transition-colors duration-200',
             // Transition duration style.
@@ -397,7 +397,7 @@ const Tailwind_PT = {
         "class": ['flex items-center justify-between shrink-0', 'bg-white text-gray-800 border-t-0  rounded-tl-lg rounded-tr-lg p-6', 'dark:bg-gray-900  dark:text-white/80']
       },
       headerTitle: {
-        "class": 'font-bold text-lg'
+        "class": 'font-semibold text-lg'
       },
       headerIcons: {
         "class": 'flex items-center'
@@ -411,10 +411,13 @@ const Tailwind_PT = {
         "class": 'w-4 h-4 inline-block'
       },
       content: function content(_ref17) {
-        var state = _ref17.state;
+        var state = _ref17.state,
+          instance = _ref17.instance;
         return {
-          "class": ['overflow-y-auto', 'bg-white text-gray-700 px-6 pb-8 pt-0', 'rounded-bl-lg rounded-br-lg', 'dark:bg-gray-900  dark:text-white/80 ', {
+          "class": ['overflow-y-auto', 'bg-white text-gray-700 px-6 pb-8 pt-0',, 'dark:bg-gray-900  dark:text-white/80', {
             grow: state.maximized
+          }, {
+            'rounded-bl-lg rounded-br-lg': !instance.$slots.footer
           }]
         };
       },
@@ -487,60 +490,60 @@ const Tailwind_PT = {
       transition: TRANSITIONS.overlay
     },
     sidebar: {
-        root: function root(_ref20) {
-          var props = _ref20.props;
-          return {
-            "class": ['flex flex-col pointer-events-auto relative transition-transform duration-300', 'bg-white text-gray-700 border-0 shadow-lg', {
-              '!transition-none !transform-none !w-screen !h-screen !max-h-full !top-0 !left-0': props.position == 'full',
-              'h-full w-80': props.position == 'left' || props.position == 'right',
-              'h-40 w-full': props.position == 'top' || props.position == 'bottom'
-            }, 'dark:border dark:border-blue-900/40 dark:bg-gray-900 dark:text-white/80']
-          };
-        },
-        header: {
-          "class": ['flex items-center justify-end', 'p-5']
-        },
-        closeButton: {
-          "class": ['flex items-center justify-center overflow-hidden relative', 'w-8 h-8 text-gray-500 border-0 bg-transparent rounded-full transition duration-200 ease-in-out mr-2 last:mr-0', 'hover:text-gray-700 hover:border-transparent hover:bg-gray-200', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
-          // focus
-          'dark:hover:text-white/80 dark:hover:text-white/80 dark:hover:border-transparent dark:hover:bg-gray-800/80 dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]']
-        },
-        closeButtonIcon: {
-          "class": 'w-4 h-4 inline-block'
-        },
-        content: {
-          "class": ['p-5 pt-0 h-full w-full', 'grow overflow-y-auto']
-        },
-        mask: function mask(_ref21) {
-          var props = _ref21.props;
-          return {
-            "class": ['flex pointer-events-auto', 'transition duration-200 z-20 transition-colors', {
-              'bg-black/40': props.modal
-            }]
-          };
-        },
-        transition: function transition(_ref22) {
-          var props = _ref22.props;
-          return props.position === 'top' ? {
-            enterFromClass: 'translate-x-0 -translate-y-full translate-z-0',
-            leaveToClass: 'translate-x-0 -translate-y-full translate-z-0'
-          } : props.position === 'bottom' ? {
-            enterFromClass: 'translate-x-0 translate-y-full translate-z-0',
-            leaveToClass: 'translate-x-0 translate-y-full translate-z-0'
-          } : props.position === 'left' ? {
-            enterFromClass: '-translate-x-full translate-y-0 translate-z-0',
-            leaveToClass: '-translate-x-full translate-y-0 translate-z-0'
-          } : props.position === 'right' ? {
-            enterFromClass: 'translate-x-full translate-y-0 translate-z-0',
-            leaveToClass: 'translate-x-full translate-y-0 translate-z-0'
-          } : {
-            enterFromClass: 'opacity-0',
-            enterActiveClass: 'transition-opacity duration-400 ease-in',
-            leaveActiveClass: 'transition-opacity duration-400 ease-in',
-            leaveToClass: 'opacity-0'
-          };
-        }
+      root: function root(_ref20) {
+        var props = _ref20.props;
+        return {
+          "class": ['flex flex-col pointer-events-auto relative transition-transform duration-300', 'bg-white text-gray-700 border-0 shadow-lg', {
+            '!transition-none !transform-none !w-screen !h-screen !max-h-full !top-0 !left-0': props.position == 'full',
+            'h-full w-80': props.position == 'left' || props.position == 'right',
+            'h-40 w-full': props.position == 'top' || props.position == 'bottom'
+          }, 'dark:border dark:border-blue-900/40 dark:bg-gray-900 dark:text-white/80']
+        };
       },
+      header: {
+        "class": ['flex items-center justify-end', 'p-5']
+      },
+      closeButton: {
+        "class": ['flex items-center justify-center overflow-hidden relative', 'w-8 h-8 text-gray-500 border-0 bg-transparent rounded-full transition duration-200 ease-in-out mr-2 last:mr-0', 'hover:text-gray-700 hover:border-transparent hover:bg-gray-200', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
+        // focus
+        'dark:hover:text-white/80 dark:hover:text-white/80 dark:hover:border-transparent dark:hover:bg-gray-800/80 dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]']
+      },
+      closeButtonIcon: {
+        "class": 'w-4 h-4 inline-block'
+      },
+      content: {
+        "class": ['p-5 pt-0 h-full w-full', 'grow overflow-y-auto']
+      },
+      mask: function mask(_ref21) {
+        var props = _ref21.props;
+        return {
+          "class": ['flex pointer-events-auto', 'transition duration-200 z-20 transition-colors', {
+            'bg-black/40': props.modal
+          }]
+        };
+      },
+      transition: function transition(_ref22) {
+        var props = _ref22.props;
+        return props.position === 'top' ? {
+          enterFromClass: 'translate-x-0 -translate-y-full translate-z-0',
+          leaveToClass: 'translate-x-0 -translate-y-full translate-z-0'
+        } : props.position === 'bottom' ? {
+          enterFromClass: 'translate-x-0 translate-y-full translate-z-0',
+          leaveToClass: 'translate-x-0 translate-y-full translate-z-0'
+        } : props.position === 'left' ? {
+          enterFromClass: '-translate-x-full translate-y-0 translate-z-0',
+          leaveToClass: '-translate-x-full translate-y-0 translate-z-0'
+        } : props.position === 'right' ? {
+          enterFromClass: 'translate-x-full translate-y-0 translate-z-0',
+          leaveToClass: 'translate-x-full translate-y-0 translate-z-0'
+        } : {
+          enterFromClass: 'opacity-0',
+          enterActiveClass: 'transition-opacity duration-400 ease-in',
+          leaveActiveClass: 'transition-opacity duration-400 ease-in',
+          leaveToClass: 'opacity-0'
+        };
+      }
+    },
     toolbar: {
       root: {
         "class": ['flex items-center justify-between flex-wrap', 'bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-blue-900/40  p-5 rounded-md gap-2']
@@ -570,7 +573,7 @@ const Tailwind_PT = {
         "class": 'mr-2 inline-block'
       },
       chooseButtonLabel: {
-        "class": 'flex-1 font-bold'
+        "class": 'flex-1 font-semibold'
       },
       uploadbutton: {
         icon: {
@@ -586,7 +589,7 @@ const Tailwind_PT = {
         "class": ['relative', 'bg-white dark:bg-gray-900 p-8 border border-gray-300 dark:border-blue-900/40 text-gray-700 dark:text-white/80 rounded-b-lg']
       },
       file: {
-        "class": ['flex items-center flex-wrap', 'p-2 border border-gray-300 dark:border-blue-900/40 rounded gap-2 mb-2', 'last:mb-0']
+        "class": ['flex items-center flex-wrap', 'p-4 border border-gray-300 dark:border-blue-900/40 rounded gap-2 mb-2', 'last:mb-0']
       },
       thumbnail: {
         "class": 'shrink-0'
@@ -603,8 +606,8 @@ const Tailwind_PT = {
     },
     //Messages
     message: {
-      root: function root(_ref22) {
-        var props = _ref22.props;
+      root: function root(_ref23) {
+        var props = _ref23.props;
         return {
           "class": ['my-4 rounded-md', {
             'bg-blue-100 border-solid border-0 border-l-4 border-blue-500 text-blue-700': props.severity == 'info',
@@ -635,8 +638,8 @@ const Tailwind_PT = {
       }
     },
     inlinemessage: {
-      root: function root(_ref23) {
-        var props = _ref23.props;
+      root: function root(_ref24) {
+        var props = _ref24.props;
         return {
           "class": ['inline-flex items-center justify-center align-top', 'p-3 m-0 rounded-md', {
             'bg-blue-100 border-0 text-blue-700': props.severity == 'info',
@@ -654,10 +657,10 @@ const Tailwind_PT = {
       root: {
         "class": ['w-96', 'opacity-90']
       },
-      container: function container(_ref24) {
-        var props = _ref24.props;
+      container: function container(_ref25) {
+        var props = _ref25.props;
         return {
-          "class": ['my-2 rounded-md w-full', {
+          "class": ['my-4 rounded-md w-full', {
             'bg-blue-100 border-solid border-0 border-l-4 border-blue-500 text-blue-700': props.message.severity == 'info',
             'bg-green-100 border-solid border-0 border-l-4 border-green-500 text-green-700': props.message.severity == 'success',
             'bg-orange-100 border-solid border-0 border-l-4 border-orange-500 text-orange-700': props.message.severity == 'warn',
@@ -675,7 +678,7 @@ const Tailwind_PT = {
         "class": 'text-base font-normal flex flex-col flex-1 grow shrink ml-4'
       },
       summary: {
-        "class": 'font-bold block'
+        "class": 'font-semibold block'
       },
       detail: {
         "class": 'mt-1 block'
@@ -693,93 +696,93 @@ const Tailwind_PT = {
     },
     //BUTTONS
     button: {
-      root: function root(_ref25) {
-        var props = _ref25.props,
-          context = _ref25.context;
-        return {
-          "class": ['items-center cursor-pointer inline-flex overflow-hidden relative select-none text-center align-bottom h-full', 'transition duration-200 ease-in-out', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_2px_rgba(255,255,255,1),0_0_0_4px_rgba(157,193,251,1),0_1px_2px_0_rgba(0,0,0,1)] dark:focus:shadow-[0_0_0_2px_rgba(28,33,39,1),0_0_0_4px_rgba(147,197,253,0.7),0_1px_2px_0_rgba(0,0,0,0)]',
-          // Primary button focus
-          {
-            'text-white bg-primary-900 border border-blue-500 hover:bg-blue-600 hover:border-blue-600': !props.link && props.severity === null && !props.text && !props.outlined && !props.plain,
-            'text-blue-600 bg-transparent border-transparent': props.link
-          }, {
-            'text-white bg-gray-500 border border-gray-500 hover:bg-gray-600 hover:border-gray-600': props.severity === 'secondary' && !props.text && !props.outlined && !props.plain,
-            'text-white bg-green-500 border border-green-500 hover:bg-green-600 hover:border-green-600': props.severity === 'success' && !props.text && !props.outlined && !props.plain,
-            'text-white bg-blue-500 border border-blue-500 hover:bg-blue-600 hover:border-blue-600': props.severity === 'info' && !props.text && !props.outlined && !props.plain,
-            'text-white bg-orange-500 border border-orange-500 hover:bg-orange-600 hover:border-orange-600': props.severity === 'warning' && !props.text && !props.outlined && !props.plain,
-            'text-white bg-purple-500 border border-purple-500 hover:bg-purple-600 hover:border-purple-600': props.severity === 'help' && !props.text && !props.outlined && !props.plain,
-            'text-white bg-red-500 border border-red-500 hover:bg-red-600 hover:border-red-600': props.severity === 'danger' && !props.text && !props.outlined && !props.plain
-          }, {
-            'shadow-lg': props.raised
-          }, {
-            'rounded-md': !props.rounded,
-            'rounded-full': props.rounded
-          }, {
-            'bg-transparent border-transparent': props.text && !props.plain,
-            'text-blue-500 hover:bg-blue-300/20': props.text && (props.severity === null || props.severity === 'info') && !props.plain,
-            'text-gray-500 hover:bg-gray-300/20': props.text && props.severity === 'secondary' && !props.plain,
-            'text-green-500 hover:bg-green-300/20': props.text && props.severity === 'success' && !props.plain,
-            'text-orange-500 hover:bg-orange-300/20': props.text && props.severity === 'warning' && !props.plain,
-            'text-purple-500 hover:bg-purple-300/20': props.text && props.severity === 'help' && !props.plain,
-            'text-red-500 hover:bg-red-300/20': props.text && props.severity === 'danger' && !props.plain
-          }, {
-            'shadow-lg': props.raised && props.text
-          }, {
-            'text-gray-500 hover:bg-gray-300/20': props.plain & props.text,
-            'text-gray-500 border border-gray-500 hover:bg-gray-300/20': props.plain & props.outlined,
-            'text-white bg-gray-500 border border-gray-500 hover:bg-gray-600 hover:border-gray-600': props.plain & !props.outlined & !props.text
-          }, {
-            'bg-transparent border': props.outlined && !props.plain,
-            'text-blue-500 border border-blue-500 hover:bg-blue-300/20': props.outlined && (props.severity === null || props.severity === 'info') && !props.plain,
-            'text-gray-500 border border-gray-500 hover:bg-gray-300/20': props.outlined && props.severity === 'secondary' && !props.plain,
-            'text-green-500 border border-green-500 hover:bg-green-300/20': props.outlined && props.severity === 'success' && !props.plain,
-            'text-orange-500 border border-orange-500 hover:bg-orange-300/20': props.outlined && props.severity === 'warning' && !props.plain,
-            'text-purple-500 border border-purple-500 hover:bg-purple-300/20': props.outlined && props.severity === 'help' && !props.plain,
-            'text-red-500 border border-red-500 hover:bg-red-300/20': props.outlined && props.severity === 'danger' && !props.plain
-          }, {
-            'px-2 py-2 text-base': props.size === null,
-            'text-xs py-1 px-2': props.size === 'small',
-            'text-xl py-3 px-4': props.size === 'large'
-          }, {
-            'opacity-60 pointer-events-none cursor-default': context.disabled
-          }]
-        };
+        root: function root(_ref25) {
+          var props = _ref25.props,
+            context = _ref25.context;
+          return {
+            "class": ['items-center cursor-pointer inline-flex overflow-hidden relative select-none text-center align-bottom h-full', 'transition duration-200 ease-in-out', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_2px_rgba(255,255,255,1),0_0_0_4px_rgba(157,193,251,1),0_1px_2px_0_rgba(0,0,0,1)] dark:focus:shadow-[0_0_0_2px_rgba(28,33,39,1),0_0_0_4px_rgba(147,197,253,0.7),0_1px_2px_0_rgba(0,0,0,0)]',
+            // Primary button focus
+            {
+              'text-white bg-primary-900 border border-blue-500 hover:bg-blue-600 hover:border-blue-600': !props.link && props.severity === null && !props.text && !props.outlined && !props.plain,
+              'text-blue-600 bg-transparent border-transparent': props.link
+            }, {
+              'text-white bg-gray-500 border border-gray-500 hover:bg-gray-600 hover:border-gray-600': props.severity === 'secondary' && !props.text && !props.outlined && !props.plain,
+              'text-white bg-green-500 border border-green-500 hover:bg-green-600 hover:border-green-600': props.severity === 'success' && !props.text && !props.outlined && !props.plain,
+              'text-white bg-blue-500 border border-blue-500 hover:bg-blue-600 hover:border-blue-600': props.severity === 'info' && !props.text && !props.outlined && !props.plain,
+              'text-white bg-orange-500 border border-orange-500 hover:bg-orange-600 hover:border-orange-600': props.severity === 'warning' && !props.text && !props.outlined && !props.plain,
+              'text-white bg-purple-500 border border-purple-500 hover:bg-purple-600 hover:border-purple-600': props.severity === 'help' && !props.text && !props.outlined && !props.plain,
+              'text-white bg-red-500 border border-red-500 hover:bg-red-600 hover:border-red-600': props.severity === 'danger' && !props.text && !props.outlined && !props.plain
+            }, {
+              'shadow-lg': props.raised
+            }, {
+              'rounded-md': !props.rounded,
+              'rounded-full': props.rounded
+            }, {
+              'bg-transparent border-transparent': props.text && !props.plain,
+              'text-blue-500 hover:bg-blue-300/20': props.text && (props.severity === null || props.severity === 'info') && !props.plain,
+              'text-gray-500 hover:bg-gray-300/20': props.text && props.severity === 'secondary' && !props.plain,
+              'text-green-500 hover:bg-green-300/20': props.text && props.severity === 'success' && !props.plain,
+              'text-orange-500 hover:bg-orange-300/20': props.text && props.severity === 'warning' && !props.plain,
+              'text-purple-500 hover:bg-purple-300/20': props.text && props.severity === 'help' && !props.plain,
+              'text-red-500 hover:bg-red-300/20': props.text && props.severity === 'danger' && !props.plain
+            }, {
+              'shadow-lg': props.raised && props.text
+            }, {
+              'text-gray-500 hover:bg-gray-300/20': props.plain & props.text,
+              'text-gray-500 border border-gray-500 hover:bg-gray-300/20': props.plain & props.outlined,
+              'text-white bg-gray-500 border border-gray-500 hover:bg-gray-600 hover:border-gray-600': props.plain & !props.outlined & !props.text
+            }, {
+              'bg-transparent border': props.outlined && !props.plain,
+              'text-blue-500 border border-blue-500 hover:bg-blue-300/20': props.outlined && (props.severity === null || props.severity === 'info') && !props.plain,
+              'text-gray-500 border border-gray-500 hover:bg-gray-300/20': props.outlined && props.severity === 'secondary' && !props.plain,
+              'text-green-500 border border-green-500 hover:bg-green-300/20': props.outlined && props.severity === 'success' && !props.plain,
+              'text-orange-500 border border-orange-500 hover:bg-orange-300/20': props.outlined && props.severity === 'warning' && !props.plain,
+              'text-purple-500 border border-purple-500 hover:bg-purple-300/20': props.outlined && props.severity === 'help' && !props.plain,
+              'text-red-500 border border-red-500 hover:bg-red-300/20': props.outlined && props.severity === 'danger' && !props.plain
+            }, {
+              'px-2 py-2 text-base': props.size === null,
+              'text-xs py-1 px-2': props.size === 'small',
+              'text-xl py-3 px-4': props.size === 'large'
+            }, {
+              'opacity-60 pointer-events-none cursor-default': context.disabled
+            }]
+          };
+        },
+        label: function label(_ref26) {
+          var props = _ref26.props;
+          return {
+            "class": ['flex-1', 'duration-200', 'font-semibold', {
+              'hover:underline': props.link
+            }]
+          };
+        },
+        icon: function icon(_ref27) {
+          var props = _ref27.props;
+          return {
+            "class": ['mx-0', {
+              'mr-2': props.iconPos == 'left' && props.label != null,
+              'ml-2': props.iconPos == 'right' && props.label != null,
+              'mb-2': props.iconPos == 'top' && props.label != null,
+              'mt-2': props.iconPos == 'bottom' && props.label != null
+            }]
+          };
+        },
+        badge: function badge(_ref28) {
+          var props = _ref28.props;
+          return {
+            "class": [{
+              'ml-2 w-4 h-4 leading-none flex items-center justify-center': props.badge
+            }]
+          };
+        }
       },
-      label: function label(_ref26) {
-        var props = _ref26.props;
-        return {
-          "class": ['flex-1', 'duration-200', 'font-bold', {
-            'hover:underline': props.link
-          }]
-        };
-      },
-      icon: function icon(_ref27) {
-        var props = _ref27.props;
-        return {
-          "class": ['mx-0', {
-            'mr-2': props.iconPos == 'left' && props.label != null,
-            'ml-2': props.iconPos == 'right' && props.label != null,
-            'mb-2': props.iconPos == 'top' && props.label != null,
-            'mt-2': props.iconPos == 'bottom' && props.label != null
-          }]
-        };
-      },
-      badge: function badge(_ref28) {
-        var props = _ref28.props;
-        return {
-          "class": [{
-            'ml-2 w-4 h-4 leading-none flex items-center justify-center': props.badge
-          }]
-        };
-      }
-    },
     speeddial: {
       root: {
         "class": 'absolute flex'
       },
       button: {
-        root: function root(_ref29) {
-          var parent = _ref29.parent;
+        root: function root(_ref30) {
+          var parent = _ref30.parent;
           return {
             "class": ['w-16 !h-16 !rounded-full justify-center z-10', {
               'rotate-45': parent.state.d_visible
@@ -793,9 +796,9 @@ const Tailwind_PT = {
       menu: {
         "class": 'm-0 p-0 list-none flex items-center justify-center transition delay-200 z-20'
       },
-      menuitem: function menuitem(_ref30) {
-        var props = _ref30.props,
-          context = _ref30.context;
+      menuitem: function menuitem(_ref31) {
+        var props = _ref31.props,
+          context = _ref31.context;
         return {
           "class": ['transform transition-transform duration-200 ease-out transition-opacity duration-800', context.hidden ? 'opacity-0 scale-0' : 'opacity-1 scale-100', {
             'my-1 first:mb-2': props.direction == 'up' && props.type == 'linear',
@@ -810,8 +813,8 @@ const Tailwind_PT = {
       action: {
         "class": ['flex items-center justify-center rounded-full relative overflow-hidden', 'w-12 h-12 bg-gray-700 hover:bg-gray-800 text-white']
       },
-      mask: function mask(_ref31) {
-        var state = _ref31.state;
+      mask: function mask(_ref32) {
+        var state = _ref32.state;
         return {
           "class": ['absolute left-0 top-0 w-full h-full transition-opacity duration-250 ease-in-out bg-black/40 z-0', {
             'opacity-0': !state.d_visible,
@@ -821,8 +824,8 @@ const Tailwind_PT = {
       }
     },
     splitbutton: {
-      root: function root(_ref32) {
-        var props = _ref32.props;
+      root: function root(_ref33) {
+        var props = _ref33.props;
         return {
           "class": ['inline-flex relative', 'rounded-md', {
             'shadow-lg': props.raised
@@ -830,8 +833,8 @@ const Tailwind_PT = {
         };
       },
       button: {
-        root: function root(_ref33) {
-          var parent = _ref33.parent;
+        root: function root(_ref34) {
+          var parent = _ref34.parent;
           return {
             "class": ['rounded-r-none border-r-0', {
               'rounded-l-full': parent.props.rounded
@@ -843,8 +846,8 @@ const Tailwind_PT = {
         }
       },
       menubutton: {
-        root: function root(_ref34) {
-          var parent = _ref34.parent;
+        root: function root(_ref35) {
+          var parent = _ref35.parent;
           return {
             "class": ['rounded-l-none', {
               'rounded-r-full': parent.props.rounded
@@ -856,45 +859,45 @@ const Tailwind_PT = {
         }
       }
     },
-    //FORMS
-    inputtext: {
-      root: function root(_ref35) {
-        var props = _ref35.props,
-          context = _ref35.context;
-        return {
-          "class": ['m-2', 'font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md', {
-            'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
-            'opacity-60 select-none pointer-events-none cursor-default': context.disabled
-          }, {
+  //FORMS
+  inputtext: {
+    root: function root(_ref35) {
+      var props = _ref35.props,
+        context = _ref35.context;
+      return {
+        "class": ['m-2', 'font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md', {
+          'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
+          'opacity-60 select-none pointer-events-none cursor-default': context.disabled
+        }, {
             'text-lg px-4 py-4': props.size == 'large',
             'text-xs px-2 py-2': props.size == 'small',
             'text-sm px-2 py-2': props.size == null
-          }]
-        };
-      }
-    },
+        }]
+      };
+    }
+  },
     inputnumber: {
       root: {
         "class": 'w-full inline-flex'
       },
-      input: function input(_ref36) {
-        var props = _ref36.props;
+      input: function input(_ref37) {
+        var props = _ref37.props;
         return {
           "class": [{
             'rounded-tr-none rounded-br-none': props.showButtons && props.buttonLayout == 'stacked'
           }]
         };
       },
-      buttongroup: function buttongroup(_ref37) {
-        var props = _ref37.props;
+      buttongroup: function buttongroup(_ref38) {
+        var props = _ref38.props;
         return {
           "class": [{
             'flex flex-col': props.showButtons && props.buttonLayout == 'stacked'
           }]
         };
       },
-      incrementbutton: function incrementbutton(_ref38) {
-        var props = _ref38.props;
+      incrementbutton: function incrementbutton(_ref39) {
+        var props = _ref39.props;
         return {
           "class": ['flex !items-center !justify-center', {
             'rounded-br-none rounded-bl-none rounded-bl-none !p-0 flex-1 w-[3rem]': props.showButtons && props.buttonLayout == 'stacked'
@@ -904,8 +907,8 @@ const Tailwind_PT = {
       label: {
         "class": 'hidden'
       },
-      decrementbutton: function decrementbutton(_ref39) {
-        var props = _ref39.props;
+      decrementbutton: function decrementbutton(_ref40) {
+        var props = _ref40.props;
         return {
           "class": ['flex !items-center !justify-center', {
             'rounded-tr-none rounded-tl-none rounded-tl-none !p-0 flex-1 w-[3rem]': props.showButtons && props.buttonLayout == 'stacked'
@@ -914,8 +917,8 @@ const Tailwind_PT = {
       }
     },
     knob: {
-      root: function root(_ref40) {
-        var props = _ref40.props;
+      root: function root(_ref41) {
+        var props = _ref41.props;
         return {
           "class": ['focus:outline-none focus:outline-offset-0 focus:shadow-0', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
@@ -933,16 +936,16 @@ const Tailwind_PT = {
       }
     },
     inputswitch: {
-      root: function root(_ref41) {
-        var props = _ref41.props;
+      root: function root(_ref42) {
+        var props = _ref42.props;
         return {
           "class": ['inline-block relative', 'w-12 h-7', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
           }]
         };
       },
-      slider: function slider(_ref42) {
-        var props = _ref42.props;
+      slider: function slider(_ref43) {
+        var props = _ref43.props;
         return {
           "class": ['absolute cursor-pointer top-0 left-0 right-0 bottom-0 border border-transparent', 'transition-colors duration-200 rounded-2xl', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', "before:absolute before:content-'' before:top-1/2 before:bg-white before:dark:bg-gray-900 before:w-5 before:h-5 before:left-1 before:-mt-2.5 before:rounded-full before:transition-duration-200", {
             'bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 hover:dark:bg-gray-700 ': !props.modelValue,
@@ -952,8 +955,8 @@ const Tailwind_PT = {
       }
     },
     cascadeselect: {
-      root: function root(_ref43) {
-        var props = _ref43.props;
+      root: function root(_ref44) {
+        var props = _ref44.props;
         return {
           "class": ['inline-flex cursor-pointer select-none relative', 'bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition duration-200 ease-in-out rounded-lg', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
@@ -976,7 +979,7 @@ const Tailwind_PT = {
         "class": ['cursor-pointer font-normal whitespace-nowrap', 'm-0 border-0 bg-transparent transition-shadow rounded-none', 'text-gray-700 dark:text-white/80 hover:text-gray-700 dark:hover:text-white/80 hover:bg-gray-200 dark:hover:bg-gray-800/80']
       },
       content: {
-        "class": ['flex items-center overflow-hidden relative', 'py-1 px-3']
+        "class": ['flex items-center overflow-hidden relative', 'py-3 px-5']
       },
       groupicon: {
         "class": 'ml-auto'
@@ -992,16 +995,16 @@ const Tailwind_PT = {
       }
     },
     rating: {
-      root: function root(_ref44) {
-        var props = _ref44.props;
+      root: function root(_ref45) {
+        var props = _ref45.props;
         return {
           "class": ['relative flex items-center', 'gap-2', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
           }]
         };
       },
-      cancelitem: function cancelitem(_ref45) {
-        var context = _ref45.context;
+      cancelitem: function cancelitem(_ref46) {
+        var context = _ref46.context;
         return {
           "class": ['inline-flex items-center cursor-pointer', {
             'outline-none outline-offset-0 shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]': context.focused
@@ -1011,9 +1014,9 @@ const Tailwind_PT = {
       cancelicon: {
         "class": ['text-red-500', 'w-5 h-5', 'transition duration-200 ease-in']
       },
-      item: function item(_ref46) {
-        var props = _ref46.props,
-          context = _ref46.context;
+      item: function item(_ref47) {
+        var props = _ref47.props,
+          context = _ref47.context;
         return {
           "class": ['inline-flex items-center', {
             'cursor-pointer': !props.readonly,
@@ -1031,16 +1034,16 @@ const Tailwind_PT = {
       }
     },
     selectbutton: {
-      root: function root(_ref47) {
-        var props = _ref47.props;
+      root: function root(_ref48) {
+        var props = _ref48.props;
         return {
           "class": [{
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
           }]
         };
       },
-      button: function button(_ref48) {
-        var context = _ref48.context;
+      button: function button(_ref49) {
+        var context = _ref49.context;
         return {
           "class": ['inline-flex cursor-pointer select-none items-center align-bottom text-center overflow-hidden relative', 'px-4 py-3', 'transition duration-200 border border-r-0', 'first:rounded-l-md first:rounded-tr-none first:rounded-br-none last:border-r last:rounded-tl-none last:rounded-bl-none last:rounded-r-md', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'bg-white dark:bg-gray-900 text-gray-700 dark:text-white/80 border-gray-300 dark:border-blue-900/40 hover:bg-gray-50 dark:hover:bg-gray-800/80 ': !context.active,
@@ -1050,12 +1053,12 @@ const Tailwind_PT = {
         };
       },
       label: {
-        "class": 'font-bold'
+        "class": 'font-semibold'
       }
     },
     slider: {
-      root: function root(_ref49) {
-        var props = _ref49.props;
+      root: function root(_ref50) {
+        var props = _ref50.props;
         return {
           "class": ['relative', 'bg-gray-100 dark:bg-gray-800 border-0 rounded-6', {
             'h-1 w-56': props.orientation == 'horizontal',
@@ -1065,8 +1068,8 @@ const Tailwind_PT = {
           }]
         };
       },
-      range: function range(_ref50) {
-        var props = _ref50.props;
+      range: function range(_ref51) {
+        var props = _ref51.props;
         return {
           "class": ['bg-blue-500', 'block absolute', {
             'top-0 left-0 h-full': props.orientation == 'horizontal',
@@ -1074,16 +1077,7 @@ const Tailwind_PT = {
           }]
         };
       },
-      handle: function handle(_ref51) {
-        var props = _ref51.props;
-        return {
-          "class": ['h-4 w-4 bg-white dark:bg-gray-600 border-2 border-blue-500 rounded-full transition duration-200', 'cursor-grab touch-action-none block', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', 'hover:bg-blue-500 hover:border hover:border-blue-500', {
-            'top-[50%] mt-[-0.5715rem] ml-[-0.5715rem]': props.orientation == 'horizontal',
-            'left-[50%] mb-[-0.5715rem] ml-[-0.4715rem]': props.orientation == 'vertical'
-          }]
-        };
-      },
-      starthandler: function starthandler(_ref52) {
+      handle: function handle(_ref52) {
         var props = _ref52.props;
         return {
           "class": ['h-4 w-4 bg-white dark:bg-gray-600 border-2 border-blue-500 rounded-full transition duration-200', 'cursor-grab touch-action-none block', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', 'hover:bg-blue-500 hover:border hover:border-blue-500', {
@@ -1092,8 +1086,17 @@ const Tailwind_PT = {
           }]
         };
       },
-      endhandler: function endhandler(_ref53) {
+      starthandler: function starthandler(_ref53) {
         var props = _ref53.props;
+        return {
+          "class": ['h-4 w-4 bg-white dark:bg-gray-600 border-2 border-blue-500 rounded-full transition duration-200', 'cursor-grab touch-action-none block', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', 'hover:bg-blue-500 hover:border hover:border-blue-500', {
+            'top-[50%] mt-[-0.5715rem] ml-[-0.5715rem]': props.orientation == 'horizontal',
+            'left-[50%] mb-[-0.5715rem] ml-[-0.4715rem]': props.orientation == 'vertical'
+          }]
+        };
+      },
+      endhandler: function endhandler(_ref54) {
+        var props = _ref54.props;
         return {
           "class": ['h-4 w-4 bg-white dark:bg-gray-600 border-2 border-blue-500 rounded-full transition duration-200', 'cursor-grab touch-action-none block', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', 'hover:bg-blue-500 hover:border hover:border-blue-500', {
             'top-[50%] mt-[-0.5715rem] ml-[-0.5715rem]': props.orientation == 'horizontal',
@@ -1103,8 +1106,8 @@ const Tailwind_PT = {
       }
     },
     password: {
-      root: function root(_ref54) {
-        var props = _ref54.props;
+      root: function root(_ref55) {
+        var props = _ref55.props;
         return {
           "class": ['inline-flex relative', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
@@ -1117,10 +1120,10 @@ const Tailwind_PT = {
       meter: {
         "class": 'mb-2 bg-gray-300 dark:bg-gray-700 h-3'
       },
-      meterlabel: function meterlabel(_ref55) {
+      meterlabel: function meterlabel(_ref56) {
         var _instance$meter, _instance$meter2, _instance$meter3;
-        var instance = _ref55.instance,
-          props = _ref55.props;
+        var instance = _ref56.instance,
+          props = _ref56.props;
         return {
           "class": ['transition-width duration-1000 ease-in-out h-full', {
             'bg-red-500': (instance === null || instance === void 0 || (_instance$meter = instance.meter) === null || _instance$meter === void 0 ? void 0 : _instance$meter.strength) == 'weak',
@@ -1140,9 +1143,9 @@ const Tailwind_PT = {
       transition: TRANSITIONS.overlay
     },
     togglebutton: {
-      root: function root(_ref56) {
-        var props = _ref56.props,
-          context = _ref56.context;
+      root: function root(_ref57) {
+        var props = _ref57.props,
+          context = _ref57.context;
         return {
           "class": ['inline-flex cursor-pointer select-none items-center align-bottom text-center overflow-hidden relative', 'px-4 py-3 rounded-md text-base w-36', 'border transition duration-200 ease-in-out', {
             'outline-none outline-offset-0 shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]': context.focused
@@ -1155,10 +1158,10 @@ const Tailwind_PT = {
         };
       },
       label: {
-        "class": 'font-bold text-center w-full'
+        "class": 'font-semibold text-center w-full'
       },
-      icon: function icon(_ref57) {
-        var props = _ref57.props;
+      icon: function icon(_ref58) {
+        var props = _ref58.props;
         return {
           "class": [' mr-2', {
             'text-gray-600 dark:text-white/70': !props.modelValue,
@@ -1171,8 +1174,8 @@ const Tailwind_PT = {
       root: {
         "class": ['cursor-pointer inline-flex relative select-none align-bottom', 'w-6 h-6']
       },
-      checkbox: function checkbox(_ref58) {
-        var props = _ref58.props;
+      checkbox: function checkbox(_ref59) {
+        var props = _ref59.props;
         return {
           "class": ['flex items-center justify-center', 'border-2 w-6 h-6 rounded-lg transition-colors duration-200', {
             'border-blue-500 bg-blue-500 text-white dark:border-blue-400 dark:bg-blue-400': props.modelValue || !props.modelValue,
@@ -1188,9 +1191,9 @@ const Tailwind_PT = {
       root: {
         "class": ['cursor-pointer inline-flex relative select-none align-bottom', 'w-6 h-6']
       },
-      input: function input(_ref59) {
-        var props = _ref59.props,
-          context = _ref59.context;
+      input: function input(_ref60) {
+        var props = _ref60.props,
+          context = _ref60.context;
         return {
           "class": ['flex items-center justify-center', 'border-2 w-6 h-6 text-gray-600 rounded-lg transition-colors duration-200', {
             'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900': !context.checked,
@@ -1209,8 +1212,8 @@ const Tailwind_PT = {
       root: {
         "class": ['relative inline-flex cursor-pointer select-none align-bottom', 'w-6 h-6']
       },
-      input: function input(_ref60) {
-        var props = _ref60.props;
+      input: function input(_ref61) {
+        var props = _ref61.props;
         return {
           "class": ['flex justify-center items-center', 'border-2 w-6 h-6 text-gray-700 rounded-full transition duration-200 ease-in-out', {
             'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900 dark:text-white/80': props.value !== props.modelValue,
@@ -1221,8 +1224,8 @@ const Tailwind_PT = {
           }]
         };
       },
-      icon: function icon(_ref61) {
-        var props = _ref61.props;
+      icon: function icon(_ref62) {
+        var props = _ref62.props;
         return {
           "class": ['transform rounded-full', 'block w-3 h-3 transition duration-200 bg-white dark:bg-gray-900', {
             'backface-hidden scale-10 invisible': props.value !== props.modelValue,
@@ -1232,16 +1235,16 @@ const Tailwind_PT = {
       }
     },
     dropdown: {
-      root: function root(_ref62) {
-        var props = _ref62.props;
+      root: function root(_ref63) {
+        var props = _ref63.props;
         return {
           "class": ['cursor-pointer inline-flex relative select-none', 'bg-white border border-gray-400 transition-colors duration-200 ease-in-out rounded-md', 'dark:bg-gray-900 dark:border-blue-900/40 dark:hover:border-blue-300', 'w-full md:w-24', 'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
           }]
         };
       },
-      input: function input(_ref63) {
-        var props = _ref63.props;
+      input: function input(_ref64) {
+        var props = _ref64.props;
         return {
           "class": ['cursor-pointer block flex flex-auto overflow-hidden overflow-ellipsis whitespace-nowrap relative', 'bg-transparent border-0 text-gray-800', 'dark:text-white/80', 'p-3 transition duration-200 bg-transparent rounded appearance-none font-sans text-base', 'focus:outline-none focus:shadow-none', {
             'pr-7': props.showClear
@@ -1257,8 +1260,8 @@ const Tailwind_PT = {
       list: {
         "class": 'py-3 list-none m-0'
       },
-      item: function item(_ref64) {
-        var context = _ref64.context;
+      item: function item(_ref65) {
+        var context = _ref65.context;
         return {
           "class": ['cursor-pointer font-normal overflow-hidden relative whitespace-nowrap', 'm-0 p-3 border-0  transition-shadow duration-200 rounded-none', 'dark:text-white/80 dark:hover:bg-gray-800', 'hover:text-gray-700 hover:bg-gray-200', {
             'text-gray-700': !context.focused && !context.selected,
@@ -1269,7 +1272,7 @@ const Tailwind_PT = {
         };
       },
       itemgroup: {
-        "class": ['m-0 p-3 text-gray-800 bg-white font-bold', 'dark:bg-gray-900 dark:text-white/80', 'cursor-auto']
+        "class": ['m-0 p-3 text-gray-800 bg-white font-semibold', 'dark:bg-gray-900 dark:text-white/80', 'cursor-auto']
       },
       header: {
         "class": ['p-3 border-b border-gray-300 text-gray-700 bg-gray-100 mt-0 rounded-tl-lg rounded-tr-lg', 'dark:bg-gray-800 dark:text-white/80 dark:border-blue-900/40']
@@ -1289,8 +1292,8 @@ const Tailwind_PT = {
       transition: TRANSITIONS.overlay
     },
     calendar: {
-      root: function root(_ref65) {
-        var props = _ref65.props;
+      root: function root(_ref66) {
+        var props = _ref66.props;
         return {
           "class": ['inline-flex max-w-full relative', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
@@ -1302,8 +1305,8 @@ const Tailwind_PT = {
         ]
       },
 
-      panel: function panel(_ref66) {
-        var props = _ref66.props;
+      panel: function panel(_ref67) {
+        var props = _ref67.props;
         return {
           "class": ['bg-white dark:bg-gray-900', 'min-w-[350px]', {
             'shadow-md border-0 absolute': !props.inline,
@@ -1312,7 +1315,7 @@ const Tailwind_PT = {
         };
       },
       header: {
-        "class": ['flex items-center justify-between', 'p-2 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-semibold m-0 border-b border-gray-300 dark:border-blue-900/40 rounded-t-lg']
+        "class": ['flex items-center justify-between', 'p-2 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-medium m-0 border-b border-gray-300 dark:border-blue-900/40 rounded-t-lg']
       },
       previousbutton: {
         "class": ['flex items-center justify-center cursor-pointer overflow-hidden relative', 'w-8 h-8 text-gray-600 dark:text-white/70 border-0 bg-transparent rounded-full transition-colors duration-200 ease-in-out', 'hover:text-gray-700 dark:hover:text-white/80 hover:border-transparent hover:bg-gray-200 dark:hover:bg-gray-800/80 ']
@@ -1321,10 +1324,10 @@ const Tailwind_PT = {
         "class": 'leading-8 mx-auto'
       },
       monthTitle: {
-        "class": ['text-gray-700 dark:text-white/80 transition duration-200 font-semibold p-2', 'mr-2', 'hover:text-blue-500']
+        "class": ['text-gray-700 dark:text-white/80 transition duration-200 font-medium p-2', 'mr-2', 'hover:text-blue-500']
       },
       yearTitle: {
-        "class": ['text-gray-700 dark:text-white/80 transition duration-200 font-semibold p-2', 'hover:text-blue-500']
+        "class": ['text-gray-700 dark:text-white/80 transition duration-200 font-medium p-2', 'hover:text-blue-500']
       },
       nextbutton: {
         "class": ['flex items-center justify-center cursor-pointer overflow-hidden relative', 'w-8 h-8 text-gray-600 dark:text-white/70 border-0 bg-transparent rounded-full transition-colors duration-200 ease-in-out', 'hover:text-gray-700 dark:hover:text-white/80 hover:border-transparent hover:bg-gray-200 dark:hover:bg-gray-800/80 ']
@@ -1341,8 +1344,8 @@ const Tailwind_PT = {
       day: {
         "class": 'p-2'
       },
-      daylabel: function daylabel(_ref67) {
-        var context = _ref67.context;
+      daylabel: function daylabel(_ref68) {
+        var context = _ref68.context;
         return {
           "class": ['w-10 h-10 rounded-full transition-shadow duration-200 border-transparent border', 'flex items-center justify-center mx-auto overflow-hidden relative', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'opacity-60 cursor-default': context.disabled,
@@ -1356,8 +1359,8 @@ const Tailwind_PT = {
       monthpicker: {
         "class": 'my-2'
       },
-      month: function month(_ref68) {
-        var context = _ref68.context;
+      month: function month(_ref69) {
+        var context = _ref69.context;
         return {
           "class": ['w-1/3 inline-flex items-center justify-center cursor-pointer overflow-hidden relative', 'p-2 transition-shadow duration-200 rounded-lg', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'text-gray-600 dark:text-white/70 bg-transprent hover:bg-gray-200 dark:hover:bg-gray-800/80': !context.selected && !context.disabled,
@@ -1368,8 +1371,8 @@ const Tailwind_PT = {
       yearpicker: {
         "class": 'my-2'
       },
-      year: function year(_ref69) {
-        var context = _ref69.context;
+      year: function year(_ref70) {
+        var context = _ref70.context;
         return {
           "class": ['w-1/2 inline-flex items-center justify-center cursor-pointer overflow-hidden relative', 'p-2 transition-shadow duration-200 rounded-lg', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'text-gray-600 dark:text-white/70 bg-transprent hover:bg-gray-200 dark:hover:bg-gray-800/80': !context.selected && !context.disabled,
@@ -1419,8 +1422,8 @@ const Tailwind_PT = {
       list: {
         "class": 'py-3 list-none m-0'
       },
-      item: function item(_ref70) {
-        var context = _ref70.context;
+      item: function item(_ref71) {
+        var context = _ref71.context;
         return {
           "class": ['cursor-pointer font-normal overflow-hidden relative whitespace-nowrap', 'm-0 p-3 border-0  transition-shadow duration-200 rounded-none', 'dark:text-white/80 dark:hover:bg-gray-800', 'hover:text-gray-700 hover:bg-gray-200', {
             'text-gray-700': !context.focused && !context.selected,
@@ -1431,7 +1434,7 @@ const Tailwind_PT = {
         };
       },
       itemgroup: {
-        "class": ['m-0 p-3 text-gray-800 bg-white font-bold', 'dark:bg-gray-900 dark:text-white/80', 'cursor-auto']
+        "class": ['m-0 p-3 text-gray-800 bg-white font-semibold', 'dark:bg-gray-900 dark:text-white/80', 'cursor-auto']
       },
       header: {
         "class": ['p-3 border-b border-gray-300 text-gray-700 bg-gray-100 mt-0 rounded-tl-lg rounded-tr-lg', 'dark:bg-gray-800 dark:text-white/80 dark:border-blue-900/40']
@@ -1447,8 +1450,8 @@ const Tailwind_PT = {
       }
     },
     multiselect: {
-      root: function root(_ref71) {
-        var props = _ref71.props;
+      root: function root(_ref72) {
+        var props = _ref72.props;
         return {
           "class": ['inline-flex cursor-pointer select-none', 'bg-white dark:bg-gray-900 border border-gray-400 dark:border-blue-900/40  transition-colors duration-200 ease-in-out rounded-md', 'w-full md:w-80', {
             'opacity-60 select-none pointer-events-none cursor-default': props === null || props === void 0 ? void 0 : props.disabled
@@ -1458,8 +1461,8 @@ const Tailwind_PT = {
       labelContainer: {
         "class": 'overflow-hidden flex flex-auto cursor-pointer'
       },
-      label: function label(_ref72) {
-        var props = _ref72.props;
+      label: function label(_ref73) {
+        var props = _ref73.props;
         return {
           "class": ['block overflow-hidden whitespace-nowrap cursor-pointer overflow-ellipsis', 'text-gray-800 dark:text-white/80', 'p-3 transition duration-200', _defineProperty({
             '!p-3': props.display !== 'chip' && ((props === null || props === void 0 ? void 0 : props.modelValue) == null || (props === null || props === void 0 ? void 0 : props.modelValue) == undefined),
@@ -1485,8 +1488,8 @@ const Tailwind_PT = {
       headerCheckboxContainer: {
         "class": ['inline-flex cursor-pointer select-none align-bottom relative', 'mr-2', 'w-6 h-6']
       },
-      headerCheckbox: function headerCheckbox(_ref74) {
-        var context = _ref74.context;
+      headerCheckbox: function headerCheckbox(_ref75) {
+        var context = _ref75.context;
         return {
           "class": ['flex items-center justify-center', 'border-2 w-6 h-6 text-gray-600 dark:text-white/70 rounded-lg transition-colors duration-200', 'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'border-gray-300 dark:border-blue-900/40 bg-white dark:bg-gray-900': !(context !== null && context !== void 0 && context.selected),
@@ -1509,8 +1512,8 @@ const Tailwind_PT = {
       list: {
         "class": 'py-3 list-none m-0'
       },
-      item: function item(_ref75) {
-        var context = _ref75.context;
+      item: function item(_ref76) {
+        var context = _ref76.context;
         return {
           "class": ['cursor-pointer font-normal overflow-hidden relative whitespace-nowrap', 'm-0 p-3 border-0  transition-shadow duration-200 rounded-none', 'dark:text-white/80 dark:hover:bg-gray-800', 'hover:text-gray-700 hover:bg-gray-200', {
             'text-gray-700': !context.focused && !context.selected,
@@ -1523,8 +1526,8 @@ const Tailwind_PT = {
       checkboxContainer: {
         "class": ['inline-flex cursor-pointer select-none align-bottom relative', 'mr-2', 'w-6 h-6']
       },
-      checkbox: function checkbox(_ref76) {
-        var context = _ref76.context;
+      checkbox: function checkbox(_ref77) {
+        var context = _ref77.context;
         return {
           "class": ['flex items-center justify-center', 'border-2 w-6 h-6 text-gray-600 dark:text-white/80 rounded-lg transition-colors duration-200', 'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'border-gray-300 dark:border-blue-900/40  bg-white dark:bg-gray-900': !(context !== null && context !== void 0 && context.selected),
@@ -1536,7 +1539,7 @@ const Tailwind_PT = {
         "class": 'w-4 h-4 transition-all duration-200 text-white text-base'
       },
       itemgroup: {
-        "class": ['m-0 p-3 text-gray-800 bg-white font-bold', 'dark:bg-gray-900 dark:text-white/80', 'cursor-auto']
+        "class": ['m-0 p-3 text-gray-800 bg-white font-semibold', 'dark:bg-gray-900 dark:text-white/80', 'cursor-auto']
       },
       filtercontainer: {
         "class": 'relative'
@@ -1553,8 +1556,8 @@ const Tailwind_PT = {
       transition: TRANSITIONS.overlay
     },
     textarea: {
-      root: function root(_ref77) {
-        var context = _ref77.context;
+      root: function root(_ref78) {
+        var context = _ref78.context;
         return {
           "class": ['m-0', 'font-sans text-base text-gray-600 dark:text-white/80 bg-white dark:bg-gray-900 p-3 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-lg', 'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'opacity-60 select-none pointer-events-none cursor-default': context.disabled
@@ -1563,8 +1566,8 @@ const Tailwind_PT = {
       }
     },
     treeselect: {
-      root: function root(_ref78) {
-        var props = _ref78.props;
+      root: function root(_ref79) {
+        var props = _ref79.props;
         return {
           "class": ['inline-flex cursor-pointer select-none', 'bg-white dark:bg-gray-900 border border-gray-400 dark:border-blue-900/40  transition-colors duration-200 ease-in-out rounded-md', 'w-full md:w-80', {
             'opacity-60 select-none pointer-events-none cursor-default': props === null || props === void 0 ? void 0 : props.disabled
@@ -1589,8 +1592,8 @@ const Tailwind_PT = {
       transition: TRANSITIONS.overlay
     },
     autocomplete: {
-      root: function root(_ref79) {
-        var props = _ref79.props;
+      root: function root(_ref80) {
+        var props = _ref80.props;
         return {
           "class": ['relative inline-flex', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
@@ -1605,8 +1608,8 @@ const Tailwind_PT = {
       inputtoken: {
         "class": ['py-0.375rem px-0', 'flex-1 inline-flex']
       },
-      input: function input(_ref80) {
-        var props = _ref80.props;
+      input: function input(_ref81) {
+        var props = _ref81.props;
         return {
           "class": ['m-0', ' transition-colors duration-200 appearance-none rounded-lg', {
             'rounded-tr-none rounded-br-none': props.dropdown
@@ -1630,8 +1633,8 @@ const Tailwind_PT = {
       list: {
         "class": 'py-3 list-none m-0'
       },
-      item: function item(_ref81) {
-        var context = _ref81.context;
+      item: function item(_ref82) {
+        var context = _ref82.context;
         return {
           "class": ['cursor-pointer font-normal overflow-hidden relative whitespace-nowrap', 'm-0 p-3 border-0  transition-shadow duration-200 rounded-none', 'dark:text-white/80 dark:hover:bg-gray-800', 'hover:text-gray-700 hover:bg-gray-200', {
             'text-gray-700': !context.focused && !context.selected,
@@ -1642,13 +1645,13 @@ const Tailwind_PT = {
         };
       },
       itemgroup: {
-        "class": ['m-0 p-3 text-gray-800 bg-white font-bold', 'dark:bg-gray-900 dark:text-white/80', 'cursor-auto']
+        "class": ['m-0 p-3 text-gray-800 bg-white font-semibold', 'dark:bg-gray-900 dark:text-white/80', 'cursor-auto']
       },
       transition: TRANSITIONS.overlay
     },
     chips: {
-      root: function root(_ref82) {
-        var props = _ref82.props;
+      root: function root(_ref83) {
+        var props = _ref83.props;
         return {
           "class": ['flex', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
@@ -1672,8 +1675,8 @@ const Tailwind_PT = {
       }
     },
     colorpicker: {
-      root: function root(_ref83) {
-        var props = _ref83.props;
+      root: function root(_ref84) {
+        var props = _ref84.props;
         return {
           "class": ['inline-block', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
@@ -1683,8 +1686,8 @@ const Tailwind_PT = {
       input: {
         "class": ['m-0', 'font-sans text-base text-gray-600 bg-white dark:bg-gray-900 p-3 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 rounded-lg cursor-pointer', 'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', 'w-8 h-8']
       },
-      panel: function panel(_ref84) {
-        var props = _ref84.props;
+      panel: function panel(_ref85) {
+        var props = _ref85.props;
         return {
           "class": ['shadow-md', 'bg-gray-800 border-gray-900', {
             'relative h-48 w-52': props.inline,
@@ -1724,10 +1727,10 @@ const Tailwind_PT = {
     },
     //MISC
     badge: {
-      root: function root(_ref85) {
-        var props = _ref85.props;
+      root: function root(_ref86) {
+        var props = _ref86.props;
         return {
-          "class": ['rounded-full p-0 text-center inline-block', 'bg-blue-500 text-white font-bold', {
+          "class": ['rounded-full p-0 text-center inline-block', 'bg-blue-500 text-white font-semibold', {
             'bg-gray-500 ': props.severity == 'secondary',
             'bg-green-500 ': props.severity == 'success',
             'bg-blue-500 ': props.severity == 'info',
@@ -1743,9 +1746,9 @@ const Tailwind_PT = {
       }
     },
     avatar: {
-      root: function root(_ref86) {
-        var props = _ref86.props,
-          parent = _ref86.parent;
+      root: function root(_ref87) {
+        var props = _ref87.props,
+          parent = _ref87.parent;
         return {
           "class": ['flex items-center justify-center', 'bg-gray-300 dark:bg-gray-800', {
             'rounded-lg': props.shape == 'square',
@@ -1789,8 +1792,8 @@ const Tailwind_PT = {
       root: {
         "class": ['overflow-hidden relative', 'border-0 h-6 bg-gray-200 rounded-md dark:bg-gray-800']
       },
-      value: function value(_ref87) {
-        var props = _ref87.props;
+      value: function value(_ref88) {
+        var props = _ref88.props;
         return {
           "class": ['border-0 m-0 bg-blue-500', {
             'transition-width duration-1000 ease-in-out absolute items-center border-0 flex h-full justify-center overflow-hidden w-0': props.mode !== 'indeterminate',
@@ -1814,8 +1817,8 @@ const Tailwind_PT = {
       }
     },
     skeleton: {
-      root: function root(_ref88) {
-        var props = _ref88.props;
+      root: function root(_ref89) {
+        var props = _ref89.props;
         return {
           "class": ['overflow-hidden', '!mb-2', 'bg-gray-300 dark:bg-gray-800', 'after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 after:content after:w-full after:h-full after:bg-blue-400 after:left-full after:transform after:translate-x-full after:z-10 after:bg-gradient-to-r after:from-transparent after:via-white after:to-transparent animate-pulse', {
             'rounded-md': props.shape !== 'circle',
@@ -1825,10 +1828,10 @@ const Tailwind_PT = {
       }
     },
     tag: {
-      root: function root(_ref89) {
-        var props = _ref89.props;
+      root: function root(_ref90) {
+        var props = _ref90.props;
         return {
-          "class": ['inline-flex items-center justify-center', 'bg-blue-500 text-white text-xs font-semibold px-2 py-1 ', {
+          "class": ['inline-flex items-center justify-center', 'bg-blue-500 text-white text-xs font-medium px-2 py-1 ', {
             'bg-gray-500 ': props.severity == 'secondary',
             'bg-green-500 ': props.severity == 'success',
             'bg-blue-500 ': props.severity == 'info',
@@ -1854,8 +1857,8 @@ const Tailwind_PT = {
       }
     },
     scrolltop: {
-      root: function root(_ref90) {
-        var props = _ref90.props;
+      root: function root(_ref91) {
+        var props = _ref91.props;
         return {
           "class": ['fixed bottom-20 right-20 flex items-center justify-center', 'ml-auto', {
             '!bg-blue-500 hover:bg-blue-600 text-white rounded-md h-8 w-8': props.target == 'parent',
@@ -1895,7 +1898,7 @@ const Tailwind_PT = {
     //MENU
     breadcrumb: {
       root: {
-        "class": ['overflow-x-auto', 'bg-transparent dark:bg-gray-900 border-0 border-gray-300 dark:border-blue-900/40 rounded-md px-5 py-3']
+        "class": ['overflow-x-auto', 'font-normal text-md dark:bg-gray-900 border-0 border-gray-300 dark:border-blue-900/40 rounded-md p-2']
       },
       menu: {
         "class": 'm-0 p-0 list-none flex items-center flex-nowrap'
@@ -1912,7 +1915,7 @@ const Tailwind_PT = {
     },
     contextmenu: {
       root: {
-        "class": 'py-1 bg-white dark:bg-gray-900 text-gray-700 dark:text-white/80 border-none shadow-md rounded-lg w-52'
+        "class": 'py-1 dark:bg-gray-900 text-gray-700 dark:text-white/80 border-none shadow-md rounded-lg w-52'
       },
       menu: {
         "class": ['m-0 p-0 list-none', 'outline-none']
@@ -1920,8 +1923,8 @@ const Tailwind_PT = {
       menuitem: {
         "class": 'relative'
       },
-      content: function content(_ref91) {
-        var context = _ref91.context;
+      content: function content(_ref92) {
+        var context = _ref92.context;
         return {
           "class": ['transition-shadow duration-200 rounded-none', 'hover:text-gray-700 dark:hover:text-white/80 hover:bg-gray-200 dark:hover:bg-gray-800/80',
           // Hover
@@ -1934,7 +1937,7 @@ const Tailwind_PT = {
         };
       },
       action: {
-        "class": ['cursor-pointer flex items-center no-underline overflow-hidden relative', 'text-gray-700 dark:text-white/80 py-1 px-3 select-none']
+        "class": ['cursor-pointer flex items-center no-underline overflow-hidden relative', 'text-gray-700 dark:text-white/80 py-3 px-5 select-none']
       },
       icon: {
         "class": 'text-gray-600 dark:text-white/70 mr-2'
@@ -1948,8 +1951,8 @@ const Tailwind_PT = {
       }
     },
     dock: {
-      root: function root(_ref92) {
-        var props = _ref92.props;
+      root: function root(_ref93) {
+        var props = _ref93.props;
         return {
           "class": ['absolute z-1 flex justify-center items-center pointer-events-none', {
             'left-0 bottom-0 w-full': props.position == 'bottom',
@@ -1962,18 +1965,18 @@ const Tailwind_PT = {
       container: {
         "class": ['flex pointer-events-auto', 'bg-white/10 border-white/20 p-2 border rounded-md']
       },
-      menu: function menu(_ref93) {
-        var props = _ref93.props;
+      menu: function menu(_ref94) {
+        var props = _ref94.props;
         return {
           "class": ['m-0 p-0 list-none flex items-center justify-center', 'outline-none', {
             'flex-col': props.position == 'left' || props.position == 'right'
           }]
         };
       },
-      menuitem: function menuitem(_ref94) {
-        var props = _ref94.props,
-          context = _ref94.context,
-          instance = _ref94.instance;
+      menuitem: function menuitem(_ref95) {
+        var props = _ref95.props,
+          context = _ref95.context,
+          instance = _ref95.instance;
         return {
           "class": ['p-2 rounded-md', 'transition-all duration-200 ease-cubic-bezier-will-change-transform transform ', {
             'origin-bottom hover:mx-6': props.position == 'bottom',
@@ -1998,8 +2001,8 @@ const Tailwind_PT = {
       menu: {
         "class": ['m-0 p-0 list-none', 'outline-none']
       },
-      content: function content(_ref95) {
-        var context = _ref95.context;
+      content: function content(_ref96) {
+        var context = _ref96.context;
         return {
           "class": ['text-gray-700 dark:text-white/80 transition-shadow duration-200 rounded-none', 'hover:text-gray-700 dark:hover:text-white/80 hover:bg-gray-200 dark:hover:bg-gray-800/80',
           // Hover
@@ -2009,22 +2012,22 @@ const Tailwind_PT = {
         };
       },
       action: {
-        "class": ['text-gray-700 dark:text-white/80 py-1 px-3 select-none', 'cursor-pointer flex items-center no-underline overflow-hidden relative']
+        "class": ['text-gray-700 dark:text-white/80 py-3 px-5 select-none', 'cursor-pointer flex items-center no-underline overflow-hidden relative']
       },
       icon: {
         "class": 'text-gray-600 dark:text-white/70 mr-2'
       },
       submenuheader: {
-        "class": ['m-0 p-3 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-bold rounded-tl-none rounded-tr-none']
+        "class": ['m-0 p-3 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-medium rounded-tl-none rounded-tr-none']
       },
       transition: TRANSITIONS.overlay
     },
     menubar: {
       root: {
-        "class": ['p-2 dark:bg-gray-900 border-0 dark:border-blue-900/40 rounded-md', 'flex items-center relative']
+        "class": ['p-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 rounded-md', 'flex items-center relative']
       },
-      menu: function menu(_ref96) {
-        var props = _ref96.props;
+      menu: function menu(_ref97) {
+        var props = _ref97.props;
         return {
           "class": ['m-0 sm:p-0 list-none', 'outline-none', 'sm:flex items-center flex-wrap sm:flex-row sm:top-auto sm:left-auto sm:relative sm:bg-transparent sm:shadow-none sm:w-auto', 'flex-col top-full left-0', 'absolute py-1 bg-white dark:bg-gray-900 border-0 shadow-md w-full', {
             'hidden ': !(props !== null && props !== void 0 && props.mobileActive),
@@ -2035,9 +2038,9 @@ const Tailwind_PT = {
       menuitem: {
         "class": 'sm:relative sm:w-auto w-full static'
       },
-      content: function content(_ref97) {
-        var props = _ref97.props,
-          context = _ref97.context;
+      content: function content(_ref98) {
+        var props = _ref98.props,
+          context = _ref98.context;
         return {
           "class": [' transition-shadow duration-200', '', {
             'rounded-md': props.root
@@ -2052,10 +2055,10 @@ const Tailwind_PT = {
           }]
         };
       },
-      action: function action(_ref98) {
-        var context = _ref98.context;
+      action: function action(_ref99) {
+        var context = _ref99.context;
         return {
-          "class": ['select-none', 'cursor-pointer flex items-center no-underline overflow-hidden relative', 'py-1 px-3 select-none', {
+          "class": ['select-none', 'cursor-pointer flex items-center no-underline overflow-hidden relative', 'py-3 px-5 select-none', {
             'max-[960px]:pl-9': context.level === 1,
             'max-[960px]:pl-14': context.level === 2
           }]
@@ -2064,8 +2067,8 @@ const Tailwind_PT = {
       icon: {
         "class": 'mr-2'
       },
-      submenuicon: function submenuicon(_ref99) {
-        var props = _ref99.props;
+      submenuicon: function submenuicon(_ref100) {
+        var props = _ref100.props;
         return {
           "class": ['max-[960px]:ml-auto', {
             'ml-2': props.root,
@@ -2073,8 +2076,8 @@ const Tailwind_PT = {
           }]
         };
       },
-      submenu: function submenu(_ref100) {
-        var props = _ref100.props;
+      submenu: function submenu(_ref101) {
+        var props = _ref101.props;
         return {
           "class": ['py-1 bg-white dark:bg-gray-900 border-0  sm:shadow-md sm:w-48', 'w-full static shadow-none', 'sm:absolute z-10', 'm-0 list-none', {
             'sm:absolute sm:left-full sm:top-0': props.level > 1
@@ -2089,8 +2092,8 @@ const Tailwind_PT = {
       }
     },
     megamenu: {
-      root: function root(_ref101) {
-        var props = _ref101.props;
+      root: function root(_ref102) {
+        var props = _ref102.props;
         return {
           "class": ['bg-gray-100 dark:bg-gray-900  border border-gray-300 dark:border-blue-900/40  rounded-md', 'flex relative', {
             'p-2 items-center': props.orientation == 'horizontal',
@@ -2101,8 +2104,8 @@ const Tailwind_PT = {
       menu: {
         "class": ['m-0 sm:p-0 list-none relative', 'outline-none', 'flex items-center flex-wrap flex-row top-auto left-auto relative bg-transparent shadow-none w-auto']
       },
-      menuitem: function menuitem(_ref102) {
-        var props = _ref102.props;
+      menuitem: function menuitem(_ref103) {
+        var props = _ref103.props;
         return {
           "class": ['relative', {
             'w-auto': props.horizontal,
@@ -2110,9 +2113,9 @@ const Tailwind_PT = {
           }]
         };
       },
-      content: function content(_ref103) {
-        var props = _ref103.props,
-          context = _ref103.context;
+      content: function content(_ref104) {
+        var props = _ref104.props,
+          context = _ref104.context;
         return {
           "class": ['transition-shadow duration-200', {
             'rounded-md': props.level < 1 && props.horizontal
@@ -2128,13 +2131,13 @@ const Tailwind_PT = {
         };
       },
       action: {
-        "class": ['select-none', 'cursor-pointer flex items-center no-underline overflow-hidden relative', 'py-1 px-3 select-none']
+        "class": ['select-none', 'cursor-pointer flex items-center no-underline overflow-hidden relative', 'py-3 px-5 select-none']
       },
       icon: {
         "class": 'mr-2'
       },
-      submenuicon: function submenuicon(_ref104) {
-        var props = _ref104.props;
+      submenuicon: function submenuicon(_ref105) {
+        var props = _ref105.props;
         return {
           "class": [{
             'ml-2': props.horizontal,
@@ -2142,8 +2145,8 @@ const Tailwind_PT = {
           }]
         };
       },
-      panel: function panel(_ref105) {
-        var props = _ref105.props;
+      panel: function panel(_ref106) {
+        var props = _ref106.props;
         return {
           "class": ['py-1 bg-white dark:bg-gray-900 border-0 shadow-md w-auto', 'absolute z-10', {
             'left-full top-0': !props.horizontal
@@ -2160,7 +2163,7 @@ const Tailwind_PT = {
         "class": ['m-0 list-none', 'py-1 w-48']
       },
       submenuheader: {
-        "class": ['m-0 py-1 px-3 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-semibold rounded-tr-md rounded-tl-md']
+        "class": ['m-0 py-3 px-5 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-medium rounded-tr-md rounded-tl-md']
       }
     },
     panelmenu: {
@@ -2179,7 +2182,7 @@ const Tailwind_PT = {
         "class": ['border border-solid border-gray-300 dark:border-blue-900/40 text-gray-700 dark:text-white/80 bg-gray-100 dark:bg-gray-900 rounded-md transition-shadow duration-200', 'hover:bg-gray-200 dark:hover:bg-gray-800/80  hover:text-gray-700 dark:hover:text-white/80']
       },
       headeraction: {
-        "class": ['flex items-center select-none cursor-pointer relative no-underline', 'text-gray-700 dark:text-white/80 p-5 font-bold']
+        "class": ['flex items-center select-none cursor-pointer relative no-underline', 'text-gray-700 dark:text-white/80 p-5 font-semibold']
       },
       submenuicon: {
         "class": 'mr-2'
@@ -2193,8 +2196,8 @@ const Tailwind_PT = {
       menu: {
         "class": ['outline-none', 'm-0 p-0 list-none']
       },
-      content: function content(_ref106) {
-        var context = _ref106.context;
+      content: function content(_ref107) {
+        var context = _ref107.context;
         return {
           "class": ['text-gray-700 dark:text-white/80 transition-shadow duration-200 border-none rounded-none', 'hover:bg-gray-200 dark:hover:bg-gray-800/80  hover:text-gray-700 dark:hover:text-white/80',
           // Hover
@@ -2204,7 +2207,7 @@ const Tailwind_PT = {
         };
       },
       action: {
-        "class": ['text-gray-700 dark:text-white/80 py-1 px-3 select-none', 'flex items-center cursor-pointer no-underline relative overflow-hidden']
+        "class": ['text-gray-700 dark:text-white/80 py-3 px-5 select-none', 'flex items-center cursor-pointer no-underline relative overflow-hidden']
       },
       icon: {
         "class": 'mr-2'
@@ -2244,11 +2247,11 @@ const Tailwind_PT = {
       menuitem: {
         "class": 'mr-0'
       },
-      action: function action(_ref107) {
-        var context = _ref107.context,
-          state = _ref107.state;
+      action: function action(_ref108) {
+        var context = _ref108.context,
+          state = _ref108.state;
         return {
-          "class": ['cursor-pointer select-none flex items-center relative no-underline overflow-hidden', 'border-b-2 p-5 font-bold rounded-t-lg ', 'focus:outline-none focus:outline-offset-0 focus:shadow-[inset_0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
+          "class": ['cursor-pointer select-none flex items-center relative no-underline overflow-hidden', 'border-b-2 p-5 font-normal rounded-t-lg ', 'focus:outline-none focus:outline-offset-0 focus:shadow-[inset_0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'border-gray-300 bg-white text-gray-700 hover:bg-white hover:border-gray-400 hover:text-gray-600 dark:bg-gray-900 dark:border-blue-900/40 dark:text-white/80 dark:hover:bg-gray-800/80': state.d_activeIndex !== context.index,
             // Condition-based hover styles.
             'bg-white border-blue-500 text-blue-500 dark:bg-gray-900 dark:border-blue-300 dark:text-blue-300': state.d_activeIndex === context.index // Condition-based active styles.
@@ -2271,8 +2274,8 @@ const Tailwind_PT = {
       menuitem: {
         "class": 'relative'
       },
-      content: function content(_ref108) {
-        var context = _ref108.context;
+      content: function content(_ref109) {
+        var context = _ref109.context;
         return {
           "class": ['transition-shadow duration-200 border-none rounded-none', 'hover:bg-gray-200 hover:text-gray-700 dark:hover:text-white/80 dark:hover:bg-gray-800/80',
           //Hover
@@ -2284,10 +2287,10 @@ const Tailwind_PT = {
           }]
         };
       },
-      action: function action(_ref109) {
-        var context = _ref109.context;
+      action: function action(_ref110) {
+        var context = _ref110.context;
         return {
-          "class": ['py-1 px-3 select-none', 'flex items-center cursor-pointer no-underline relative overflow-hidden', {
+          "class": ['py-3 px-5 select-none', 'flex items-center cursor-pointer no-underline relative overflow-hidden', {
             'text-gray-700 dark:text-white/80 hover:text-gray-700 dark:hover:text-white/80 hover:bg-gray-200 dark:hover:bg-gray-800/80': !context.active,
             'text-blue-600 bg-blue-100': context.active
           }]
@@ -2321,7 +2324,7 @@ const Tailwind_PT = {
         "class": ['fixed top-0 left-0 w-full h-full', 'flex items-center justify-center', 'bg-black bg-opacity-90']
       },
       toolbar: {
-        "class": ['absolute top-0 right-0 flex', 'p-2']
+        "class": ['absolute top-0 right-0 flex', 'p-4']
       },
       rotaterightbutton: {
         "class": ['flex justify-center items-center', 'text-white bg-transparent w-12 h-12 rounded-full transition duration-200 ease-in-out mr-2', 'hover:text-white hover:bg-white/10', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]']
@@ -2403,8 +2406,8 @@ const Tailwind_PT = {
       indicator: {
         "class": 'mr-2'
       },
-      indicatorbutton: function indicatorbutton(_ref110) {
-        var context = _ref110.context;
+      indicatorbutton: function indicatorbutton(_ref111) {
+        var context = _ref111.context;
         return {
           "class": ['w-4 h-4 transition duration-200 rounded-full', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600': !context.highlighted,
@@ -2428,7 +2431,7 @@ const Tailwind_PT = {
         "class": ['inline-flex justify-center items-center overflow-hidden', 'bg-transparent text-white w-16 h-16 transition duration-200 ease-in-out rounded-md mx-2', 'fixed top-1/2 mt-[-0.5rem]', 'right-0', 'hover:bg-white/10 hover:text-white', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]']
       },
       caption: {
-        "class": ['absolute bottom-0 left-0 w-full', 'bg-black/50 text-white p-2']
+        "class": ['absolute bottom-0 left-0 w-full', 'bg-black/50 text-white p-4']
       },
       transition: {
         enterFromClass: 'opacity-0 scale-75',
@@ -2444,8 +2447,8 @@ const Tailwind_PT = {
       content: {
         "class": 'flex flex-col overflow-auto'
       },
-      container: function container(_ref111) {
-        var props = _ref111.props;
+      container: function container(_ref112) {
+        var props = _ref112.props;
         return {
           "class": ['flex', {
             'flex-row': props.orientation !== 'vertical',
@@ -2459,8 +2462,8 @@ const Tailwind_PT = {
       itemscontent: {
         "class": 'overflow-hidden w-full'
       },
-      itemscontainer: function itemscontainer(_ref112) {
-        var props = _ref112.props;
+      itemscontainer: function itemscontainer(_ref113) {
+        var props = _ref113.props;
         return {
           "class": ['flex ', {
             'flex-row': props.orientation !== 'vertical',
@@ -2468,8 +2471,8 @@ const Tailwind_PT = {
           }]
         };
       },
-      item: function item(_ref113) {
-        var props = _ref113.props;
+      item: function item(_ref114) {
+        var props = _ref114.props;
         return {
           "class": ['flex shrink-0 grow', {
             'w-1/3': props.orientation !== 'vertical',
@@ -2483,8 +2486,8 @@ const Tailwind_PT = {
       indicator: {
         "class": 'mr-2 mb-2'
       },
-      indicatorbutton: function indicatorbutton(_ref114) {
-        var context = _ref114.context;
+      indicatorbutton: function indicatorbutton(_ref115) {
+        var context = _ref115.context;
         return {
           "class": ['w-8 h-2 transition duration-200 rounded-0', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600': !context.highlighted,
@@ -2506,9 +2509,9 @@ const Tailwind_PT = {
       node: {
         "class": 'p-1 outline-none'
       },
-      content: function content(_ref115) {
-        var context = _ref115.context,
-          props = _ref115.props;
+      content: function content(_ref116) {
+        var context = _ref116.context,
+          props = _ref116.props;
         return {
           "class": ['flex items-center', 'rounded-lg transition-shadow duration-200 p-2', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'bg-blue-50 text-blue-600': context.selected
@@ -2517,8 +2520,8 @@ const Tailwind_PT = {
           }]
         };
       },
-      toggler: function toggler(_ref116) {
-        var context = _ref116.context;
+      toggler: function toggler(_ref117) {
+        var context = _ref117.context;
         return {
           "class": ['cursor-pointer select-none inline-flex items-center justify-center overflow-hidden relative shrink-0', 'mr-2 w-8 h-8 border-0 bg-transparent rounded-full transition duration-200', 'hover:border-transparent focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'text-gray-500 dark:text-white/80 hover:bg-gray-200 dark:hover:bg-gray-800/80  hover:text-gray-800 dark:hover:text-white/80': !context.selected,
@@ -2531,9 +2534,9 @@ const Tailwind_PT = {
       checkboxcontainer: {
         "class": 'mr-2'
       },
-      checkbox: function checkbox(_ref117) {
-        var context = _ref117.context,
-          props = _ref117.props;
+      checkbox: function checkbox(_ref118) {
+        var context = _ref118.context,
+          props = _ref118.props;
         return {
           "class": ['cursor-pointer inline-flex relative select-none align-bottom', 'w-6 h-6', 'flex items-center justify-center', 'border-2 w-6 h-6 rounded-lg transition-colors duration-200 text-white text-base dark:text-gray-900', {
             'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900': !context.checked,
@@ -2562,8 +2565,8 @@ const Tailwind_PT = {
     },
     // DATA
     timeline: {
-      root: function root(_ref118) {
-        var props = _ref118.props;
+      root: function root(_ref119) {
+        var props = _ref119.props;
         return {
           "class": ['flex grow', {
             'flex-col': props.layout === 'vertical',
@@ -2571,9 +2574,9 @@ const Tailwind_PT = {
           }]
         };
       },
-      event: function event(_ref119) {
-        var props = _ref119.props,
-          context = _ref119.context;
+      event: function event(_ref120) {
+        var props = _ref120.props,
+          context = _ref120.context;
         return {
           "class": ['flex relative min-h-[70px]', {
             'flex-row-reverse': props.align === 'right' || props.layout === 'vertical' && props.align === 'alternate' && context.index % 2 === 1,
@@ -2582,9 +2585,9 @@ const Tailwind_PT = {
           }]
         };
       },
-      opposite: function opposite(_ref120) {
-        var props = _ref120.props,
-          context = _ref120.context;
+      opposite: function opposite(_ref121) {
+        var props = _ref121.props,
+          context = _ref121.context;
         return {
           "class": ['flex-1', {
             'px-4': props.layout === 'vertical',
@@ -2595,8 +2598,8 @@ const Tailwind_PT = {
           }]
         };
       },
-      separator: function separator(_ref121) {
-        var props = _ref121.props;
+      separator: function separator(_ref122) {
+        var props = _ref122.props;
         return {
           "class": ['flex items-center flex-initial', {
             'flex-col': props.layout === 'vertical',
@@ -2607,8 +2610,8 @@ const Tailwind_PT = {
       marker: {
         "class": 'flex self-baseline w-4 h-4 rounded-full border-2 border-blue-500 bg-white dark:border-blue-300 dark:bg-blue-900/40'
       },
-      connector: function connector(_ref122) {
-        var props = _ref122.props;
+      connector: function connector(_ref123) {
+        var props = _ref123.props;
         return {
           "class": ['grow bg-gray-300 dark:bg-blue-900/40', {
             'w-[2px]': props.layout === 'vertical',
@@ -2616,9 +2619,9 @@ const Tailwind_PT = {
           }]
         };
       },
-      content: function content(_ref123) {
-        var props = _ref123.props,
-          context = _ref123.context;
+      content: function content(_ref124) {
+        var props = _ref124.props,
+          context = _ref124.context;
         return {
           "class": ['flex-1', {
             'px-4': props.layout === 'vertical',
@@ -2643,20 +2646,20 @@ const Tailwind_PT = {
         "class": 'flex flex-wrap ml-0 mr-0 mt-0 bg-white dark:bg-gray-900'
       },
       header: {
-        "class": 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white/80 border-gray-200 dark:border-blue-900/40 border-t border-b p-2 font-bold'
+        "class": 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white/80 border-gray-200 dark:border-blue-900/40 border-t border-b p-4 font-semibold'
       }
     },
     dataviewlayoutoptions: {
-      listbutton: function listbutton(_ref124) {
-        var props = _ref124.props;
+      listbutton: function listbutton(_ref125) {
+        var props = _ref125.props;
         return {
           "class": ['items-center cursor-pointer inline-flex overflow-hidden relative select-none text-center align-bottom justify-center border', 'transition duration-200', 'w-12 pt-3 pb-3 rounded-lg rounded-r-none', props.modelValue === 'list' ? 'bg-blue-500 border-blue-500 text-white dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900' : 'bg-white border-gray-300 text-blue-gray-700 dark:bg-gray-900 dark:border-blue-900/40 dark:text-white/80' // highlighted state
           ]
         };
       },
 
-      gridbutton: function gridbutton(_ref125) {
-        var props = _ref125.props;
+      gridbutton: function gridbutton(_ref126) {
+        var props = _ref126.props;
         return {
           "class": ['items-center cursor-pointer inline-flex overflow-hidden relative select-none text-center align-bottom justify-center border', 'transition duration-200', 'w-12 pt-3 pb-3 rounded-lg rounded-l-none', props.modelValue === 'grid' ? 'bg-blue-500 border-blue-500 text-white dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900' : 'bg-white border-gray-300 text-blue-gray-700 dark:bg-gray-900 dark:border-blue-900/40 dark:text-white/80' // highlighted state
           ]
@@ -2684,8 +2687,8 @@ const Tailwind_PT = {
         ]
       },
 
-      lineleft: function lineleft(_ref126) {
-        var context = _ref126.context;
+      lineleft: function lineleft(_ref127) {
+        var context = _ref127.context;
         return {
           "class": ['text-center align-top py-0 px-3 rounded-none border-r border-gray-300', 'dark:border-blue-900/40',
           //Dark Mode
@@ -2694,8 +2697,8 @@ const Tailwind_PT = {
           }]
         };
       },
-      lineright: function lineright(_ref127) {
-        var context = _ref127.context;
+      lineright: function lineright(_ref128) {
+        var context = _ref128.context;
         return {
           "class": ['text-center align-top py-0 px-3 rounded-none', 'dark:border-blue-900/40',
           //Dark Mode
@@ -2724,27 +2727,6 @@ const Tailwind_PT = {
         "class": 'flex flex-col justify-center p-5'
       },
       moveupbutton: {
-        root: function root(_ref128) {
-          var context = _ref128.context;
-          return {
-            "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
-            // button component
-            'text-white bg-blue-500 border border-blue-500 rounded-md', 'transition duration-200 ease-in-out', 'justify-center px-0 py-3',
-            // icon only
-            'mb-2',
-            // orderlist button
-            'dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900',
-            //Dark Mode
-            {
-              'cursor-default pointer-events-none opacity-60': context.disabled
-            }]
-          };
-        },
-        label: {
-          "class": 'flex-initial w-0'
-        }
-      },
-      movetopbutton: {
         root: function root(_ref129) {
           var context = _ref129.context;
           return {
@@ -2765,7 +2747,7 @@ const Tailwind_PT = {
           "class": 'flex-initial w-0'
         }
       },
-      movedownbutton: {
+      movetopbutton: {
         root: function root(_ref130) {
           var context = _ref130.context;
           return {
@@ -2786,9 +2768,30 @@ const Tailwind_PT = {
           "class": 'flex-initial w-0'
         }
       },
-      movebottombutton: {
+      movedownbutton: {
         root: function root(_ref131) {
           var context = _ref131.context;
+          return {
+            "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
+            // button component
+            'text-white bg-blue-500 border border-blue-500 rounded-md', 'transition duration-200 ease-in-out', 'justify-center px-0 py-3',
+            // icon only
+            'mb-2',
+            // orderlist button
+            'dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900',
+            //Dark Mode
+            {
+              'cursor-default pointer-events-none opacity-60': context.disabled
+            }]
+          };
+        },
+        label: {
+          "class": 'flex-initial w-0'
+        }
+      },
+      movebottombutton: {
+        root: function root(_ref132) {
+          var context = _ref132.context;
           return {
             "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
             // button component
@@ -2811,7 +2814,7 @@ const Tailwind_PT = {
         "class": 'flex-auto'
       },
       header: {
-        "class": ['bg-secondary-100 text-slate-700 border border-gray-300 p-5 font-bold border-b-0 rounded-t-md', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
+        "class": ['bg-slate-50 text-slate-700 border border-gray-300 p-5 font-semibold border-b-0 rounded-t-md', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
         ]
       },
 
@@ -2820,10 +2823,10 @@ const Tailwind_PT = {
         ]
       },
 
-      item: function item(_ref132) {
-        var context = _ref132.context;
+      item: function item(_ref133) {
+        var context = _ref133.context;
         return {
-          "class": ['relative cursor-pointer overflow-hidden', 'py-1 px-3 m-0 border-none text-gray-600 dark:text-white/80', 'transition duration-200', {
+          "class": ['relative cursor-pointer overflow-hidden', 'py-3 px-5 m-0 border-none text-gray-600 dark:text-white/80', 'transition duration-200', {
             'text-blue-700 bg-blue-500/20 dark:bg-blue-300/20': context.active && !context.focused,
             'text-blue-700 bg-blue-500/30 dark:bg-blue-300/30': context.active && context.focused,
             'text-gray-600 bg-gray-300 dark:bg-blue-900/40': !context.active && context.focused
@@ -2839,27 +2842,6 @@ const Tailwind_PT = {
         "class": 'flex flex-col justify-center p-5'
       },
       sourcemoveupbutton: {
-        root: function root(_ref133) {
-          var context = _ref133.context;
-          return {
-            "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
-            // button component
-            'text-white bg-blue-500 border border-blue-500 rounded-md', 'transition duration-200 ease-in-out', 'justify-center px-0 py-3',
-            // icon only
-            'mb-2',
-            // orderlist button
-            'dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900',
-            //Dark Mode
-            {
-              'cursor-default pointer-events-none opacity-60': context.disabled
-            }]
-          };
-        },
-        label: {
-          "class": 'flex-initial w-0'
-        }
-      },
-      sourcemovetopbutton: {
         root: function root(_ref134) {
           var context = _ref134.context;
           return {
@@ -2880,7 +2862,7 @@ const Tailwind_PT = {
           "class": 'flex-initial w-0'
         }
       },
-      sourcemovedownbutton: {
+      sourcemovetopbutton: {
         root: function root(_ref135) {
           var context = _ref135.context;
           return {
@@ -2901,9 +2883,30 @@ const Tailwind_PT = {
           "class": 'flex-initial w-0'
         }
       },
-      sourcemovebottombutton: {
+      sourcemovedownbutton: {
         root: function root(_ref136) {
           var context = _ref136.context;
+          return {
+            "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
+            // button component
+            'text-white bg-blue-500 border border-blue-500 rounded-md', 'transition duration-200 ease-in-out', 'justify-center px-0 py-3',
+            // icon only
+            'mb-2',
+            // orderlist button
+            'dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900',
+            //Dark Mode
+            {
+              'cursor-default pointer-events-none opacity-60': context.disabled
+            }]
+          };
+        },
+        label: {
+          "class": 'flex-initial w-0'
+        }
+      },
+      sourcemovebottombutton: {
+        root: function root(_ref137) {
+          var context = _ref137.context;
           return {
             "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
             // button component
@@ -2926,7 +2929,7 @@ const Tailwind_PT = {
         "class": 'grow shrink basis-2/4'
       },
       sourceheader: {
-        "class": ['bg-secondary-100 text-slate-700 border border-gray-300 p-5 font-bold border-b-0 rounded-t-md', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
+        "class": ['bg-slate-50 text-slate-700 border border-gray-300 p-5 font-semibold border-b-0 rounded-t-md', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
         ]
       },
 
@@ -2935,10 +2938,10 @@ const Tailwind_PT = {
         ]
       },
 
-      item: function item(_ref137) {
-        var context = _ref137.context;
+      item: function item(_ref138) {
+        var context = _ref138.context;
         return {
-          "class": ['relative cursor-pointer overflow-hidden', 'py-1 px-3 m-0 border-none text-gray-600 dark:text-white/80', 'transition duration-200', {
+          "class": ['relative cursor-pointer overflow-hidden', 'py-3 px-5 m-0 border-none text-gray-600 dark:text-white/80', 'transition duration-200', {
             'text-blue-700 bg-blue-500/20 dark:bg-blue-300/20': context.active && !context.focused,
             'text-blue-700 bg-blue-500/30 dark:bg-blue-300/30': context.active && context.focused,
             'text-gray-600 bg-gray-300 dark:bg-blue-900/40': !context.active && context.focused
@@ -2949,27 +2952,6 @@ const Tailwind_PT = {
         "class": 'flex flex-col justify-center p-5'
       },
       movetotargetbutton: {
-        root: function root(_ref138) {
-          var context = _ref138.context;
-          return {
-            "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
-            // button component
-            'text-white bg-blue-500 border border-blue-500 rounded-md', 'transition duration-200 ease-in-out', 'justify-center px-0 py-3',
-            // icon only
-            'mb-2',
-            // orderlist button
-            'dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900',
-            //Dark Mode
-            {
-              'cursor-default pointer-events-none opacity-60': context.disabled
-            }]
-          };
-        },
-        label: {
-          "class": 'flex-initial w-0'
-        }
-      },
-      movealltotargetbutton: {
         root: function root(_ref139) {
           var context = _ref139.context;
           return {
@@ -2990,7 +2972,7 @@ const Tailwind_PT = {
           "class": 'flex-initial w-0'
         }
       },
-      movetosourcebutton: {
+      movealltotargetbutton: {
         root: function root(_ref140) {
           var context = _ref140.context;
           return {
@@ -3011,9 +2993,30 @@ const Tailwind_PT = {
           "class": 'flex-initial w-0'
         }
       },
-      movealltosourcebutton: {
+      movetosourcebutton: {
         root: function root(_ref141) {
           var context = _ref141.context;
+          return {
+            "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
+            // button component
+            'text-white bg-blue-500 border border-blue-500 rounded-md', 'transition duration-200 ease-in-out', 'justify-center px-0 py-3',
+            // icon only
+            'mb-2',
+            // orderlist button
+            'dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900',
+            //Dark Mode
+            {
+              'cursor-default pointer-events-none opacity-60': context.disabled
+            }]
+          };
+        },
+        label: {
+          "class": 'flex-initial w-0'
+        }
+      },
+      movealltosourcebutton: {
+        root: function root(_ref142) {
+          var context = _ref142.context;
           return {
             "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
             // button component
@@ -3036,27 +3039,6 @@ const Tailwind_PT = {
         "class": 'flex flex-col justify-center p-5'
       },
       targetmoveupbutton: {
-        root: function root(_ref142) {
-          var context = _ref142.context;
-          return {
-            "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
-            // button component
-            'text-white bg-blue-500 border border-blue-500 rounded-md', 'transition duration-200 ease-in-out', 'justify-center px-0 py-3',
-            // icon only
-            'mb-2',
-            // orderlist button
-            'dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900',
-            //Dark Mode
-            {
-              'cursor-default pointer-events-none opacity-60': context.disabled
-            }]
-          };
-        },
-        label: {
-          "class": 'flex-initial w-0'
-        }
-      },
-      targetmovetopbutton: {
         root: function root(_ref143) {
           var context = _ref143.context;
           return {
@@ -3077,7 +3059,7 @@ const Tailwind_PT = {
           "class": 'flex-initial w-0'
         }
       },
-      targetmovedownbutton: {
+      targetmovetopbutton: {
         root: function root(_ref144) {
           var context = _ref144.context;
           return {
@@ -3098,9 +3080,30 @@ const Tailwind_PT = {
           "class": 'flex-initial w-0'
         }
       },
-      targetmovebottombutton: {
+      targetmovedownbutton: {
         root: function root(_ref145) {
           var context = _ref145.context;
+          return {
+            "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
+            // button component
+            'text-white bg-blue-500 border border-blue-500 rounded-md', 'transition duration-200 ease-in-out', 'justify-center px-0 py-3',
+            // icon only
+            'mb-2',
+            // orderlist button
+            'dark:bg-sky-300 dark:border-sky-300 dark:text-gray-900',
+            //Dark Mode
+            {
+              'cursor-default pointer-events-none opacity-60': context.disabled
+            }]
+          };
+        },
+        label: {
+          "class": 'flex-initial w-0'
+        }
+      },
+      targetmovebottombutton: {
+        root: function root(_ref146) {
+          var context = _ref146.context;
           return {
             "class": ['relative inline-flex cursor-pointer user-select-none items-center align-bottom text-center overflow-hidden m-0',
             // button component
@@ -3123,7 +3126,7 @@ const Tailwind_PT = {
         "class": 'grow shrink basis-2/4'
       },
       targetheader: {
-        "class": ['bg-slate-50 text-slate-700 border border-gray-300 p-5 font-bold border-b-0 rounded-t-md', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
+        "class": ['bg-slate-50 text-slate-700 border border-gray-300 p-5 font-semibold border-b-0 rounded-t-md', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
         ]
       },
 
@@ -3140,181 +3143,181 @@ const Tailwind_PT = {
       }
     },
     paginator: {
-      root: {
-        "class": ['flex items-center justify-center flex-wrap', 'bg-white text-gray-500 border-0 px-4 py-2 rounded-md', 'dark:bg-gray-900 dark:text-white/60 dark:border-blue-900/40' // Dark Mode
-        ]
-      },
-
-      firstpagebutton: function firstpagebutton(_ref146) {
-        var context = _ref146.context;
-        return {
-          "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-500  min-w-[3rem] h-12 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:text-white',
-          //Dark Mode
-          {
-            'cursor-default pointer-events-none opacity-60': context.disabled,
-            'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]': !context.disabled // Focus
-          }]
-        };
-      },
-
-      previouspagebutton: function previouspagebutton(_ref147) {
-        var context = _ref147.context;
-        return {
-          "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-500 min-w-[3rem] h-12 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:text-white',
-          //Dark Mode
-          {
-            'cursor-default pointer-events-none opacity-60': context.disabled,
-            'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]': !context.disabled // Focus
-          }]
-        };
-      },
-
-      nextpagebutton: function nextpagebutton(_ref148) {
-        var context = _ref148.context;
-        return {
-          "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-500 min-w-[3rem] h-12 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:text-white',
-          //Dark Mode
-          {
-            'cursor-default pointer-events-none opacity-60': context.disabled,
-            'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]': !context.disabled // Focus
-          }]
-        };
-      },
-
-      lastpagebutton: function lastpagebutton(_ref149) {
-        var context = _ref149.context;
-        return {
-          "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-500 min-w-[3rem] h-12 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:text-white',
-          //Dark Mode
-          {
-            'cursor-default pointer-events-none opacity-60': context.disabled,
-            'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]': !context.disabled // Focus
-          }]
-        };
-      },
-
-      pagebutton: function pagebutton(_ref150) {
-        var context = _ref150.context;
-        return {
-          "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-800 min-w-[3rem] h-8 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:border-blue-300 dark:text-white',
-          // Dark Mode
-          'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
-          // Focus
-          {
-            'bg-primary-900 border-blue-50 text-white dark:bg-blue-300': context.active
-          }]
-        };
-      },
-      rowperpagedropdown: {
-        root: function root(_ref151) {
-          var props = _ref151.props,
-            state = _ref151.state;
-          return {
-            "class": ['inline-flex cursor-pointer user-none', 'bg-white border rounded-md', 'transition duration-200', 'h-8 mx-2 w-16', 'dark:bg-gray-950 dark:border-blue-900/40',
-            //DarkMode
-            {
-              'outline-none outline-offset-0 shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] border-primary-100': state.focused && !props.disabled,
-              //Focus
-              'border-gray-300': !state.focused,
-              'hover:border-blue-500': !props.disabled //Hover
-            }]
-          };
-        },
-
-        input: {
-          "class": ['font-sans text-base text-primary-900 py-1 px-2 my-auto rounded apperance-none', 'block whitespace-nowrap overflow-hidden flex-auto w-[1%] cursor-pointer text-ellipsis border-0 pr-0', 'focus:outline-none focus:outline-offset-0', 'dark:text-white' //Dark Mode
-          ]
-        },
-
-        trigger: {
-          "class": ['flex items-center justify-center shrink-0', 'text-gray-500 dark:text-white w-12 rounded-r-md']
-        },
-        panel: {
-          "class": ['bg-white text-gray-600 border-0 rounded-md shadow-[0_2px_12px_rgba(0,0,0,0.1)]', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
-          ]
-        },
-
-        wrapper: {
-          "class": 'overflow-auto'
-        },
-        list: {
-          "class": 'm-0 p-0 py-3 list-none'
-        },
-        item: function item(_ref152) {
-          var context = _ref152.context;
-          return {
-            "class": ['relative font-normal cursor-pointer space-nowrap overflow-hidden', 'm-0 py-1 px-3 border-none text-gray-600 rounded-none', 'transition duration-200', 'dark:text-white/80',
-            // Dark Mode
-            {
-              'text-blue-700 bg-blue-50 dark:text-white/80 dark:bg-blue-300': !context.focused && context.selected,
-              'bg-blue-300/40': context.focused && context.selected,
-              'text-gray-600 bg-gray-300 dark:text-white/80 dark:bg-blue-900/40': context.focused && !context.selected
-            }]
-          };
-        }
-      },
-      jumptopageinput: {
         root: {
-          "class": 'inline-flex mx-2'
+          "class": ['flex items-center justify-center flex-wrap', 'bg-white text-gray-500 border-0 px-4 py-2 rounded-md', 'dark:bg-gray-900 dark:text-white/60 dark:border-blue-900/40' // Dark Mode
+          ]
         },
-        input: {
-          "class": ['font-sans text-base text-gray-600 p-3 m-0 rounded-md apperance-none', 'block whitespace-nowrap overflow-hidden flex-auto w-[1%] cursor-pointer text-ellipsis border border-gray-300 pr-0', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] focus:border-blue-300', 'dark:text-white dark:bg-gray-950 dark:border-blue-900/40',
-          //Dark Mode
-          'm-0 flex-auto max-w-[3rem]']
+
+        firstpagebutton: function firstpagebutton(_ref146) {
+          var context = _ref146.context;
+          return {
+            "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-500  min-w-[3rem] h-12 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:text-white',
+            //Dark Mode
+            {
+              'cursor-default pointer-events-none opacity-60': context.disabled,
+              'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]': !context.disabled // Focus
+            }]
+          };
+        },
+
+        previouspagebutton: function previouspagebutton(_ref147) {
+          var context = _ref147.context;
+          return {
+            "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-500 min-w-[3rem] h-12 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:text-white',
+            //Dark Mode
+            {
+              'cursor-default pointer-events-none opacity-60': context.disabled,
+              'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]': !context.disabled // Focus
+            }]
+          };
+        },
+
+        nextpagebutton: function nextpagebutton(_ref148) {
+          var context = _ref148.context;
+          return {
+            "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-500 min-w-[3rem] h-12 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:text-white',
+            //Dark Mode
+            {
+              'cursor-default pointer-events-none opacity-60': context.disabled,
+              'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]': !context.disabled // Focus
+            }]
+          };
+        },
+
+        lastpagebutton: function lastpagebutton(_ref149) {
+          var context = _ref149.context;
+          return {
+            "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-500 min-w-[3rem] h-12 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:text-white',
+            //Dark Mode
+            {
+              'cursor-default pointer-events-none opacity-60': context.disabled,
+              'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]': !context.disabled // Focus
+            }]
+          };
+        },
+
+        pagebutton: function pagebutton(_ref150) {
+          var context = _ref150.context;
+          return {
+            "class": ['relative inline-flex items-center justify-center user-none overflow-hidden leading-none', 'border-0 text-gray-800 min-w-[3rem] h-8 m-[0.143rem] rounded-md', 'transition duration-200', 'dark:border-blue-300 dark:text-white',
+            // Dark Mode
+            'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
+            // Focus
+            {
+              'bg-primary-900 border-blue-50 text-white dark:bg-blue-300': context.active
+            }]
+          };
+        },
+        rowperpagedropdown: {
+          root: function root(_ref151) {
+            var props = _ref151.props,
+              state = _ref151.state;
+            return {
+                "class": ['inline-flex cursor-pointer user-none', 'bg-white border rounded-md', 'transition duration-200', 'h-8 mx-2 w-16', 'dark:bg-gray-950 dark:border-blue-900/40',
+              //DarkMode
+              {
+                'outline-none outline-offset-0 shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] border-primary-100': state.focused && !props.disabled,
+                //Focus
+                'border-gray-300': !state.focused,
+                'hover:border-blue-500': !props.disabled //Hover
+              }]
+            };
+          },
+
+          input: {
+            "class": ['font-sans text-base text-primary-900 py-1 px-2 my-auto rounded apperance-none', 'block whitespace-nowrap overflow-hidden flex-auto w-[1%] cursor-pointer text-ellipsis border-0 pr-0', 'focus:outline-none focus:outline-offset-0', 'dark:text-white' //Dark Mode
+            ]
+          },
+
+          trigger: {
+            "class": ['flex items-center justify-center shrink-0', 'text-gray-500 dark:text-white w-12 rounded-r-md']
+          },
+          panel: {
+            "class": ['bg-white text-gray-600 border-0 rounded-md shadow-[0_2px_12px_rgba(0,0,0,0.1)]', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
+            ]
+          },
+
+          wrapper: {
+            "class": 'overflow-auto'
+          },
+          list: {
+            "class": 'm-0 p-0 py-3 list-none'
+          },
+          item: function item(_ref152) {
+            var context = _ref152.context;
+            return {
+              "class": ['relative font-normal cursor-pointer space-nowrap overflow-hidden', 'm-0 py-1 px-3 border-none text-gray-600 rounded-none', 'transition duration-200', 'dark:text-white/80',
+              // Dark Mode
+              {
+                'text-blue-700 bg-blue-50 dark:text-white/80 dark:bg-blue-300': !context.focused && context.selected,
+                'bg-blue-300/40': context.focused && context.selected,
+                'text-gray-600 bg-gray-300 dark:text-white/80 dark:bg-blue-900/40': context.focused && !context.selected
+              }]
+            };
+          }
+        },
+        jumptopageinput: {
+          root: {
+            "class": 'inline-flex mx-2'
+          },
+          input: {
+            "class": ['font-sans text-base text-gray-600 p-3 m-0 rounded-md apperance-none', 'block whitespace-nowrap overflow-hidden flex-auto w-[1%] cursor-pointer text-ellipsis border border-gray-300 pr-0', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] focus:border-blue-300', 'dark:text-white dark:bg-gray-950 dark:border-blue-900/40',
+            //Dark Mode
+            'm-0 flex-auto max-w-[3rem]']
+          }
+        },
+        jumptopagedropdown: {
+          root: function root(_ref153) {
+            var props = _ref153.props,
+              state = _ref153.state;
+            return {
+              "class": ['inline-flex relative cursor-pointer user-none', 'bg-white border rounded-md', 'transition duration-200', 'h-12 mx-2', 'dark:bg-gray-950 dark:border-blue-900/40',
+              //DarkMode
+              {
+                'outline-none outline-offset-0 shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] border-blue-500': state.focused && !props.disabled,
+                //Focus
+                'border-gray-300': !state.focused,
+                'hover:border-blue-500': !props.disabled //Hover
+              }]
+            };
+          },
+
+          input: {
+            "class": ['font-sans text-base text-gray-600 p-3 m-0 rounded-md apperance-none', 'block whitespace-nowrap overflow-hidden flex-auto w-[1%] cursor-pointer text-ellipsis border-0 pr-0', 'focus:outline-none focus:outline-offset-0', 'dark:text-white' //Dark Mode
+            ]
+          },
+
+          trigger: {
+            "class": ['flex items-center justify-center shrink-0', 'text-gray-500 dark:text-white w-12 rounded-r-md']
+          },
+          panel: {
+            "class": ['bg-white text-gray-600 border-0 rounded-md shadow-[0_2px_12px_rgba(0,0,0,0.1)]', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
+            ]
+          },
+
+          wrapper: {
+            "class": 'overflow-auto'
+          },
+          list: {
+            "class": 'm-0 p-0 py-3 list-none'
+          },
+          item: function item(_ref154) {
+            var context = _ref154.context;
+            return {
+              "class": ['relative font-normal cursor-pointer space-nowrap overflow-hidden', 'm-0 py-1 px-3 border-none text-gray-600 rounded-none', 'transition duration-200', 'dark:text-white/80',
+              // Dark Mode
+              {
+                'text-blue-700 bg-blue-50 dark:text-white/80 dark:bg-blue-300': !context.focused && context.selected,
+                'bg-blue-300/40': context.focused && context.selected,
+                'text-gray-600 bg-gray-300 dark:text-white/80 dark:bg-blue-900/40': context.focused && !context.selected
+              }]
+            };
+          }
         }
       },
-      jumptopagedropdown: {
-        root: function root(_ref153) {
-          var props = _ref153.props,
-            state = _ref153.state;
-          return {
-            "class": ['inline-flex relative cursor-pointer user-none', 'bg-white border rounded-md', 'transition duration-200', 'h-12 mx-2', 'dark:bg-gray-950 dark:border-blue-900/40',
-            //DarkMode
-            {
-              'outline-none outline-offset-0 shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] border-blue-500': state.focused && !props.disabled,
-              //Focus
-              'border-gray-300': !state.focused,
-              'hover:border-blue-500': !props.disabled //Hover
-            }]
-          };
-        },
-
-        input: {
-          "class": ['font-sans text-base text-gray-600 p-3 m-0 rounded-md apperance-none', 'block whitespace-nowrap overflow-hidden flex-auto w-[1%] cursor-pointer text-ellipsis border-0 pr-0', 'focus:outline-none focus:outline-offset-0', 'dark:text-white' //Dark Mode
-          ]
-        },
-
-        trigger: {
-          "class": ['flex items-center justify-center shrink-0', 'text-gray-500 dark:text-white w-12 rounded-r-md']
-        },
-        panel: {
-          "class": ['bg-white text-gray-600 border-0 rounded-md shadow-[0_2px_12px_rgba(0,0,0,0.1)]', 'dark:bg-gray-900 dark:text-white/80 dark:border-blue-900/40' //Dark Mode
-          ]
-        },
-
-        wrapper: {
-          "class": 'overflow-auto'
-        },
-        list: {
-          "class": 'm-0 p-0 py-3 list-none'
-        },
-        item: function item(_ref154) {
-          var context = _ref154.context;
-          return {
-            "class": ['relative font-normal cursor-pointer space-nowrap overflow-hidden', 'm-0 py-1 px-3 border-none text-gray-600 rounded-none', 'transition duration-200', 'dark:text-white/80',
-            // Dark Mode
-            {
-              'text-blue-700 bg-blue-50 dark:text-white/80 dark:bg-blue-300': !context.focused && context.selected,
-              'bg-blue-300/40': context.focused && context.selected,
-              'text-gray-600 bg-gray-300 dark:text-white/80 dark:bg-blue-900/40': context.focused && !context.selected
-            }]
-          };
-        }
-      }
-    },
     treetable: {
-      root: function root(_ref155) {
-        var props = _ref155.props;
+      root: function root(_ref156) {
+        var props = _ref156.props;
         return {
           "class": ['relative', {
             'flex flex-col h-full': props.scrollHeight === 'flex'
@@ -3330,12 +3333,12 @@ const Tailwind_PT = {
         "class": 'w-8 h-8'
       },
       header: {
-        "class": ['bg-slate-50 text-slate-700 border border-x-0 border-t-0 border-gray-300 p-3 font-bold', 'dark:bg-gray-900 dark:text-white/70 dark:border-blue-900/40' // Dark Mode
+        "class": ['bg-slate-50 text-slate-700 border border-x-0 border-t-0 border-gray-300 p-4 font-semibold', 'dark:bg-gray-900 dark:text-white/70 dark:border-blue-900/40' // Dark Mode
         ]
       },
 
-      wrapper: function wrapper(_ref156) {
-        var props = _ref156.props;
+      wrapper: function wrapper(_ref157) {
+        var props = _ref157.props;
         return {
           "class": [{
             'relative overflow-auto': props.scrollable,
@@ -3344,30 +3347,22 @@ const Tailwind_PT = {
         };
       },
       footer: {
-        "class": ['bg-slate-50 text-slate-700 border border-x-0 border-t-0 border-gray-300 p-4 font-bold', 'dark:bg-gray-900 dark:text-white/70 dark:border-blue-900/40' // Dark Mode
+        "class": ['bg-slate-50 text-slate-700 border border-x-0 border-t-0 border-gray-300 p-4 font-semibold', 'dark:bg-gray-900 dark:text-white/70 dark:border-blue-900/40' // Dark Mode
         ]
       },
 
       table: {
         "class": 'border-collapse table-fixed w-full'
       },
-      thead: function thead(_ref157) {
-        var props = _ref157.props;
+      thead: function thead(_ref158) {
+        var props = _ref158.props;
         return {
           "class": [{
             'block sticky top-0 z-[1]': props.scrollable
           }]
         };
       },
-      tbody: function tbody(_ref158) {
-        var props = _ref158.props;
-        return {
-          "class": [{
-            block: props.scrollable
-          }]
-        };
-      },
-      tfoot: function tfoot(_ref159) {
+      tbody: function tbody(_ref159) {
         var props = _ref159.props;
         return {
           "class": [{
@@ -3375,20 +3370,28 @@ const Tailwind_PT = {
           }]
         };
       },
-      headerrow: function headerrow(_ref160) {
+      tfoot: function tfoot(_ref160) {
         var props = _ref160.props;
+        return {
+          "class": [{
+            block: props.scrollable
+          }]
+        };
+      },
+      headerrow: function headerrow(_ref161) {
+        var props = _ref161.props;
         return {
           "class": [{
             'flex flex-nowrap w-full': props.scrollable
           }]
         };
       },
-      row: function row(_ref161) {
-        var context = _ref161.context;
+      row: function row(_ref162) {
+        var context = _ref162.context;
         return {
           "class": ['transition duration-200', 'focus:outline focus:outline-[0.15rem] focus:outline-blue-200 focus:outline-offset-[-0.15rem]',
           // Focus
-          context.selected ? 'bg-secondary-100 text-blue-700 dark:bg-blue-300 dark:text-white/80' : 'bg-white text-gray-600 dark:bg-gray-900 dark:text-white/80', {
+          context.selected ? 'bg-blue-50 text-blue-700 dark:bg-blue-300 dark:text-white/80' : 'bg-white text-gray-600 dark:bg-gray-900 dark:text-white/80', {
             'hover:bg-gray-300/20 hover:text-gray-600 dark:hover:bg-gray-950': context.selectable && !context.selected,
             // Hover
             'flex flex-nowrap w-full': context.scrollable
@@ -3396,15 +3399,15 @@ const Tailwind_PT = {
         };
       },
       column: {
-        headercell: function headercell(_ref162) {
-          var context = _ref162.context;
-           return {
-            "class": ['text-left border-gray-300 border font-bold', 'transition duration-200', context.sorted ? 'bg-blue-50 text-blue-700' : 'bg-secondary-100', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',            // Size
-            'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',{'cursor-pointer': context.sortable},
+        headercell: function headercell(_ref163) {
+          var context = _ref163.context;
+          return {
+            "class": ['text-left border-gray-300 border font-semibold', 'transition duration-200', context.sorted ? 'bg-blue-50 text-blue-700' : 'bg-slate-50', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-4',
+            // Size
+            'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
             //Dark Mode
             {
               'flex flex-1 items-center': context.scrollable,
-
               'flex-initial shrink-0': context.scrollable && context.scrollDirection === 'both' && !context.frozen,
               'sticky z-[1]': context.scrollable && context.scrollDirection === 'both' && context.frozen,
               'border-x-0 border-l-0 border-t-0': !context.showGridlines,
@@ -3412,38 +3415,38 @@ const Tailwind_PT = {
             }]
           };
         },
-        bodycell: function bodycell(_ref163) {
-          var context = _ref163.context;
-          return {
-            "class": ['text-left border-gray-300 border', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
-            // Size
-            'dark:border-blue-900/40',
-            //Dark Mode
-            {
-              'cursor-pointer': context.selectable,
-              'flex flex-1 items-center': context.scrollable,
-              'flex-initial shrink-0': context.scrollable && context.scrollDirection === 'both' && !context.frozen,
-              sticky: context.scrollable && context.scrollDirection === 'both' && context.frozen,
-              'border-x-0 border-l-0': !context.showGridlines
-            }]
-          };
+        bodycell: function bodycell(_ref164) {
+            var context = _ref163.context;
+            return {
+              "class": ['text-left border-gray-300 border', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
+              // Size
+              'dark:border-blue-900/40',
+              //Dark Mode
+              {
+                'cursor-pointer': context.selectable,
+                'flex flex-1 items-center': context.scrollable,
+                'flex-initial shrink-0': context.scrollable && context.scrollDirection === 'both' && !context.frozen,
+                sticky: context.scrollable && context.scrollDirection === 'both' && context.frozen,
+                'border-x-0 border-l-0': !context.showGridlines
+              }]
+            };
         },
-        rowtoggler: function rowtoggler(_ref164) {
-          var context = _ref164.context;
+        rowtoggler: function rowtoggler(_ref165) {
+          var context = _ref165.context;
           return {
             "class": ['relative inline-flex items-center justify-center align-center cursor-pointer select-none overflow-hidden bg-transparent', 'w-8 h-8 border-0 rounded mr-0.5', context.selected ? 'text-blue-700' : 'text-gray-500', 'dark:text-white/70' //Dark Mode
             ]
           };
         },
 
-        sorticon: function sorticon(_ref165) {
-          var context = _ref165.context;
+        sorticon: function sorticon(_ref166) {
+          var context = _ref166.context;
           return {
             "class": ['ml-2', context.sorted ? 'text-blue-700 dark:text-white/80' : 'text-slate-700 dark:text-white/70']
           };
         },
         sortbadge: {
-          "class": ['h-[1.143rem] min-w-[1.143rem] leading-[1.143rem] text-blue-700 bg-secondary-100 ml-2 rounded-[50%]', 'dark:text-white/80 dark:bg-blue-500/40' // Dark Mode
+          "class": ['h-[1.143rem] min-w-[1.143rem] leading-[1.143rem] text-blue-700 bg-blue-50 ml-2 rounded-[50%]', 'dark:text-white/80 dark:bg-blue-500/40' // Dark Mode
           ]
         },
 
@@ -3453,16 +3456,16 @@ const Tailwind_PT = {
         checkboxwrapper: {
           "class": ['cursor-pointer inline-flex relative select-none align-bottom', 'w-6 h-6 mr-2']
         },
-        checkbox: function checkbox(_ref166) {
-          var context = _ref166.context;
+        checkbox: function checkbox(_ref167) {
+          var context = _ref167.context;
           return {
             "class": ['flex items-center justify-center', 'border-2 w-6 h-6 text-gray-600 rounded-lg transition-colors duration-200', context.checked ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400' : 'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900', {
               'hover:border-blue-500 dark:hover:border-blue-400 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled
             }]
           };
         },
-        checkboxicon: function checkboxicon(_ref167) {
-          var context = _ref167.context;
+        checkboxicon: function checkboxicon(_ref168) {
+          var context = _ref168.context;
           return {
             "class": ['w-4 h-4 transition-all duration-200 text-base dark:text-gray-900', {
               'text-white': context.checked
@@ -3475,97 +3478,97 @@ const Tailwind_PT = {
       }
     },
     datatable: {
-      root: function root(_ref168) {
-        var props = _ref168.props;
-        return {
-          "class": ['relative', {
-            'flex flex-col h-full': props.scrollable && props.scrollHeight === 'flex'
-          }]
-        };
-      },
-      loadingoverlay: {
-        "class": ['fixed w-full h-full t-0 l-0 bg-gray-100/40', 'transition duration-200', 'absolute flex items-center justify-center z-2', 'dark:bg-gray-950/40' // Dark Mode
-        ]
-      },
-
-      loadingicon: {
-        "class": 'w-8 h-8'
-      },
-      wrapper: function wrapper(_ref169) {
-        var props = _ref169.props;
-        return {
-          "class": [{
-            relative: props.scrollable,
-            'flex flex-col grow h-full': props.scrollable && props.scrollHeight === 'flex'
-          }]
-        };
-      },
-      header: function header(_ref170) {
-        var props = _ref170.props;
-        return {
-          "class": ['bg-white text-slate-700 border-white font-bold p-1', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
-          // Dark Mode
-          props.showGridlines ? 'border-x border-t border-0' : 'border-y border-x-0']
-        };
-      },
-      table: {
-        "class": 'w-full border-spacing-0'
-      },
-      thead: function thead(_ref171) {
-        var context = _ref171.context;
-        return {
-          "class": [{
-            'bg-secondary-100 top-0 z-[1]': context.scrollable
-          }]
-        };
-      },
-      tbody: function tbody(_ref172) {
-        var instance = _ref172.instance,
-          context = _ref172.context;
-        return {
-          "class": [{
-            'sticky z-[1]': instance.frozenRow && context.scrollable
-          }]
-        };
-      },
-      tfoot: function tfoot(_ref173) {
-        var context = _ref173.context;
-        return {
-          "class": [{
-            'bg-slate-50 bottom-0 z-[1]': context.scrollable
-          }]
-        };
-      },
-      footer: {
-        "class": ['bg-slate-50 text-slate-700 border-t-0 border-b border-x-0 border-gray-300 font-bold p-2', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900' // Dark Mode
-        ]
-      },
-
-      column: {
-        headercell: function headercell(_ref174) {
-          var context = _ref174.context,
-            props = _ref174.props;
+        root: function root(_ref168) {
+          var props = _ref168.props;
           return {
-            "class": ['text-left border-0 border-b cursor-pointer border-solid border-secondary-900 dark:border-blue-900/40 font-bold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
-            // Size
-            context.sorted ? 'bg-secondary-100 text-slate-700' : 'bg-secondary-900 text-slate-700',
-            // Sort
-            context.sorted ? 'dark:text-white/80 dark:bg-blue-300' : 'dark:text-white/80 dark:bg-gray-900',
-            // Dark Mode
-            {
-              'sticky z-[1]': props.frozen || props.frozen === '',
-              // Frozen Columns
-              'border-x border-y': context === null || context === void 0 ? void 0 : context.showGridlines,
-              'overflow-hidden space-nowrap border-y relative bg-clip-padding': context.resizable // Resizable
+            "class": ['relative', {
+              'flex flex-col h-full': props.scrollable && props.scrollHeight === 'flex'
             }]
           };
         },
-
-        headercontent: {
-          "class": 'flex items-center'
+        loadingoverlay: {
+          "class": ['fixed w-full h-full t-0 l-0 bg-gray-100/40', 'transition duration-200', 'absolute flex items-center justify-center z-2', 'dark:bg-gray-950/40' // Dark Mode
+          ]
         },
-        bodycell: function bodycell(_ref175) {
-          var props = _ref175.props,
+
+        loadingicon: {
+          "class": 'w-8 h-8'
+        },
+        wrapper: function wrapper(_ref169) {
+          var props = _ref169.props;
+          return {
+            "class": [{
+              relative: props.scrollable,
+              'flex flex-col grow h-full': props.scrollable && props.scrollHeight === 'flex'
+            }]
+          };
+        },
+        header: function header(_ref170) {
+          var props = _ref170.props;
+          return {
+            "class": ['bg-secondary-900 text-slate-700 border-white font-semibold p-1', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
+            // Dark Mode
+            props.showGridlines ? 'border-x border-t border-0' : 'border-y border-x-0']
+          };
+        },
+        table: {
+          "class": 'w-full border-spacing-0'
+        },
+        thead: function thead(_ref171) {
+          var context = _ref171.context;
+          return {
+            "class": [{
+              'bg-secondary-100 top-0 z-[1]': context.scrollable
+            }]
+          };
+        },
+        tbody: function tbody(_ref172) {
+          var instance = _ref172.instance,
+            context = _ref172.context;
+          return {
+            "class": [{
+              'sticky z-[1]': instance.frozenRow && context.scrollable
+            }]
+          };
+        },
+        tfoot: function tfoot(_ref173) {
+          var context = _ref173.context;
+          return {
+            "class": [{
+              'bg-slate-50 bottom-0 z-[1]': context.scrollable
+            }]
+          };
+        },
+        footer: {
+          "class": ['bg-slate-50 text-slate-700 border-t-0 border-b border-x-0 border-gray-300 font-semibold p-2', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900' // Dark Mode
+          ]
+        },
+
+        column: {
+          headercell: function headercell(_ref174) {
+            var context = _ref174.context,
+              props = _ref174.props;
+            return {
+              "class": ['text-left border-0 border-b cursor-pointer border-solid border-secondary-900 dark:border-blue-900/40 font-semibold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
+              // Size
+              context.sorted ? 'bg-secondary-100 text-slate-700' : 'bg-secondary-900 text-slate-700',
+              // Sort
+              context.sorted ? 'dark:text-white/80 dark:bg-blue-300' : 'dark:text-white/80 dark:bg-gray-900',
+              // Dark Mode
+              {
+                'sticky z-[1]': props.frozen || props.frozen === '',
+                // Frozen Columns
+                'border-x border-y': context === null || context === void 0 ? void 0 : context.showGridlines,
+                'overflow-hidden space-nowrap border-y relative bg-clip-padding': context.resizable // Resizable
+              }]
+            };
+          },
+
+          headercontent: {
+            "class": 'flex items-center'
+          },
+          bodycell: function bodycell(_ref175) {
+            var props = _ref175.props,
             context = _ref175.context;
           return {
             "class": ['text-left border-0 border-b border-solid text-sm border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
@@ -3578,243 +3581,243 @@ const Tailwind_PT = {
               'border-x border-y': context === null || context === void 0 ? void 0 : context.showGridlines
             }]
           };
-        },
-        footercell: function footercell(_ref176) {
-          var context = _ref176.context;
-          return {
-            "class": ['text-left border-0 border-b border-solid border-gray-300 font-bold', 'bg-slate-50 text-slate-700', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
-            // Size
-            'dark:text-white/80 dark:bg-gray-900 dark:border-blue-900/40',
-            // Dark Mode
-            {
-              'border-x border-y': context === null || context === void 0 ? void 0 : context.showGridlines
-            }]
-          };
-        },
-        sorticon: function sorticon(_ref177) {
-          var context = _ref177.context;
-          return {
-            "class": ['ml-2', context.sorted ? 'text-blue-700 dark:text-white/80' : 'text-slate-700 dark:text-white/70']
-          };
-        },
-        sortbadge: {
-          "class": ['flex items-center justify-center align-middle', 'rounded-[50%] w-[1.143rem] leading-[1.143rem] ml-2', 'text-blue-700 bg-blue-50', 'dark:text-white/80 dark:bg-blue-400' // Dark Mode
-          ]
-        },
-
-        columnfilter: {
-          "class": 'inline-flex items-center ml-auto'
-        },
-        filteroverlay: {
-          "class": ['bg-white text-gray-600 border-0 rounded-md min-w-[12.5rem]', 'dark:bg-gray-900 dark:border-blue-900/40 dark:text-white/80' //Dark Mode
-          ]
-        },
-
-        filtermatchmodedropdown: {
-          root: {
-            "class": 'min-[0px]:flex mb-2'
-          }
-        },
-        filterrowitems: {
-          "class": 'm-0 p-0 py-2 list-none'
-        },
-        filterrowitem: function filterrowitem(_ref178) {
-          var context = _ref178.context;
-          return {
-            "class": ['m-0 py-1 px-3 bg-transparent', 'transition duration-200', context !== null && context !== void 0 && context.highlighted ? 'text-blue-700 bg-blue-100 dark:text-white/80 dark:bg-blue-300' : 'text-gray-600 bg-transparent dark:text-white/80 dark:bg-transparent']
-          };
-        },
-        filteroperator: {
-          "class": ['px-5 py-3 border-b border-solid border-gray-300 text-slate-700 bg-secondary-100 rounded-t-md', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900' // Dark Mode
-          ]
-        },
-
-        filteroperatordropdown: {
-          root: {
-            "class": 'min-[0px]:flex'
-          }
-        },
-        filterconstraint: {
-          "class": 'p-5 border-b border-solid border-gray-300 dark:border-blue-900/40'
-        },
-        filteraddrule: {
-          "class": 'py-1 px-3'
-        },
-        filteraddrulebutton: {
-          root: {
-            "class": 'justify-center w-full min-[0px]:text-sm'
           },
-          label: {
-            "class": 'flex-auto grow-0'
+          footercell: function footercell(_ref176) {
+            var context = _ref176.context;
+            return {
+              "class": ['text-left border-0 border-b border-solid border-gray-300 font-semibold', 'bg-slate-50 text-slate-700', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
+              // Size
+              'dark:text-white/80 dark:bg-gray-900 dark:border-blue-900/40',
+              // Dark Mode
+              {
+                'border-x border-y': context === null || context === void 0 ? void 0 : context.showGridlines
+              }]
+            };
           },
-          icon: {
-            "class": 'mr-2'
-          }
-        },
-        filterremovebutton: {
-          root: {
-            "class": 'ml-2'
+          sorticon: function sorticon(_ref177) {
+            var context = _ref177.context;
+            return {
+              "class": ['ml-2', context.sorted ? 'text-blue-700 dark:text-white/80' : 'text-slate-700 dark:text-white/70']
+            };
           },
-          label: {
-            "class": 'grow-0'
-          }
+          sortbadge: {
+            "class": ['flex items-center justify-center align-middle', 'rounded-[50%] w-[1.143rem] leading-[1.143rem] ml-2', 'text-blue-700 bg-blue-50', 'dark:text-white/80 dark:bg-blue-400' // Dark Mode
+            ]
+          },
+
+          columnfilter: {
+            "class": 'inline-flex items-center ml-auto'
+          },
+          filteroverlay: {
+            "class": ['bg-white text-gray-600 border-0 rounded-md min-w-[12.5rem]', 'dark:bg-gray-900 dark:border-blue-900/40 dark:text-white/80' //Dark Mode
+            ]
+          },
+
+          filtermatchmodedropdown: {
+            root: {
+              "class": 'min-[0px]:flex mb-2'
+            }
+          },
+          filterrowitems: {
+            "class": 'm-0 p-0 py-2 list-none'
+          },
+          filterrowitem: function filterrowitem(_ref178) {
+            var context = _ref178.context;
+            return {
+              "class": ['m-0 py-1 px-3 bg-transparent', 'transition duration-200', context !== null && context !== void 0 && context.highlighted ? 'text-blue-700 bg-blue-100 dark:text-white/80 dark:bg-blue-300' : 'text-gray-600 bg-transparent dark:text-white/80 dark:bg-transparent']
+            };
+          },
+          filteroperator: {
+            "class": ['px-5 py-3 border-b border-solid border-gray-300 text-slate-700 bg-secondary-100 rounded-t-md', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900' // Dark Mode
+            ]
+          },
+
+          filteroperatordropdown: {
+            root: {
+              "class": 'min-[0px]:flex'
+            }
+          },
+          filterconstraint: {
+            "class": 'p-5 border-b border-solid border-gray-300 dark:border-blue-900/40'
+          },
+          filteraddrule: {
+            "class": 'py-1 px-3'
+          },
+          filteraddrulebutton: {
+            root: {
+              "class": 'justify-center w-full min-[0px]:text-sm'
+            },
+            label: {
+              "class": 'flex-auto grow-0'
+            },
+            icon: {
+              "class": 'mr-2'
+            }
+          },
+          filterremovebutton: {
+            root: {
+              "class": 'ml-2'
+            },
+            label: {
+              "class": 'grow-0'
+            }
+          },
+          filterbuttonbar: {
+            "class": 'flex items-center justify-between p-5'
+          },
+          filterclearbutton: {
+            root: {
+              "class": 'w-auto min-[0px]:text-sm border-blue-500 text-blue-500 px-4 py-3'
+            }
+          },
+          filterapplybutton: {
+            root: {
+              "class": 'w-auto min-[0px]:text-sm px-4 py-3'
+            }
+          },
+          filtermenubutton: function filtermenubutton(_ref179) {
+            var context = _ref179.context;
+            return {
+              "class": ['inline-flex justify-center items-center cursor-pointer no-underline overflow-hidden relative ml-2', 'w-8 h-8 rounded-[50%]', 'transition duration-200', 'hover:text-slate-700 hover:bg-gray-300/20',
+              // Hover
+              'focus:outline-0 focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
+              // Focus
+              'dark:text-white/70 dark:hover:text-white/80 dark:bg-gray-900',
+              // Dark Mode
+              {
+                'bg-blue-50 text-blue-700': context.active
+              }]
+            };
+          },
+          headerfilterclearbutton: function headerfilterclearbutton(_ref180) {
+            var context = _ref180.context;
+            return {
+              "class": ['inline-flex justify-center items-center cursor-pointer no-underline overflow-hidden relative', 'text-left bg-transparent m-0 p-0 border-none select-none ml-2', {
+                invisible: !context.hidden
+              }]
+            };
+          },
+          columnresizer: {
+            "class": 'block absolute top-0 right-0 m-0 w-2 h-full p-0 cursor-col-resize border border-transparent'
+          },
+          rowreordericon: {
+            "class": 'cursor-move'
+          },
+          roweditorinitbutton: {
+            "class": ['inline-flex items-center justify-center overflow-hidden relative', 'text-left cursor-pointer select-none', 'w-8 h-8 border-0 rounded-[50%]', 'transition duration-200', 'text-slate-700 border-transparent', 'focus:outline-0 focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
+            //Focus
+            'hover:text-slate-700 hover:bg-gray-300/20',
+            //Hover
+            'dark:text-white/70' // Dark Mode
+            ]
+          },
+
+          roweditorsavebutton: {
+            "class": ['inline-flex items-center justify-center overflow-hidden relative', 'text-left cursor-pointer select-none', 'w-8 h-8 border-0 rounded-[50%]', 'transition duration-200', 'text-slate-700 border-transparent', 'focus:outline-0 focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
+            //Focus
+            'hover:text-slate-700 hover:bg-gray-300/20',
+            //Hover
+            'dark:text-white/70' // Dark Mode
+            ]
+          },
+
+          roweditorcancelbutton: {
+            "class": ['inline-flex items-center justify-center overflow-hidden relative', 'text-left cursor-pointer select-none', 'w-8 h-8 border-0 rounded-[50%]', 'transition duration-200', 'text-slate-700 border-transparent', 'focus:outline-0 focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
+            //Focus
+            'hover:text-slate-700 hover:bg-gray-300/20',
+            //Hover
+            'dark:text-white/70' // Dark Mode
+            ]
+          },
+
+          radiobuttonwrapper: {
+            "class": ['relative inline-flex cursor-pointer select-none align-bottom', 'w-6 h-6']
+          },
+          radiobutton: function radiobutton(_ref181) {
+            var context = _ref181.context;
+            return {
+              "class": ['flex justify-center items-center', 'border-2 w-6 h-6 text-gray-700 rounded-full transition duration-200 ease-in-out', context.checked ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400' : 'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900', {
+                'hover:border-blue-500 dark:hover:border-blue-400 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
+                'cursor-default opacity-60': context.disabled
+              }]
+            };
+          },
+          radiobuttonicon: function radiobuttonicon(_ref182) {
+            var context = _ref182.context;
+            return {
+              "class": ['transform rounded-full', 'block w-3 h-3 transition duration-200 bg-white dark:bg-gray-900', {
+                'backface-hidden scale-10 invisible': context.checked === false,
+                'transform scale-100 visible': context.checked === true
+              }]
+            };
+          },
+          headercheckboxwrapper: {
+            "class": ['cursor-pointer inline-flex relative select-none align-bottom', 'w-6 h-6']
+          },
+          headercheckbox: function headercheckbox(_ref183) {
+            var context = _ref183.context;
+            return {
+              "class": ['flex items-center justify-center', 'border-2 w-6 h-6 text-gray-600 rounded-lg transition-colors duration-200', context.checked ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400' : 'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900', {
+                'hover:border-blue-500 dark:hover:border-blue-400 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
+                'cursor-default opacity-60': context.disabled
+              }]
+            };
+          },
+          headercheckboxicon: {
+            "class": 'w-4 h-4 transition-all duration-200 text-white text-base dark:text-gray-900'
+          },
+          checkboxwrapper: {
+            "class": ['cursor-pointer inline-flex relative select-none align-bottom', 'w-6 h-6']
+          },
+          checkbox: function checkbox(_ref184) {
+            var context = _ref184.context;
+            return {
+              "class": ['flex items-center justify-center', 'border-2 w-6 h-6 text-gray-600 rounded-lg transition-colors duration-200', context.checked ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400' : 'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900', {
+                'hover:border-blue-500 dark:hover:border-blue-400 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
+                'cursor-default opacity-60': context.disabled
+              }]
+            };
+          },
+          checkboxicon: {
+            "class": 'w-4 h-4 transition-all duration-200 text-white text-base dark:text-gray-900'
+          },
+          transition: TRANSITIONS.overlay
         },
-        filterbuttonbar: {
-          "class": 'flex items-center justify-between p-5'
+        bodyrow: function bodyrow(_ref185) {
+            var context = _ref185.context;
+            return {
+              "class": [context.selected ? 'bg-blue-50 text-blue-700 dark:bg-blue-300' : 'text-black dark:bg-gray-900', context.stripedRows ? context.index % 2 === 0 ? 'bg-white text-gray-600 dark:bg-gray-900' : 'bg-blue-50/50 text-gray-600 dark:bg-gray-950' : '', 'transition duration-200', 'focus:outline focus:outline-[0.15rem] focus:outline-blue-200 focus:outline-offset-[-0.15rem]',
+              // Focus
+              'dark:text-white/80 dark:focus:outline dark:focus:outline-[0.15rem] dark:focus:outline-blue-300 dark:focus:outline-offset-[-0.15rem]',
+              // Dark Mode
+              {
+                'cursor-pointer': context.selectable,
+                'hover:bg-gray-300/20 hover:text-gray-600': context.selectable && !context.selected // Hover
+              }]
+            };
+          },
+
+        rowexpansion: {
+          "class": 'bg-white text-gray-600 dark:bg-gray-900 dark:text-white/80'
         },
-        filterclearbutton: {
-          root: {
-            "class": 'w-auto min-[0px]:text-sm border-blue-500 text-blue-500 px-4 py-3'
-          }
+        rowgroupheader: {
+          "class": ['sticky z-[1]', 'bg-white text-gray-600', 'transition duration-200']
         },
-        filterapplybutton: {
-          root: {
-            "class": 'w-auto min-[0px]:text-sm px-4 py-3'
-          }
+        rowgroupfooter: {
+          "class": ['sticky z-[1]', 'bg-white text-gray-600', 'transition duration-200']
         },
-        filtermenubutton: function filtermenubutton(_ref179) {
-          var context = _ref179.context;
-          return {
-            "class": ['inline-flex justify-center items-center cursor-pointer no-underline overflow-hidden relative ml-2', 'w-8 h-8 rounded-[50%]', 'transition duration-200', 'hover:text-slate-700 hover:bg-gray-300/20',
-            // Hover
-            'focus:outline-0 focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
-            // Focus
-            'dark:text-white/70 dark:hover:text-white/80 dark:bg-gray-900',
-            // Dark Mode
-            {
-              'bg-blue-50 text-blue-700': context.active
-            }]
-          };
-        },
-        headerfilterclearbutton: function headerfilterclearbutton(_ref180) {
-          var context = _ref180.context;
-          return {
-            "class": ['inline-flex justify-center items-center cursor-pointer no-underline overflow-hidden relative', 'text-left bg-transparent m-0 p-0 border-none select-none ml-2', {
-              invisible: !context.hidden
-            }]
-          };
-        },
-        columnresizer: {
-          "class": 'block absolute top-0 right-0 m-0 w-2 h-full p-0 cursor-col-resize border border-transparent'
-        },
-        rowreordericon: {
-          "class": 'cursor-move'
-        },
-        roweditorinitbutton: {
-          "class": ['inline-flex items-center justify-center overflow-hidden relative', 'text-left cursor-pointer select-none', 'w-8 h-8 border-0 rounded-[50%]', 'transition duration-200', 'text-slate-700 border-transparent', 'focus:outline-0 focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
-          //Focus
-          'hover:text-slate-700 hover:bg-gray-300/20',
-          //Hover
-          'dark:text-white/70' // Dark Mode
+        rowgrouptoggler: {
+          "class": ['text-left m-0 p-0 cursor-pointer select-none', 'inline-flex items-center justify-center overflow-hidden relative', 'w-8 h-8 text-gray-500 border-0 bg-transparent rounded-[50%]', 'transition duration-200', 'dark:text-white/70' // Dark Mode
           ]
         },
 
-        roweditorsavebutton: {
-          "class": ['inline-flex items-center justify-center overflow-hidden relative', 'text-left cursor-pointer select-none', 'w-8 h-8 border-0 rounded-[50%]', 'transition duration-200', 'text-slate-700 border-transparent', 'focus:outline-0 focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
-          //Focus
-          'hover:text-slate-700 hover:bg-gray-300/20',
-          //Hover
-          'dark:text-white/70' // Dark Mode
-          ]
+        rowgrouptogglericon: {
+          "class": 'inline-block w-4 h-4'
         },
-
-        roweditorcancelbutton: {
-          "class": ['inline-flex items-center justify-center overflow-hidden relative', 'text-left cursor-pointer select-none', 'w-8 h-8 border-0 rounded-[50%]', 'transition duration-200', 'text-slate-700 border-transparent', 'focus:outline-0 focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
-          //Focus
-          'hover:text-slate-700 hover:bg-gray-300/20',
-          //Hover
-          'dark:text-white/70' // Dark Mode
-          ]
-        },
-
-        radiobuttonwrapper: {
-          "class": ['relative inline-flex cursor-pointer select-none align-bottom', 'w-6 h-6']
-        },
-        radiobutton: function radiobutton(_ref181) {
-          var context = _ref181.context;
-          return {
-            "class": ['flex justify-center items-center', 'border-2 w-6 h-6 text-gray-700 rounded-full transition duration-200 ease-in-out', context.checked ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400' : 'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900', {
-              'hover:border-blue-500 dark:hover:border-blue-400 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
-              'cursor-default opacity-60': context.disabled
-            }]
-          };
-        },
-        radiobuttonicon: function radiobuttonicon(_ref182) {
-          var context = _ref182.context;
-          return {
-            "class": ['transform rounded-full', 'block w-3 h-3 transition duration-200 bg-white dark:bg-gray-900', {
-              'backface-hidden scale-10 invisible': context.checked === false,
-              'transform scale-100 visible': context.checked === true
-            }]
-          };
-        },
-        headercheckboxwrapper: {
-          "class": ['cursor-pointer inline-flex relative select-none align-bottom', 'w-6 h-6']
-        },
-        headercheckbox: function headercheckbox(_ref183) {
-          var context = _ref183.context;
-          return {
-            "class": ['flex items-center justify-center', 'border-2 w-6 h-6 text-gray-600 rounded-lg transition-colors duration-200', context.checked ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400' : 'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900', {
-              'hover:border-blue-500 dark:hover:border-blue-400 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
-              'cursor-default opacity-60': context.disabled
-            }]
-          };
-        },
-        headercheckboxicon: {
-          "class": 'w-4 h-4 transition-all duration-200 text-white text-base dark:text-gray-900'
-        },
-        checkboxwrapper: {
-          "class": ['cursor-pointer inline-flex relative select-none align-bottom', 'w-6 h-6']
-        },
-        checkbox: function checkbox(_ref184) {
-          var context = _ref184.context;
-          return {
-            "class": ['flex items-center justify-center', 'border-2 w-6 h-6 text-gray-600 rounded-lg transition-colors duration-200', context.checked ? 'border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-400' : 'border-gray-300 bg-white dark:border-blue-900/40 dark:bg-gray-900', {
-              'hover:border-blue-500 dark:hover:border-blue-400 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
-              'cursor-default opacity-60': context.disabled
-            }]
-          };
-        },
-        checkboxicon: {
-          "class": 'w-4 h-4 transition-all duration-200 text-white text-base dark:text-gray-900'
-        },
-        transition: TRANSITIONS.overlay
+        resizehelper: {
+          "class": 'absolute hidden w-px z-10 bg-blue-500 dark:bg-blue-300'
+        }
       },
-      bodyrow: function bodyrow(_ref185) {
-        var context = _ref185.context;
-        return {
-          "class": [context.selected ? 'bg-blue-50 text-blue-700 dark:bg-blue-300' : 'bg-white text-black dark:bg-gray-900', context.stripedRows ? context.index % 2 === 0 ? 'bg-white text-gray-600 dark:bg-gray-900' : 'bg-blue-50/50 text-gray-600 dark:bg-gray-950' : '', 'transition duration-200', 'focus:outline focus:outline-[0.15rem] focus:outline-blue-200 focus:outline-offset-[-0.15rem]',
-          // Focus
-          'dark:text-white/80 dark:focus:outline dark:focus:outline-[0.15rem] dark:focus:outline-blue-300 dark:focus:outline-offset-[-0.15rem]',
-          // Dark Mode
-          {
-            'cursor-pointer': context.selectable,
-            'hover:bg-gray-300/20 hover:text-gray-600': context.selectable && !context.selected // Hover
-          }]
-        };
-      },
-
-      rowexpansion: {
-        "class": 'bg-white text-gray-600 dark:bg-gray-900 dark:text-white/80'
-      },
-      rowgroupheader: {
-        "class": ['sticky z-[1]', 'bg-white text-gray-600', 'transition duration-200']
-      },
-      rowgroupfooter: {
-        "class": ['sticky z-[1]', 'bg-white text-gray-600', 'transition duration-200']
-      },
-      rowgrouptoggler: {
-        "class": ['text-left m-0 p-0 cursor-pointer select-none', 'inline-flex items-center justify-center overflow-hidden relative', 'w-8 h-8 text-gray-500 border-0 bg-transparent rounded-[50%]', 'transition duration-200', 'dark:text-white/70' // Dark Mode
-        ]
-      },
-
-      rowgrouptogglericon: {
-        "class": 'inline-block w-4 h-4'
-      },
-      resizehelper: {
-        "class": 'absolute hidden w-px z-10 bg-blue-500 dark:bg-blue-300'
-      }
-    },
     // CHART
     chart: {
       root: {

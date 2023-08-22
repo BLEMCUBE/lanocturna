@@ -3,7 +3,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { useForm,router } from '@inertiajs/vue3';
+import { useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import axios from 'axios';
 import { useToast } from "primevue/usetoast";
@@ -53,19 +53,19 @@ const addCliente = () => {
 };
 
 const dataEdit = (id) => {
-    axios.get(route(ruta+'.show', id))
-  .then(res => {
-    isShowModal.value = true;
-    var datos=res.data.cliente
-    form.id=datos.id
-    form.nombre=datos.nombre
-    form.telefono=datos.telefono
-    form.localidad=datos.localidad
-    form.direccion=datos.direccion
-    form.empresa=datos.empresa
-    form.rut=datos.rut
-    form.email=datos.email
-  })
+    axios.get(route(ruta + '.show', id))
+        .then(res => {
+            isShowModal.value = true;
+            var datos = res.data.cliente
+            form.id = datos.id
+            form.nombre = datos.nombre
+            form.telefono = datos.telefono
+            form.localidad = datos.localidad
+            form.direccion = datos.direccion
+            form.empresa = datos.empresa
+            form.rut = datos.rut
+            form.email = datos.email
+        })
 
 };
 
@@ -81,13 +81,15 @@ const closeModal = () => {
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta+'.update',form.id), {
+    form.post(route(ruta + '.update', form.id), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
             isShowModal.value = false
-            show('success','Mensaje','Se ha editado')
-            router.get(route(ruta+'.index'));
+            show('success', 'Mensaje', 'Se ha editado')
+            setTimeout(() => {
+                router.get(route(ruta + '.index'));
+            }, 1000);
         },
         onFinish: () => {
         },
@@ -98,7 +100,7 @@ const submit = () => {
 
 };
 
-const show = (tipo,titulo,mensaje) => {
+const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
 </script>
@@ -121,8 +123,7 @@ const show = (tipo,titulo,mensaje) => {
                         <div class="col-span-6 shadow-default xl:col-span-6">
                             <InputLabel for="nombre" value="Nombre"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="nombre" type="text" v-model="form.nombre"
-                                placeholder="Ingrese Nombre" />
+                            <TextInput id="nombre" type="text" v-model="form.nombre" placeholder="Ingrese Nombre" />
                             <InputError class="mt-1 text-xs" :message="form.errors.nombre" />
                         </div>
 
@@ -131,8 +132,7 @@ const show = (tipo,titulo,mensaje) => {
                         <div class="col-span-6 shadow-default xl:col-span-3">
                             <InputLabel for="telefono" value="Telefono"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="telefono" type="text" v-model="form.telefono"
-                                placeholder="Ingrese telefono" />
+                            <TextInput id="telefono" type="text" v-model="form.telefono" placeholder="Ingrese telefono" />
                             <InputError class="mt-1 text-xs" :message="form.errors.telefono" />
                         </div>
 
@@ -155,34 +155,30 @@ const show = (tipo,titulo,mensaje) => {
                         <div class="col-span-6 shadow-default xl:col-span-3">
                             <InputLabel for="empresa" value="Empresa"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="empresa" type="text" v-model="form.empresa"
-                                placeholder="Ingrese Empresa" />
+                            <TextInput id="empresa" type="text" v-model="form.empresa" placeholder="Ingrese Empresa" />
                             <InputError class="mt-1 text-xs" :message="form.errors.empresa" />
                         </div>
 
                         <div class="col-span-6 shadow-default xl:col-span-3">
-                            <InputLabel for="rut" value="RUT"
-                                class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="rut" type="text" v-model="form.rut"
-                                placeholder="Ingrese RUT" />
+                            <InputLabel for="rut" value="RUT" class="block text-base font-medium leading-6 text-gray-900" />
+                            <TextInput id="rut" type="text" v-model="form.rut" placeholder="Ingrese RUT" />
                             <InputError class="mt-1 text-xs" :message="form.errors.rut" />
                         </div>
 
                         <div class="col-span-6 shadow-default xl:col-span-3">
                             <InputLabel for="email" value="Email"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="email" type="email" v-model="form.email"
-                                placeholder="Ingrese Email" />
+                            <TextInput id="email" type="email" v-model="form.email" placeholder="Ingrese Email" />
                             <InputError class="mt-1 text-xs" :message="form.errors.email" />
                         </div>
 
                     </div>
                     <div class="flex justify-end py-3">
-                    <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small"
-                    @click="closeModal" type="button" />
-                    <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
-                        :disabled="form.processing" />
-                </div>
+                        <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="closeModal"
+                            type="button" />
+                        <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
+                            :disabled="form.processing" />
+                    </div>
                 </form>
             </div>
         </Modal>

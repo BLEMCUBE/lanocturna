@@ -51,7 +51,9 @@ const submit = () => {
         onSuccess: () => {
             isShowModal.value = false
             show('success', 'Mensaje', 'Se ha creado')
-            router.get(route(ruta + '.index'));
+            setTimeout(() => {
+                router.get(route(ruta + '.index'));
+            }, 1000);
         },
         onFinish: () => {
 

@@ -28,7 +28,7 @@ const filters = ref({
             <div
                 class="px-4 py-0 mb-4 bg-white col-span-6 pb-5 rounded-lg shadow-lg 2xl:col-span-2 dark:border-gray-700  dark:bg-gray-800">
                 <div class=" px-5 py-2 col-span-full flex justify-between items-center">
-                    <h5 class="text-xl font-semibold">{{ titulo }}</h5>
+                    <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 </div>
                 <div class="min-w-full mt-1 align-middle">
 
@@ -51,7 +51,7 @@ const filters = ref({
                             <template #body="slotProps">
 
                                 <Link :href="route('roles.edit', slotProps.data.id)"
-                                    class="inline-block rounded bg-primary-900 px-2 py-1 mx-auto text-sm font-semibold text-white hover:bg-primary-100">
+                                    class="inline-block rounded bg-primary-900 px-2 py-1 mx-auto text-sm font-medium text-white hover:bg-primary-100">
                                 Permisos
                                 </Link>
                             </template>

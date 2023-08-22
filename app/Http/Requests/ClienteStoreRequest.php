@@ -14,12 +14,12 @@ class ClienteStoreRequest extends FormRequest
     {
         return [
             'nombre' => 'required',
-            'telefono' => 'required',
+            //'telefono' => 'required',
             'email' => 'required|unique:clientes|email',
-            'localidad' => 'required',
-            'direccion' => 'required',
-            'empresa' => 'required',
-            'rut' => 'required',
+            //'localidad' => 'required',
+            //'direccion' => 'required',
+            //'empresa' => 'required',
+            //'rut' => 'required',
 
         ];
 

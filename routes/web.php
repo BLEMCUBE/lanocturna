@@ -62,12 +62,11 @@ Route::controller(ClienteController::class)->group(function () {
 
 //Producto
 Route::controller(ProductoController::class)->group(function () {
-    //Route::get('/productos/descargaurl/', 'descargar')->name('productos.descargar')->middleware('auth');
+    Route::get('/productos/create', 'create')->name('productos.create')->middleware('auth');
+    Route::get('/productos/{id}', 'edit')->name('productos.edit')->middleware('auth');
+    Route::get('/productos/{id}/show', 'show')->name('productos.show')->middleware('auth');
     Route::post('/productos/update/{id}', 'update')->name('productos.update')->middleware('auth');
-    Route::get('/productos/paginate', 'paginate')->name('productos.paginate')->middleware('auth');
-    Route::get('/productos/paginateweb', 'paginateWeb')->name('productos.paginateweb')->middleware('auth');
     Route::get('/productos', 'index')->name('productos.index')->middleware('auth');
-    Route::get('/productos/{id}', 'show')->name('productos.show')->middleware('auth');
     Route::post('/productos/store', 'store')->name('productos.store')->middleware('auth');
     Route::delete('/productos/{id}', 'destroy')->name('productos.destroy')->middleware('auth');
 });

@@ -1,27 +1,16 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, createApp, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-import CrearModal from '@/Pages/Producto/Partials/CrearModal.vue';
-import EditarModal from '@/Pages/Producto/Partials/EditarModal.vue';
-import axios from 'axios'
-
 import DataTable from 'primevue/datatable';
-
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
-
-const data = ref([]);
-const header = ref([]);
-const datos_tabla = ref([]);
-const table = ref();
-const app = createApp({})
-const tabla_clientes = ref([])
-const webpaginate = ref(route('productos.paginate'))
-const webpaginate2 = ref(route('productos.paginateweb'))
+import Button from 'primevue/button';
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+const tabla_productos = ref()
 const { permissions } = usePage().props.auth
-const { productos } = usePage().props
 const titulo = "Productos"
 const ruta = 'productos'
 
@@ -30,9 +19,21 @@ const formDelete = useForm({
 });
 
 const rowClass = (data) => {
-    return [{ "bg-red-500/20": data.stock < 5 }];
+    if (parseFloat(data.stock) <= 10) {
+        return "bg-red-500/20"
+    }
 };
-const eliminar = (id, name) => {
+
+
+const btnVer = (id) => {
+    router.get(route(ruta + '.show', id));
+
+};
+const btnEditar = (id) => {
+    router.get(route(ruta + '.edit', id));
+
+};
+const btnEliminar = (id, name) => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
     alerta.fire({
@@ -51,55 +52,36 @@ const eliminar = (id, name) => {
             formDelete.delete(route(ruta + '.destroy', id),
                 {
                     preserveScroll: true,
+                    forceFormData: true,
                     onSuccess: () => {
-                        ok('Eliminado')
-                        router.get(route(ruta + '.index'));
+                        show('success', 'Eliminado', 'Se ha eliminado')
+                        setTimeout(() => {
+                            router.get(route(ruta + '.index'));
+                        }, 1000);
+
                     }
                 });
         }
     });
 }
-const customers = ref();
+
 onMounted(() => {
-    axios.get(route(ruta + '.paginateweb'))
-        .then(res => {
 
-            var datos = res.data
-            header.value = datos.headers
-            customers.value = datos.datos
-
-        })
-
-    axios.get(route(ruta + '.paginate'))
-        .then(res => {
-            var datos2 = res.data.data
-            tabla_clientes.value = datos2
-            console.log('tabla_clientes.value', tabla_clientes.value);
-        })
+    tabla_productos.value = usePage().props.productos.data;
 
 });
 
+const show = (tipo, titulo, mensaje) => {
+    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+};
 
-
-nextTick(() => {
-
-})
-
-
-const ok = (mensaje) => {
-    //form.reset();
-
-    Swal.fire({
-        width: 350,
-        title: mensaje,
-        icon: 'success'
-    })
+const BtnCrear = () => {
+    router.get(route(ruta + '.create'));
 }
 
 
 const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-
+    'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 });
 </script>
 <template>
@@ -107,16 +89,19 @@ const filters = ref({
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
             class="card px-4 py-3 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
-            <!--Contenido-->
-            <div class=" px-3 col-span-full flex justify-between items-center">
 
-                <h5 class="text-xl font-semibold">{{ titulo }}</h5>
-                <CrearModal v-if="permissions.includes('crear-productos')"></CrearModal>
+            <!--Contenido-->
+            <Toast />
+            <div class=" px-3 col-span-full flex justify-between items-center">
+                <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+
+                <Button size="small" :label="'Agregar Producto'" severity="success" @click="BtnCrear"></Button>
+
             </div>
 
-            <div class="inline-block min-w-full  mt-4 align-middle">
+            <div class="inline-block   mt-4 align-middle">
 
-                <DataTable :rowClass="rowClass" showGridlines size="small" v-model:filters="filters" :value="customers"
+                <DataTable :rowClass="rowClass" showGridlines size="small" :filters="filters" :value="tabla_productos"
                     paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem">
                     <template #header size="small" class="bg-secondary-900">
                         <div class="flex justify-content-end text-md">
@@ -125,8 +110,14 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="imagen" header="Imagen"></Column>
-                    <Column field="nombre" :pt="{ root: 'text-center' }" header="Nombre" sortable></Column>
+                    <Column field="origen" header="Origen" sortable></Column>
+                    <Column field="imagen" header="Imagen" body-class="w-12" style="width:60px">
+                        <template #body="slotProps">
+                            <img class="rounded shadow-2xl border-2 text-center w-12 h-12 object-contain"
+                                :src="slotProps.data.imagen" alt="image description">
+                        </template>
+                    </Column>
+                    <Column field="nombre" header="Nombre" sortable></Column>
                     <Column field="aduana" header="Aduana" sortable style="max-width: 25%"></Column>
                     <Column field="codigo_barra" header="Código barra" sortable></Column>
                     <Column field="stock" sortable header="Stock"></Column>
@@ -134,21 +125,29 @@ const filters = ref({
                     <Column field="stock_futuro" sortable header="Stock futuro"></Column>
                     <Column header="Acciones" style="width:100px">
                         <template #body="slotProps">
-                            <span v-if="permissions.includes('editar-productos')"
-                                class="inline-block rounded bg-primary-900  px-2 py-1 text-base font-normal text-white mr-1 mb-1 hover:bg-primary-100">
-                                <EditarModal :cliente-id="slotProps.data.id"></EditarModal>
-                            </span>
-                            <span v-if="permissions.includes('eliminar-productos')"
-                                class="inline-block rounded bg-red-700 px-2 py-1 text-base font-normal text-white mr-1 mb-1 hover:bg-red-600">
-                                <button @click.prevent="eliminar(slotProps.data.id, slotProps.data.nombre)"><i
-                                        class="fas fa-trash-alt"></i></button>
-                            </span>
+                            <button v-if="permissions.includes('editar-productos')"
+                                class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
+                                v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
+                                @click.prevent="btnVer(slotProps.data.id)"><i
+                                    class="fas fa-eye"></i></button>
+
+                            <button v-if="permissions.includes('editar-productos')"
+                                class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
+                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                @click.prevent="btnEditar(slotProps.data.id)"><i class="fas fa-edit"></i></button>
+                            <button v-if="permissions.includes('eliminar-productos')"
+                                class="w-8 h-8 rounded bg-red-700   px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
+                                v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                @click.prevent="btnEliminar(slotProps.data.id, slotProps.data.nombre)"><i
+                                    class="fas fa-trash-alt"></i></button>
+
                         </template>
                     </Column>
                 </DataTable>
 
             </div>
             <!--Contenido-->
+
         </div>
 
     </AppLayout>

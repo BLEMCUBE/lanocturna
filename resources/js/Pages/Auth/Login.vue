@@ -72,7 +72,7 @@ const submit = () => {
                             <!-- Email input -->
                             <div class="relative mb-6">
                                 <InputLabel for="login" value="Usuario"
-                                    class="block text-base font-bold leading-6 text-gray-900" />
+                                    class="block text-base font-medium leading-6 text-gray-900" />
                                 <div class="mt-1">
                                     <TextInput id="login" type="text" v-model="form.login" required autocomplete="login" />
                                     <InputError class="mt-2 text-xs" :message="form.errors.login" />
@@ -84,7 +84,7 @@ const submit = () => {
                             <!-- Password input -->
                             <div>
                                 <InputLabel for="password" value="Contraseña"
-                                    class="block text-base font-bold leading-6 text-gray-900" />
+                                    class="block text-base font-medium leading-6 text-gray-900" />
                                 <div class="mt-1">
                                     <TextInput id="password" type="password" current-password v-model="form.password"
                                         required />
@@ -95,7 +95,7 @@ const submit = () => {
                             <div class="text-center lg:text-left">
 
                                 <PrimaryButton
-                                    class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-base font-semibold leading-6 text-white shadow-lg hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                                    class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-base font-medium leading-6 text-white shadow-lg hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                                     :class="{ 'opacity-50': form.processing }" :disabled="form.processing">
                                     Iniciar sesión
                                 </PrimaryButton>

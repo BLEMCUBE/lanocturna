@@ -1,11 +1,9 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { usePage, Link } from '@inertiajs/vue3';
-import { onMounted, reactive, ref, watch } from 'vue';
-import { useLayout } from '@/composables/layout';
 import { Head } from '@inertiajs/vue3';
-
 const { permissions } = usePage().props.auth
+
 </script>
 
 <template>

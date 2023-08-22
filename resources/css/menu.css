@@ -2,7 +2,7 @@
     position: fixed;
     width: 250px;
     height: calc(100vh);
-    z-index: 999;
+    z-index: 40;
     overflow-y: auto;
     user-select: none;
     top: 4rem;

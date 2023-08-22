@@ -136,7 +136,6 @@ createInertiaApp({
         .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(pinia)
-            //.use(Antd)
             .use(PrimeVue, { unstyled: true, ripple: true,
                 pt: Tailwind_PT
              })
@@ -238,12 +237,20 @@ createInertiaApp({
             .component('VirtualScroller', VirtualScroller)
             .component("font-awesome-icon", FontAwesomeIcon)
             .mount(el);
-        //VueApp.config.globalProperties.$vueApp=VueApp;
-        //return VueApp;
+
     },
 
     progress: {
-        color: '#4B5563',
+        color: '#ffd700',
+         // The delay after which the progress bar will appear, in milliseconds...
+    //delay: 250,
+
+
+    // Whether to include the default NProgress styles...
+    includeCSS: true,
+
+    // Whether the NProgress spinner will be shown...
+    showSpinner: true,
     },
 });
 

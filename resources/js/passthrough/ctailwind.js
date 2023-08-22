@@ -487,55 +487,60 @@ const Tailwind_PT = {
       transition: TRANSITIONS.overlay
     },
     sidebar: {
-      root: function root(_ref20) {
-        var props = _ref20.props;
-        return {
-          "class": ['flex flex-col pointer-events-auto relative transform translate-x-0 translate-y-0 translate-z-0 relative transition-transform duration-300', 'bg-white text-gray-700 border-0 shadow-lg', {
-            '!transition-none !transform-none !w-screen !h-screen !max-h-full !top-0 !left-0': props.position == 'full',
-            'h-full w-52': props.position == 'left' || props.position == 'right',
-            'h-40 w-full': props.position == 'top' || props.position == 'bottom'
-          }, 'dark:border dark:border-blue-900/40 dark:bg-gray-900 dark:text-white/80']
-        };
+        root: function root(_ref20) {
+          var props = _ref20.props;
+          return {
+            "class": ['flex flex-col pointer-events-auto relative transition-transform duration-300', 'bg-white text-gray-700 border-0 shadow-lg', {
+              '!transition-none !transform-none !w-screen !h-screen !max-h-full !top-0 !left-0': props.position == 'full',
+              'h-full w-80': props.position == 'left' || props.position == 'right',
+              'h-40 w-full': props.position == 'top' || props.position == 'bottom'
+            }, 'dark:border dark:border-blue-900/40 dark:bg-gray-900 dark:text-white/80']
+          };
+        },
+        header: {
+          "class": ['flex items-center justify-end', 'p-5']
+        },
+        closeButton: {
+          "class": ['flex items-center justify-center overflow-hidden relative', 'w-8 h-8 text-gray-500 border-0 bg-transparent rounded-full transition duration-200 ease-in-out mr-2 last:mr-0', 'hover:text-gray-700 hover:border-transparent hover:bg-gray-200', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
+          // focus
+          'dark:hover:text-white/80 dark:hover:text-white/80 dark:hover:border-transparent dark:hover:bg-gray-800/80 dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]']
+        },
+        closeButtonIcon: {
+          "class": 'w-4 h-4 inline-block'
+        },
+        content: {
+          "class": ['p-5 pt-0 h-full w-full', 'grow overflow-y-auto']
+        },
+        mask: function mask(_ref21) {
+          var props = _ref21.props;
+          return {
+            "class": ['flex pointer-events-auto', 'transition duration-200 z-20 transition-colors', {
+              'bg-black/40': props.modal
+            }]
+          };
+        },
+        transition: function transition(_ref22) {
+          var props = _ref22.props;
+          return props.position === 'top' ? {
+            enterFromClass: 'translate-x-0 -translate-y-full translate-z-0',
+            leaveToClass: 'translate-x-0 -translate-y-full translate-z-0'
+          } : props.position === 'bottom' ? {
+            enterFromClass: 'translate-x-0 translate-y-full translate-z-0',
+            leaveToClass: 'translate-x-0 translate-y-full translate-z-0'
+          } : props.position === 'left' ? {
+            enterFromClass: '-translate-x-full translate-y-0 translate-z-0',
+            leaveToClass: '-translate-x-full translate-y-0 translate-z-0'
+          } : props.position === 'right' ? {
+            enterFromClass: 'translate-x-full translate-y-0 translate-z-0',
+            leaveToClass: 'translate-x-full translate-y-0 translate-z-0'
+          } : {
+            enterFromClass: 'opacity-0',
+            enterActiveClass: 'transition-opacity duration-400 ease-in',
+            leaveActiveClass: 'transition-opacity duration-400 ease-in',
+            leaveToClass: 'opacity-0'
+          };
+        }
       },
-      header: {
-        "class": ['flex items-center justify-end', 'p-5']
-      },
-      closeButton: {
-        "class": ['flex items-center justify-center overflow-hidden relative', 'w-8 h-8 text-gray-500 border-0 bg-transparent rounded-full transition duration-200 ease-in-out mr-2 last:mr-0', 'hover:text-gray-700 hover:border-transparent hover:bg-gray-200', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)]',
-        // focus
-        'dark:hover:text-white/80 dark:hover:text-white/80 dark:hover:border-transparent dark:hover:bg-gray-800/80 dark:focus:shadow-[inset_0_0_0_0.2rem_rgba(147,197,253,0.5)]']
-      },
-      closeButtonIcon: {
-        "class": 'w-4 h-4 inline-block'
-      },
-      content: {
-        "class": ['p-5 pt-0 h-full w-full', 'grow overflow-y-auto']
-      },
-      mask: {
-        "class": ['flex pointer-events-auto', 'bg-black bg-opacity-40 transition duration-200 z-20 transition-colors']
-      },
-      transition: function transition(_ref21) {
-        var props = _ref21.props;
-        return props.position === 'top' ? {
-          enterFromClass: 'translate-x-0 -translate-y-full translate-z-0',
-          leaveToClass: 'translate-x-0 -translate-y-full translate-z-0'
-        } : props.position === 'bottom' ? {
-          enterFromClass: 'translate-x-0 translate-y-full translate-z-0',
-          leaveToClass: 'translate-x-0 translate-y-full translate-z-0'
-        } : props.position === 'left' ? {
-          enterFromClass: '-translate-x-full translate-y-0 translate-z-0',
-          leaveToClass: '-translate-x-full translate-y-0 translate-z-0'
-        } : props.position === 'right' ? {
-          enterFromClass: 'translate-x-full translate-y-0 translate-z-0',
-          leaveToClass: 'opacity-0 scale-75 translate-x-full translate-y-0 translate-z-0'
-        } : {
-          enterFromClass: 'opacity-0',
-          enterActiveClass: 'transition-opacity duration-400 ease-in',
-          leaveActiveClass: 'transition-opacity duration-400 ease-in',
-          leaveToClass: 'opacity-0'
-        };
-      }
-    },
     toolbar: {
       root: {
         "class": ['flex items-center justify-between flex-wrap', 'bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-blue-900/40  p-5 rounded-md gap-2']
@@ -1307,7 +1312,7 @@ const Tailwind_PT = {
         };
       },
       header: {
-        "class": ['flex items-center justify-between', 'p-2 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-semibold m-0 border-b border-gray-300 dark:border-blue-900/40 rounded-t-lg']
+        "class": ['flex items-center justify-between', 'p-2 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-medium m-0 border-b border-gray-300 dark:border-blue-900/40 rounded-t-lg']
       },
       previousbutton: {
         "class": ['flex items-center justify-center cursor-pointer overflow-hidden relative', 'w-8 h-8 text-gray-600 dark:text-white/70 border-0 bg-transparent rounded-full transition-colors duration-200 ease-in-out', 'hover:text-gray-700 dark:hover:text-white/80 hover:border-transparent hover:bg-gray-200 dark:hover:bg-gray-800/80 ']
@@ -1316,10 +1321,10 @@ const Tailwind_PT = {
         "class": 'leading-8 mx-auto'
       },
       monthTitle: {
-        "class": ['text-gray-700 dark:text-white/80 transition duration-200 font-semibold p-2', 'mr-2', 'hover:text-blue-500']
+        "class": ['text-gray-700 dark:text-white/80 transition duration-200 font-medium p-2', 'mr-2', 'hover:text-blue-500']
       },
       yearTitle: {
-        "class": ['text-gray-700 dark:text-white/80 transition duration-200 font-semibold p-2', 'hover:text-blue-500']
+        "class": ['text-gray-700 dark:text-white/80 transition duration-200 font-medium p-2', 'hover:text-blue-500']
       },
       nextbutton: {
         "class": ['flex items-center justify-center cursor-pointer overflow-hidden relative', 'w-8 h-8 text-gray-600 dark:text-white/70 border-0 bg-transparent rounded-full transition-colors duration-200 ease-in-out', 'hover:text-gray-700 dark:hover:text-white/80 hover:border-transparent hover:bg-gray-200 dark:hover:bg-gray-800/80 ']
@@ -1823,7 +1828,7 @@ const Tailwind_PT = {
       root: function root(_ref89) {
         var props = _ref89.props;
         return {
-          "class": ['inline-flex items-center justify-center', 'bg-blue-500 text-white text-xs font-semibold px-2 py-1 ', {
+          "class": ['inline-flex items-center justify-center', 'bg-blue-500 text-white text-xs font-medium px-2 py-1 ', {
             'bg-gray-500 ': props.severity == 'secondary',
             'bg-green-500 ': props.severity == 'success',
             'bg-blue-500 ': props.severity == 'info',
@@ -2155,7 +2160,7 @@ const Tailwind_PT = {
         "class": ['m-0 list-none', 'py-1 w-48']
       },
       submenuheader: {
-        "class": ['m-0 py-1 px-3 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-semibold rounded-tr-md rounded-tl-md']
+        "class": ['m-0 py-1 px-3 text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 font-medium rounded-tr-md rounded-tl-md']
       }
     },
     panelmenu: {

@@ -6,22 +6,13 @@ use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
 use App\Http\Resources\ProductoCollection;
 use App\Http\Resources\ProductoResource;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Categoria;
-use App\Models\Color;
-use App\Models\Curva;
-use App\Models\Diferenciador;
-use App\Models\Familia;
-use App\Models\Longitud;
-use App\Models\Marca;
-use App\Models\Peso;
+
 use App\Models\Producto;
-use App\Models\SubProducto;
-use Spatie\Permission\Models\Role;
+
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
-use Yajra\Datatables\Datatables;
+
 
 class ProductoController extends Controller
 {
@@ -36,97 +27,93 @@ class ProductoController extends Controller
 
     public function index()
     {
-
-
         return Inertia::render('Producto/Index', [
-
-            'productos' =>
+            'productos' => new ProductoCollection(
                 Producto::orderBy('id', 'ASC')
                     ->get()
-
-            /*'productos' => new ProductoCollection(
-                Producto::orderBy('id', 'ASC')
-                    ->get()
-            )*/
+            )
         ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Producto/Create');
+    }
+
+    public function store(ProductoStoreRequest $request)
+    {
+        $producto = Producto::create($request->input());
+        //imagen
+        if ($request->hasFile('photo')) {
+            sleep(1);
+            $fileName = time() . '.' . $request->photo->extension();
+            $producto->update([
+                'imagen' => "/images/productos/" . $fileName
+            ]);
+            $request->photo->move(public_path('images/productos'), $fileName);
+        } else {
+            $producto->update([
+                'imagen' => "/images/productos/sin_foto.png"
+            ]);
+        }
+
+    }
+
+    public function edit($id){
+        $producto = Producto::findOrFail($id);
+        return Inertia::render('Producto/Edit', [
+            'producto' => $producto
+        ]);
+
+    }
+
+    public function update(ProductoUpdateRequest $request,$id){
+        $producto = Producto::find($id);
+        $old_photo = $producto->imagen;
+        $producto->origen = $request->input('origen');
+        $producto->nombre = $request->input('nombre');
+        $producto->aduana = $request->input('aduana');
+        $producto->codigo_barra     = $request->input('codigo_barra');
+        $producto->stock = $request->input('stock');
+        $producto->stock_minimo = $request->input('stock_minimo');
+        $producto->save();
+
+        //imagen
+           if ($request->hasFile('photo')) {
+            sleep(1);
+            $url_save = public_path() . $old_photo;
+            $fileName = time() . '.' . $request->photo->extension();
+                //eliminar imagen
+                if (file_exists($url_save) && $old_photo != "/images/productos/sin_foto.png") {
+                    unlink($url_save);
+                }
+            $producto->update([
+                'imagen' => "/images/productos/" . $fileName
+            ]);
+            $request->photo->move(public_path('images/productos'), $fileName);
+        }
     }
 
     public function show($id)
     {
-        $cliente = Producto::findOrFail($id);
-        return response()->json([
-            "cliente" => $cliente
+        $producto = Producto::findOrFail($id);
+        return Inertia::render('Producto/Show', [
+            'producto' => $producto
         ]);
     }
-    public function paginate()
+
+    public function destroy($id)
     {
-        $post = Producto::latest()->get();
-            return Datatables::of($post)
-            /*->addColumn('action', function($post){
-                return '';})*/
-                   /* ->addColumn('action', function ($post) {
-                        $nombre="uno";
-                        $showBtn =  '<button ' .
-                                        ' class="btn btn-outline-info" ' .
-                                        ' onclick="showProject(' . $post->id . ')">Show' .
-                                    '</button> ';
+        $producto = Producto::find($id);
+        $old_photo = $producto->imagen;
+        $url_save = public_path() . $old_photo;
 
-                        $editBtn =  '<span '.
-                        'class="inline-block rounded bg-red-700 px-2 py-1 text-base font-semibold text-white mr-1 mb-1 hover:bg-red-600"> '.
-                        ' <button onclick="eliminar('.$post->id.','.nl2br($nombre).')" > '.
-                         '<i class="fas fa-trash-alt"> </i> </button> '.'</span>';
-
-                        $deleteBtn =  '<button ' .
-                                        ' class="btn btn-outline-danger" ' .
-                                        ' onclick="destroyProject(' . $post->id . ')">Delete' .
-                                    '</button> ';
-
-                        return $showBtn .  $deleteBtn;
-                    })*/
-                    /*->rawColumns(
-                    [
-                        'action',
-                    ])*/
-                ->rawColumns(['action'])
-                //->make(true);
-                    ->toJson();
-
-        /*$datos=Producto::orderBy('id', 'ASC')
-        ->paginate(10)
-        ->appends(Request::all());
-        return response()->json([
-            "draw"=>1,
-  "recordsTotal"=> $datos->total(),
-  "recordsFiltered"=>  $datos->total(),
-            "data" =>$datos->items()
-
-        ]);*/
-
-
+        //eliminar imagen si existe
+        if (file_exists($url_save) && $old_photo != "/images/productos/sin_foto.png") {
+            unlink($url_save);
+        }
+        $producto->delete();
     }
-    public function paginateWeb(){
-        $post = Producto::latest()->get();
-        $datos=[];
-        /*foreach ($post as $key=> $valor) {
-          array_push($datos,[
-            'id'=> $valor->id, 'nombre'=> $valor->nombre, 'aduana'=> $valor->aduana,
-            'aduana'=> $valor->aduana,
-           ' key'=> $key+1
-          ]);
-        }*/
-        return response()->json([
-            /*"headers"=>[
-                ['title'=> 'id', 'dataIndex'=> 'id', 'key'=> 'key'],
-                ['title'=> 'nombre', 'dataIndex'=> 'nombre', 'key'=> 'nombre'],
-                ['title'=> 'aduana', 'dataIndex'=> 'aduana', 'key'=> 'aduana'],
-                ['title'=> 'Action', 'key'=> 'operation', 'width'=> 100],
-
-            ],*/
-            "datos"=>$post
-
-        ]);
-    }
-
 
 
 }

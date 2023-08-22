@@ -4,7 +4,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import Multiselect from '@vueform/multiselect';
 import TextInput from '@/Components/TextInput.vue';
-import { useForm,router } from '@inertiajs/vue3';
+import { useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import axios from 'axios';
 import { useToast } from "primevue/usetoast";
@@ -42,7 +42,7 @@ const props = defineProps({
 
 
 });
-const show = (tipo,titulo,mensaje) => {
+const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
 
@@ -54,19 +54,19 @@ const addCliente = () => {
 };
 
 const dataEdit = (id) => {
-    axios.get(route(ruta+'.show', id))
-  .then(res => {
-    isShowModal.value = true;
-    var datos=res.data.usuario
+    axios.get(route(ruta + '.show', id))
+        .then(res => {
+            isShowModal.value = true;
+            var datos = res.data.usuario
 
-    form.id=datos.id
-    form.name=datos.name
-    form.username=datos.username
-    form.rol=res.data.id_rol
-    roles.value.options=res.data.lista_roles
+            form.id = datos.id
+            form.name = datos.name
+            form.username = datos.username
+            form.rol = res.data.id_rol
+            roles.value.options = res.data.lista_roles
 
 
-  })
+        })
 
 };
 
@@ -82,13 +82,15 @@ const closeModal = () => {
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta+'.update',form.id), {
+    form.post(route(ruta + '.update', form.id), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
             isShowModal.value = false
-            show('success','Mensaje','Se ha editado')
-            router.get(route(ruta+'.index'));
+            show('success', 'Mensaje', 'Se ha editado')
+            setTimeout(() => {
+                router.get(route(ruta + '.index'));
+            }, 1000);
         },
         onFinish: () => {
         },
@@ -105,7 +107,7 @@ const submit = () => {
     <section>
         <button type="button" @click="addCliente"><i class="fas fa-edit"></i></button>
 
-        <Modal :show="isShowModal" @close="closeModal"  maxWidth="lg">
+        <Modal :show="isShowModal" @close="closeModal" maxWidth="lg">
             <div class="p-2">
 
                 <div
@@ -142,8 +144,7 @@ const submit = () => {
                         </div>
 
                         <div class="col-span-6 shadow-default xl:col-span-3">
-                            <InputLabel for="rol" value="Rol"
-                                class="block text-base font-normal leading-6 text-gray-900" />
+                            <InputLabel for="rol" value="Rol" class="block text-base font-normal leading-6 text-gray-900" />
                             <Multiselect id="rol" v-model="form.rol" v-bind="roles">
                             </Multiselect>
                             <InputError class="mt-1 text-xs" :message="form.errors.rol" />
@@ -151,11 +152,11 @@ const submit = () => {
 
                     </div>
                     <div class="flex justify-end pt-3">
-                    <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small"
-                    @click="closeModal" type="button" />
-                    <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
-                        :disabled="form.processing" />
-                </div>
+                        <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="closeModal"
+                            type="button" />
+                        <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
+                            :disabled="form.processing" />
+                    </div>
                 </form>
             </div>
         </Modal>

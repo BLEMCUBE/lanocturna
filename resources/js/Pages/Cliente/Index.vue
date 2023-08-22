@@ -26,7 +26,6 @@ onMounted(() => {
 });
 
 
-
 //modal eliminar
 const eliminar = (id, name) => {
 
@@ -49,7 +48,10 @@ const eliminar = (id, name) => {
                     preserveScroll: true,
                     onSuccess: () => {
                         show('success', 'Eliminado', 'Se ha eliminado')
-                        router.get(route(ruta + '.index'));
+                        setTimeout(() => {
+                            router.get(route(ruta + '.index'));
+                        }, 1000);
+
                     }
                 });
         }
@@ -74,7 +76,7 @@ const filters = ref({
             <!--Contenido-->
             <Toast />
                 <div class=" px-5 col-span-full flex justify-between items-center">
-                    <h5 class="text-xl font-semibold">{{ titulo }}</h5>
+                    <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                     <CrearModal v-if="permissions.includes('crear-clientes')"></CrearModal>
                 </div>
                     <div class="inline-block min-w-full  mt-4 align-middle">
@@ -102,11 +104,11 @@ const filters = ref({
                                         <template #body="slotProps">
 
                                             <span v-if="permissions.includes('editar-clientes')"
-                                                class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-semibold text-white mr-1 mb-1 hover:bg-primary-100">
+                                                class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
                                                 <EditarModal :cliente-id="slotProps.data.id"></EditarModal>
                                             </span>
                                             <span v-if="permissions.includes('eliminar-clientes')"
-                                                class="inline-block rounded bg-red-700 px-2 py-1 text-base font-semibold text-white mr-1 mb-1 hover:bg-red-600">
+                                                class="inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-red-600">
                                                 <button @click.prevent="eliminar(slotProps.data.id, slotProps.data.name)"><i
                                                         class="fas fa-trash-alt"></i></button>
                                             </span>

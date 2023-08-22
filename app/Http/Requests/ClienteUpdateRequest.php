@@ -17,12 +17,12 @@ class ClienteUpdateRequest extends FormRequest
         $id = $this->input('id');
         return [
             'nombre' => 'required',
-            'telefono' => 'required',
+            //'telefono' => 'required',
             'email' => 'required|email', Rule::unique('clientes')->ignore($id),
-            'localidad' => 'required',
-            'direccion' => 'required',
-            'empresa' => 'required',
-            'rut' => 'required',
+            //'localidad' => 'required',
+            //'direccion' => 'required',
+            //'empresa' => 'required',
+            //'rut' => 'required',
 
         ];
     }
