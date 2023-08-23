@@ -7,6 +7,8 @@ import '../css/menu.css';
 import '../css/content.css';
 import '../css/topbar.css';
 import '../css/responsive.css';
+
+//import 'primevue/resources/themes/lara-light-teal/theme.css';
 import 'primeicons/primeicons.css';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
@@ -23,9 +25,11 @@ library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch();
 
-import PrimeVue from "primevue/config";
-import Tailwind_PT from "@/passthrough/tailwind";
+import PrimeVue from 'primevue/config';
 //import Tailwind from 'primevue/passthrough/tailwind'
+import Tailwind_PT from "@/passthrough/tailwind";
+
+
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
@@ -35,7 +39,7 @@ import Badge from 'primevue/badge';
 import BadgeDirective from "primevue/badgedirective";
 import BlockUI from 'primevue/blockui';
 import Button from 'primevue/button';
-import Breadcrumb from 'primevue/breadcrumb';
+//import Breadcrumb from 'primevue/breadcrumb';
 import Calendar from 'primevue/calendar';
 import Card from 'primevue/card';
 import CascadeSelect from 'primevue/cascadeselect';
@@ -133,12 +137,13 @@ createInertiaApp({
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
       return   createApp({ render: () => h(App, props) })
+
         .use(plugin)
             .use(ZiggyVue, Ziggy)
-            .use(pinia)
             .use(PrimeVue, { unstyled: true, ripple: true,
                 pt: Tailwind_PT
              })
+            .use(pinia)
             .use(ConfirmationService)
             .use(ToastService)
             .use(DialogService)
@@ -154,7 +159,7 @@ createInertiaApp({
             .component('AvatarGroup', AvatarGroup)
             .component('Badge', Badge)
             .component('BlockUI', BlockUI)
-            .component('Breadcrumb', Breadcrumb)
+            //.component('Breadcrumb', Breadcrumb)
             .component('Button', Button)
             .component('Calendar', Calendar)
             .component('Card', Card)

@@ -72,17 +72,17 @@ const filters = ref({
         <Head :title="titulo" />
         <AppLayout :pagina="[{ 'label': titulo, link: false }]">
             <div
-            class="px-4 py-3 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <Toast />
-                <div class=" px-5 col-span-full flex justify-between items-center">
+                <div class=" px-5 pb-4 col-span-full flex justify-between items-center">
                     <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                     <CrearModal v-if="permissions.includes('crear-clientes')"></CrearModal>
                 </div>
-                    <div class="inline-block min-w-full  mt-4 align-middle">
+                    <div class="align-middle">
                                 <DataTable showGridlines size="small" v-model:filters="filters"
                                     :value="tabla_clientes" :paginator="true" :rows="10"
-                                    :rowsPerPageOptions="[5, 10, 20, 50]" :pt="{ bodycell: { class: 'bg-red-500' } }"
+                                    :rowsPerPageOptions="[5, 10, 20, 50]"
                                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
                                     tableStyle="width: 100%">
                                     <template #header size="small" class="bg-secondary-900">

@@ -3,7 +3,10 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-import DataTable from 'primevue/datatable';
+//import DataTable from 'primevue/datatable';
+import ColumnGroup from 'primevue/columngroup';   // optional
+import Row from 'primevue/row';                   // optional
+
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
@@ -19,8 +22,15 @@ const formDelete = useForm({
 });
 
 const rowClass = (data) => {
-    if (parseFloat(data.stock) <= 10) {
-        return "bg-red-500/20"
+    //Si stock = < stock minimo Y stock_futuro = stock
+    if (parseFloat(data.stock) <= parseFloat(data.stock_minimo) && parseFloat(data.stock) == parseFloat(data.stock_futuro)) {
+        //return "text-red-700 text-xs"
+        return ["bg-red-700 text-xs text-white"]
+    }
+    //Si stock = < stock mínimo y stock_futuro > stock
+    if (parseFloat(data.stock) <= parseFloat(data.stock_minimo) && parseFloat(data.stock_futuro) > parseFloat(data.stock)) {
+        //return ["text-orange-500 text-xs"]
+        return "bg-orange-500 text-xs text-white"
     }
 };
 
@@ -88,22 +98,22 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
-            <div class=" px-3 col-span-full flex justify-between items-center">
+            <div class="px-3 pb-4 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
 
                 <Button size="small" :label="'Agregar Producto'" severity="success" @click="BtnCrear"></Button>
 
             </div>
 
-            <div class="inline-block   mt-4 align-middle">
+            <div class="align-middle">
 
-                <DataTable :rowClass="rowClass" showGridlines size="small" :filters="filters" :value="tabla_productos"
-                    paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem">
-                    <template #header size="small" class="bg-secondary-900">
+                <DataTable :rowClass="rowClass" showGridlines :filters="filters" :value="tabla_productos" paginator
+                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" size="small">
+                    <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
                         </div>
@@ -111,25 +121,52 @@ const filters = ref({
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
                     <Column field="origen" header="Origen" sortable></Column>
-                    <Column field="imagen" header="Imagen" body-class="w-12" style="width:60px">
+                    <Column field="imagen" header="Imagen" style="width:60px" :pt="{
+                        bodyCell: {
+                            class: 'flex justify-center text-center'
+                        }
+                    }">
                         <template #body="slotProps">
-                            <img class="rounded shadow-2xl border-2 text-center w-12 h-12 object-contain"
+                            <img class="rounded  bg-white shadow-2xl border-2 text-center w-12 h-12 object-contain"
                                 :src="slotProps.data.imagen" alt="image description">
                         </template>
                     </Column>
-                    <Column field="nombre" header="Nombre" sortable></Column>
-                    <Column field="aduana" header="Aduana" sortable style="max-width: 25%"></Column>
-                    <Column field="codigo_barra" header="Código barra" sortable></Column>
-                    <Column field="stock" sortable header="Stock"></Column>
-                    <Column field="stock_minimo" sortable header="Stock mínimo"></Column>
-                    <Column field="stock_futuro" sortable header="Stock futuro"></Column>
-                    <Column header="Acciones" style="width:100px">
+                    <Column field="nombre" header="Nombre" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="aduana" header="Aduana" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="codigo_barra" header="Código barra" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="stock" sortable header="Stock" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="stock_minimo" sortable header="Stock mínimo" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="stock_futuro" sortable header="Stock futuro" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column header="Acciones" style="width:130px">
                         <template #body="slotProps">
                             <button v-if="permissions.includes('editar-productos')"
                                 class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
                                 v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
-                                @click.prevent="btnVer(slotProps.data.id)"><i
-                                    class="fas fa-eye"></i></button>
+                                @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
 
                             <button v-if="permissions.includes('editar-productos')"
                                 class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"

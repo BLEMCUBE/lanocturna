@@ -1333,7 +1333,7 @@ const Tailwind_PT = {
         "class": ['flex items-center justify-center cursor-pointer overflow-hidden relative', 'w-8 h-8 text-gray-600 dark:text-white/70 border-0 bg-transparent rounded-full transition-colors duration-200 ease-in-out', 'hover:text-gray-700 dark:hover:text-white/80 hover:border-transparent hover:bg-gray-200 dark:hover:bg-gray-800/80 ']
       },
       table: {
-        "class": ['border-collapse w-full', 'my-2']
+        "class": ['border-collapse w-full', 'my-2','']
       },
       tableheadercell: {
         "class": 'p-2'
@@ -3358,7 +3358,7 @@ const Tailwind_PT = {
         var props = _ref158.props;
         return {
           "class": [{
-            'block sticky top-0 z-[1]': props.scrollable
+            'block sticky border top-0 z-[1]': props.scrollable
           }]
         };
       },
@@ -3416,7 +3416,7 @@ const Tailwind_PT = {
           };
         },
         bodycell: function bodycell(_ref164) {
-            var context = _ref163.context;
+            var context = _ref164.context;
             return {
               "class": ['text-left border-gray-300 border', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
               // Size
@@ -3518,7 +3518,7 @@ const Tailwind_PT = {
           var context = _ref171.context;
           return {
             "class": [{
-              'bg-secondary-100 top-0 z-[1]': context.scrollable
+              'bg-red-500 top-0 z-[1]': context.scrollable
             }]
           };
         },
@@ -3549,9 +3549,9 @@ const Tailwind_PT = {
             var context = _ref174.context,
               props = _ref174.props;
             return {
-              "class": ['text-left border-0 border-b cursor-pointer border-solid border-secondary-900 dark:border-blue-900/40 font-semibold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
+              "class": ['text-center border-0 border-b cursor-pointer border-solid border-secondary-900 dark:border-blue-900/40 font-semibold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
               // Size
-              context.sorted ? 'bg-secondary-100 text-slate-700' : 'bg-secondary-900 text-slate-700',
+              context.sorted ? 'border border-solid  border-gray-600 bg-secondary-100 text-slate-700' : 'border border-solid  border-gray-600 bg-secondary-100 text-slate-700',
               // Sort
               context.sorted ? 'dark:text-white/80 dark:bg-blue-300' : 'dark:text-white/80 dark:bg-gray-900',
               // Dark Mode
@@ -3565,13 +3565,13 @@ const Tailwind_PT = {
           },
 
           headercontent: {
-            "class": 'flex items-center'
+            "class": 'flex items-center justify-center'
           },
           bodycell: function bodycell(_ref175) {
             var props = _ref175.props,
             context = _ref175.context;
           return {
-            "class": ['text-left border-0 border-b border-solid text-sm border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
+            "class": ['text-left border-0 border-b border-solid text-xs border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
             // Size
             'dark:text-white/80 dark:border-blue-900/40',
             // Dark Mode

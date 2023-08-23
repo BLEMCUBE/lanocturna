@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig({
 
     plugins: [
-        splitVendorChunkPlugin(),
+        //splitVendorChunkPlugin(),
         laravel({
             input: 'resources/js/app.js',
             refresh: true,
@@ -30,7 +30,7 @@ export default defineConfig({
           "fast-deep-equal",
         ],
       },*/
-    build: {
+   /* build: {
         rollupOptions: {
 
           input: 'resources/js/app.js',
@@ -39,21 +39,16 @@ export default defineConfig({
             entryFileNames: (`[name][hash].js`),
             chunkFileNames: (`assets/[name][hash].js`),
             assetFileNames: ({ name }) => {
-              /*if (/\.(gif|jpe?g|png|svg)$/.test(name ?? '')) {
-                return 'assets/images/[name]-[hash][extname]';
-              }
-              if (/\.(json)$/.test(name ?? '')) {
-                return 'assets/[name]-[hash][extname]';
-              }*/
+
               if (/\.css$/.test(name ?? '')) {
                 return 'assets/[name]-[hash][extname]';
               }
 
-              // default value
+
               // ref: https://rollupjs.org/guide/en/#outputassetfilenames
               return 'assets/[name]-[hash][extname]';
             },
           }
         }
-      }
+      }*/
 });

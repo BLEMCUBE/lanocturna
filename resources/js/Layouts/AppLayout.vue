@@ -1,9 +1,10 @@
 <script setup>
 
 import { ref, onMounted, computed, watch, } from "vue";
-import Breadcrumb from 'primevue/breadcrumb';
+//import Breadcrumb from 'primevue/breadcrumb';
 import { Link } from '@inertiajs/vue3';
 import AppTopBar from '@/Layouts/AppTopBar.vue';
+import Breadcrumb from '@/Components/Breadcrumb.vue';
 import AppSideBar from '@/Layouts/AppSideBar.vue'
 import AppFooter from '@/Layouts/AppFooter.vue'
 import { useLayout } from '@/composables/layout';
@@ -12,17 +13,12 @@ const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 
 const outsideClickListener = ref(null);
 const configStore = useConfigStore();
-const home = ref({
-    icon: 'pi pi-home',
-    label:' Incio',
-    url: '/inicio',
-    link:true
-});
+
 const items22 = ref([]);
 const props = defineProps({
     pagina: {
         type: Array,
-        default: [{ 'label': '', link: '' }],
+        default: [],
     },
 
 });
@@ -30,9 +26,9 @@ onMounted(() => {
     items22.value = props.pagina;
 })
 
- const setMenu = (menu) => {
-            configStore.showMenu(menu);
-        }
+const setMenu = (menu) => {
+    configStore.showMenu(menu);
+}
 
 
 watch(isSidebarActive, (newVal) => {
@@ -46,7 +42,7 @@ watch(isSidebarActive, (newVal) => {
 const containerClass = computed(() => {
     return {
         'layout-theme-light': layoutConfig.darkTheme.value === 'light',
-        'layout-theme-dark': layoutConfig.darkTheme.value === 'dark',
+        //'layout-theme-dark': layoutConfig.darkTheme.value === 'dark',
         'layout-overlay': layoutConfig.menuMode.value === 'overlay',
         'layout-static': layoutConfig.menuMode.value === 'static',
         'layout-static-inactive': layoutState.staticMenuDesktopInactive.value && layoutConfig.menuMode.value === 'static',
@@ -93,33 +89,12 @@ const isOutsideClicked = (event) => {
         <div class="layout-main-container">
             <div class="layout-main">
                 <div class="col-span-12 px-2 flex justify-start text-base font-medium">
-                    <Breadcrumb :home="home" :model="items22"
-                        :pt="{
-                            breadcrumb:
-                            {
-                                root: { 'class': ['overflow-x-auto', 'bg-transparent dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 rounded-md p-2'] },
-                                menu: { 'class': 'm-0 p-0 list-none flex items-center flex-nowrap' },
-                                action: { 'class': ['text-decoration-none flex items-center', 'transition-shadow duration-200 rounded-md text-gray-600 dark:text-white/70', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]'] }, 'icon': { 'class': 'text-gray-600 dark:text-white/70' }, 'separator': { 'class': ['mx-2 text-gray-600 dark:text-white/70', 'flex items-center'] }
-                            }
-                        }">
-                        <template #item="{ item }">
-                            <Link class="phover:fill-primary-100" :href="item.url"
-                                as="button"
-                                v-if="item.link==true"
-                                @click="setMenu('inicio')">
-                                <span :class="item.icon" class="hover:fill-primary-100"></span>
-                                <span class="hover:text-primary-100">{{ item.label }}</span>
-                        </Link>
-                        <p v-if="item.link==false" class="m-0">
-                                <span :class="item.icon" class="hover:fill-primary-100"></span>
-                                <span class="hover:text-primary-100">{{ item.label }}</span>
-                        </p>
-                        </template>
-                    </Breadcrumb>
+                    <Breadcrumb :pagina="pagina"></Breadcrumb>
+
                 </div>
-                <div class="grid grid-cols-12 gap-4 px-2 pt-4 overflow-x-auto">
-                <slot></slot>
-            </div>
+                <div class="grid grid-cols-12 gap-4 px-2 pt-3 overflow-x-auto">
+                    <slot></slot>
+                </div>
             </div>
 
             <AppFooter></AppFooter>
@@ -128,4 +103,4 @@ const isOutsideClicked = (event) => {
     </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style scoped></style>

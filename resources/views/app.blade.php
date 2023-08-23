@@ -8,11 +8,7 @@
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap"
-  rel="stylesheet" />
-  	<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet"/>
-	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet"/>
+
     <!-- Scripts -->
     @routes
     @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])

@@ -18,7 +18,7 @@ const props = defineProps({
 const classes = computed(() =>
     props.active
 
-        ? ' w-full bg-secondary-100 text-primary-900 dark:bg-gray-700 hover:bg-secondary-100 hover:text-primary-900 rounded'
+        ? ' bg-secondary-100 text-primary-900 dark:bg-gray-700 hover:bg-secondary-100 hover:text-primary-900 rounded'
         : '  hover:bg-secondary-100 hover:text-primary-900 rounded text-white rounded'
 );
 const icon = computed(() =>

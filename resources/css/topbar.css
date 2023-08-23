@@ -24,9 +24,7 @@
     height: 2.5rem;
     margin-right: 0.5rem;
   }
-  .layout-topbar .layout-topbar-logo:focus {
-    /*@include focused();*/
-  }
+
   .layout-topbar .layout-topbar-button {
     display: inline-flex;
     justify-content: center;
@@ -43,9 +41,7 @@
     color: var(--text-color);
     background-color: var(--surface-hover);
   }
-  .layout-topbar .layout-topbar-button:focus {
-    /* @include focused();*/
-  }
+
   .layout-topbar .layout-topbar-button i {
     font-size: 1.5rem;
   }
@@ -99,7 +95,7 @@
       top: 4.1rem;
       min-width: 5rem;
       display: none;
-      -webkit-animation: scalein 0.15s linear;
+      /*-webkit-animation: scalein 0.15s linear;*/
       animation: scalein 0.15s linear;
     }
     .layout-topbar .layout-topbar-menu.layout-topbar-menu-mobile-active {

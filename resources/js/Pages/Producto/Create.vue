@@ -21,11 +21,14 @@ const form = useForm({
     codigo_barra: '',
     stock: 0,
     stock_minimo: 0,
+    stock_futuro:0 ,
     imagen: '',
     photo: '',
 })
 
-
+const setStock=(e)=>{
+    form.stock_futuro=e.target.value
+}
 //envio de formulario
 const submit = () => {
 
@@ -76,9 +79,9 @@ const pickFile = (e) => {
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': titulo, link: false }]">
+    <AppLayout :pagina="[{ 'label': 'Productos', link:true,url: route(ruta + '.index') },{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 pb-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -123,16 +126,17 @@ const pickFile = (e) => {
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock" value="Stock"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInputNumber v-model.number="form.stock"  id="stock" type="text" />
+                            <TextInputNumber v-model.number="form.stock"  id="stock" @input="setStock" type="text" />
                             <InputError class="mt-1 text-xs" :message="form.errors.stock" />
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock_minimo" value="Stock Minimo"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInputNumber id="stock_minimo" type="number" v-model.number="form.stock_minimo" />
+                            <TextInputNumber id="stock_minimo"  v-model="form.stock_minimo" />
                             <InputError class="mt-1 text-xs" :message="form.errors.stock_minimo" />
                         </div>
+                        <TextInputNumber id="stock_futuro" type="number" v-model.number="form.stock_futuro" />
                         <div class="col-span-12 shadow-default xl:col-span-6">
                             <InputLabel for="file_input1" value="Imagen"
                                 class="block text-base font-medium leading-6 text-gray-900" />

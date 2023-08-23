@@ -1,13 +1,12 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/composables/layout';
-//import { useRouter } from 'vue-router';
 import Logo from '/public/images/logo.png';
 const { layoutConfig, onMenuToggle } = useLayout();
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, router} from '@inertiajs/vue3';
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
-//const router = useRouter();
+
 
 onMounted(() => {
     bindOutsideClickListener();
@@ -100,4 +99,4 @@ const isOutsideClicked = (event) => {
     </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style  scoped></style>
