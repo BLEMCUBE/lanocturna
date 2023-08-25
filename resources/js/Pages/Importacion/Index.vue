@@ -3,9 +3,6 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-//import DataTable from 'primevue/datatable';
-import ColumnGroup from 'primevue/columngroup';   // optional
-import Row from 'primevue/row';                   // optional
 
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
@@ -20,19 +17,6 @@ const ruta = 'importaciones'
 const formDelete = useForm({
     id: '',
 });
-
-const rowClass = (data) => {
-    //Si stock = < stock minimo Y stock_futuro = stock
-    if (parseFloat(data.stock) <= parseFloat(data.stock_minimo) && parseFloat(data.stock) == parseFloat(data.stock_futuro)) {
-        //return "text-red-700 text-xs"
-        return ["bg-red-700 text-xs text-white"]
-    }
-    //Si stock = < stock mínimo y stock_futuro > stock
-    if (parseFloat(data.stock) <= parseFloat(data.stock_minimo) && parseFloat(data.stock_futuro) > parseFloat(data.stock)) {
-        //return ["text-orange-500 text-xs"]
-        return "bg-orange-500 text-xs text-white"
-    }
-};
 
 
 const btnVer = (id) => {
@@ -111,7 +95,7 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable :rowClass="rowClass" showGridlines :filters="filters" :value="tabla_productos" paginator
+                <DataTable  showGridlines :filters="filters" :value="tabla_productos" paginator
                     :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">

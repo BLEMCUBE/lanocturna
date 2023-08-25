@@ -26,7 +26,7 @@ class ProductoCollection extends ResourceCollection
                     'stock' => $row->stock??'',
                     'stock_minimo' => $row->stock_minimo??'',
                     'stock_futuro' => $row->stock_futuro??'',
-                    'created_at'=>!is_null($row->created_at)?$row->created_at->format('d/m/Y H:m:s'):'',
+                    'created_at'=>!is_null($row->created_at)?$row->created_at->format('d/m/Y H:i:s'):'',
                 ];
 
             }),

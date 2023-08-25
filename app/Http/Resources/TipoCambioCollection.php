@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ClienteCollection extends ResourceCollection
+class TipoCambioCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -16,18 +17,14 @@ class ClienteCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection->transform(function($row, $key) {
+                $fecha=Carbon::create($row->created_at);
+                $actual=Carbon::now()->format('Y-m-d');
 
                 return [
                     'id' => $row->id,
-                    'nombre' => $row->nombre,
-                    'telefono' => $row->telefono,
-                    'email' => $row->email??'',
-                    'localidad'=>$row->localidad??'',
-                    'direccion' => $row->direccion??'',
-                    'empresa' => $row->empresa??'',
-                    'rut' => $row->rut??'',
-                    //'fecha_nacimiento'=>Carbon::parse($row->fecha_nacimiento)->format('d/m/Y'),
-                    'created_at'=>$row->created_at->format('d/m/Y H:i:s'),
+                    'valor'=>number_format($row->valor, 2,',', '.')??0,
+                    'visible'=>$fecha->gt($actual),
+                    'created_at'=>$row->created_at->format('d/m/Y'),
                 ];
             }),
             'links' => [

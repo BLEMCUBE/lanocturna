@@ -30,7 +30,7 @@ class ClienteResource extends JsonResource
             'ultima_compra' => $this->ultima_compra??0,
             //'fecha_nacimiento'=>Carbon::createFromFormat('YYYY-mm-dd', $this->fecha_nacimiento)->format('d/m/Y'),
             'fecha_nacimiento'=>Carbon::parse($this->fecha_nacimiento)->format('d/m/Y'),
-            'created_at'=>Carbon::createFromFormat('Y-m-d H:m:s', $this->created_at)->format('d/m/Y H:m:s'),
+            'created_at'=>Carbon::createFromFormat('Y-m-d H:m:s', $this->created_at)->format('d/m/Y H:i:s'),
 
 
         ];

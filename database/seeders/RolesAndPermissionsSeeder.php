@@ -49,6 +49,9 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'editar-importaciones', 'description' => 'Editar Importación'],
             ['name' => 'eliminar-importaciones', 'description' => 'Eliminar Importación'],
 
+            //Tipo de cambio
+            ['name' => 'lista-tipocambio', 'description' => 'Tipo de cambio'],
+
             //Stock
             ['name' => 'stock', 'description' => 'Stock'],
 

@@ -5,14 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
 use App\Http\Resources\ProductoCollection;
-use App\Http\Resources\ProductoResource;
-
 use App\Models\Producto;
-
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Request;
-
 
 class ProductoController extends Controller
 {
@@ -29,7 +23,7 @@ class ProductoController extends Controller
     {
         return Inertia::render('Producto/Index', [
             'productos' => new ProductoCollection(
-                Producto::orderBy('id', 'ASC')
+                Producto::orderBy('id', 'DESC')
                     ->get()
             )
         ]);

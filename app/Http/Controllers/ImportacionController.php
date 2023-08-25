@@ -35,7 +35,7 @@ class ImportacionController extends Controller
         );*/
         return Inertia::render('Importacion/Index', [
             'productos' =>new ImportacionCollection(
-                Importacion::orderBy('id', 'ASC')
+                Importacion::orderBy('id', 'DESC')
                     ->get()
             )
         ]);

@@ -5,6 +5,7 @@ use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TipoCambioController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -71,8 +72,8 @@ Route::controller(ProductoController::class)->group(function () {
     Route::post('/productos/store', 'store')->name('productos.store')->middleware('auth');
     Route::delete('/productos/{id}', 'destroy')->name('productos.destroy')->middleware('auth');
 });
-//Producto
 
+//Importacion
 Route::controller(ImportacionController::class)->group(function () {
     Route::get('/importaciones/create', 'create')->name('importaciones.create')->middleware('auth');
     Route::get('/importaciones/{id}', 'edit')->name('importaciones.edit')->middleware('auth');
@@ -83,5 +84,12 @@ Route::controller(ImportacionController::class)->group(function () {
     Route::delete('/importaciones/{id}', 'destroy')->name('importaciones.destroy')->middleware('auth');
 });
 
-
+//Cliente
+Route::controller(TipoCambioController::class)->group(function () {
+    Route::post('/tipo-cambio/update/{id}', 'update')->name('tipo_cambio.update')->middleware('auth');
+    Route::get('/tipo-cambio', 'index')->name('tipo_cambio.index')->middleware('auth');
+    Route::get('/tipo-cambio/{id}', 'show')->name('tipo_cambio.show')->middleware('auth');
+    Route::post('/tipo-cambio/store', 'store')->name('tipo_cambio.store')->middleware('auth');
+    Route::delete('/tipo-cambio/{id}', 'destroy')->name('tipo_cambio.destroy')->middleware('auth');
+});
 require __DIR__.'/auth.php';

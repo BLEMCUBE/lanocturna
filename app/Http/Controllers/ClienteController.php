@@ -25,7 +25,7 @@ class ClienteController extends Controller
 
         return Inertia::render('Cliente/Index', [
             'clientes' => new ClienteCollection(
-                Cliente::orderBy('id', 'ASC')
+                Cliente::orderBy('id', 'DESC')
                     ->get()
             )
         ]);

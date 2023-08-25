@@ -127,6 +127,13 @@ export default {
                     <span class="ml-3">importaciones</span>
                 </NavLinkSideBar>
             </li>
+            <li @click="setMenu('tipo_cambio')" v-show="permissions.includes('lista-productos')">
+                <NavLinkSideBar icon-class="far fa-money-bill-alt"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('tipo_cambio.index')" :active="route().current('tipo_cambio.index')">
+                    <span class="ml-3">Tipo de Cambio</span>
+                </NavLinkSideBar>
+            </li>
 
         </ul>
 
