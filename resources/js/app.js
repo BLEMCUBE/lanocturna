@@ -7,11 +7,17 @@ import '../css/menu.css';
 import '../css/content.css';
 import '../css/topbar.css';
 import '../css/responsive.css';
-
+//import "primeflex/primeflex.css";
+//import 'primevue/resources/themes/tailwind-light/theme.css';
+import Tailwind from 'primevue/passthrough/tailwind'
+import Tailwind_PT from "@/passthrough/tailwind";
 //import 'primevue/resources/themes/lara-light-teal/theme.css';
+//import 'primevue/resources/primevue.min.css';
+
 import 'primeicons/primeicons.css';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
+import PrimeVue from 'primevue/config';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -25,9 +31,9 @@ library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch();
 
-import PrimeVue from 'primevue/config';
-//import Tailwind from 'primevue/passthrough/tailwind'
-import Tailwind_PT from "@/passthrough/tailwind";
+
+
+
 
 
 import AutoComplete from 'primevue/autocomplete';
@@ -140,10 +146,9 @@ createInertiaApp({
 
         .use(plugin)
             .use(ZiggyVue, Ziggy)
-            .use(PrimeVue, { unstyled: true, ripple: true,
-                pt: Tailwind_PT
-             })
             .use(pinia)
+            .use(PrimeVue, { unstyled: false, ripple: true,
+                pt: Tailwind_PT })
             .use(ConfirmationService)
             .use(ToastService)
             .use(DialogService)

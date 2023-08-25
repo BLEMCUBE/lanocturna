@@ -10,8 +10,6 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
 
 
-
-
 class ClienteController extends Controller
 {
     public function __construct()

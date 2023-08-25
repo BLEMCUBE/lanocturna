@@ -865,13 +865,13 @@ const Tailwind_PT = {
       var props = _ref35.props,
         context = _ref35.context;
       return {
-        "class": ['m-2', 'font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md', {
-          'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]': !context.disabled,
+        "class": ['font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md', {
+          ' ': !context.disabled,
           'opacity-60 select-none pointer-events-none cursor-default': context.disabled
         }, {
             'text-lg px-4 py-4': props.size == 'large',
-            'text-xs px-2 py-2': props.size == 'small',
-            'text-sm px-2 py-2': props.size == null
+            'text-xs px-2 py-1': props.size == 'small',
+            'text-sm px-2 py-1': props.size == null
         }]
       };
     }
@@ -3402,7 +3402,7 @@ const Tailwind_PT = {
         headercell: function headercell(_ref163) {
           var context = _ref163.context;
           return {
-            "class": ['text-left border-gray-300 border font-semibold', 'transition duration-200', context.sorted ? 'bg-blue-50 text-blue-700' : 'bg-slate-50', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-4',
+            "class": ['text-left text-sm border-gray-300 border font-semibold', 'transition duration-200', context.sorted ? 'bg-blue-50 text-blue-700' : 'bg-slate-50', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-0' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-4',
             // Size
             'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
             //Dark Mode
@@ -3506,7 +3506,7 @@ const Tailwind_PT = {
         header: function header(_ref170) {
           var props = _ref170.props;
           return {
-            "class": ['bg-secondary-900 text-slate-700 border-white font-semibold p-1', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
+            "class": ['bg-secondary-900 text-slate-700 border-white font-semibold py-2 px-', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
             // Dark Mode
             props.showGridlines ? 'border-x border-t border-0' : 'border-y border-x-0']
           };
@@ -3549,7 +3549,7 @@ const Tailwind_PT = {
             var context = _ref174.context,
               props = _ref174.props;
             return {
-              "class": ['text-center border-0 border-b cursor-pointer border-solid border-secondary-900 dark:border-blue-900/40 font-semibold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-2' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
+              "class": ['text-center  leading-[1.4rem] text-xs border-0 border-b cursor-pointer border-solid border-secondary-900 dark:border-blue-900/40 font-semibold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'py-1.5 px-1'  : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
               // Size
               context.sorted ? 'border border-solid  border-gray-600 bg-secondary-100 text-slate-700' : 'border border-solid  border-gray-600 bg-secondary-100 text-slate-700',
               // Sort
@@ -3571,7 +3571,7 @@ const Tailwind_PT = {
             var props = _ref175.props,
             context = _ref175.context;
           return {
-            "class": ['text-left border-0 border-b border-solid text-xs border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
+            "class": ['text-left border-0  leading-[1rem] border-b border-solid text-xs border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
             // Size
             'dark:text-white/80 dark:border-blue-900/40',
             // Dark Mode

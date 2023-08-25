@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\RoleController;
@@ -69,6 +70,17 @@ Route::controller(ProductoController::class)->group(function () {
     Route::get('/productos', 'index')->name('productos.index')->middleware('auth');
     Route::post('/productos/store', 'store')->name('productos.store')->middleware('auth');
     Route::delete('/productos/{id}', 'destroy')->name('productos.destroy')->middleware('auth');
+});
+//Producto
+
+Route::controller(ImportacionController::class)->group(function () {
+    Route::get('/importaciones/create', 'create')->name('importaciones.create')->middleware('auth');
+    Route::get('/importaciones/{id}', 'edit')->name('importaciones.edit')->middleware('auth');
+    Route::get('/importaciones/{id}/show', 'show')->name('importaciones.show')->middleware('auth');
+    Route::post('/importaciones/update/{id}', 'update')->name('importaciones.update')->middleware('auth');
+    Route::get('/importaciones', 'index')->name('importaciones.index')->middleware('auth');
+    Route::post('/importaciones/store', 'store')->name('importaciones.store')->middleware('auth');
+    Route::delete('/importaciones/{id}', 'destroy')->name('importaciones.destroy')->middleware('auth');
 });
 
 

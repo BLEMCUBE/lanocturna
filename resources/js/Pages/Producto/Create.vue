@@ -1,13 +1,12 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, } from 'vue'
+import { ref } from 'vue'
 import { Head, useForm, router } from '@inertiajs/vue3';
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
-import TextInputNumber from '@/Components/TextInputNumber.vue';
+
 
 const previewImage = ref('/images/productos/sin_foto.png');
 const toast = useToast();
@@ -21,17 +20,29 @@ const form = useForm({
     codigo_barra: '',
     stock: 0,
     stock_minimo: 0,
-    stock_futuro:0 ,
+    stock_futuro: 0,
     imagen: '',
     photo: '',
 })
 
-const setStock=(e)=>{
-    form.stock_futuro=e.target.value
+const setStock = (e) => {
+    form.stock_futuro = e
+}
+
+//funcion solo numero
+const NumbersOnly = (evt) => {
+
+    //return $numbersOnly(evt);
+    /*evt = (evt) ? evt : window.e;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+      evt.preventDefault();;
+    } else {
+      return true;
+    }*/
 }
 //envio de formulario
 const submit = () => {
-
     form.clearErrors()
     form.post(route(ruta + '.store'), {
         preserveScroll: true,
@@ -79,7 +90,8 @@ const pickFile = (e) => {
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': 'Productos', link:true,url: route(ruta + '.index') },{ 'label': titulo, link: false }]">
+    <AppLayout
+        :pagina="[{ 'label': 'Productos', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <div
             class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
@@ -97,46 +109,71 @@ const pickFile = (e) => {
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="origen" value="Origen"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="origen" type="text" v-model="form.origen" placeholder="Ingrese origen" />
+                            <InputText type="text" id="origen" v-model="form.origen" placeholder="Ingrese origen" :pt="{
+                                root: { class: 'h-9 w-full' }
+                            }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.origen" />
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="nombre" value="Nombre"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="nombre" type="text" v-model="form.nombre" placeholder="Ingrese nombre" />
+                            <InputText type="text" id="nombre" v-model="form.nombre" placeholder="Ingrese nombre" :pt="{
+                                root: { class: 'h-9 w-full' }
+                            }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.nombre" />
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="aduana" value="Aduana"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="aduana" type="text" v-model="form.aduana" placeholder="Ingrese aduana" />
+                            <InputText type="text" id="aduana" v-model="form.aduana" placeholder="Ingrese aduana" :pt="{
+                                root: { class: 'h-9 w-full' }
+                            }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.aduana" />
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="codigo_barra" value="Código barra"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="codigo_barra" type="text" v-model="form.codigo_barra"
-                                placeholder="Ingrese Código barra" />
+
+                            <InputText type="text" id="codigo_barra" v-model="form.codigo_barra"
+                                placeholder="Ingrese Código barra" :pt="{
+                                    root: { class: 'h-9 w-full' }
+                                }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.codigo_barra" />
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock" value="Stock"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInputNumber v-model.number="form.stock"  id="stock" @input="setStock" type="text" />
+                            <InputNumber v-model="form.stock" inputId="stock" size="small"
+                                @update:modelValue="setStock($event)" mode="decimal" showButtons :min="1" :max="99999999"
+                                :pt="{
+                                    root: { class: 'h-9 p-0 m-0 text-base' },
+                                    input: { class: 'h-9 px-0 py-0 m-0 w-full text-end text-base' },
+                                    incrementButton: { class: 'm-0 w-auto  rounded-tl-none rounded-br-lg' },
+                                    decrementButton: { class: 'm-0 w-auto  rounded-bl-none  rounded-tr-lg' }
+                                }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.stock" />
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock_minimo" value="Stock Minimo"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInputNumber id="stock_minimo"  v-model="form.stock_minimo" />
+                            <InputNumber v-model="form.stock_minimo" inputId="stock_minimo" locale="es-UY" size="small"
+                                mode="decimal" showButtons :min="1" :max="99999999" :pt="{
+                                    root: { class: 'h-9 p-0 m-0 text-base' },
+                                    input: { class: 'h-9 px-0 py-0 m-0 w-full text-end text-base' },
+                                    incrementButton: { class: 'm-0 w-auto  rounded-tl-none rounded-br-lg' },
+                                    decrementButton: { class: 'm-0 w-auto  rounded-bl-none  rounded-tr-lg' }
+                                }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.stock_minimo" />
                         </div>
-                        <TextInputNumber id="stock_futuro" type="number" v-model.number="form.stock_futuro" />
+
+                        <input type="hidden" id="stock_futuro" v-model="form.stock_futuro">
+
+
                         <div class="col-span-12 shadow-default xl:col-span-6">
                             <InputLabel for="file_input1" value="Imagen"
                                 class="block text-base font-medium leading-6 text-gray-900" />
@@ -147,7 +184,8 @@ const pickFile = (e) => {
                                 file:bg-gray-200 file:text-gray-700
                                 hover:file:bg-gray-300
                                 hover:file:cursor-pointer
-                                " />
+                                " accept="image/x-png,image/gif,image/jpeg" />
+
                             <p class="mt-1 text-xs text-gray-500 dark:text-gray-300" id="imagen">Peso
                                 máximo de la
                                 foto 2MB</p>

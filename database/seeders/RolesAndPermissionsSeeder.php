@@ -37,8 +37,17 @@ class RolesAndPermissionsSeeder extends Seeder
             //Productos
             ['name' => 'lista-productos', 'description' => 'Lista Productos'],
             ['name' => 'crear-productos', 'description' => 'Crear Producto'],
+            ['name' => 'detalle-productos', 'description' => 'Detalle Producto'],
             ['name' => 'editar-productos', 'description' => 'Editar Producto'],
             ['name' => 'eliminar-productos', 'description' => 'Eliminar Producto'],
+
+            //Importaciones
+            ['name' => 'lista-importaciones', 'description' => 'Lista Importaciones'],
+            //['name' => 'crear-importaciones', 'description' => 'Crear Importación'],
+            ['name' => 'excel-importaciones', 'description' => 'Importar Excel'],
+            ['name' => 'detalle-importaciones', 'description' => 'Detalle Importación'],
+            ['name' => 'editar-importaciones', 'description' => 'Editar Importación'],
+            ['name' => 'eliminar-importaciones', 'description' => 'Eliminar Importación'],
 
             //Stock
             ['name' => 'stock', 'description' => 'Stock'],
@@ -92,7 +101,7 @@ class RolesAndPermissionsSeeder extends Seeder
         }
 
         $adm = Role::create(['name' => 'Administrador']);
-        foreach ($this->permissions as $key=>$value) {
+        foreach ($this->permissions as $key => $value) {
             $adm->givePermissionTo($this->permissions[$key]['name']);
         }
         $enc = Role::create(['name' => 'Encargado']);

@@ -1,6 +1,6 @@
 .layout-sidebar {
     position: fixed;
-    width: 250px;
+    width: 220px;
     height: calc(100vh);
     z-index: 40;
     overflow-y: auto;
@@ -67,9 +67,6 @@
   }
   .layout-menu ul a:hover {
     background-color: var(--surface-hover);
-  }
-  .layout-menu ul a:focus {
-    /*@include focused-inset();*/
   }
   .layout-menu ul ul {
     overflow: hidden;

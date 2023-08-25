@@ -5,7 +5,7 @@
     left: 0;
     top: 0;
     width: 100%;
-    padding: 0 2rem;
+    padding: 0 1rem;
     transition: left 0.2;
     display: flex;
     align-items: center;
@@ -50,7 +50,7 @@
     display: none;
   }
   .layout-topbar .layout-menu-button {
-    margin-left: 1rem;
+    margin-left: 0rem;
   }
   .layout-topbar .layout-topbar-menu-button {
     display: none;

@@ -120,6 +120,13 @@ export default {
                     <span class="ml-3">Productos</span>
                 </NavLinkSideBar>
             </li>
+            <li @click="setMenu('imoprtaciones')" v-show="permissions.includes('lista-productos')">
+                <NavLinkSideBar icon-class="fa-solid fa-cart-plus"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('importaciones.index')" :active="route().current('importaciones.index')">
+                    <span class="ml-3">importaciones</span>
+                </NavLinkSideBar>
+            </li>
 
         </ul>
 

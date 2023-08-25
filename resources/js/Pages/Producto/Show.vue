@@ -29,6 +29,7 @@ onMounted(() => {
     form.codigo_barra = datos.codigo_barra
     form.stock = datos.stock
     form.stock_minimo = datos.stock_minimo
+    form.stock_futuro = datos.stock_futuro
     previewImage.value = datos.imagen
     form.imagen = datos.imagen
 

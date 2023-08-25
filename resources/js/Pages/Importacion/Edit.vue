@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, } from 'vue'
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { ref, onMounted } from 'vue'
+import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 import InputError from '@/Components/InputError.vue';
@@ -11,10 +11,12 @@ import TextInputNumber from '@/Components/TextInputNumber.vue';
 
 const previewImage = ref('/images/productos/sin_foto.png');
 const toast = useToast();
-const titulo = "Agregar Producto"
+
+const titulo = "Editar Producto"
 const ruta = 'productos'
 
 const form = useForm({
+    id:'',
     origen: '',
     nombre: '',
     aduana: '',
@@ -22,30 +24,43 @@ const form = useForm({
     stock: 0,
     stock_minimo: 0,
     imagen: '',
-    photo: '',
+    photo: ''
 })
 
+onMounted(() => {
+    var datos= usePage().props.producto;
+    form.id=datos.id
+    form.nombre=datos.nombre
+    form.origen=datos.origen
+    form.aduana=datos.aduana
+    form.codigo_barra=datos.codigo_barra
+    form.stock=datos.stock
+    form.stock_minimo=datos.stock_minimo
+    //previewImage.value= usePage().props.base_url+datos.imagen
+    previewImage.value= datos.imagen
+    form.imagen=datos.imagen
 
+});
 //envio de formulario
 const submit = () => {
 
-    form.clearErrors()
-    form.post(route(ruta + '.store'), {
-        preserveScroll: true,
-        forceFormData: true,
-        onSuccess: () => {
-            show('success', 'Mensaje', 'Producto creado')
-            setTimeout(() => {
-                router.get(route(ruta + '.index'));
-            }, 1000);
-        },
-        onFinish: () => {
+form.clearErrors()
+    form.post(route(ruta + '.update', form.id), {
+    preserveScroll: true,
+    forceFormData: true,
+    onSuccess: () => {
+        show('success', 'Mensaje', 'Producto creado')
+        setTimeout(() => {
+            router.get(route(ruta + '.index'));
+        }, 1000);
+    },
+    onFinish: () => {
 
-        },
-        onError: () => {
+    },
+    onError: () => {
 
-        }
-    });
+    }
+});
 
 
 
@@ -55,7 +70,7 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-    router.get(route(ruta + '.index'))
+  router.get(route(ruta+'.index'))
 };
 const pickFile = (e) => {
     e.preventDefault();
@@ -76,9 +91,9 @@ const pickFile = (e) => {
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': titulo, link: false }]">
+    <AppLayout :pagina="[{ 'label': 'Productos', link:true,url: route(ruta + '.index') },{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4  mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -94,7 +109,7 @@ const pickFile = (e) => {
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="origen" value="Origen"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInput id="origen" type="text" v-model="form.origen" placeholder="Ingrese origen" />
+                            <TextInput id="origen" type="text" v-model="form.origen" placeholder="Ingrese origen" readonly/>
                             <InputError class="mt-1 text-xs" :message="form.errors.origen" />
                         </div>
 
@@ -116,27 +131,27 @@ const pickFile = (e) => {
                             <InputLabel for="codigo_barra" value="Código barra"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <TextInput id="codigo_barra" type="text" v-model="form.codigo_barra"
-                                placeholder="Ingrese Código barra" />
-                            <InputError class="mt-1 text-xs" :message="form.errors.codigo_barra" />
+                                placeholder="Ingrese Código barra"  readonly/>
+                            <InputError class="mt-1 text-xs" :message="form.errors.codigo_barra"  />
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock" value="Stock"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <TextInputNumber v-model.number="form.stock"  id="stock" type="text" />
-                            <InputError class="mt-1 text-xs" :message="form.errors.stock" />
+                            <TextInputNumber v-model.number="form.stock" id="stock" type="number" readonly />
+                            <InputError class="mt-1 text-xs" :message="form.errors.stock"  />
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock_minimo" value="Stock Minimo"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <TextInputNumber id="stock_minimo" type="number" v-model.number="form.stock_minimo" />
-                            <InputError class="mt-1 text-xs" :message="form.errors.stock_minimo" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.stock_minimo"  />
                         </div>
                         <div class="col-span-12 shadow-default xl:col-span-6">
                             <InputLabel for="file_input1" value="Imagen"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <input @input="pickFile" type="file" class="block w-full text-xs text-gray-500
+                                <input @input="pickFile" type="file" class="block w-full text-xs text-gray-500
                                 file:mr-4 file:py-2 file:px-4
                                 file:rounded file:border-0
                                 file:text-sm file:font-medium
