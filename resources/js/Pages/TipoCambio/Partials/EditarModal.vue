@@ -104,7 +104,7 @@ const show = (tipo, titulo, mensaje) => {
                         <InputLabel for="nombre" value="Nombre"
                             class="block text-base font-medium leading-6 text-gray-900" />
                         <InputNumber v-model="form.valor" inputId="stock" size="small"
-                            mode="currency" showButtons :min="1" :max="99999999" :style="{ width: '100vw' }"
+                            mode="currency" :min="1" :max="99999999" :style="{ width: '100vw' }"
                             currency="USD" locale="en-US"
                             :breakpoints="{ '960px': '75vw', '641px': '100vw' }" :pt="{
                                 root: { class: 'h-9 p-0 m-0 text-base' },

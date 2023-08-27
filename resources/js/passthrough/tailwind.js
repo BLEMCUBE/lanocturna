@@ -3518,7 +3518,7 @@ const Tailwind_PT = {
           var context = _ref171.context;
           return {
             "class": [{
-              'bg-red-500 top-0 z-[1]': context.scrollable
+              'top-0 z-[1]': context.scrollable
             }]
           };
         },

@@ -1,0 +1,520 @@
+<script setup>
+import AppLayout from '@/Layouts/AppLayout.vue';
+import { ref, onMounted } from 'vue'
+import { Head, useForm, router, usePage } from '@inertiajs/vue3';
+import Button from 'primevue/button';
+import { useToast } from "primevue/usetoast";
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import Multiselect from '@vueform/multiselect';
+import Swal from 'sweetalert2';
+import { FilterMatchMode } from 'primevue/api';
+const toast = useToast();
+const titulo = "Venta"
+const ruta = 'ventas'
+const { vendedor } = usePage().props
+const { lista_destinos } = usePage().props
+const prod = useForm({
+    producto_id: '',
+    nombre: '',
+    origen: '',
+    imagen: '',
+    cantidad: 1,
+    precio: 1
+})
+const filters = ref({
+    'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    'origen': { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+const setDestino = (e) => {
+    var tipo = lista_destinos.find(prod => prod.value === e);
+       form.destino=e;
+
+}
+const form = useForm({
+    vendedor_id: '',
+    destino: '',
+    total: 0.0,
+    neto: 0.0,
+    estado: 'PENDIENTE A FACTURACION',
+    impuesto: '',
+    porcentaje_impuesto: '',
+    observaciones: '',
+    productos: [],
+    cliente:
+        {nombre:'',
+    direccion:''}
+    ,
+
+})
+const isShowModal = ref(false);
+const { productos } = usePage().props
+const lista_destino = ref({
+    value: '',
+    closeOnSelect: true,
+    placeholder: "Seleccione",
+    searchable: false,
+    options: [],
+});
+
+onMounted(() => {
+    lista_destino.value.options = lista_destinos
+})
+
+
+const modalProducto = (id) => {
+
+    var produ = productos.data.find(pr => pr.id === id);
+
+    if (produ.stock > 0) {
+        //var precio = tipo_cliente.value == 'Minorista' ? prod.precio_venta : prod.precio_mayorista;
+        prod.nombre = produ.nombre
+        prod.producto_id = produ.id
+        prod.origen = produ.origen
+        prod.imagen = produ.imagen
+
+    } else {
+        //alerta('No hay stock disponible', 'error')
+    }
+
+
+
+
+};
+const addToCart = (id) => {
+
+    var produ = productos.data.find(pr => pr.id === id);
+    if (produ.stock > 0) {
+        form.productos.push(
+            {
+                producto_id: produ.id,
+                nombre: produ.nombre,
+                origen: produ.origen,
+                cantidad: 1,
+                precio: 1,
+                stock: produ.stock,
+                total: (1).toFixed(2) * (1).toFixed(2)
+            }
+        )
+        sumaTotal()
+        calculoImpuesto()
+
+    } else {
+        alerta('No hay stock disponible', 'error')
+    }
+
+};
+
+const closeModal = () => {
+    isShowModal.value = false;
+    prod.reset();
+};
+
+//envio de formulario
+const addItem = () => {
+
+    form.productos.push(
+        {
+            producto_id: prod.producto_id,
+            nombre: prod.nombre,
+            cantidad: (prod.cantidad).toFixed(2),
+            precio: (prod.precio).toFixed(2),
+            total: (prod.cantidad).toFixed(2) * (prod.precio).toFixed(2)
+        }
+    )
+
+};
+
+const sumaTotal = () => {
+    form.neto = (form.productos.reduce((acc, cur) => acc + parseFloat(cur['total']), 0)).toFixed(2)
+    calculoImpuesto()
+    form.impuesto=(form.total-form.neto).toFixed(2);
+    //form.total = (form.productos.reduce((acc, cur) => acc + parseFloat(cur['total']), 0)).toFixed(2)
+
+}
+const removerProducto = (index) => {
+    form.productos.splice(index, 1);
+    sumaTotal()
+    calculoImpuesto()
+
+}
+
+
+const calculoImpuesto = () => {
+    //form.neto = (form.total - form.descuento).toFixed(2)
+    form.total = (form.neto *1.22).toFixed(2)
+}
+
+const sumaTotalProducto = ($event, id) => {
+    if ($event.target.value > 0) {
+
+        if (form.productos[id].stock >= form.productos[id].cantidad) {
+            form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(form.productos[id].precio)).toFixed(2)
+            sumaTotal()
+            calculoImpuesto()
+        } else {
+            form.productos[id].cantidad = 1
+            form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(form.productos[id].precio)).toFixed(2)
+            alerta('La cantidad supera el Stock', 'error')
+        }
+    } else {
+        return;
+    }
+}
+
+//envio de formulario
+const submit = () => {
+
+    form.clearErrors()
+    form.post(route(ruta + '.store'), {
+        preserveScroll: true,
+        forceFormData: true,
+        onSuccess: () => {
+            show('success', 'Mensaje', 'Venta creada')
+            setTimeout(() => {
+                router.get(route(ruta + '.index'));
+            }, 1000);
+        },
+        onFinish: () => {
+
+        },
+        onError: () => {
+
+        }
+    });
+
+
+
+};
+//modal advertencia
+const alerta = (mensaje, icono) => {
+    Swal.fire({
+        width: 350,
+        title: mensaje,
+        icon: icono
+    })
+}
+const show = (tipo, titulo, mensaje) => {
+    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+};
+
+const cancelCrear = () => {
+    router.get(route(ruta + '.index'))
+};
+
+
+</script>
+<template>
+    <Head :title="titulo" />
+    <AppLayout :pagina="[{ 'label': 'Ventas', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
+        <!--Contenido-->
+        <div
+            class="grid grid-cols-12 p-0 m-0 gap-2 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+
+            <Toast />
+            <!--
+               <div class="px-3 col-span-full  mb-2 flex justify-between items-center">
+                   <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+                </div>
+            -->
+            <div class="mt-0 mb-4 col-span-12 lg:col-span-8">
+
+                <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
+                    <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+                </div>
+                <form @submit.prevent="submit">
+
+                    <div class="grid grid-cols-12 gap-1 py-0">
+
+                        <!--Tabla-->
+
+                        <table class="table-auto mx-2 border border-gray-300 col-span-12">
+                            <thead>
+                                <tr class="p-2 bg-secondary-900 border">
+                                    <th class="border border-gray-300 p-2 w-24">Origen</th>
+                                    <th class="border border-gray-300 ">Producto</th>
+                                    <th class="border border-gray-300 w-24">Cantidad</th>
+                                    <th class="border border-gray-300 w-24">Precio</th>
+                                    <th class="border border-gray-300 w-24">Total</th>
+                                    <th class="border border-gray-300 w-8"></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(producto, index) in form.productos" :key="index"
+                                    class="font-sans  font-normal text-gray-800 border border-gray-300">
+                                    <td class="border border-gray-300 p-2">{{ producto.origen }}</td>
+                                    <td class="border border-gray-300 p-2">{{ producto.nombre }}</td>
+                                    <td class="border border-gray-300"><input type="number" required
+                                            v-model="producto.cantidad" min="1" step="0.1"
+                                            class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm"
+                                            @input="sumaTotalProducto($event, index)">
+                                    </td>
+                                    <td class="border border-gray-300"><input type="number" required
+                                            v-model="producto.precio" min="1" step="0.1"
+                                            @input="sumaTotalProducto($event, index)"
+                                            class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm">
+                                    </td>
+                                    <td class="border border-gray-300 p-2">{{ producto.total }} </td>
+                                    <td class="border-none  border-gray-300  ">
+                                        <div
+                                            class="rounded-none flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
+                                            <button @click.prevent="removerProducto(index)" class="w-6"
+                                                v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"><i
+                                                 class="fas fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end"><b>Subtotal:  </b></td>
+                                    <td  class="text-end"><b> {{ form.neto }} </b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end"><b>Total (con impuestos):  </b></td>
+                                    <td  class="text-end"><b> {{ form.total }} </b></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="col-span-12  p-2 xl:col-span-12">
+                            <InputError class="mt-1 text-xs w-full " :message="form.errors.productos" />
+                        </div>
+                        <!--Tabla-->
+                        <!--Datos Ventas-->
+                        <div
+                            class="px-0 py-1 m-2 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
+                            <h5 class="text-lg font-medium">Datos venta</h5>
+                        </div>
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="vendedor" value="Vendedor"
+                                class="text-base font-medium leading-1 text-gray-900" />
+                            <InputText type="text" id="nro_carpeta" v-model="vendedor" readonly :pt="{
+                                root: { class: 'h-9 w-full' }
+                            }" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.vendedor_id" />
+                        </div>
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="destino" value="Destino"
+                                class="text-base font-medium leading-1 text-gray-900" />
+                            <Multiselect id="rol" v-model="form.destino" v-bind="lista_destino"
+                            @select="setDestino">
+                            </Multiselect>
+                            <InputError class="mt-1 text-xs" :message="form.errors.destino" />
+                        </div>
+
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="cliente" value="Cliente"
+                                class="text-base font-medium leading-6 text-gray-900" />
+                            <InputText type="text" id="cliente" v-model="form.cliente.nombre"
+                                placeholder="ingrese nombre cliente" :pt="{
+                                    root: { class: 'h-9 w-full' }
+                                }" />
+                            <InputError class="mt-1 text-xs" :message="form.errors['cliente.nombre'] " />
+
+                        </div>
+
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6" >
+                            <InputLabel for="telefono" value="Telefono"
+                                class="text-base font-medium leading-6 text-gray-900" />
+                            <InputText type="text" id="telefono" v-model="form.cliente.telefono"
+                                placeholder="ingrese telefono" :pt="{
+                                    root: { class: 'h-9 w-full' }
+                                }" />
+                        </div>
+
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="localidad" value="Localidad"
+                                class="text-base font-medium leading-6 text-gray-900" />
+                            <InputText type="text" id="localidad" v-model="form.cliente.localidad"
+                                placeholder="ingrese localidad" :pt="{
+                                    root: { class: 'h-9 w-full' }
+                                }" />
+                        </div>
+
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="direccion" value="Dirección"
+                                class="text-base font-medium leading-6 text-gray-900" />
+                            <InputText type="text" id="direccion" v-model="form.cliente.direccion"
+                                placeholder="ingrese direccion" :pt="{
+                                    root: { class: 'h-9 w-full' }
+                                }" />
+                            <InputError class="mt-1 text-xs" :message="form.errors['cliente.direccion']" />
+                        </div>
+
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="empresa" value="Empresa"
+                                class="text-base font-medium leading-6 text-gray-900" />
+                            <InputText type="text" id="empresa" v-model="form.cliente.empresa" placeholder="ingrese Empresa"
+                                :pt="{
+                                    root: { class: 'h-9 w-full' }
+                                }" />
+
+                        </div>
+
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="rut" value="RUT" class="text-base font-medium leading-6 text-gray-900" />
+                            <InputText type="text" id="rut" v-model="form.cliente.rut" placeholder="ingrese RUT" :pt="{
+                                root: { class: 'h-9 w-full' }
+                            }" />
+
+                        </div>
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-12">
+                            <InputLabel for="rut" value="Observaciones:"
+                                class="text-base font-medium leading-6 text-gray-900" />
+
+                            <Textarea v-model="form.observaciones" :pt="{
+                                root: {
+                                    rows: '1',
+                                    class: 'w-full'
+                                }
+                            }" />
+
+                        </div>
+
+                        <!--Datos Ventas-->
+
+                    </div>
+                    <div class="flex justify-end py-3">
+                    <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="cancelCrear"
+                        type="button" />
+
+                    <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
+                        :disabled="form.processing" />
+                </div>
+
+                </form>
+
+
+            </div>
+
+
+            <!--Productos-->
+            <div class="p-0 mb-0 col-span-12  lg:col-span-4 ">
+                <DataTable showGridlines :filters="filters" scrollable scrollHeight="400px" resizableColumns
+                    :globalFilterFields="['origen', 'nombre']" columnResizeMode="fit" :value="productos.data" paginator
+                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" size="small">
+                    <template #header>
+                        <div class="flex justify-content-end text-sm">
+                            <InputText v-model="filters['global'].value" placeholder="Buscar" />
+                        </div>
+                    </template>
+                    <template #empty> No existe Resultado </template>
+                    <template #loading> Cargando... </template>
+
+                    <Column field="nombre" header="" :pt="{
+                        bodyCell: {
+                            class: 'flex justify-start text-center p-0 mx-0'
+                        }
+                    }">
+                        <template #body="slotProps">
+                            <div class="w-full mx-auto px-1">
+                                <div class="flex flex-col gap-y-1 mx-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <div class="flex items-center">
+                                        <img class="h-10 w-10 rounded-full object-cover" :src="slotProps.data.imagen"
+                                            alt="" />
+                                        <div class="ml-6 w-auto  text-start">
+                                            <p class="text-gray-800 mb-2 text-xs whitespace-pre-line font-bold leading-1">
+                                                {{
+                                                    slotProps.data.nombre }}</p>
+                                            <div class="font-bold leading-none text-xs text-gray-800 pb-1">Origen: <span
+                                                    class="px-1 py-0  font-normal">{{ slotProps.data.origen
+                                                    }}</span></div>
+                                            <div class="font-bold leading-none text-xs text-gray-800">Stock :<span
+                                                    class="px-1 py-0 font-normal">{{ slotProps.data.stock }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--
+
+                                    <div class="">
+                                        <Button severity="success" @click="modalProducto(slotProps.data.id)" icon="fas fa-cart-plus" :pt="{
+                                            root: {
+                                                class: 'flex items-center justify-center font-medium w-full'
+                                            }
+                                        }" :disabled="slotProps.data.stock === 'OUTOFSTOCK'"></Button>
+                                    </div>
+                                -->
+
+                                    <div class="">
+                                        <Button severity="success" @click="addToCart(slotProps.data.id)"
+                                           icon="fas fa-cart-plus" :pt="{
+                                                root: {
+                                                    class: 'flex items-center justify-center font-medium w-full'
+                                                }
+                                            }" :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
+            </div>
+
+        </div>
+
+        <!--modal agregar producto-->
+        <Dialog v-model:visible="isShowModal" modal header="Producto" :style="{ width: '65vw' }"
+            :breakpoints="{ '960px': '75vw', '641px': '100vw' }" position="top" :pt="{
+                header: {
+                    class: 'mt-6 p-2 lg:p-2 lg:bg-gray-100'
+                },
+                content: {
+                    class: 'p-2 lg:p-2'
+                },
+            }">
+            <form @submit.prevent="addItem">
+                <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 2xl:gap-6 mb-2">
+
+                    <div class="col-span-6 shadow-default xl:col-span-6">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-full object-cover" :src="prod.imagen" alt="" />
+                            <div class="ml-6 text-start">
+                                <p class="text-gray-800 mb-2 text-xs whitespace-pre-line font-bold leading-1">
+                                    {{ prod.nombre }}</p>
+                                <div class="font-bold leading-none text-xs text-gray-800 pb-1">
+                                    Origen: <span class="px-1 py-0  font-normal">
+                                        {{ prod.origen }}
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-6 shadow-default xl:col-span-6">
+                        <InputLabel for="cantidad" value="Cantidad" class="text-base font-medium leading-6 text-gray-900" />
+
+                        <input type="number" required v-model="prod.cantidad" min="1" step="0.1"
+                            class="p-inputtext p-component font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-base">
+
+                    </div>
+
+                    <div class="col-span-6 shadow-default xl:col-span-6">
+                        <InputLabel for="precio" value="Precio" class="text-base font-medium leading-6 text-gray-900" />
+                        <input type="number" required v-model="prod.precio" min="1" step="0.1"
+                            class="p-inputtext p-component font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-base">
+
+                    </div>
+
+                </div>
+                <div class="flex justify-end py-3">
+                    <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="closeModal"
+                        type="button" />
+
+                    <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
+                        :disabled="form.processing" />
+                </div>
+            </form>
+        </Dialog>
+
+        <!--modal agregar producto-->
+        <!--Contenido-->
+
+    </AppLayout>
+</template>
+
+
+
+<style type="text/css" scoped></style>

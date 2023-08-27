@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TipoCambioController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\VentaController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -92,4 +93,18 @@ Route::controller(TipoCambioController::class)->group(function () {
     Route::post('/tipo-cambio/store', 'store')->name('tipo_cambio.store')->middleware('auth');
     Route::delete('/tipo-cambio/{id}', 'destroy')->name('tipo_cambio.destroy')->middleware('auth');
 });
+
+Route::controller(VentaController::class)->group(function () {
+    Route::get('/ventas/ticket/{id}', 'generarTicket')->name('ventas.generar_ticket')->middleware('auth');
+    Route::post('/ventas/update/{id}', 'update')->name('ventas.update')->middleware('auth');
+    Route::get('/ventas/create', 'create')->name('ventas.create')->middleware('auth');
+    Route::post('/ventas/store', 'store')->name('ventas.store')->middleware('auth');
+    Route::get('/ventas', 'index')->name('ventas.index')->middleware('auth');
+    Route::get('/ventas/{id}', 'edit')->name('ventas.edit')->middleware('auth');
+    Route::delete('/ventas/{id}', 'destroy')->name('ventas.destroy')->middleware('auth');
+    Route::post('/ventas/descuento', 'descuento')->name('ventas.descuento')->middleware('auth');
+    Route::get('/ventas/generar_venta/{id}', 'generar')->name('ventas.generar')->middleware('auth');
+});
+
+
 require __DIR__.'/auth.php';

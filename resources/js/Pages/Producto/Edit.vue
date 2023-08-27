@@ -147,7 +147,7 @@ const pickFile = (e) => {
                             <InputLabel for="stock" value="Stock"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <InputNumber v-model="form.stock" inputId="stock" locale="es-UY" size="small" mode="decimal"
-                                readonly showButtons :min="1" :max="99999999" :pt="{
+                                readonly :min="1" :max="99999999" :pt="{
                                     root: { class: 'h-9 p-0 m-0 text-base' },
                                     input: { class: 'h-9 px-0 py-0 m-0 w-full text-end text-base' },
                                     incrementButton: { class: 'm-0 w-auto  rounded-tl-none rounded-br-lg' },
@@ -160,7 +160,7 @@ const pickFile = (e) => {
                             <InputLabel for="stock_minimo" value="Stock Minimo"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <InputNumber v-model="form.stock_minimo" inputId="stock_minimo" locale="es-UY" size="small"
-                                mode="decimal" showButtons readonly :min="1" :max="99999999" :pt="{
+                                mode="decimal" readonly :min="1" :max="99999999" :pt="{
                                     root: { class: 'h-9 p-0 m-0 text-base' },
                                     input: { class: 'h-9 px-0 py-0 m-0 w-full text-end text-base' },
                                     incrementButton: { class: 'm-0 w-auto  rounded-tl-none rounded-br-lg' },

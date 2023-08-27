@@ -106,6 +106,7 @@ export default {
                     <span class="ml-3">Usuarios</span>
                 </NavLinkSideBar>
             </li>
+            <!--
             <li @click="setMenu('clientes')" v-show="permissions.includes('lista-clientes')">
                 <NavLinkSideBar icon-class="fas fa-users"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
@@ -113,11 +114,20 @@ export default {
                     <span class="ml-3">Clientes</span>
                 </NavLinkSideBar>
             </li>
+
+            -->
             <li @click="setMenu('productos')" v-show="permissions.includes('lista-productos')">
                 <NavLinkSideBar icon-class="fas fa-boxes"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
                     :href="route('productos.index')" :active="route().current('productos.index')">
                     <span class="ml-3">Productos</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('ventas')" v-show="permissions.includes('lista-ventas')">
+                <NavLinkSideBar icon-class="fa fa-cash-register"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('ventas.index')" :active="route().current('ventas.index')">
+                    <span class="ml-3">Ventas</span>
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('imoprtaciones')" v-show="permissions.includes('lista-productos')">
