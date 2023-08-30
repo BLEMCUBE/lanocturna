@@ -47,7 +47,7 @@ const submit = () => {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
-            show('success', 'Mensaje', 'Producto creado')
+            show('success', 'Mensaje', 'Producto Actualizado')
             setTimeout(() => {
                 router.get(route(ruta + '.index'));
             }, 1000);
@@ -146,31 +146,22 @@ const pickFile = (e) => {
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock" value="Stock"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <InputNumber v-model="form.stock" inputId="stock" locale="es-UY" size="small" mode="decimal"
-                                readonly :min="1" :max="99999999" :pt="{
-                                    root: { class: 'h-9 p-0 m-0 text-base' },
-                                    input: { class: 'h-9 px-0 py-0 m-0 w-full text-end text-base' },
-                                    incrementButton: { class: 'm-0 w-auto  rounded-tl-none rounded-br-lg' },
-                                    decrementButton: { class: 'm-0 w-auto  rounded-bl-none  rounded-tr-lg' }
-                                }" />
+                            <input type="number" required
+                                v-model="form.stock" step="1" min="0" @update:modelValue="setStock($event)"
+                                class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
+
                             <InputError class="mt-1 text-xs" :message="form.errors.stock" />
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock_minimo" value="Stock Minimo"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <InputNumber v-model="form.stock_minimo" inputId="stock_minimo" locale="es-UY" size="small"
-                                mode="decimal" readonly :min="1" :max="99999999" :pt="{
-                                    root: { class: 'h-9 p-0 m-0 text-base' },
-                                    input: { class: 'h-9 px-0 py-0 m-0 w-full text-end text-base' },
-                                    incrementButton: { class: 'm-0 w-auto  rounded-tl-none rounded-br-lg' },
-                                    decrementButton: { class: 'm-0 w-auto  rounded-bl-none  rounded-tr-lg' }
-                                }" />
+                                <input type="number" required
+                                v-model="form.stock_minimo" step="1" min="0"
+                                class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
                             <InputError class="mt-1 text-xs" :message="form.errors.stock_minimo" />
                         </div>
-
                         <input type="hidden" id="stock_futuro" v-model="form.stock_futuro">
-
                         <div class="col-span-12 shadow-default xl:col-span-6">
                             <InputLabel for="file_input1" value="Imagen"
                                 class="block text-base font-medium leading-6 text-gray-900" />

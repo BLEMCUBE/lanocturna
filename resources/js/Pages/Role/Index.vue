@@ -27,7 +27,7 @@ const filters = ref({
 
             <div
                 class="px-4 py-0 mb-4 bg-white col-span-6 py-5 rounded-lg shadow-lg 2xl:col-span-2 dark:border-gray-700  dark:bg-gray-800">
-                <div class=" px-5 pb-4 col-span-full flex justify-between items-center">
+                <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
                     <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 </div>
                 <div class="align-middle">

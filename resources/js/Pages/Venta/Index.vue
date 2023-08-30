@@ -86,7 +86,7 @@ const filters = ref({
 
             <!--Contenido-->
             <Toast />
-            <div class="px-3 pb-4 col-span-full flex justify-between items-center">
+            <div class="px-3 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
 
                 <Button size="small" :label="'Crear Venta'" severity="success" @click="BtnCrear"></Button>

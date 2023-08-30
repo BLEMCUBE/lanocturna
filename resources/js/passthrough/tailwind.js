@@ -3506,7 +3506,7 @@ const Tailwind_PT = {
         header: function header(_ref170) {
           var props = _ref170.props;
           return {
-            "class": ['bg-secondary-900 text-slate-700 border-white font-semibold py-2 px-', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
+            "class": ['text-slate-700 border-white font-semibold py-2 px-', 'dark:border-blue-900/40 dark:text-white/80 dark:bg-gray-900',
             // Dark Mode
             props.showGridlines ? 'border-x border-t border-0' : 'border-y border-x-0']
           };

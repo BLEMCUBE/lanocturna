@@ -18,7 +18,7 @@ class ProductoUpdateRequest extends FormRequest
             'origen' => 'required',Rule::unique('productos')->ignore($id),
             'nombre' => 'required',
             //'aduana' => 'required',
-            //'codigo_barra' => 'required',
+            'codigo_barra' => 'required',
             //'imagen' => 'image|max:2048|nullable',
             'stock' => 'required',
             'stock_minimo' => 'required',
