@@ -13,6 +13,7 @@ const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
 const titulo = "Ventas"
 const ruta = 'ventas'
+const { tipo_cambio } = usePage().props
 
 const formDelete = useForm({
     id: '',
@@ -70,9 +71,22 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const BtnCrear = () => {
-    router.get(route(ruta + '.create'));
+    if(tipo_cambio==true){
+
+        router.get(route(ruta + '.create'));
+    }else{
+        ok('error','No se ha especificado el tipo de cambio para el día')
+    }
 }
 
+const ok = (icono,mensaje) => {
+
+    Swal.fire({
+        width: 350,
+        title: mensaje,
+        icon: icono
+    })
+}
 
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -88,7 +102,7 @@ const filters = ref({
             <Toast />
             <div class="px-3 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-
+{{ tipo_cambio }}
                 <Button size="small" :label="'Crear Venta'" severity="success" @click="BtnCrear"></Button>
 
             </div>
@@ -109,7 +123,7 @@ const filters = ref({
                         bodyCell: {
                             class: 'text-center'
                         }}"></Column>
-                    <Column field="codigo" header="Vendedor" sortable
+                    <Column field="vendedor" header="Vendedor" sortable
                     :pt="{
                         bodyCell: {
                             class: 'text-center'

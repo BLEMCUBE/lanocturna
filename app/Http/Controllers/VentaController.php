@@ -27,6 +27,7 @@ use App\Models\Destino;
 use App\Models\Envio;
 use App\Models\Kardex;
 use App\Models\Pago;
+use App\Models\TipoCambio;
 use App\Models\User;
 use App\Notifications\PedidoNotification;
 
@@ -43,11 +44,24 @@ class VentaController extends Controller
 
     public function index()
     {
-      /*return  new VentaCollection(
-            Venta::orderBy('created_at', 'DESC')
-                ->get()
-      );*/
+
+        $ultimo_tipo_cambio=TipoCambio::all()->last();
+
+        $hoy_tipo_cambio=false;
+
+        $actual=Carbon::now()->format('Y-m-d');
+        if(!empty($ultimo_tipo_cambio)){
+            $fecha=Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
+        if($fecha->eq($actual)){
+            $hoy_tipo_cambio=true;
+            $tipo_cambio=$ultimo_tipo_cambio;
+            }else{
+                $hoy_tipo_cambio=false;
+            }
+        }
+
         return Inertia::render('Venta/Index', [
+            'tipo_cambio'=>$hoy_tipo_cambio,
             'ventas' => new VentaCollection(
                 Venta::orderBy('created_at', 'DESC')
                     ->get()
@@ -56,6 +70,22 @@ class VentaController extends Controller
     }
     public function create()
     {
+        $ultimo_tipo_cambio=TipoCambio::all()->last();
+
+        $hoy_tipo_cambio=false;
+
+        $actual=Carbon::now()->format('Y-m-d');
+        if(!empty($ultimo_tipo_cambio)){
+            $fecha=Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
+        if($fecha->eq($actual)){
+            $hoy_tipo_cambio=true;
+            $tipo_cambio= number_format($ultimo_tipo_cambio->valor,2)??'' ;
+            }else{
+                $hoy_tipo_cambio=false;
+            }
+        }
+
+
         $last = Venta::latest()->first();
         $vendedor = auth()->user();
 
@@ -89,6 +119,8 @@ class VentaController extends Controller
         }
 
         return Inertia::render('Venta/Create', [
+            'hoy_tipo_cambio'=>$hoy_tipo_cambio,
+            'tipo_cambio'=>$tipo_cambio,
             'codigo' => $codigo,
             'user_id' => $vendedor->id,
             'vendedor' => $vendedor->name,

@@ -18,7 +18,6 @@ class DestinoSeeder extends Seeder
             ["nombre" => "CADETERIA"],
             ["nombre" => "DAC"],
             ["nombre" => "SALON"],
-            ["nombre" => "UES"],
             ["nombre" => "WEB"],
         ];
 

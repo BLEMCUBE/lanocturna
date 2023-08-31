@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
@@ -41,6 +42,11 @@ Route::controller(RoleController::class)->group(function () {
 //opciones
 Route::controller(OpcionesController::class)->group(function () {
     Route::get('/opciones/roles', 'getRoles')->name('opciones.roles')->middleware('auth');
+
+});
+//cofonfiguraciones
+Route::controller(ConfiguracionController::class)->group(function () {
+    Route::get('/configuraciones', 'index')->name('configuraciones.index')->middleware('auth');
 
 
 });
@@ -95,6 +101,7 @@ Route::controller(TipoCambioController::class)->group(function () {
 });
 
 Route::controller(VentaController::class)->group(function () {
+
     Route::get('/ventas/ticket/{id}', 'generarTicket')->name('ventas.generar_ticket')->middleware('auth');
     Route::post('/ventas/update/{id}', 'update')->name('ventas.update')->middleware('auth');
     Route::get('/ventas/create', 'create')->name('ventas.create')->middleware('auth');
