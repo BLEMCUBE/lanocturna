@@ -88,10 +88,14 @@ const show = (tipo, titulo, mensaje) => {
 const BtnCrear = () => {
     router.get(route(ruta + '.create'));
 }
+const clickDetalle=(e)=>{
+console.log('ee ',e.data.id)
+btnVer(e.data.id)
+}
 
 
 const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 </script>
 <template>
@@ -102,7 +106,7 @@ const filters = ref({
 
             <!--Contenido-->
             <Toast />
-            <div class="px-3 pb-4 col-span-full flex justify-between items-center">
+            <div class="px-3 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
 
                 <Button size="small" :label="'Agregar Producto'" severity="success" @click="BtnCrear"></Button>
@@ -111,8 +115,13 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable :rowClass="rowClass" showGridlines :filters="filters" :value="tabla_productos" paginator
-                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" size="small">
+                <DataTable :rowClass="rowClass" showGridlines :filters="filters" :value="tabla_productos"
+                :pt="{
+                    bodyRow:{class:'hover:cursor-pointer'}
+                }"
+                scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem"
+                @row-click="clickDetalle"
+                 size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -120,7 +129,17 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="origen" header="Origen" sortable></Column>
+
+                    <Column field="stock" sortable header="Stock" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="stock_futuro" sortable header="Stock futuro" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
                     <Column field="imagen" header="Imagen" style="width:60px" :pt="{
                         bodyCell: {
                             class: 'flex justify-center text-center'
@@ -136,37 +155,18 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="aduana" header="Aduana" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="codigo_barra" header="Código barra" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="stock" sortable header="Stock" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="stock_minimo" sortable header="Stock mínimo" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="stock_futuro" sortable header="Stock futuro" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
+                    <Column field="origen" header="Origen" sortable></Column>
+
+
                     <Column header="Acciones" style="width:130px">
                         <template #body="slotProps">
-                            <button v-if="permissions.includes('editar-productos')"
+                            <!--
+
+                                <button v-if="permissions.includes('editar-productos')"
                                 class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
                                 v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
                                 @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
+                            -->
 
                             <button v-if="permissions.includes('editar-productos')"
                                 class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"

@@ -103,15 +103,11 @@ const show = (tipo, titulo, mensaje) => {
                     <div class="col-span-6 shadow-default xl:col-span-6">
                         <InputLabel for="nombre" value="Nombre"
                             class="block text-base font-medium leading-6 text-gray-900" />
-                        <InputNumber v-model="form.valor" inputId="stock" size="small"
-                            mode="currency" :min="1" :max="99999999" :style="{ width: '100vw' }"
-                            currency="USD" locale="en-US"
-                            :breakpoints="{ '960px': '75vw', '641px': '100vw' }" :pt="{
-                                root: { class: 'h-9 p-0 m-0 text-base' },
-                                input: { class: 'h-9 px-0 py-0 m-0 w-full text-end text-base' },
-                                incrementButton: { class: 'm-0 w-auto  rounded-tl-none rounded-br-lg' },
-                                decrementButton: { class: 'm-0 w-auto  rounded-bl-none  rounded-tr-lg' }
-                            }" />
+                            <input type="number"
+                                            v-model="form.valor" min="1" step="0.01"
+
+                                            class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
+
                         <InputError class="mt-1 text-xs" :message="form.errors.valor" />
                     </div>
 

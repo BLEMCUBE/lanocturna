@@ -15,7 +15,7 @@ class TipoCambio extends Model
         'created_at'
     ];
 
-    protected $casts = [
-        //'fecha_nacimiento' => 'date',
-    ];
+    /*protected $casts = [
+        'created_at' => 'date',
+    ];*/
 }

@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('ventas', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')->nullable();
-            $table->float('porcentaje_impuesto',8,2)->nullable();
-            $table->float('impuesto',8,2)->default(0);
-            $table->float('neto',8,2)->default(0);
+            $table->string('moneda')->nullable();
+            $table->float('tipo_cambio',8,2)->default(0);
             $table->float('total',8,2)->default(0);
+            $table->float('total_iva',8,2)->default(0);
             $table->string('destino')->nullable();
             $table->boolean('facturado')->default(false);
             $table->boolean('validado')->default(false);
-            $table->string('estado')->default('PENDIENTE A FACTURACIÓN');
+            $table->string('estado')->default('PENDIENTE');
             $table->text('observaciones')->nullable();
             $table->json('cliente')->nullable();
             $table->unsignedBigInteger('vendedor_id')->nullable();
