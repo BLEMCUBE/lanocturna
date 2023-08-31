@@ -13,38 +13,61 @@ const toast = useToast();
 const titulo = "Venta"
 const ruta = 'ventas'
 const { vendedor } = usePage().props
+const { tipo_cambio } = usePage().props
 const { lista_destinos } = usePage().props
 const prod = useForm({
     producto_id: '',
     nombre: '',
     origen: '',
     imagen: '',
-    cantidad: 1,
-    precio: 1
+    cantidad: '',
+    precio: ''
 })
 const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    'origen': { value: null, matchMode: FilterMatchMode.CONTAINS },
+    'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 const setDestino = (e) => {
     var tipo = lista_destinos.find(prod => prod.value === e);
        form.destino=e;
 
 }
+const setMoneda= (e) => {
+
+    if(e=='Pesos'){
+        form.productos.forEach((item, index) => {
+        item['precio']=parseFloat(item['precio']*tipo_cambio).toFixed(2)
+        item['total']=item['cantidad']*item['precio']
+    })
+    }else{
+        form.productos.forEach((item, index) => {
+        console.log('pr ', item['precio'])
+        item['precio']=parseFloat(item['precio']/tipo_cambio).toFixed(2)
+        item['total']=item['cantidad']*item['precio']
+    })
+    }
+    form.moneda=e;
+    sumaTotal()
+        calculoImpuesto()
+    }
+
+
+
 const form = useForm({
     vendedor_id: '',
     destino: '',
     total: 0.0,
+    moneda:'',
     neto: 0.0,
-    estado: 'PENDIENTE A FACTURACION',
+    tipo_pago:'',
+    estado: 'PENDIENTE',
     impuesto: '',
     porcentaje_impuesto: '',
     observaciones: '',
     productos: [],
-    cliente:
-        {nombre:'',
-    direccion:''}
-    ,
+    cliente:{
+        nombre:'',
+        direccion:''
+},
 
 })
 const isShowModal = ref(false);
@@ -57,8 +80,20 @@ const lista_destino = ref({
     options: [],
 });
 
+const lista_moneda = ref({
+    value: 'Pesos',
+    closeOnSelect: true,
+    placeholder: "Seleccione",
+    searchable: false,
+    options: [
+        { "value": "Pesos", "label": "Pesos" },
+        { "value": "Dolares", "label": "Dolares" },
+    ],
+});
 onMounted(() => {
     lista_destino.value.options = lista_destinos
+    form.tipo_cambio=tipo_cambio
+    form.moneda="Pesos"
 })
 
 
@@ -82,7 +117,7 @@ const modalProducto = (id) => {
 
 };
 const addToCart = (id) => {
-
+form.clearErrors();
     var produ = productos.data.find(pr => pr.id === id);
     if (produ.stock > 0) {
         form.productos.push(
@@ -91,9 +126,10 @@ const addToCart = (id) => {
                 nombre: produ.nombre,
                 origen: produ.origen,
                 cantidad: 1,
-                precio: 1,
+                precio: null,
                 stock: produ.stock,
-                total: (1).toFixed(2) * (1).toFixed(2)
+                //total: (1).toFixed(2) * (1).toFixed(2)
+                total:1
             }
         )
         sumaTotal()
@@ -119,7 +155,8 @@ const addItem = () => {
             nombre: prod.nombre,
             cantidad: (prod.cantidad).toFixed(2),
             precio: (prod.precio).toFixed(2),
-            total: (prod.cantidad).toFixed(2) * (prod.precio).toFixed(2)
+            //total: (prod.cantidad).toFixed(2) * (prod.precio).toFixed(2)
+            total: 0
         }
     )
 
@@ -146,15 +183,18 @@ const calculoImpuesto = () => {
 }
 
 const sumaTotalProducto = ($event, id) => {
+    var precio_temp=(form.productos[id].precio ===null) ? 1 : form.productos[id].precio
+    console.log('pre ', precio_temp)
     if ($event.target.value > 0) {
 
         if (form.productos[id].stock >= form.productos[id].cantidad) {
-            form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(form.productos[id].precio)).toFixed(2)
+            form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
             sumaTotal()
             calculoImpuesto()
         } else {
             form.productos[id].cantidad = 1
-            form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(form.productos[id].precio)).toFixed(2)
+            //form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(form.productos[id].precio)).toFixed(2)
+            form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
             alerta('La cantidad supera el Stock', 'error')
         }
     } else {
@@ -222,7 +262,7 @@ const cancelCrear = () => {
                 <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
                     <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 </div>
-                <form @submit.prevent="submit">
+                <form>
 
                     <div class="grid grid-cols-12 gap-1 py-0">
 
@@ -245,21 +285,21 @@ const cancelCrear = () => {
                                     class="font-sans  font-normal text-gray-800 border border-gray-300">
                                     <td class="border border-gray-300 p-2">{{ producto.origen }}</td>
                                     <td class="border border-gray-300 p-2">{{ producto.nombre }}</td>
-                                    <td class="border border-gray-300"><input type="number" required
-                                            v-model="producto.cantidad" min="1" step="0.1"
+                                    <td class="border border-gray-300"><input type="number"
+                                            v-model="producto.cantidad" min="1" step="1"
                                             class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm"
-                                            @input="sumaTotalProducto($event, index)">
+                                            @input.prevent="sumaTotalProducto($event, index)"/>
                                     </td>
-                                    <td class="border border-gray-300"><input type="number" required
-                                            v-model="producto.precio" min="1" step="0.1"
+                                    <td class="border border-gray-300"><input type="number"
+                                            v-model="producto.precio" min="1" step="1"
                                             @input="sumaTotalProducto($event, index)"
-                                            class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm">
+                                            class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm"/>
                                     </td>
                                     <td class="border border-gray-300 p-2">{{ producto.total }} </td>
                                     <td class="border-none  border-gray-300  ">
                                         <div
                                             class="rounded-none flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
-                                            <button @click.prevent="removerProducto(index)" class="w-6"
+                                            <button type="button" @click.prevent="removerProducto(index)" class="w-6"
                                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"><i
                                                  class="fas fa-trash"></i></button>
                                         </div>
@@ -268,13 +308,17 @@ const cancelCrear = () => {
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="4" class="text-end"><b>Subtotal:  </b></td>
+                                    <td colspan="4" class="text-end"><b>Total:  </b></td>
                                     <td  class="text-end"><b> {{ form.neto }} </b></td>
                                 </tr>
+                            <!--
+
                                 <tr>
+
                                     <td colspan="4" class="text-end"><b>Total (con impuestos):  </b></td>
                                     <td  class="text-end"><b> {{ form.total }} </b></td>
                                 </tr>
+                            -->
                             </tfoot>
                         </table>
                         <div class="col-span-12  p-2 xl:col-span-12">
@@ -287,9 +331,26 @@ const cancelCrear = () => {
                             <h5 class="text-lg font-medium">Datos venta</h5>
                         </div>
                         <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="tipo_cambio" value="Tipo de cambio"
+                                class="text-base font-medium leading-1 text-gray-900" />
+                            <InputText type="text" id="tipo_cambio" v-model="tipo_cambio" readonly :pt="{
+                                root: { class: 'h-9 w-full' }
+                            }" />
+                            <InputError class="mt-1 text-xs" :message="form.errors.tipo_cambio" />
+                        </div>
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="moneda" value="Moneda"
+                                class="text-base font-medium leading-1 text-gray-900" />
+                            <Multiselect id="moneda" v-model="form.moneda" v-bind="lista_moneda"
+                            @select="setMoneda">
+                            </Multiselect>
+                            <InputError class="mt-1 text-xs" :message="form.errors.moneda" />
+                        </div>
+
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
                             <InputLabel for="vendedor" value="Vendedor"
                                 class="text-base font-medium leading-1 text-gray-900" />
-                            <InputText type="text" id="nro_carpeta" v-model="vendedor" readonly :pt="{
+                            <InputText type="text" id="vendedor" v-model="vendedor" readonly :pt="{
                                 root: { class: 'h-9 w-full' }
                             }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.vendedor_id" />
@@ -379,8 +440,8 @@ const cancelCrear = () => {
                     <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="cancelCrear"
                         type="button" />
 
-                    <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
-                        :disabled="form.processing" />
+                    <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
+                        :disabled="form.processing"  @click.prevent="submit"/>
                 </div>
 
                 </form>
@@ -391,9 +452,11 @@ const cancelCrear = () => {
 
             <!--Productos-->
             <div class="p-0 mb-0 col-span-12  lg:col-span-4 ">
-                <DataTable showGridlines :filters="filters" scrollable scrollHeight="400px" resizableColumns
-                    :globalFilterFields="['origen', 'nombre']" columnResizeMode="fit" :value="productos.data" paginator
-                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" size="small">
+                <DataTable showGridlines :filters="filters" scrollable scrollHeight="400px"
+                    :globalFilterFields="['origen', 'nombre']"  :value="productos.data"
+                     :virtualScrollerOptions="{ itemSize: 46 }"
+
+                    size="small">
                     <template #header>
                         <div class="flex justify-content-end text-sm">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -402,7 +465,7 @@ const cancelCrear = () => {
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
 
-                    <Column field="nombre" header="" :pt="{
+                    <Column field="nombre" header="Productos" :pt="{
                         bodyCell: {
                             class: 'flex justify-start text-center p-0 mx-0'
                         }
@@ -455,6 +518,9 @@ const cancelCrear = () => {
         </div>
 
         <!--modal agregar producto-->
+        <!--
+
+
         <Dialog v-model:visible="isShowModal" modal header="Producto" :style="{ width: '65vw' }"
             :breakpoints="{ '960px': '75vw', '641px': '100vw' }" position="top" :pt="{
                 header: {
@@ -503,12 +569,12 @@ const cancelCrear = () => {
                     <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="closeModal"
                         type="button" />
 
-                    <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
+                    <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
                         :disabled="form.processing" />
                 </div>
             </form>
         </Dialog>
-
+-->
         <!--modal agregar producto-->
         <!--Contenido-->
 
