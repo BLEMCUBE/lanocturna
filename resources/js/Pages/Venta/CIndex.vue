@@ -21,7 +21,7 @@ const formDelete = useForm({
 
 
 const btnVer = (id) => {
-    router.get(route(ruta + '.show', [id,ruta]));
+    router.get(route(ruta + '.show', id));
 
 };
 const btnEditar = (id) => {
@@ -60,10 +60,6 @@ const btnEliminar = (id, name) => {
     });
 }
 
-const clickDetalle=(e)=>{
-console.log('ee ',e.data.id)
-btnVer(e.data.id)
-}
 onMounted(() => {
 
     tabla_ventas.value = usePage().props.ventas.data;
@@ -93,7 +89,7 @@ const ok = (icono,mensaje) => {
 }
 
 const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+    'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 });
 </script>
 <template>
@@ -112,13 +108,8 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable  showGridlines :filters="filters" :value="tabla_ventas"
-                :pt="{
-                    bodyRow:{class:'hover:cursor-pointer'}
-                }"
-                scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem"
-                @row-click="clickDetalle"
-                    size="small">
+                <DataTable  showGridlines :filters="filters" :value="tabla_ventas" paginator
+                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -126,11 +117,6 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="fecha" header="Facha y hora" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
                     <Column field="codigo" header="No. Pedido" sortable
                     :pt="{
                         bodyCell: {
@@ -152,7 +138,16 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-
+                    <Column field="fecha" header="Facha y hora" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="localidad" header="Localidad" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
                     <Column field="estado" header="Estado" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
@@ -180,6 +175,30 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
+
+
+<!--
+                    <Column header="Acciones" style="width:130px">
+                        <template #body="slotProps">
+                            <button v-if="permissions.includes('editar-productos')"
+                                class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
+                                v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
+                                @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
+
+                            <button v-if="permissions.includes('editar-productos')"
+                                class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
+                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                @click.prevent="btnEditar(slotProps.data.id)"><i class="fas fa-edit"></i></button>
+                            <button v-if="permissions.includes('eliminar-productos')"
+                                class="w-8 h-8 rounded bg-red-700   px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
+                                v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                @click.prevent="btnEliminar(slotProps.data.id, slotProps.data.nombre)"><i
+                                    class="fas fa-trash-alt"></i></button>
+
+                        </template>
+                    </Column>
+
+                    -->
                 </DataTable>
 
             </div>

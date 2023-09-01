@@ -222,11 +222,6 @@ const cancelCrear = () => {
             class="grid grid-cols-12 p-0 m-0 gap-2 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <Toast />
-            <!--
-               <div class="px-3 col-span-full  mb-2 flex justify-between items-center">
-                   <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-                </div>
-            -->
             <div class="mt-0 mb-4 col-span-12 lg:col-span-8">
 
                 <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
@@ -280,23 +275,8 @@ const cancelCrear = () => {
                             <tfoot>
                                 <tr>
                                     <td colspan="4" class="text-end"><b>Total: </b></td>
-                                    <td class="text-end"><b> {{ form.total }} </b></td>
+                                    <td class="text-end"><b> {{ form.moneda=='Pesos'?'$ ':'USD ' }} {{ form.total }} </b></td>
                                 </tr>
-
-<!--
-
-    <tr>
-
-        <td colspan="4" class="text-end"><b>Total (con impuestos):  </b></td>
-        <td  class="text-end"><b> {{ form.total }} </b></td>
-    </tr>
-
-    <tr>
-
-        <td colspan="4" class="text-end"><b>Total (sin impuesto):  </b></td>
-        <td  class="text-end"><b> {{ form.total_sin_iva }} </b></td>
-    </tr>
--->
 
                             </tfoot>
                         </table>
@@ -428,7 +408,7 @@ const cancelCrear = () => {
 
             <!--Productos-->
             <div class="p-0 mb-0 col-span-12  lg:col-span-4 ">
-                <DataTable showGridlines :filters="filters" scrollable scrollHeight="400px"
+                <DataTable showGridlines :filters="filters" scrollable scrollHeight="550px"
                     :globalFilterFields="['origen', 'nombre']" :value="productos.data"
                     :virtualScrollerOptions="{ itemSize: 46 }" size="small">
                     <template #header>

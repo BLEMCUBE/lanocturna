@@ -19,7 +19,7 @@ class RolesAndPermissionsSeeder extends Seeder
         */
         $this->permissions =  [
 
-            ['name' => 'historial-pedidos', 'description' => 'Historial Pedidos'],
+            //['name' => 'historial-pedidos', 'description' => 'Historial Pedidos'],
             ['name' => 'importaciones', 'description' => 'Importaciones'],
 
             //Usuarios

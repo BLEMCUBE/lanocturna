@@ -2,34 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\PedidoEvent;
 use App\Http\Requests\VentaStoreRequest;
 use App\Http\Resources\ProductoVentaCollection;
 use App\Http\Resources\VentaCollection;
 use App\Models\Cliente;
-use App\Models\Configuracion;
 use Exception;
-use App\Models\MetodoPago;
 use App\Models\Producto;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use App\Models\Venta;
-
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
-use Elibyy\TCPDF\Facades\TCPDF;
-use App\Helpers\HelperNumeros;
-use App\Http\Requests\VentaUpdateRequest;
-use App\Models\Cotizacion;
+use App\Http\Resources\VentaResource;
 use App\Models\Destino;
-use App\Models\Envio;
-use App\Models\Kardex;
-use App\Models\Pago;
 use App\Models\TipoCambio;
-use App\Models\User;
-use App\Notifications\PedidoNotification;
+
 
 class VentaController extends Controller
 {
@@ -192,5 +178,21 @@ class VentaController extends Controller
         }
     }
 
+    public function show($id,$tipo)
+    {
+        $subtema = Venta::with(['detalles_ventas' => function ($query) {
+            $query->select('venta_detalles.*')->with(['producto' => function ($query) {
+                $query->select('id','nombre','codigo_barra','origen');
+        }]);
+        }])
+            ->with(['vendedor' => function ($query) {
+                $query->select('users.id','users.name');
+            }])
+            ->orderBy('id', 'DESC')->findOrFail($id);
 
+        $venta = new VentaResource($subtema);
+        return Inertia::render('Venta/Show', [
+            'venta' => $venta
+        ]);
+    }
 }

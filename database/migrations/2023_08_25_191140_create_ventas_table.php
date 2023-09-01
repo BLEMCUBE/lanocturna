@@ -23,6 +23,7 @@ return new class extends Migration
             $table->boolean('validado')->default(false);
             $table->string('estado')->default('PENDIENTE');
             $table->text('observaciones')->nullable();
+            $table->text('motivo_anulacion')->nullable();
             $table->json('cliente')->nullable();
             $table->unsignedBigInteger('vendedor_id')->nullable();
             $table->unsignedBigInteger('facturador_id')->nullable();

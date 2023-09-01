@@ -28,6 +28,7 @@ class VentaCollection extends ResourceCollection
                     'estado' => $row->estado??'',
                     'observaciones' => $row->observaciones??'',
                     'total' => number_format($row->total,2)??'',
+                    'moneda' => $row->moneda,
                     'fecha'=>Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at)->format('d/m/Y H:i:s'),
                 ];
             }),

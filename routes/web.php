@@ -107,7 +107,8 @@ Route::controller(VentaController::class)->group(function () {
     Route::get('/ventas/create', 'create')->name('ventas.create')->middleware('auth');
     Route::post('/ventas/store', 'store')->name('ventas.store')->middleware('auth');
     Route::get('/ventas', 'index')->name('ventas.index')->middleware('auth');
-    Route::get('/ventas/{id}', 'edit')->name('ventas.edit')->middleware('auth');
+    //Route::get('/ventas/{id}/{tipo}', 'edit')->name('ventas.edit')->middleware('auth');
+    Route::get('/ventas/{id}/{tipo}', 'show')->name('ventas.show')->middleware('auth');
     Route::delete('/ventas/{id}', 'destroy')->name('ventas.destroy')->middleware('auth');
 
 });
