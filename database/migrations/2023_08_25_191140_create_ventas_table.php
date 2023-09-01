@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('moneda')->nullable();
             $table->float('tipo_cambio',8,2)->default(0);
             $table->float('total',8,2)->default(0);
-            $table->float('total_iva',8,2)->default(0);
+            $table->float('total_sin_iva',8,2)->default(0);
             $table->string('destino')->nullable();
             $table->boolean('facturado')->default(false);
             $table->boolean('validado')->default(false);

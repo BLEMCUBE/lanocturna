@@ -31,6 +31,7 @@ class VentaStoreRequest extends FormRequest
         return [
              'cliente.nombre.required' => 'Este campo es obligatorio.',
              'destino.required' => 'Este campo es obligatorio.',
+             'cliente.direccion.required_if' => 'Este campo es obligatorio.',
              'productos.required' => 'Debe Seleccionar un producto',
         ];
     }

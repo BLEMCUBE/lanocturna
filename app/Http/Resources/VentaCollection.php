@@ -23,11 +23,10 @@ class VentaCollection extends ResourceCollection
                     'cliente'=>$dat->nombre??'',
                     'destino' => $row->destino??'',
                     'localidad' => $dat->localidad??'',
-                    'neto' => number_format($row->neto,2)??'',
+                    'total_sin_iva' => number_format($row->total_sin_iva,2)??'',
                     'vendedor' => $row->vendedor->name,
                     'estado' => $row->estado??'',
                     'observaciones' => $row->observaciones??'',
-                    'impuesto' => number_format($row->impuesto,2)??'',
                     'total' => number_format($row->total,2)??'',
                     'fecha'=>Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at)->format('d/m/Y H:i:s'),
                 ];

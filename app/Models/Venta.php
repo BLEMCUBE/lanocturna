@@ -15,10 +15,8 @@ class Venta extends Model
     protected $fillable = [
         'id',
         'codigo',
-        'impuesto',
-        'porcentaje_impuesto',
         'total',
-        'total_iva',
+        'total_sin_iva',
         'moneda',
         'tipo_cambio',
         'observaciones',

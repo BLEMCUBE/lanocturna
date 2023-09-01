@@ -15,10 +15,10 @@ class VentaDetalle extends Model
         'venta_id',
         'producto_id',
         'precio',
-        'precio_iva',
+        'precio_sin_iva',
         'cantidad',
         'total',
-        'total_iva',
+        'total_sin_iva',
         'producto_validado',
 
     ];

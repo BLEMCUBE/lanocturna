@@ -152,12 +152,11 @@ class VentaController extends Controller
             //creando venta
             $venta = Venta::create([
                 'codigo' => $codigo,
-                'impuesto' => $request->impuesto,
-                'porcentaje_impuesto' => $request->porcentaje_impuesto,
-                'neto' => $request->neto ?? 0,
-                'saldo' => $request->saldo ?? 0,
+                'total_sin_iva' => $request->total_sin_iva ?? 0,
                 'total' => $request->total ?? 0,
                 'estado' => $request->estado,
+                'moneda' => $request->moneda,
+                'tipo_cambio' => $request->tipo_cambio,
                 'destino' => $request->destino,
                 'cliente' => json_encode($request->cliente),
                 'observaciones' => $request->observaciones,
@@ -172,8 +171,10 @@ class VentaController extends Controller
                     [
                         "producto_id" => $producto['producto_id'],
                         "precio" => $producto['precio'],
+                        "precio_sin_iva" => $producto['precio_sin_iva'],
                         "cantidad" => $producto['cantidad'],
                         "total" => $producto['total'],
+                        "total_sin_iva" => $producto['total_sin_iva'],
                     ]
                 );
             }

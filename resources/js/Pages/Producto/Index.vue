@@ -150,12 +150,13 @@ const filters = ref({
                                 :src="slotProps.data.imagen" alt="image description">
                         </template>
                     </Column>
+                    <Column field="origen" header="Origen" sortable></Column>
                     <Column field="nombre" header="Nombre" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="origen" header="Origen" sortable></Column>
+
 
 
                     <Column header="Acciones" style="width:130px">

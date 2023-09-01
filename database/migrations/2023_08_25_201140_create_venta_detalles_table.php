@@ -17,9 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('producto_id')->nullable();
             $table->float('cantidad',8,2)->default(0);
             $table->float('precio',8,2)->default(0);
-            $table->float('precio_iva',8,2)->default(0);
+            $table->float('precio_sin_iva',8,2)->default(0);
             $table->float('total',8,2)->default(0);
-            $table->float('total_iva',8,2)->default(0);
+            $table->float('total_sin_iva',8,2)->default(0);
             $table->boolean('producto_validado')->default(false);
             $table->timestamps();
 

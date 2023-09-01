@@ -102,7 +102,6 @@ const filters = ref({
             <Toast />
             <div class="px-3 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-{{ tipo_cambio }}
                 <Button size="small" :label="'Crear Venta'" severity="success" @click="BtnCrear"></Button>
 
             </div>
@@ -154,17 +153,13 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="neto" sortable header="Neto" :pt="{
+                    <Column field="total_sin_iva" sortable header="Total sin IVA" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
 
                     }"></Column>
-                       <Column field="impuesto" sortable header="Impuesto" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
+
                     <Column field="total" sortable header="Total" :pt="{
                         bodyCell: {
                             class: 'text-center'
