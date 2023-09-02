@@ -166,6 +166,13 @@ export default {
                     <span class="ml-3">Caja</span>
                 </NavLinkSideBar>
             </li>
+            <li @click="setMenu('expediciones')" v-show="permissions.includes('lista-expediciones')">
+                <NavLinkSideBar icon-class="fas fa-warehouse"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('expediciones.index')"
+                    :active="route().current('expediciones.index')">
+                    <span class="ml-3">Expedición</span>
+                </NavLinkSideBar>
+            </li>
             <li @click="setMenu('imoprtaciones')" v-show="permissions.includes('lista-productos')">
                 <NavLinkSideBar icon-class="fa-solid fa-cart-plus"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"

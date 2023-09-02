@@ -3,6 +3,7 @@
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
@@ -101,6 +102,7 @@ Route::controller(TipoCambioController::class)->group(function () {
     Route::delete('/tipo-cambio/{id}', 'destroy')->name('tipo_cambio.destroy')->middleware('auth');
 });
 
+//Venta
 Route::controller(VentaController::class)->group(function () {
     Route::post('/ventas/update/{id}', 'update')->name('ventas.update')->middleware('auth');
     Route::get('/ventas/edit/{id}', 'edit')->name('ventas.edit')->middleware('auth');
@@ -112,12 +114,19 @@ Route::controller(VentaController::class)->group(function () {
 
 });
 
+//Caja
 Route::controller(CajaController::class)->group(function () {
     Route::post('/cajas/update/{id}', 'update')->name('cajas.update')->middleware('auth');
     Route::get('/cajas/edit/{id}', 'edit')->name('cajas.edit')->middleware('auth');
     Route::get('/cajas/facturar/{id}', 'facturar')->name('cajas.facturar')->middleware('auth');
     Route::get('/cajas', 'index')->name('cajas.index')->middleware('auth');
     Route::get('/cajas/{id}', 'show')->name('cajas.show')->middleware('auth');
+});
+
+//Expedicion
+Route::controller(ExpedicionController::class)->group(function () {
+    Route::get('/expediciones', 'index')->name('expediciones.index')->middleware('auth');
+    Route::get('/expediciones/{id}', 'show')->name('expediciones.show')->middleware('auth');
 });
 
 
