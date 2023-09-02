@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('destino')->nullable();
             $table->boolean('facturado')->default(false);
             $table->boolean('validado')->default(false);
-            $table->string('estado')->default('PENDIENTE');
+            $table->string('estado')->default('PENDIENTE DE FACTURACIÓN');
             $table->text('observaciones')->nullable();
             $table->text('motivo_anulacion')->nullable();
             $table->json('cliente')->nullable();

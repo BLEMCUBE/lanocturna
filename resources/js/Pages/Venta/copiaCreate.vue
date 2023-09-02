@@ -58,7 +58,7 @@ const form = useForm({
     moneda:'',
     neto: 0.0,
     tipo_pago:'',
-    estado: 'PENDIENTE',
+    estado: 'PENDIENTE DE FACTURACIÓN',
     impuesto: '',
     porcentaje_impuesto: '',
     observaciones: '',
@@ -86,7 +86,7 @@ const lista_moneda = ref({
     searchable: false,
     options: [
         { "value": "Pesos", "label": "Pesos" },
-        { "value": "Dolares", "label": "Dolares" },
+        { "value": "Dólares", "label": "Dólares" },
     ],
 });
 onMounted(() => {

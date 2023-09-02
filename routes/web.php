@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\ImportacionController;
@@ -101,7 +102,6 @@ Route::controller(TipoCambioController::class)->group(function () {
 });
 
 Route::controller(VentaController::class)->group(function () {
-
     Route::post('/ventas/update/{id}', 'update')->name('ventas.update')->middleware('auth');
     Route::get('/ventas/edit/{id}', 'edit')->name('ventas.edit')->middleware('auth');
     Route::get('/ventas/create', 'create')->name('ventas.create')->middleware('auth');
@@ -110,6 +110,14 @@ Route::controller(VentaController::class)->group(function () {
     Route::get('/ventas/{id}', 'show')->name('ventas.show')->middleware('auth');
     Route::delete('/ventas/{id}', 'destroy')->name('ventas.destroy')->middleware('auth');
 
+});
+
+Route::controller(CajaController::class)->group(function () {
+    Route::post('/cajas/update/{id}', 'update')->name('cajas.update')->middleware('auth');
+    Route::get('/cajas/edit/{id}', 'edit')->name('cajas.edit')->middleware('auth');
+    Route::get('/cajas/facturar/{id}', 'facturar')->name('cajas.facturar')->middleware('auth');
+    Route::get('/cajas', 'index')->name('cajas.index')->middleware('auth');
+    Route::get('/cajas/{id}', 'show')->name('cajas.show')->middleware('auth');
 });
 
 

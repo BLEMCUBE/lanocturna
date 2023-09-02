@@ -11,7 +11,8 @@ import Swal from 'sweetalert2';
 import { FilterMatchMode } from 'primevue/api';
 const toast = useToast();
 const titulo = "Venta"
-const ruta = 'ventas'
+const ruta = 'cajas'
+
 
 const { lista_destinos } = usePage().props
 const prod = useForm({
@@ -220,7 +221,8 @@ const submit = () => {
         onSuccess: () => {
             show('success', 'Mensaje', 'Venta Actualizada')
             setTimeout(() => {
-                router.get(route(ruta + '.index'));
+                //router.get(route(ruta + '.index'));
+                router.get(route(ruta + '.show', id));
             }, 1000);
         },
         onFinish: () => {

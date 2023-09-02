@@ -19,6 +19,25 @@ const formDelete = useForm({
     id: '',
 });
 
+const colorEstado = (estado) => {
+    switch (estado) {
+        case 'PENDIENTE DE FACTURACIÓN':
+            return 'text-orange-600'
+            break;
+        case 'FACTURADO':
+            return 'text-blue-600'
+            break;
+        case 'COMPLETADO':
+            return 'text-green-600'
+            break;
+        case 'ANULADO':
+            return 'text-red-600'
+            break;
+        default:
+            return 'text-black'
+            break;
+    }
+}
 
 const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
@@ -60,9 +79,9 @@ const btnEliminar = (id, name) => {
     });
 }
 
-const clickDetalle=(e)=>{
+const clickDetalle = (e) => {
 
-btnVer(e.data.id)
+    btnVer(e.data.id)
 }
 onMounted(() => {
 
@@ -75,15 +94,15 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const BtnCrear = () => {
-    if(tipo_cambio==true){
+    if (tipo_cambio == true) {
 
         router.get(route(ruta + '.create'));
-    }else{
-        ok('error','No se ha especificado el tipo de cambio para el día')
+    } else {
+        ok('error', 'No se ha especificado el tipo de cambio para el día')
     }
 }
 
-const ok = (icono,mensaje) => {
+const ok = (icono, mensaje) => {
 
     Swal.fire({
         width: 350,
@@ -112,13 +131,10 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable  showGridlines :filters="filters" :value="tabla_ventas"
-                :pt="{
-                    bodyRow:{class:'hover:cursor-pointer'}
-                }"
-                scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem"
-                @row-click="clickDetalle"
-                    size="small">
+                <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
+                    bodyRow: { class: 'hover:cursor-pointer' }
+                }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"
+                    tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -131,21 +147,21 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="codigo" header="No. Pedido" sortable
-                    :pt="{
+                    <Column field="codigo" header="No. Pedido" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
-                        }}"></Column>
-                    <Column field="vendedor" header="Vendedor" sortable
-                    :pt="{
+                        }
+                    }"></Column>
+                    <Column field="vendedor" header="Vendedor" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
-                        }}"></Column>
-                    <Column field="cliente" header="Cliente" sortable
-                    :pt="{
+                        }
+                    }"></Column>
+                    <Column field="cliente" header="Cliente" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
-                        }}"></Column>
+                        }
+                    }"></Column>
 
                     <Column field="destino" header="Destino" sortable :pt="{
                         bodyCell: {
@@ -157,7 +173,13 @@ const filters = ref({
                         bodyCell: {
                             class: 'text-center'
                         }
-                    }"></Column>
+                    }">
+                        <template #body="slotProps">
+                            <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
+                                {{ slotProps.data.estado }}
+                            </span>
+                        </template>
+                    </Column>
                     <Column field="moneda" header="Moneda" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
@@ -183,10 +205,10 @@ const filters = ref({
 
                     <Column header="Acciones" style="width:100px">
                         <template #body="slotProps">
-                            <Button v-if="permissions.includes('editar-ventas')"  @click="btnEditar(slotProps.data.id)"
+                            <Button v-if="permissions.includes('editar-ventas')" @click="btnEditar(slotProps.data.id)"
                                 class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-2 hover:bg-primary-100"
-                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                               ><i class="fas fa-edit"></i></Button>
+                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+                                    class="fas fa-edit"></i></Button>
 
                         </template>
                     </Column>
@@ -194,9 +216,7 @@ const filters = ref({
 
             </div>
             <!--Contenido-->
-
         </div>
-
     </AppLayout>
 </template>
 

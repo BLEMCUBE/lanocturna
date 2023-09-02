@@ -63,7 +63,7 @@ const form = useForm({
     total_sin_iva: 0.0,
     moneda: '',
     tipo_cambio: '',
-    estado: 'PENDIENTE',
+    estado: 'PENDIENTE DE FACTURACIÓN',
     observaciones: '',
     productos: [],
     cliente: {
@@ -89,7 +89,7 @@ const lista_moneda = ref({
     searchable: false,
     options: [
         { "value": "Pesos", "label": "Pesos" },
-        { "value": "Dolares", "label": "Dolares" },
+        { "value": "Dólares", "label": "Dólares" },
     ],
 });
 onMounted(() => {

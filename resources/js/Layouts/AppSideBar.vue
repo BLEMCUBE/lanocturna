@@ -145,17 +145,25 @@ export default {
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('ventas')" v-show="permissions.includes('lista-ventas')">
-                <NavLinkSideBar icon-class="fa fa-cash-register"
+                <NavLinkSideBar icon-class="fa fa-shopping-cart"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('ventas.index')"
                     :active="route().current('ventas.index')">
                     <span class="ml-3">Ventas</span>
                 </NavLinkSideBar>
             </li>
+
             <li @click="setMenu('crear-ventas'); btnCrear()" v-show="permissions.includes('crear-ventas')">
-                <NavLinkSideBar icon-class="fa fa-cash-register" :href="linkCrear"
+                <NavLinkSideBar icon-class="fa fa-shopping-cart" :href="linkCrear"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
                     :active="route().current('ventas.create')">
                     <span class="ml-3">Crear Venta</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('cajas')" v-show="permissions.includes('lista-cajas')">
+                <NavLinkSideBar icon-class="fa fa-cash-register"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('cajas.index')"
+                    :active="route().current('cajas.index')">
+                    <span class="ml-3">Caja</span>
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('imoprtaciones')" v-show="permissions.includes('lista-productos')">
