@@ -89,7 +89,6 @@ const BtnCrear = () => {
     router.get(route(ruta + '.create'));
 }
 const clickDetalle=(e)=>{
-console.log('ee ',e.data.id)
 btnVer(e.data.id)
 }
 

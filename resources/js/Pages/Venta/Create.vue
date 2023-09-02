@@ -152,7 +152,6 @@ const calculoSinIva = () => {
 
 const sumaTotalProducto = ($event, id) => {
     var precio_temp = (form.productos[id].precio === null) ? 1 : form.productos[id].precio
-    console.log('pre ', precio_temp)
     if ($event.target.value > 0) {
 
         if (form.productos[id].stock >= form.productos[id].cantidad) {

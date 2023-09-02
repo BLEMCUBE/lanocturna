@@ -21,7 +21,7 @@ const formDelete = useForm({
 
 
 const btnVer = (id) => {
-    router.get(route(ruta + '.show', [id,ruta]));
+    router.get(route(ruta + '.show', id));
 
 };
 const btnEditar = (id) => {
@@ -61,7 +61,7 @@ const btnEliminar = (id, name) => {
 }
 
 const clickDetalle=(e)=>{
-console.log('ee ',e.data.id)
+
 btnVer(e.data.id)
 }
 onMounted(() => {
@@ -180,6 +180,16 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
+
+                    <Column header="Acciones" style="width:100px">
+                        <template #body="slotProps">
+                            <Button v-if="permissions.includes('editar-ventas')"  @click="btnEditar(slotProps.data.id)"
+                                class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-2 hover:bg-primary-100"
+                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                               ><i class="fas fa-edit"></i></Button>
+
+                        </template>
+                    </Column>
                 </DataTable>
 
             </div>

@@ -146,15 +146,15 @@ onMounted(() => {
                                     <td class="border border-gray-300 p-2">{{ item.producto.origen }}</td>
                                     <td class="border border-gray-300 p-2">{{ item.producto.nombre }}</td>
                                     <td class="border border-gray-300 p-2">{{ item.producto.codigo_barra }}</td>
-                                    <td class="border border-gray-300 p-2">{{ item.precio }}</td>
-                                    <td class="border border-gray-300 p-2">{{ item.total }}</td>
+                                    <td class="border border-gray-300 p-2">{{ item.precio.toFixed(2) }}</td>
+                                    <td class="border border-gray-300 p-2">{{ item.total.toFixed(2) }}</td>
 
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="5" class="text-end"><b>Total: </b></td>
-                                    <td class="text-center"><b> {{ form.moneda=='Pesos'?'$ ':'USD ' }} {{ form.total }} </b></td>
+                                    <td class="text-center"><b> {{ form.moneda=='Pesos'?'$ ':'USD ' }} {{ form.total.toFixed(2) }} </b></td>
                                 </tr>
 
                             </tfoot>
