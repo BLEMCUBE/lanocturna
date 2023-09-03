@@ -19,7 +19,7 @@ class RolesAndPermissionsSeeder extends Seeder
         */
         $this->permissions =  [
 
-            ['name' => 'historial-pedidos', 'description' => 'Historial Pedidos'],
+            //['name' => 'historial-pedidos', 'description' => 'Historial Pedidos'],
             ['name' => 'importaciones', 'description' => 'Importaciones'],
 
             //Usuarios
@@ -56,7 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'stock', 'description' => 'Stock'],
 
             //Ventas
-            ['name' => 'lista-ventas', 'description' => 'Lista Ventas'],
+            ['name' => 'lista-ventas', 'description' => 'Historial de Ventas'],
             ['name' => 'crear-ventas', 'description' => 'Crear Venta'],
             ['name' => 'facturar-ventas', 'description' => 'Facturar Venta'],
             ['name' => 'editar-ventas', 'description' => 'Editar Venta'],
@@ -76,7 +76,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'subir-pedidos', 'description' => 'Subir Pedido'],
 
             //configuraciones
-            ['name' => 'configuraciones', 'description' => 'Configuraciones'],
+            ['name' => 'configuraciones', 'description' => 'Código Maestro'],
 
             //Roles y permisos
             ['name' => 'ver-roles', 'description' => 'Roles y permisos'],

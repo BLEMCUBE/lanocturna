@@ -11,7 +11,7 @@ import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Ventas"
+const titulo = "Historial de Ventas"
 const ruta = 'ventas'
 const { tipo_cambio } = usePage().props
 
@@ -19,6 +19,25 @@ const formDelete = useForm({
     id: '',
 });
 
+const colorEstado = (estado) => {
+    switch (estado) {
+        case 'PENDIENTE DE FACTURACIÓN':
+            return 'text-orange-600'
+            break;
+        case 'FACTURADO':
+            return 'text-blue-600'
+            break;
+        case 'COMPLETADO':
+            return 'text-green-600'
+            break;
+        case 'ANULADO':
+            return 'text-red-600'
+            break;
+        default:
+            return 'text-black'
+            break;
+    }
+}
 
 const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
@@ -60,6 +79,10 @@ const btnEliminar = (id, name) => {
     });
 }
 
+const clickDetalle = (e) => {
+
+    btnVer(e.data.id)
+}
 onMounted(() => {
 
     tabla_ventas.value = usePage().props.ventas.data;
@@ -71,15 +94,15 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const BtnCrear = () => {
-    if(tipo_cambio==true){
+    if (tipo_cambio == true) {
 
         router.get(route(ruta + '.create'));
-    }else{
-        ok('error','No se ha especificado el tipo de cambio para el día')
+    } else {
+        ok('error', 'No se ha especificado el tipo de cambio para el día')
     }
 }
 
-const ok = (icono,mensaje) => {
+const ok = (icono, mensaje) => {
 
     Swal.fire({
         width: 350,
@@ -89,7 +112,7 @@ const ok = (icono,mensaje) => {
 }
 
 const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 </script>
 <template>
@@ -102,15 +125,16 @@ const filters = ref({
             <Toast />
             <div class="px-3 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-{{ tipo_cambio }}
                 <Button size="small" :label="'Crear Venta'" severity="success" @click="BtnCrear"></Button>
 
             </div>
 
             <div class="align-middle">
 
-                <DataTable  showGridlines :filters="filters" :value="tabla_ventas" paginator
-                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" size="small">
+                <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
+                    bodyRow: { class: 'hover:cursor-pointer' }
+                }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"
+                     @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -118,54 +142,69 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="codigo" header="No. Pedido" sortable
-                    :pt="{
+                    <Column field="fecha" header="Facha y hora" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
-                        }}"></Column>
-                    <Column field="vendedor" header="Vendedor" sortable
-                    :pt="{
+                        }
+                    }"></Column>
+                    <Column field="codigo" header="No. Pedido" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
-                        }}"></Column>
-                    <Column field="cliente" header="Cliente" sortable
-                    :pt="{
+                        }
+                    }"></Column>
+                    <Column field="vendedor" header="Vendedor" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
-                        }}"></Column>
+                        }
+                    }"></Column>
+                    <Column field="cliente" header="Cliente" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
 
                     <Column field="destino" header="Destino" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="fecha" header="Facha y hora" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="localidad" header="Localidad" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
+
                     <Column field="estado" header="Estado" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
+                    }">
+                        <template #body="slotProps">
+                            <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
+                                {{ slotProps.data.estado }}
+                            </span>
+                        </template>
+                    </Column>
+                    <Column field="moneda" header="Moneda" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
                     }"></Column>
-                    <Column field="neto" sortable header="Neto" :pt="{
+                    <Column field="total_sin_iva" sortable header="Total sin IVA" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
 
                     }"></Column>
-                       <Column field="impuesto" sortable header="Impuesto" :pt="{
+
+                    <Column field="total" sortable header="Total" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="total" sortable header="Total" :pt="{
+
+                    <Column field="facturador" sortable header="Facturado por:" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+
+                    <Column field="validador" sortable header="Validado por:" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
@@ -176,36 +215,20 @@ const filters = ref({
                         }
                     }"></Column>
 
-
-<!--
-                    <Column header="Acciones" style="width:130px">
+                    <Column header="Acciones" style="width:100px">
                         <template #body="slotProps">
-                            <button v-if="permissions.includes('editar-productos')"
-                                class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
-                                v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
-                                @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
-
-                            <button v-if="permissions.includes('editar-productos')"
-                                class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
-                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                @click.prevent="btnEditar(slotProps.data.id)"><i class="fas fa-edit"></i></button>
-                            <button v-if="permissions.includes('eliminar-productos')"
-                                class="w-8 h-8 rounded bg-red-700   px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
-                                v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                @click.prevent="btnEliminar(slotProps.data.id, slotProps.data.nombre)"><i
-                                    class="fas fa-trash-alt"></i></button>
+                            <Button v-if="permissions.includes('editar-ventas') && slotProps.data.estado=='PENDIENTE DE FACTURACIÓN'" @click="btnEditar(slotProps.data.id)"
+                                class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-2 hover:bg-primary-100"
+                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+                                    class="fas fa-edit"></i></Button>
 
                         </template>
                     </Column>
-
-                    -->
                 </DataTable>
 
             </div>
             <!--Contenido-->
-
         </div>
-
     </AppLayout>
 </template>
 

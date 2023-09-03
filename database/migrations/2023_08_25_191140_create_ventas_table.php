@@ -17,15 +17,18 @@ return new class extends Migration
             $table->string('moneda')->nullable();
             $table->float('tipo_cambio',8,2)->default(0);
             $table->float('total',8,2)->default(0);
-            $table->float('total_iva',8,2)->default(0);
+            $table->float('total_sin_iva',8,2)->default(0);
             $table->string('destino')->nullable();
             $table->boolean('facturado')->default(false);
             $table->boolean('validado')->default(false);
-            $table->string('estado')->default('PENDIENTE');
+            $table->string('estado')->default('PENDIENTE DE FACTURACIÓN');
             $table->text('observaciones')->nullable();
             $table->json('cliente')->nullable();
+            $table->text('motivo_anulacion')->nullable();
+            $table->timestamp('fecha_anulacion')->nullable();
             $table->unsignedBigInteger('vendedor_id')->nullable();
             $table->unsignedBigInteger('facturador_id')->nullable();
+            $table->unsignedBigInteger('validador_id')->nullable();
             $table->timestamps();
 
             $table->foreign('vendedor_id')
@@ -35,6 +38,12 @@ return new class extends Migration
             ->onUpdate('set null');
 
             $table->foreign('facturador_id')
+            ->references('id')
+            ->on('users')
+            ->onDelete('set null')
+            ->onUpdate('set null');
+
+            $table->foreign('validador_id')
             ->references('id')
             ->on('users')
             ->onDelete('set null')

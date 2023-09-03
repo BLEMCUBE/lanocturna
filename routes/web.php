@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
@@ -47,6 +49,7 @@ Route::controller(OpcionesController::class)->group(function () {
 //cofonfiguraciones
 Route::controller(ConfiguracionController::class)->group(function () {
     Route::get('/configuraciones', 'index')->name('configuraciones.index')->middleware('auth');
+    Route::post('/configuraciones/update/{id}', 'update')->name('configuraciones.update')->middleware('auth');
 
 
 });
@@ -100,17 +103,33 @@ Route::controller(TipoCambioController::class)->group(function () {
     Route::delete('/tipo-cambio/{id}', 'destroy')->name('tipo_cambio.destroy')->middleware('auth');
 });
 
+//Venta
 Route::controller(VentaController::class)->group(function () {
-
-    Route::get('/ventas/ticket/{id}', 'generarTicket')->name('ventas.generar_ticket')->middleware('auth');
     Route::post('/ventas/update/{id}', 'update')->name('ventas.update')->middleware('auth');
+    Route::get('/ventas/edit/{id}', 'edit')->name('ventas.edit')->middleware('auth');
     Route::get('/ventas/create', 'create')->name('ventas.create')->middleware('auth');
     Route::post('/ventas/store', 'store')->name('ventas.store')->middleware('auth');
     Route::get('/ventas', 'index')->name('ventas.index')->middleware('auth');
-    Route::get('/ventas/{id}', 'edit')->name('ventas.edit')->middleware('auth');
+    Route::get('/ventas/{id}', 'show')->name('ventas.show')->middleware('auth');
     Route::delete('/ventas/{id}', 'destroy')->name('ventas.destroy')->middleware('auth');
-    Route::post('/ventas/descuento', 'descuento')->name('ventas.descuento')->middleware('auth');
-    Route::get('/ventas/generar_venta/{id}', 'generar')->name('ventas.generar')->middleware('auth');
+
+});
+
+//Caja
+Route::controller(CajaController::class)->group(function () {
+    Route::post('/cajas/update/{id}', 'update')->name('cajas.update')->middleware('auth');
+    Route::get('/cajas/edit/{id}', 'edit')->name('cajas.edit')->middleware('auth');
+    Route::get('/cajas/facturar/{id}', 'facturar')->name('cajas.facturar')->middleware('auth');
+    Route::get('/cajas', 'index')->name('cajas.index')->middleware('auth');
+    Route::get('/cajas/{id}', 'show')->name('cajas.show')->middleware('auth');
+});
+
+//Expedicion
+Route::controller(ExpedicionController::class)->group(function () {
+    Route::post('/expediciones/maestro', 'verificarCodigoMaestro')->name('expediciones.maestro')->middleware('auth');
+    Route::post('/expediciones/update/{id}', 'validarProductos')->name('expediciones.update')->middleware('auth');
+    Route::get('/expediciones', 'index')->name('expediciones.index')->middleware('auth');
+    Route::get('/expediciones/{id}', 'show')->name('expediciones.show')->middleware('auth');
 });
 
 

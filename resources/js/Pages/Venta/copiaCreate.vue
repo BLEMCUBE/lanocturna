@@ -21,38 +21,33 @@ const prod = useForm({
     origen: '',
     imagen: '',
     cantidad: '',
-    precio_sin_iva: '',
-    precio: '',
-    total_sin_iva: '',
-    total: '',
+    precio: ''
 })
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 const setDestino = (e) => {
     var tipo = lista_destinos.find(prod => prod.value === e);
-    form.destino = e;
+       form.destino=e;
 
 }
-const setMoneda = (e) => {
+const setMoneda= (e) => {
 
-    if (e == 'Pesos') {
+    if(e=='Pesos'){
         form.productos.forEach((item, index) => {
-            item['precio'] = roundNumber(parseFloat(item['precio'] * tipo_cambio).toFixed(2), 0.5, 'round')
-            item['total'] = item['cantidad'] * item['precio']
-            item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
-        })
-    } else {
+        item['precio']=roundNumber( parseFloat(item['precio']*tipo_cambio).toFixed(2),0.5,'round')
+        item['total']=item['cantidad']*item['precio']
+    })
+    }else{
         form.productos.forEach((item, index) => {
-            item['precio'] = parseFloat(item['precio'] / tipo_cambio).toFixed(2)
-            item['total'] = item['cantidad'] * item['precio']
-            item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
-        })
+        item['precio']=parseFloat(item['precio']/tipo_cambio).toFixed(2)
+        item['total']=item['cantidad']*item['precio']
+    })
     }
-    form.moneda = e;
+    form.moneda=e;
     sumaTotal()
-    calculoSinIva()
-}
+        calculoImpuesto()
+    }
 
 
 
@@ -60,16 +55,18 @@ const form = useForm({
     vendedor_id: '',
     destino: '',
     total: 0.0,
-    total_sin_iva: 0.0,
-    moneda: '',
-    tipo_cambio: '',
+    moneda:'',
+    neto: 0.0,
+    tipo_pago:'',
     estado: 'PENDIENTE DE FACTURACIÓN',
+    impuesto: '',
+    porcentaje_impuesto: '',
     observaciones: '',
     productos: [],
-    cliente: {
-        nombre: '',
-        direccion: ''
-    },
+    cliente:{
+        nombre:'',
+        direccion:''
+},
 
 })
 const isShowModal = ref(false);
@@ -94,13 +91,32 @@ const lista_moneda = ref({
 });
 onMounted(() => {
     lista_destino.value.options = lista_destinos
-    form.tipo_cambio = tipo_cambio
-    form.moneda = "Pesos"
+    form.tipo_cambio=tipo_cambio
+    form.moneda="Pesos"
 })
 
 
+const modalProducto = (id) => {
+
+    var produ = productos.data.find(pr => pr.id === id);
+
+    if (produ.stock > 0) {
+        //var precio = tipo_cliente.value == 'Minorista' ? prod.precio_venta : prod.precio_mayorista;
+        prod.nombre = produ.nombre
+        prod.producto_id = produ.id
+        prod.origen = produ.origen
+        prod.imagen = produ.imagen
+
+    } else {
+        //alerta('No hay stock disponible', 'error')
+    }
+
+
+
+
+};
 const addToCart = (id) => {
-    form.clearErrors();
+form.clearErrors();
     var produ = productos.data.find(pr => pr.id === id);
     if (produ.stock > 0) {
         form.productos.push(
@@ -111,58 +127,77 @@ const addToCart = (id) => {
                 cantidad: 1,
                 precio: null,
                 stock: produ.stock,
-                total: 1
+                //total: (1).toFixed(2) * (1).toFixed(2)
+                total:1
             }
         )
         sumaTotal()
-        calculoSinIva()
+        calculoImpuesto()
 
     } else {
         alerta('No hay stock disponible', 'error')
     }
 
 };
-const roundNumber = (value, step = 1.0, type = 'round') => {
-    step || (step = 1.0);
-    const inv = 1.0 / step;
-    const mathFunc = 'ceil' === type ? Math.ceil : ('floor' === type ? Math.floor : Math.round);
+const roundNumber=(value, step = 1.0, type = 'round')=> {
+  step || (step = 1.0);
+  const inv = 1.0 / step;
+  const mathFunc = 'ceil' === type ? Math.ceil : ('floor' === type ? Math.floor : Math.round);
 
-    return mathFunc(value * inv) / inv;
+  return mathFunc(value * inv) / inv;
 }
+const closeModal = () => {
+    isShowModal.value = false;
+    prod.reset();
+};
 
+//envio de formulario
+const addItem = () => {
+
+    form.productos.push(
+        {
+            producto_id: prod.producto_id,
+            nombre: prod.nombre,
+            cantidad: (prod.cantidad).toFixed(2),
+            precio: (prod.precio).toFixed(2),
+            //total: (prod.cantidad).toFixed(2) * (prod.precio).toFixed(2)
+            total: 0
+        }
+    )
+
+};
 
 const sumaTotal = () => {
-    form.total = (form.productos.reduce((acc, cur) => acc + parseFloat(cur['total']), 0)).toFixed(2)
-    form.total_sin_iva = (form.productos.reduce((acc, cur) => acc + parseFloat(cur['total_sin_iva']), 0)).toFixed(2)
-    calculoSinIva()
+    form.neto = (form.productos.reduce((acc, cur) => acc + parseFloat(cur['total']), 0)).toFixed(2)
+    calculoImpuesto()
+    form.impuesto=(form.total-form.neto).toFixed(2);
+    //form.total = (form.productos.reduce((acc, cur) => acc + parseFloat(cur['total']), 0)).toFixed(2)
 
 }
 const removerProducto = (index) => {
     form.productos.splice(index, 1);
     sumaTotal()
-    calculoSinIva()
+    calculoImpuesto()
 
 }
 
 
-const calculoSinIva = () => {
-
-    form.total_sin_iva = (form.total /1.22).toFixed(2)
+const calculoImpuesto = () => {
+    //form.neto = (form.total - form.descuento).toFixed(2)
+    form.total = (form.neto *1.22).toFixed(2)
 }
 
 const sumaTotalProducto = ($event, id) => {
-    var precio_temp = (form.productos[id].precio === null) ? 1 : form.productos[id].precio
+    var precio_temp=(form.productos[id].precio ===null) ? 1 : form.productos[id].precio
     if ($event.target.value > 0) {
 
         if (form.productos[id].stock >= form.productos[id].cantidad) {
             form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
-            form.productos[id].total_sin_iva = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp/1.22).toFixed(2))
-            form.productos[id].precio_sin_iva=(form.productos[id].precio/1.22).toFixed(2)
             sumaTotal()
-            calculoSinIva()
+            calculoImpuesto()
         } else {
             form.productos[id].cantidad = 1
-            form.productos[id].precio_sin_iva=form.productos[id].precio/1.22
+            //form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(form.productos[id].precio)).toFixed(2)
             form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
             alerta('La cantidad supera el Stock', 'error')
         }
@@ -181,7 +216,7 @@ const submit = () => {
         onSuccess: () => {
             show('success', 'Mensaje', 'Venta creada')
             setTimeout(() => {
-                router.get(route(ruta + '.create'));
+                router.get(route(ruta + '.index'));
             }, 1000);
         },
         onFinish: () => {
@@ -215,12 +250,17 @@ const cancelCrear = () => {
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': 'Ventas', link: false, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
+    <AppLayout :pagina="[{ 'label': 'Ventas', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <!--Contenido-->
         <div
             class="grid grid-cols-12 p-0 m-0 gap-2 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <Toast />
+            <!--
+               <div class="px-3 col-span-full  mb-2 flex justify-between items-center">
+                   <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+                </div>
+            -->
             <div class="mt-0 mb-4 col-span-12 lg:col-span-8">
 
                 <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
@@ -249,34 +289,40 @@ const cancelCrear = () => {
                                     class="font-sans  font-normal text-gray-800 border border-gray-300">
                                     <td class="border border-gray-300 p-2">{{ producto.origen }}</td>
                                     <td class="border border-gray-300 p-2">{{ producto.nombre }}</td>
-                                    <td class="border border-gray-300"><input type="number" v-model="producto.cantidad"
-                                            min="1" step="1"
+                                    <td class="border border-gray-300"><input type="number"
+                                            v-model="producto.cantidad" min="1" step="1"
                                             class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm"
-                                            @input.prevent="sumaTotalProducto($event, index)" />
-
+                                            @input.prevent="sumaTotalProducto($event, index)"/>
                                     </td>
-                                    <td class="border border-gray-300"><input type="number" required v-model="producto.precio"
-                                            min="1" step="1" @input="sumaTotalProducto($event, index)"
-                                            class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
-
+                                    <td class="border border-gray-300"><input type="number"
+                                            v-model="producto.precio" min="1" step="1"
+                                            @input="sumaTotalProducto($event, index)"
+                                            class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm"/>
                                     </td>
-                                    <td class="border border-gray-300 p-2">{{ producto.total }}  </td>
-                                    <td class="border-none  border-gray-300 p-1 ">
+                                    <td class="border border-gray-300 p-2">{{ producto.total }} </td>
+                                    <td class="border-none  border-gray-300  ">
                                         <div
-                                            class="rounded-md p-1 flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
+                                            class="rounded-none flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
                                             <button type="button" @click.prevent="removerProducto(index)" class="w-6"
                                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"><i
-                                                    class="fas fa-trash"></i></button>
+                                                 class="fas fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="4" class="text-end"><b>Total: </b></td>
-                                    <td class="text-end"><b> {{ form.moneda=='Pesos'?'$ ':'USD ' }} {{ form.total }} </b></td>
+                                    <td colspan="4" class="text-end"><b>Total:  </b></td>
+                                    <td  class="text-end"><b> {{ form.neto }} </b></td>
                                 </tr>
+                            <!--
 
+                                <tr>
+
+                                    <td colspan="4" class="text-end"><b>Total (con impuestos):  </b></td>
+                                    <td  class="text-end"><b> {{ form.total }} </b></td>
+                                </tr>
+                            -->
                             </tfoot>
                         </table>
                         <div class="col-span-12  p-2 xl:col-span-12">
@@ -297,8 +343,10 @@ const cancelCrear = () => {
                             <InputError class="mt-1 text-xs" :message="form.errors.tipo_cambio" />
                         </div>
                         <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
-                            <InputLabel for="moneda" value="Moneda" class="text-base font-medium leading-1 text-gray-900" />
-                            <Multiselect id="moneda" v-model="form.moneda" v-bind="lista_moneda" @select="setMoneda">
+                            <InputLabel for="moneda" value="Moneda"
+                                class="text-base font-medium leading-1 text-gray-900" />
+                            <Multiselect id="moneda" v-model="form.moneda" v-bind="lista_moneda"
+                            @select="setMoneda">
                             </Multiselect>
                             <InputError class="mt-1 text-xs" :message="form.errors.moneda" />
                         </div>
@@ -314,7 +362,8 @@ const cancelCrear = () => {
                         <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
                             <InputLabel for="destino" value="Destino"
                                 class="text-base font-medium leading-1 text-gray-900" />
-                            <Multiselect id="rol" v-model="form.destino" v-bind="lista_destino" @select="setDestino">
+                            <Multiselect id="rol" v-model="form.destino" v-bind="lista_destino"
+                            @select="setDestino">
                             </Multiselect>
                             <InputError class="mt-1 text-xs" :message="form.errors.destino" />
                         </div>
@@ -326,11 +375,11 @@ const cancelCrear = () => {
                                 placeholder="ingrese nombre cliente" :pt="{
                                     root: { class: 'h-9 w-full' }
                                 }" />
-                            <InputError class="mt-1 text-xs" :message="form.errors['cliente.nombre']" />
+                            <InputError class="mt-1 text-xs" :message="form.errors['cliente.nombre'] " />
 
                         </div>
 
-                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6" >
                             <InputLabel for="telefono" value="Telefono"
                                 class="text-base font-medium leading-6 text-gray-900" />
                             <InputText type="text" id="telefono" v-model="form.cliente.telefono"
@@ -392,12 +441,12 @@ const cancelCrear = () => {
 
                     </div>
                     <div class="flex justify-end py-3">
-                        <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="cancelCrear"
-                            type="button" />
+                    <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="cancelCrear"
+                        type="button" />
 
-                        <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
-                            :disabled="form.processing" @click.prevent="submit" />
-                    </div>
+                    <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
+                        :disabled="form.processing"  @click.prevent="submit"/>
+                </div>
 
                 </form>
 
@@ -407,9 +456,11 @@ const cancelCrear = () => {
 
             <!--Productos-->
             <div class="p-0 mb-0 col-span-12  lg:col-span-4 ">
-                <DataTable showGridlines :filters="filters" scrollable scrollHeight="550px"
-                    :globalFilterFields="['origen', 'nombre']" :value="productos.data"
-                    :virtualScrollerOptions="{ itemSize: 46 }" size="small">
+                <DataTable showGridlines :filters="filters" scrollable scrollHeight="400px"
+                    :globalFilterFields="['origen', 'nombre']"  :value="productos.data"
+                     :virtualScrollerOptions="{ itemSize: 46 }"
+
+                    size="small">
                     <template #header>
                         <div class="flex justify-content-end text-sm">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -441,15 +492,24 @@ const cancelCrear = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    <!--
+
+                                    <div class="">
+                                        <Button severity="success" @click="modalProducto(slotProps.data.id)" icon="fas fa-cart-plus" :pt="{
+                                            root: {
+                                                class: 'flex items-center justify-center font-medium w-full'
+                                            }
+                                        }" :disabled="slotProps.data.stock === 'OUTOFSTOCK'"></Button>
+                                    </div>
+                                -->
 
                                     <div class="">
                                         <Button severity="success" @click="addToCart(slotProps.data.id)"
-                                            icon="fas fa-cart-plus" :pt="{
+                                           icon="fas fa-cart-plus" :pt="{
                                                 root: {
                                                     class: 'flex items-center justify-center font-medium w-full'
                                                 }
-                                            }"
-                                            :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
+                                            }" :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
                                     </div>
 
                                 </div>
@@ -461,6 +521,65 @@ const cancelCrear = () => {
 
         </div>
 
+        <!--modal agregar producto-->
+        <!--
+
+
+        <Dialog v-model:visible="isShowModal" modal header="Producto" :style="{ width: '65vw' }"
+            :breakpoints="{ '960px': '75vw', '641px': '100vw' }" position="top" :pt="{
+                header: {
+                    class: 'mt-6 p-2 lg:p-2 lg:bg-gray-100'
+                },
+                content: {
+                    class: 'p-2 lg:p-2'
+                },
+            }">
+            <form @submit.prevent="addItem">
+                <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 2xl:gap-6 mb-2">
+
+                    <div class="col-span-6 shadow-default xl:col-span-6">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-full object-cover" :src="prod.imagen" alt="" />
+                            <div class="ml-6 text-start">
+                                <p class="text-gray-800 mb-2 text-xs whitespace-pre-line font-bold leading-1">
+                                    {{ prod.nombre }}</p>
+                                <div class="font-bold leading-none text-xs text-gray-800 pb-1">
+                                    Origen: <span class="px-1 py-0  font-normal">
+                                        {{ prod.origen }}
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-6 shadow-default xl:col-span-6">
+                        <InputLabel for="cantidad" value="Cantidad" class="text-base font-medium leading-6 text-gray-900" />
+
+                        <input type="number" required v-model="prod.cantidad" min="1" step="0.1"
+                            class="p-inputtext p-component font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-base">
+
+                    </div>
+
+                    <div class="col-span-6 shadow-default xl:col-span-6">
+                        <InputLabel for="precio" value="Precio" class="text-base font-medium leading-6 text-gray-900" />
+                        <input type="number" required v-model="prod.precio" min="1" step="0.1"
+                            class="p-inputtext p-component font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-base">
+
+                    </div>
+
+                </div>
+                <div class="flex justify-end py-3">
+                    <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="closeModal"
+                        type="button" />
+
+                    <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
+                        :disabled="form.processing" />
+                </div>
+            </form>
+        </Dialog>
+-->
+        <!--modal agregar producto-->
         <!--Contenido-->
 
     </AppLayout>

@@ -1,9 +1,9 @@
 <script>
-import { onMounted, computed, watch } from "vue";
+import { onMounted, computed, watch,ref } from "vue";
 import NavLinkSideBar from '@/Components/NavLinkSideBar.vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage,router } from '@inertiajs/vue3';
 import { useConfigStore } from '@/store/config.js'
-
+import Swal from 'sweetalert2';
 export default {
     components: {
         NavLinkSideBar,
@@ -19,11 +19,13 @@ export default {
     setup(props) {
 
         const { permissions } = usePage().props.auth
+        const { hoy_tipo_cambio } = usePage().props.auth
         const configStore = useConfigStore();
         const classes = computed(() => props.isOpen ? 'sm:translate-x-0' : 'sm:hidden sm:translate-x-0');
         const setMenu = (menu) => {
             configStore.showMenu(menu);
         }
+        const linkCrear=ref('');
 
         onMounted(() => {
 
@@ -38,12 +40,31 @@ export default {
                 }
             }
         );
+        const btnCrear = () => {
+            if (hoy_tipo_cambio == true) {
+
+                router.get(route('ventas.create'));
+            } else {
+                ok('error', 'No se ha especificado el tipo de cambio para el día')
+            }
+        }
+        const ok = (icono, mensaje) => {
+
+            Swal.fire({
+                width: 350,
+                title: mensaje,
+                icon: icono
+            })
+        }
 
         return {
             classes,
             configStore,
             setMenu,
-            permissions
+            permissions,
+            btnCrear,
+            ok,
+            linkCrear
         }
     }
 }
@@ -124,10 +145,32 @@ export default {
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('ventas')" v-show="permissions.includes('lista-ventas')">
-                <NavLinkSideBar icon-class="fa fa-cash-register"
+                <NavLinkSideBar icon-class="fa fa-shopping-cart"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('ventas.index')"
+                    :active="route().current('ventas.index')">
+                    <span class="ml-3">Historial de Ventas</span>
+                </NavLinkSideBar>
+            </li>
+
+            <li @click="setMenu('crear-ventas'); btnCrear()" v-show="permissions.includes('crear-ventas')">
+                <NavLinkSideBar icon-class="fa fa-shopping-cart" :href="linkCrear"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('ventas.index')" :active="route().current('ventas.index')">
-                    <span class="ml-3">Ventas</span>
+                    :active="route().current('ventas.create')">
+                    <span class="ml-3">Crear Venta</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('cajas')" v-show="permissions.includes('lista-cajas')">
+                <NavLinkSideBar icon-class="fa fa-cash-register"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('cajas.index')"
+                    :active="route().current('cajas.index')">
+                    <span class="ml-3">Caja</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('expediciones')" v-show="permissions.includes('lista-expediciones')">
+                <NavLinkSideBar icon-class="fas fa-warehouse"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('expediciones.index')"
+                    :active="route().current('expediciones.index')">
+                    <span class="ml-3">Expedición</span>
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('imoprtaciones')" v-show="permissions.includes('lista-productos')">
@@ -142,6 +185,13 @@ export default {
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
                     :href="route('tipo_cambio.index')" :active="route().current('tipo_cambio.index')">
                     <span class="ml-3">Tipo de Cambio</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('configuraciones')" v-show="permissions.includes('configuraciones')">
+                <NavLinkSideBar icon-class="fas fa-key"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('configuraciones.index')" :active="route().current('configuraciones.index')">
+                    <span class="ml-3">Código Maestro</span>
                 </NavLinkSideBar>
             </li>
 

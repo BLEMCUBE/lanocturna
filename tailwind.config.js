@@ -18,7 +18,8 @@ export default {
             colors: {
                 //primary: { "50": "#eff6ff", "100": "#dbeafe", "200": "#bfdbfe", "300": "#93c5fd", "400": "#60a5fa", "500": "#3b82f6", "600": "#2563eb", "700": "#1d4ed8", "800": "#1e40af", "900": "#1e3a8a", "950": "#172554" }
                 primary: { "100": "#0063a9","900": "#013878" },
-                secondary: { "100": "#f6d318","900": "#ffd700" }
+                secondary: { "100": "#f6d318","900": "#ffd700" },
+                black:"#000000"
             },
             fontSize: {
                 //'validation': '0.8rem',

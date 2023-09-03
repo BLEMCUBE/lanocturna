@@ -11,9 +11,9 @@ import Swal from 'sweetalert2';
 import { FilterMatchMode } from 'primevue/api';
 const toast = useToast();
 const titulo = "Venta"
-const ruta = 'ventas'
-const { vendedor } = usePage().props
-const { tipo_cambio } = usePage().props
+const ruta = 'cajas'
+
+
 const { lista_destinos } = usePage().props
 const prod = useForm({
     producto_id: '',
@@ -30,7 +30,6 @@ const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 const setDestino = (e) => {
-    var tipo = lista_destinos.find(prod => prod.value === e);
     form.destino = e;
 
 }
@@ -38,14 +37,16 @@ const setMoneda = (e) => {
 
     if (e == 'Pesos') {
         form.productos.forEach((item, index) => {
-            item['precio'] = roundNumber(parseFloat(item['precio'] * tipo_cambio).toFixed(2), 0.5, 'round')
+            item['precio'] = roundNumber(parseFloat(item['precio'] * form.tipo_cambio).toFixed(2), 0.5, 'round')
             item['total'] = item['cantidad'] * item['precio']
+            item['precio_sin_iva'] = item['precio'] /1.22
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
     } else {
         form.productos.forEach((item, index) => {
-            item['precio'] = parseFloat(item['precio'] / tipo_cambio).toFixed(2)
+            item['precio'] = parseFloat(item['precio'] / form.tipo_cambio).toFixed(2)
             item['total'] = item['cantidad'] * item['precio']
+            item['precio_sin_iva'] = item['precio'] /1.22
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
     }
@@ -57,13 +58,16 @@ const setMoneda = (e) => {
 
 
 const form = useForm({
+    id:'',
     vendedor_id: '',
     destino: '',
     total: 0.0,
+    vendedor: 0.0,
+    codigo:'',
     total_sin_iva: 0.0,
     moneda: '',
     tipo_cambio: '',
-    estado: 'PENDIENTE DE FACTURACIÓN',
+    estado: '',
     observaciones: '',
     productos: [],
     cliente: {
@@ -73,6 +77,7 @@ const form = useForm({
 
 })
 const isShowModal = ref(false);
+//const productos=ref([]);
 const { productos } = usePage().props
 const lista_destino = ref({
     value: '',
@@ -83,7 +88,7 @@ const lista_destino = ref({
 });
 
 const lista_moneda = ref({
-    value: 'Pesos',
+    value: '',
     closeOnSelect: true,
     placeholder: "Seleccione",
     searchable: false,
@@ -93,9 +98,44 @@ const lista_moneda = ref({
     ],
 });
 onMounted(() => {
+    //productos.value=usePage().props.productos.data
     lista_destino.value.options = lista_destinos
-    form.tipo_cambio = tipo_cambio
-    form.moneda = "Pesos"
+    var dato=usePage().props.venta
+    form.tipo_cambio = parseFloat(dato.tipo_cambio).toFixed(2)
+    form.moneda=dato.moneda
+    form.destino=dato.destino
+    form.id=dato.id
+    form.vendedor_id=dato.vendedor_id
+    form.vendedor=dato.vendedor.name
+    form.observaciones=dato.observaciones
+    lista_moneda.value.value=dato.moneda
+    form.cliente=JSON.parse( dato.cliente)
+    form.estado=dato.estado
+    form.codigo=dato.codigo
+    dato.detalles_ventas.forEach(el => {
+    var produ2 = productos.data.find(pr => pr.id === el.id);
+    if(produ2!=undefined){
+        form.productos.push(
+            {
+                producto_id: el.id,
+                nombre: produ2.nombre,
+                origen: produ2.origen,
+                cantidad: el.cantidad,
+                precio: el.precio,
+                precio_sin_iva: el.precio_sin_iva,
+                total_sin_iva: el.total_sin_iva,
+                stock: produ2.stock,
+                total: el.total
+            }
+            )
+        }
+        sumaTotal()
+        calculoSinIva()
+    });
+    //setMoneda(dato.moneda);
+
+
+
 })
 
 
@@ -175,13 +215,14 @@ const sumaTotalProducto = ($event, id) => {
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta + '.store'), {
+    form.post(route(ruta + '.update', form.id), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
-            show('success', 'Mensaje', 'Venta creada')
+            show('success', 'Mensaje', 'Venta Actualizada')
             setTimeout(() => {
-                router.get(route(ruta + '.create'));
+                //router.get(route(ruta + '.index'));
+                router.get(route(ruta + '.show', form.id));
             }, 1000);
         },
         onFinish: () => {
@@ -191,7 +232,6 @@ const submit = () => {
 
         }
     });
-
 
 
 };
@@ -291,7 +331,7 @@ const cancelCrear = () => {
                         <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
                             <InputLabel for="tipo_cambio" value="Tipo de cambio"
                                 class="text-base font-medium leading-1 text-gray-900" />
-                            <InputText type="text" id="tipo_cambio" v-model="tipo_cambio" readonly :pt="{
+                            <InputText type="text" id="tipo_cambio" v-model="form.tipo_cambio" readonly :pt="{
                                 root: { class: 'h-9 w-full' }
                             }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.tipo_cambio" />
@@ -306,7 +346,7 @@ const cancelCrear = () => {
                         <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
                             <InputLabel for="vendedor" value="Vendedor"
                                 class="text-base font-medium leading-1 text-gray-900" />
-                            <InputText type="text" id="vendedor" v-model="vendedor" readonly :pt="{
+                            <InputText type="text" id="vendedor" v-model="form.vendedor" readonly :pt="{
                                 root: { class: 'h-9 w-full' }
                             }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.vendedor_id" />

@@ -3,36 +3,21 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-//import DataTable from 'primevue/datatable';
-import ColumnGroup from 'primevue/columngroup';   // optional
-import Row from 'primevue/row';                   // optional
 
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
-const tabla_productos = ref()
+const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Productos"
-const ruta = 'productos'
+const titulo = "Ventas"
+const ruta = 'ventas'
+const { tipo_cambio } = usePage().props
 
 const formDelete = useForm({
     id: '',
 });
-
-const rowClass = (data) => {
-    //Si stock = < stock minimo Y stock_futuro = stock
-    if (parseFloat(data.stock) <= parseFloat(data.stock_minimo) && parseFloat(data.stock) == parseFloat(data.stock_futuro)) {
-        //return "text-red-700 text-xs"
-        return ["bg-red-700 text-xs text-white"]
-    }
-    //Si stock = < stock mínimo y stock_futuro > stock
-    if (parseFloat(data.stock) <= parseFloat(data.stock_minimo) && parseFloat(data.stock_futuro) > parseFloat(data.stock)) {
-        //return ["text-orange-500 text-xs"]
-        return "bg-orange-500 text-xs text-white"
-    }
-};
 
 
 const btnVer = (id) => {
@@ -77,7 +62,7 @@ const btnEliminar = (id, name) => {
 
 onMounted(() => {
 
-    tabla_productos.value = usePage().props.productos.data;
+    tabla_ventas.value = usePage().props.ventas.data;
 
 });
 
@@ -86,15 +71,25 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const BtnCrear = () => {
-    router.get(route(ruta + '.create'));
-}
-const clickDetalle=(e)=>{
-btnVer(e.data.id)
+    if(tipo_cambio==true){
+
+        router.get(route(ruta + '.create'));
+    }else{
+        ok('error','No se ha especificado el tipo de cambio para el día')
+    }
 }
 
+const ok = (icono,mensaje) => {
+
+    Swal.fire({
+        width: 350,
+        title: mensaje,
+        icon: icono
+    })
+}
 
 const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+    'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 });
 </script>
 <template>
@@ -107,20 +102,14 @@ const filters = ref({
             <Toast />
             <div class="px-3 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-
-                <Button size="small" :label="'Agregar Producto'" severity="success" @click="BtnCrear"></Button>
+                <Button size="small" :label="'Crear Venta'" severity="success" @click="BtnCrear"></Button>
 
             </div>
 
             <div class="align-middle">
 
-                <DataTable :rowClass="rowClass" showGridlines :filters="filters" :value="tabla_productos"
-                :pt="{
-                    bodyRow:{class:'hover:cursor-pointer'}
-                }"
-                scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem"
-                @row-click="clickDetalle"
-                 size="small">
+                <DataTable  showGridlines :filters="filters" :value="tabla_ventas" paginator
+                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -128,45 +117,73 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
+                    <Column field="codigo" header="No. Pedido" sortable
+                    :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }}"></Column>
+                    <Column field="vendedor" header="Vendedor" sortable
+                    :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }}"></Column>
+                    <Column field="cliente" header="Cliente" sortable
+                    :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }}"></Column>
 
-                    <Column field="stock" sortable header="Stock" :pt="{
+                    <Column field="destino" header="Destino" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="stock_futuro" sortable header="Stock futuro" :pt="{
+                    <Column field="fecha" header="Facha y hora" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="imagen" header="Imagen" style="width:60px" :pt="{
+                    <Column field="localidad" header="Localidad" sortable :pt="{
                         bodyCell: {
-                            class: 'flex justify-center text-center'
+                            class: 'text-center'
                         }
-                    }">
-                        <template #body="slotProps">
-                            <img class="rounded  bg-white shadow-2xl border-2 text-center w-12 h-12 object-contain"
-                                :src="slotProps.data.imagen" alt="image description">
-                        </template>
-                    </Column>
-                    <Column field="origen" header="Origen" sortable></Column>
-                    <Column field="nombre" header="Nombre" sortable :pt="{
+                    }"></Column>
+                    <Column field="estado" header="Estado" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="moneda" header="Moneda" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="total_sin_iva" sortable header="Total sin IVA" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+
+                    }"></Column>
+
+                    <Column field="total" sortable header="Total" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="observaciones" sortable header="Observaciones" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
                     }"></Column>
 
 
-
+<!--
                     <Column header="Acciones" style="width:130px">
                         <template #body="slotProps">
-                            <!--
-
-                                <button v-if="permissions.includes('editar-productos')"
+                            <button v-if="permissions.includes('editar-productos')"
                                 class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
                                 v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
                                 @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
-                            -->
 
                             <button v-if="permissions.includes('editar-productos')"
                                 class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
@@ -180,6 +197,8 @@ const filters = ref({
 
                         </template>
                     </Column>
+
+                    -->
                 </DataTable>
 
             </div>

@@ -15,20 +15,21 @@ class Venta extends Model
     protected $fillable = [
         'id',
         'codigo',
-        'impuesto',
-        'porcentaje_impuesto',
         'total',
-        'total_iva',
+        'total_sin_iva',
         'moneda',
         'tipo_cambio',
         'observaciones',
         'facturado',
         'validado',
         'estado',
+        'motivo_anulacion',
+        'fecha_anulacion',
         'destino',
         'cliente',
         'vendedor_id',
         'facturador_id',
+        'validador_id',
         'created_at'
     ];
 
@@ -42,6 +43,11 @@ class Venta extends Model
     }
 
     public function facturador()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function validador()
     {
         return $this->belongsTo(User::class);
     }
