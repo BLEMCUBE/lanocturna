@@ -25,6 +25,8 @@ class VentaCollection extends ResourceCollection
                     'localidad' => $dat->localidad??'',
                     'total_sin_iva' => number_format($row->total_sin_iva,2)??'',
                     'vendedor' => $row->vendedor->name,
+                    'facturador' => $row->facturador->name??'',
+                    'validador' => $row->validador->name??'',
                     'estado' => $row->estado??'',
                     'observaciones' => $row->observaciones??'',
                     'total' => number_format($row->total,2)??'',

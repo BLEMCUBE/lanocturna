@@ -87,7 +87,7 @@ class ExpedicionController extends Controller
         try {
             $venta->validado =true;
             $venta->estado="COMPLETADO";
-            //$venta->validador_id =  $validador->id;
+            $venta->validador_id =  $validador->id;
             $venta->save();
 
             //actualizando stock producto

@@ -56,7 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'stock', 'description' => 'Stock'],
 
             //Ventas
-            ['name' => 'lista-ventas', 'description' => 'Lista Ventas'],
+            ['name' => 'lista-ventas', 'description' => 'Historial de Ventas'],
             ['name' => 'crear-ventas', 'description' => 'Crear Venta'],
             ['name' => 'facturar-ventas', 'description' => 'Facturar Venta'],
             ['name' => 'editar-ventas', 'description' => 'Editar Venta'],

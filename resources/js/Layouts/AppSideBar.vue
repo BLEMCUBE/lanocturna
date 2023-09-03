@@ -148,7 +148,7 @@ export default {
                 <NavLinkSideBar icon-class="fa fa-shopping-cart"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('ventas.index')"
                     :active="route().current('ventas.index')">
-                    <span class="ml-3">Ventas</span>
+                    <span class="ml-3">Historial de Ventas</span>
                 </NavLinkSideBar>
             </li>
 

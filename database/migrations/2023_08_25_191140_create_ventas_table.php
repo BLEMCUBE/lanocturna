@@ -23,11 +23,12 @@ return new class extends Migration
             $table->boolean('validado')->default(false);
             $table->string('estado')->default('PENDIENTE DE FACTURACIÓN');
             $table->text('observaciones')->nullable();
-            $table->text('motivo_anulacion')->nullable();
             $table->json('cliente')->nullable();
+            $table->text('motivo_anulacion')->nullable();
+            $table->timestamp('fecha_anulacion')->nullable();
             $table->unsignedBigInteger('vendedor_id')->nullable();
             $table->unsignedBigInteger('facturador_id')->nullable();
-            //$table->unsignedBigInteger('validador_id')->nullable();
+            $table->unsignedBigInteger('validador_id')->nullable();
             $table->timestamps();
 
             $table->foreign('vendedor_id')

@@ -11,7 +11,7 @@ import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Ventas"
+const titulo = "Historial de Ventas"
 const ruta = 'ventas'
 const { tipo_cambio } = usePage().props
 
@@ -134,7 +134,7 @@ const filters = ref({
                 <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer' }
                 }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"
-                    tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
+                     @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -197,6 +197,18 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
+
+                    <Column field="facturador" sortable header="Facturado por:" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+
+                    <Column field="validador" sortable header="Validado por:" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
                     <Column field="observaciones" sortable header="Observaciones" :pt="{
                         bodyCell: {
                             class: 'text-center'
@@ -205,7 +217,7 @@ const filters = ref({
 
                     <Column header="Acciones" style="width:100px">
                         <template #body="slotProps">
-                            <Button v-if="permissions.includes('editar-ventas')" @click="btnEditar(slotProps.data.id)"
+                            <Button v-if="permissions.includes('editar-ventas') && slotProps.data.estado=='PENDIENTE DE FACTURACIÓN'" @click="btnEditar(slotProps.data.id)"
                                 class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-2 hover:bg-primary-100"
                                 v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
                                     class="fas fa-edit"></i></Button>

@@ -59,7 +59,8 @@ const validarCodigo = ($event, id) => {
 
     var codigo = form.productos[id].codigo_barra;
     var texto = $event.target.value;
-    if (texto > 0) {
+    console.log('t ',texto)
+    if (texto.length > 0) {
         if (texto == codigo) {
             form.productos[id].producto_validado = true;
             BotonConfirmar()
@@ -68,7 +69,6 @@ const validarCodigo = ($event, id) => {
 
         }
     }
-    console.log('id ', id);
 
 }
 
@@ -77,14 +77,11 @@ const BotonConfirmar = () => {
 
     var total=form.productos.length;
     var total_valido=0;
-    console.log('total ',total)
     form.productos.forEach(el => {
         if(el.producto_validado){
             total_valido+=1
-            console.log('e ',el.producto_validado)
         }
     })
-    console.log('total_valido ',total_valido)
     if(total==total_valido){
         isConfirm.value=true;
     }else{
@@ -234,7 +231,8 @@ onMounted(() => {
                             <td class="border border-gray-300 p-2">
                                 <input type="text" v-if="form.estado == 'FACTURADO' && !item.producto_validado"
                                     v-on:keyup.enter="validarCodigo($event, index)"
-                                    class="p-inputtext text-end p-component h-8 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1" />
+                                    class="p-inputtext text-end p-component h-8 w-full font-sans
+                                    font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1" />
 
                                 <span v-if="item.producto_validado == true" class="text-green-600 font-bold">
                                     Validado

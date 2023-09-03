@@ -23,6 +23,8 @@ class Venta extends Model
         'facturado',
         'validado',
         'estado',
+        'motivo_anulacion',
+        'fecha_anulacion',
         'destino',
         'cliente',
         'vendedor_id',

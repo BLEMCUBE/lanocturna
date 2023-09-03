@@ -17,7 +17,7 @@ class ConfiguracionSeeder extends Seeder
     {
         $configuraciones =  [
             //["slug"=>"impuesto-iva","key" => "Impuesto IVA %","value"=>"22"],
-            ["slug"=>"codigo-maestro","key" => "Código maestro","value"=>"12345"],
+            ["slug"=>"codigo-maestro","key" => "Código maestro","value"=>'$2y$10$gOv7GFhR3En3.bGp2AJsJeieA1O/SkPiliI8L2ArGSA6qs1PgnLxW'], //123456
         ];
 
         foreach ($configuraciones as $configuracion) {
