@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CodigoMaestroUpdateRequest;
 use App\Models\Configuracion;
-use Spatie\Permission\Models\Role;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 
 class ConfiguracionController extends Controller
@@ -20,24 +19,28 @@ class ConfiguracionController extends Controller
     }
     public function index()
     {
-        $configuraciones=Configuracion::all();
+        /*$configuraciones=Configuracion::all();
         return Inertia::render('Configuracion/Index', [
             'configuraciones' => $configuraciones
+        ]);*/
+        $codigo_maestro=Configuracion::where('slug','codigo-maestro')->first();
+        //return $codigo_maestro;
+        return Inertia::render('Configuracion/EditarCodigoMaestro', [
+            'codigo_maestro' => $codigo_maestro
         ]);
+
     }
 
-    public function update(Request $request, $id)
+    public function update(CodigoMaestroUpdateRequest $request, $id)
     {
-        $rol = Role::find($id);
-        $rol->syncPermissions($request->input('permisos'));
+        $codigo = Configuracion::find($id);
 
-        return Redirect::route('roles.index');
-    }
-
-    public function consultarContrasena(Request $request)
-    {
+        $codigo->value =Hash::make( $request->codigo);
+        $codigo->save();
 
     }
+
+
 
 
 }

@@ -49,6 +49,7 @@ Route::controller(OpcionesController::class)->group(function () {
 //cofonfiguraciones
 Route::controller(ConfiguracionController::class)->group(function () {
     Route::get('/configuraciones', 'index')->name('configuraciones.index')->middleware('auth');
+    Route::post('/configuraciones/update/{id}', 'update')->name('configuraciones.update')->middleware('auth');
 
 
 });
@@ -125,6 +126,8 @@ Route::controller(CajaController::class)->group(function () {
 
 //Expedicion
 Route::controller(ExpedicionController::class)->group(function () {
+    Route::post('/expediciones/maestro', 'verificarCodigoMaestro')->name('expediciones.maestro')->middleware('auth');
+    Route::post('/expediciones/update/{id}', 'validarProductos')->name('expediciones.update')->middleware('auth');
     Route::get('/expediciones', 'index')->name('expediciones.index')->middleware('auth');
     Route::get('/expediciones/{id}', 'show')->name('expediciones.show')->middleware('auth');
 });

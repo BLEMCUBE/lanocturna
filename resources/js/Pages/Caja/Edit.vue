@@ -222,7 +222,7 @@ const submit = () => {
             show('success', 'Mensaje', 'Venta Actualizada')
             setTimeout(() => {
                 //router.get(route(ruta + '.index'));
-                router.get(route(ruta + '.show', id));
+                router.get(route(ruta + '.show', form.id));
             }, 1000);
         },
         onFinish: () => {

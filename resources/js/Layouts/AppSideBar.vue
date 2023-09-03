@@ -187,6 +187,13 @@ export default {
                     <span class="ml-3">Tipo de Cambio</span>
                 </NavLinkSideBar>
             </li>
+            <li @click="setMenu('configuraciones')" v-show="permissions.includes('configuraciones')">
+                <NavLinkSideBar icon-class="fas fa-key"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('configuraciones.index')" :active="route().current('configuraciones.index')">
+                    <span class="ml-3">Código Maestro</span>
+                </NavLinkSideBar>
+            </li>
 
         </ul>
 

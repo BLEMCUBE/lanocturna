@@ -84,7 +84,7 @@ onMounted(() => {
                     <span class="text-black font-semibold">Editar</span>
                 </Button>
                 <Button @click="btnFacturar(form.id)" v-if="form.estado!='FACTURADO'"
-                    class="rounded border-0 bg-green-600 px-2 py-0.5 text-base font-normal  m-2 hover:bg-green-500">
+                    class="rounded border-0 bg-green-700 px-2 py-0.5 text-base font-normal  m-2 hover:bg-green-600">
                     <span class="text-white font-semibold">Facturar</span>
                 </Button>
             </div>

@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\VentaUpdateRequest;
-use App\Http\Resources\ProductoVentaCollection;
 use App\Http\Resources\VentaCollection;
-use App\Models\Cliente;
 use Exception;
-use App\Models\Producto;
 use App\Models\Venta;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\VentaResource;
-use App\Models\Destino;
+use App\Models\Configuracion;
+use App\Models\VentaDetalle;
+use Illuminate\Http\Request;
 
-
+use Illuminate\Validation\ValidationException;
 
 class ExpedicionController extends Controller
 {
@@ -22,9 +21,6 @@ class ExpedicionController extends Controller
     {
         //protegiendo el controlador segun el rol
         //$this->middleware(['auth', 'permission:lista-expediciones'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-expediciones'])->only(['store','create']);
-        //$this->middleware(['auth', 'permission:editar-expediciones'])->only(['update']);
-        //$this->middleware(['auth', 'permission:eliminar-expediciones'])->only(['destroy']);
     }
 
     public function index()
@@ -36,101 +32,13 @@ class ExpedicionController extends Controller
                 Venta::where('destino',"WEB")
                 ->orWhere('destino',"SALON")
                 ->where('estado',"PENDIENTE DE FACTURACIÓN")
+                ->orWhere('estado',"FACTURADO")
                 ->orderBy('created_at', 'DESC')
                     ->get()
             )
         ]);
     }
 
-    public function edit($id)
-    {
-        //Lista cliente
-        $lista_clientes = Cliente::get();
-        $lista_cliente = Cliente::select('id', 'nombre')->get();
-
-        $clientes = [];
-        foreach ($lista_clientes as $cliente) {
-            array_push($clientes, [
-                'value' => $cliente->id,
-                'label' => $cliente->nombre,
-            ]);
-        }
-        //Lista destino
-        $lista_destin = Destino::get();
-
-        $lista_destinos = [];
-        foreach ($lista_destin as $destino) {
-            array_push($lista_destinos, [
-                'value' => $destino->nombre,
-                'label' =>  $destino->nombre,
-            ]);
-        }
-
-        $venta = Venta::with(['detalles_ventas' => function ($query) {
-            $query->select('venta_detalles.*')->with(['producto' => function ($query) {
-                $query->select('id', 'nombre', 'codigo_barra', 'origen');
-            }]);
-        }])
-            ->with(['vendedor' => function ($query) {
-                $query->select('users.id', 'users.name');
-            }])
-            ->orderBy('id', 'DESC')->findOrFail($id);
-        return Inertia::render('Expedicion/Edit', [
-            'lista_destinos' => $lista_destinos,
-            'venta' => $venta,
-            'productos' => new ProductoVentaCollection(
-                Producto::orderBy('created_at', 'DESC')
-                    ->get()
-            )
-        ]);
-    }
-
-
-    public function update(VentaUpdateRequest $request, $id)
-    {
-        $venta = Venta::find($id);
-
-        DB::beginTransaction();
-        try {
-            $venta->codigo = $request->codigo;
-            $venta->total_sin_iva =  $request->total_sin_iva ?? 0;
-            $venta->total =  $request->total ?? 0;
-            $venta->moneda = $request->moneda;
-            $venta->tipo_cambio = $request->tipo_cambio;
-            $venta->destino = $request->destino;
-            $venta->cliente = json_encode($request->cliente);
-            $venta->observaciones = $request->observaciones;
-            $venta->vendedor_id = $request->vendedor_id;
-            $venta->save();
-
-              //eliminando  detalle
-              $venta->detalles_ventas()->delete();
-
-                 //creando detalle venta
-            foreach ($request->productos as $producto) {
-
-                $venta->detalles_ventas()->create(
-                    [
-                        "producto_id" => $producto['producto_id'],
-                        "precio" => $producto['precio'],
-                        "precio_sin_iva" => $producto['precio_sin_iva'],
-                        "cantidad" => $producto['cantidad'],
-                        "total" => $producto['total'],
-                        "total_sin_iva" => $producto['total_sin_iva'],
-                    ]
-                );
-            }
-
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
-    }
     public function show($id)
     {
         $subtema = Venta::with(['detalles_ventas' => function ($query) {
@@ -149,50 +57,55 @@ class ExpedicionController extends Controller
         ]);
     }
 
-    public function facturar($id)
+    public function verificarCodigoMaestro(Request $request){
+        $codigo=Configuracion::where('slug','codigo-maestro')->first();
+        $validated = $request->validate([
+            'codigo' => 'required',
+        ]);
+
+         if (Hash::check( $request->codigo, $codigo->value)) {
+            //dd( "Password matching");
+         } else {
+            //dd( "Password is not matching");
+            throw ValidationException::withMessages([
+                'codigo' => __('Código maestro inválido'),
+            ]);
+         }
+      }
+
+
+    public function validarProductos(Request $request, $id)
     {
-        /*$venta = Venta::with(['detalles_ventas' => function ($query) {
-            $query->select('venta_detalles.*')->with(['producto' => function ($query) {
-                $query->select('id', 'nombre', 'codigo_barra', 'origen');
-            }]);
-        }]) ->orderBy('id', 'DESC')->findOrFail($id);*/
-        $venta = Venta::with('detalles_ventas') ->orderBy('id', 'DESC')->findOrFail($id);
-        $facturador = auth()->user();
-        //return $venta;
+
+
+        $venta = Venta::findOrFail($id);
+
+        $validador = auth()->user();
+        //return $request;
 
         DB::beginTransaction();
         try {
-            $venta->estado = "FACTURADO";
-            $venta->facturador_id =  $facturador->id;
+            $venta->validado =true;
+            $venta->estado="COMPLETADO";
+            //$venta->validador_id =  $validador->id;
             $venta->save();
 
             //actualizando stock producto
-            foreach ($venta->detalles_ventas as $producto) {
+            /*foreach ($venta->detalles_ventas as $producto) {
                 $prod = Producto::find($producto['producto_id']);
                 $old_stock = $prod->stock;
                 $new_stock = $old_stock - $producto['cantidad'];
                 $prod->update([
                     "stock" => $new_stock
                 ]);
-            }
-              //eliminando  detalle
-              //$venta->detalles_ventas()->delete();
-
-                 //creando detalle venta
-           /* foreach ($request->productos as $producto) {
-
-                $venta->detalles_ventas()->create(
-                    [
-                        "producto_id" => $producto['producto_id'],
-                        "precio" => $producto['precio'],
-                        "precio_sin_iva" => $producto['precio_sin_iva'],
-                        "cantidad" => $producto['cantidad'],
-                        "total" => $producto['total'],
-                        "total_sin_iva" => $producto['total_sin_iva'],
-                    ]
-                );
             }*/
 
+            foreach ($request->productos as $producto) {
+                $prod = VentaDetalle::find($producto['detalle_id']);
+                $prod->update([
+                    "producto_validado" =>  $producto['producto_validado']
+                ]);
+            }
 
             DB::commit();
         } catch (Exception $e) {

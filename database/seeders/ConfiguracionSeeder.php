@@ -16,7 +16,7 @@ class ConfiguracionSeeder extends Seeder
     public function run()
     {
         $configuraciones =  [
-            ["slug"=>"impuesto-iva","key" => "Impuesto IVA %","value"=>"22"],
+            //["slug"=>"impuesto-iva","key" => "Impuesto IVA %","value"=>"22"],
             ["slug"=>"codigo-maestro","key" => "Código maestro","value"=>"12345"],
         ];
 

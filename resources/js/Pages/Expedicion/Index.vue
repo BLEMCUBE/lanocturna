@@ -14,7 +14,12 @@ const { permissions } = usePage().props.auth
 const titulo = "Expedición"
 const ruta = 'expediciones'
 
-setTimeout("window.open(self.location, '_self');", 60000);
+//actualizar pagina
+setTimeout(()=>{
+    if(route().current('expediciones.index')){
+        window.open(self.location, '_self');
+    }
+}, 60000);
 
 const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
@@ -81,7 +86,7 @@ const filters = ref({
                     <template #header>
                         <div class="flex justify-start  text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
-                            <h5 class="text-2xl font-medium text-black ml-5">
+                            <h5 class="text-2xl font-medium text-black ml-8">
                                 Productos listos para entrega
                             </h5>
                         </div>
@@ -93,7 +98,11 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-
+<Column field="codigo" header="N° de Pedido" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
                     <Column field="cliente" header="Cliente" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'

@@ -27,6 +27,7 @@ class Venta extends Model
         'cliente',
         'vendedor_id',
         'facturador_id',
+        'validador_id',
         'created_at'
     ];
 
@@ -40,6 +41,11 @@ class Venta extends Model
     }
 
     public function facturador()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function validador()
     {
         return $this->belongsTo(User::class);
     }

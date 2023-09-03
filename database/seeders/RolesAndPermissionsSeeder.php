@@ -76,7 +76,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'subir-pedidos', 'description' => 'Subir Pedido'],
 
             //configuraciones
-            ['name' => 'configuraciones', 'description' => 'Configuraciones'],
+            ['name' => 'configuraciones', 'description' => 'Código Maestro'],
 
             //Roles y permisos
             ['name' => 'ver-roles', 'description' => 'Roles y permisos'],

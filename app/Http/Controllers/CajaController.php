@@ -162,6 +162,7 @@ class CajaController extends Controller
         DB::beginTransaction();
         try {
             $venta->estado = "FACTURADO";
+            $venta->facturado = true;
             $venta->facturador_id =  $facturador->id;
             $venta->save();
 

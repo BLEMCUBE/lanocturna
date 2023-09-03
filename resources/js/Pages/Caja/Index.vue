@@ -2,11 +2,9 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
 
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
-import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_ventas = ref()
@@ -14,12 +12,17 @@ const { permissions } = usePage().props.auth
 const titulo = "Caja"
 const ruta = 'cajas'
 
-setTimeout("window.open(self.location, '_self');", 60000);
+setTimeout(()=>{
+    if(route().current('cajas.index')){
+        window.open(self.location, '_self');
+    }
+}, 60000);
 
 const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
 
 };
+
 
 
 

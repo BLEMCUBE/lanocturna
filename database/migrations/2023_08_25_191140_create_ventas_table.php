@@ -27,6 +27,7 @@ return new class extends Migration
             $table->json('cliente')->nullable();
             $table->unsignedBigInteger('vendedor_id')->nullable();
             $table->unsignedBigInteger('facturador_id')->nullable();
+            //$table->unsignedBigInteger('validador_id')->nullable();
             $table->timestamps();
 
             $table->foreign('vendedor_id')
@@ -36,6 +37,12 @@ return new class extends Migration
             ->onUpdate('set null');
 
             $table->foreign('facturador_id')
+            ->references('id')
+            ->on('users')
+            ->onDelete('set null')
+            ->onUpdate('set null');
+
+            $table->foreign('validador_id')
             ->references('id')
             ->on('users')
             ->onDelete('set null')
