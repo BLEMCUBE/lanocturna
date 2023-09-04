@@ -20,7 +20,9 @@ class VentaResource extends JsonResource
             'id' => $this->id,
             'cliente' => $dat->nombre,
             'codigo' => $this->codigo,
-            'vendedor' => $this->vendedor->name,
+            'vendedor' => $this->vendedor->name??'',
+            'facturador' => $this->facturador->name??'',
+            'validador' => $this->validador->name??'',
             'moneda' => $this->moneda,
             'tipo_cambio' => $this->tipo_cambio,
             'total_sin_iva' => $this->total_sin_iva,
@@ -28,6 +30,7 @@ class VentaResource extends JsonResource
             'productos' => $this->detalles_ventas,
             'estado' => $this->estado,
             'destino'=>$this->destino??'',
+            'observaciones'=>$this->observaciones??'',
             'fecha'=>Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('d/m/Y H:i:s'),
 
         ];

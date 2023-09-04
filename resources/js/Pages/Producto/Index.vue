@@ -118,7 +118,7 @@ const filters = ref({
                 :pt="{
                     bodyRow:{class:'hover:cursor-pointer'}
                 }"
-                scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem"
+                scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem"
                 @row-click="clickDetalle"
                  size="small">
                     <template #header>

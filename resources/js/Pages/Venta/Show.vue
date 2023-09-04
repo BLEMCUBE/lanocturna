@@ -30,6 +30,9 @@ onMounted(() => {
     form.id = datos.id
     form.fecha = datos.fecha
     form.vendedor = datos.vendedor
+    form.validador = datos.validador
+    form.facturador = datos.facturador
+    form.observaciones = datos.observaciones
     form.destino = datos.destino
     form.cliente = datos.cliente
     form.moneda = datos.moneda
@@ -106,6 +109,20 @@ onMounted(() => {
                         {{ form.vendedor }}
                     </p>
                 </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                            Facturado por:
+                        </b>
+                        {{ form.facturador }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                            Validado por:
+                        </b>
+                        {{ form.validador }}
+                    </p>
+                </div>
 
                 <div class="col-span-1">
                     <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
@@ -121,6 +138,13 @@ onMounted(() => {
                         {{ form.cliente }}
                     </p>
                 </div>
+                <div class="col-span-3">
+                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                            Observaciones:
+                        </b>
+                        {{ form.observaciones }}
+                    </p>
+                </div>
             </div>
             <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
                 <h5 class="text-2xl font-medium">Productos</h5>
@@ -128,38 +152,39 @@ onMounted(() => {
             <div
                 class="mx-auto grid max-w-2xl grid-cols-1  overflow-auto gap-x-1 gap-y-1 px-2 py-2 sm:px-6 lg:max-w-7xl lg:grid-cols-3 lg:px-1">
                 <table class="table-auto mx-2 border border-gray-300 col-span-12">
-                            <thead>
-                                <tr class="p-2 bg-secondary-900 border">
-                                    <th class="border border-gray-300 w-24">Cantidad</th>
-                                    <th class="border border-gray-300 p-2 w-24">Origen</th>
-                                    <th class="border border-gray-300 ">Producto</th>
-                                    <th class="border border-gray-300 w-24">Código de Barras</th>
-                                    <th class="border border-gray-300 w-24">Precio</th>
-                                    <th class="border border-gray-300 w-24">Total</th>
+                    <thead>
+                        <tr class="p-2 bg-secondary-900 border">
+                            <th class="border border-gray-300 w-24">Cantidad</th>
+                            <th class="border border-gray-300 p-2 w-24">Origen</th>
+                            <th class="border border-gray-300 ">Producto</th>
+                            <th class="border border-gray-300">Código de Barras</th>
+                            <th class="border border-gray-300">Precio</th>
+                            <th class="border border-gray-300">Total</th>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item, index) in form.productos" :key="index"
-                                    class="font-sans  text-center font-normal text-gray-800 border border-gray-300">
-                                    <td class="border border-gray-300 p-2">{{ item.cantidad }}</td>
-                                    <td class="border border-gray-300 p-2">{{ item.producto.origen }}</td>
-                                    <td class="border border-gray-300 p-2">{{ item.producto.nombre }}</td>
-                                    <td class="border border-gray-300 p-2">{{ item.producto.codigo_barra }}</td>
-                                    <td class="border border-gray-300 p-2">{{ item.precio.toFixed(2) }}</td>
-                                    <td class="border border-gray-300 p-2">{{ item.total.toFixed(2) }}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in form.productos" :key="index"
+                            class="font-sans  text-center font-normal text-gray-800 border border-gray-300">
+                            <td class="border border-gray-300 p-2">{{ item.cantidad }}</td>
+                            <td class="border border-gray-300 p-2">{{ item.producto.origen }}</td>
+                            <td class="border border-gray-300 p-2">{{ item.producto.nombre }}</td>
+                            <td class="border border-gray-300 p-2">{{ item.producto.codigo_barra }}</td>
+                            <td class="border border-gray-300 p-2">{{ item.precio.toFixed(2) }}</td>
+                            <td class="border border-gray-300 p-2">{{ item.total.toFixed(2) }}</td>
 
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="5" class="text-end"><b>Total: </b></td>
-                                    <td class="text-center"><b> {{ form.moneda=='Pesos'?'$ ':'USD ' }} {{ form.total.toFixed(2) }} </b></td>
-                                </tr>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="text-end"><b>Total: </b></td>
+                            <td class="text-center"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{ form.total.toFixed(2) }}
+                                </b></td>
+                        </tr>
 
-                            </tfoot>
-                        </table>
-</div>
+                    </tfoot>
+                </table>
+            </div>
 
 
 

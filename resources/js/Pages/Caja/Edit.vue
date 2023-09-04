@@ -113,11 +113,11 @@ onMounted(() => {
     form.estado=dato.estado
     form.codigo=dato.codigo
     dato.detalles_ventas.forEach(el => {
-    var produ2 = productos.data.find(pr => pr.id === el.id);
+    var produ2 = productos.data.find(pr => pr.id === el.producto_id);
     if(produ2!=undefined){
         form.productos.push(
             {
-                producto_id: el.id,
+                producto_id: el.producto_id,
                 nombre: produ2.nombre,
                 origen: produ2.origen,
                 cantidad: el.cantidad,

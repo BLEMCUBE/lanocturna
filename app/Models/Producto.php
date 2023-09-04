@@ -22,8 +22,8 @@ class Producto extends Model
         'stock_futuro',
     ];
 
-    /*public function detalles_ventas()
+    public function detalles_ventas()
     {
         return $this->hasMany(VentaDetalle::class);
-    }*/
+    }
 }

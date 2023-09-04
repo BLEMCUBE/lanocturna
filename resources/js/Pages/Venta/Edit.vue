@@ -14,6 +14,7 @@ const titulo = "Venta"
 const ruta = 'ventas'
 
 const { lista_destinos } = usePage().props
+const { productos } = usePage().props
 const prod = useForm({
     producto_id: '',
     nombre: '',
@@ -77,7 +78,7 @@ const form = useForm({
 })
 const isShowModal = ref(false);
 //const productos=ref([]);
-const { productos } = usePage().props
+
 const lista_destino = ref({
     value: '',
     closeOnSelect: true,
@@ -112,11 +113,11 @@ onMounted(() => {
     form.estado=dato.estado
     form.codigo=dato.codigo
     dato.detalles_ventas.forEach(el => {
-    var produ2 = productos.data.find(pr => pr.id === el.id);
+    var produ2 = productos.data.find(pr => pr.id === el.producto_id);
     if(produ2!=undefined){
         form.productos.push(
             {
-                producto_id: el.id,
+                producto_id: el.producto_id,
                 nombre: produ2.nombre,
                 origen: produ2.origen,
                 cantidad: el.cantidad,
@@ -283,7 +284,7 @@ const cancelCrear = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(producto, index) in form.productos" :key="index"
+                                <tr v-for="producto, index in form.productos" :key="index"
                                     class="font-sans  font-normal text-gray-800 border border-gray-300">
                                     <td class="border border-gray-300 p-2">{{ producto.origen }}</td>
                                     <td class="border border-gray-300 p-2">{{ producto.nombre }}</td>

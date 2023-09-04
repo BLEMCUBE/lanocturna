@@ -81,7 +81,7 @@ const filters = ref({
 
                 <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer' }
-                }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"
+                }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-start  text-md">
@@ -95,7 +95,7 @@ const filters = ref({
                     <template #loading> Cargando... </template>
                     <Column field="fecha" header="Facha y hora" sortable :pt="{
                         bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center p-2'
                         }
                     }"></Column>
 <Column field="codigo" header="N° de Pedido" sortable :pt="{

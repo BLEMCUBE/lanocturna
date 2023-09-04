@@ -132,7 +132,7 @@ class CajaController extends Controller
     }
     public function show($id)
     {
-        $subtema = Venta::with(['detalles_ventas' => function ($query) {
+        $venta_query = Venta::with(['detalles_ventas' => function ($query) {
             $query->select('venta_detalles.*')->with(['producto' => function ($query) {
                 $query->select('id', 'nombre', 'codigo_barra', 'origen');
             }]);
@@ -140,9 +140,16 @@ class CajaController extends Controller
             ->with(['vendedor' => function ($query) {
                 $query->select('users.id', 'users.name');
             }])
+            ->with(['facturador' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->with(['validador' => function ($query) {
+                $query->select('id', 'name');
+            }])
             ->orderBy('id', 'DESC')->findOrFail($id);
+        //return $venta_query;
 
-        $venta = new VentaResource($subtema);
+        $venta = new VentaResource($venta_query);
         return Inertia::render('Caja/Show', [
             'venta' => $venta
         ]);

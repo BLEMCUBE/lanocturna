@@ -133,7 +133,7 @@ const filters = ref({
 
                 <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer' }
-                }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"
+                }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
                      @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
@@ -152,20 +152,10 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="vendedor" header="Vendedor" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
+
                     <Column field="cliente" header="Cliente" sortable :pt="{
                         bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-
-                    <Column field="destino" header="Destino" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center border'
                         }
                     }"></Column>
 
@@ -180,17 +170,6 @@ const filters = ref({
                             </span>
                         </template>
                     </Column>
-                    <Column field="moneda" header="Moneda" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="total_sin_iva" sortable header="Total sin IVA" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-
-                    }"></Column>
 
                     <Column field="total" sortable header="Total" :pt="{
                         bodyCell: {
@@ -198,27 +177,21 @@ const filters = ref({
                         }
                     }"></Column>
 
-                    <Column field="facturador" sortable header="Facturado por:" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-
-                    <Column field="validador" sortable header="Validado por:" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
                     <Column field="observaciones" sortable header="Observaciones" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
                     }"></Column>
 
-                    <Column header="Acciones" style="width:100px">
+                    <Column header="Acciones" style="width:100px"
+                    :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }">
                         <template #body="slotProps">
                             <Button v-if="permissions.includes('editar-ventas') && slotProps.data.estado=='PENDIENTE DE FACTURACIÓN'" @click="btnEditar(slotProps.data.id)"
-                                class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-2 hover:bg-primary-100"
+                                class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
                                 v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
                                     class="fas fa-edit"></i></Button>
 

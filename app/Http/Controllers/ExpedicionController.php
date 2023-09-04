@@ -26,16 +26,27 @@ class ExpedicionController extends Controller
     public function index()
     {
 
+        /*$expedidiones= new VentaCollection(
+            Venta::where('destino',"WEB")
+            ->orWhere('destino',"SALON")
+            ->where('estado',"PENDIENTE DE FACTURACIÓN")
+            ->orWhere('estado',"FACTURADO")
+            ->orderBy('created_at', 'DESC')
+                ->get()
+        );*/
+            $expedidiones= new VentaCollection(
+                Venta::where(function ($query) {
+                    $query->where('destino',"WEB")
+                    ->orWhere('destino',"SALON");
+                })->where(function ($query) {
+                    $query->where('estado',"PENDIENTE DE FACTURACIÓN")
+                    ->orWhere('estado',"FACTURADO");
+                })->get()
 
+                    //whereNot('estado',"COMPLETADO")
+                );
         return Inertia::render('Expedicion/Index', [
-            'ventas' => new VentaCollection(
-                Venta::where('destino',"WEB")
-                ->orWhere('destino',"SALON")
-                ->where('estado',"PENDIENTE DE FACTURACIÓN")
-                ->orWhere('estado',"FACTURADO")
-                ->orderBy('created_at', 'DESC')
-                    ->get()
-            )
+            'ventas' =>$expedidiones
         ]);
     }
 

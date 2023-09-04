@@ -208,6 +208,13 @@ onMounted(() => {
                         {{ form.cliente }}
                     </p>
                 </div>
+                <div class="col-span-3">
+                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                        Observaciones:
+                        </b>
+                        {{ form.observaciones }}
+                    </p>
+                </div>
             </div>
 
             <div
@@ -215,8 +222,8 @@ onMounted(() => {
                 <table class="table-auto mx-2 border border-gray-300 col-span-12">
                     <thead>
                         <tr class="p-2 bg-secondary-900 border">
-                            <th class="border border-gray-300 w-20">Cantidad</th>
-                            <th class="border border-gray-300 p-2 w-36">Origen</th>
+                            <th class="border border-gray-300">Cantidad</th>
+                            <th class="border border-gray-300">Origen</th>
                             <th class="border border-gray-300 ">Producto</th>
                             <th class="border border-gray-300 w-48">Validacion</th>
                             <th class="border border-gray-300 w-16 text-xs font-medium">Código maestro</th>
