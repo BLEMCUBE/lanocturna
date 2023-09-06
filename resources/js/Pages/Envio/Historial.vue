@@ -11,8 +11,8 @@ import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Historial de Ventas"
-const ruta = 'ventas'
+const titulo = "Historial de Envios"
+const ruta = 'envios'
 const { tipo_cambio } = usePage().props
 
 const formDelete = useForm({
@@ -40,11 +40,11 @@ const colorEstado = (estado) => {
 }
 
 const btnVer = (id) => {
-    router.get(route(ruta + '.show', id));
+    router.get(route(ruta + '.detalle', id));
 
 };
-const btnEditar = (id) => {
-    router.get(route(ruta + '.edit', id));
+const btnImprimir = (id) => {
+    router.get(route(ruta + '.generar_ticket', id));
 
 };
 const btnEliminar = (id, name) => {
@@ -93,14 +93,6 @@ const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
 
-const BtnCrear = () => {
-    if (tipo_cambio == true) {
-
-        router.get(route(ruta + '.create'));
-    } else {
-        ok('error', 'No se ha especificado el tipo de cambio para el día')
-    }
-}
 
 const ok = (icono, mensaje) => {
 
@@ -125,17 +117,16 @@ const filters = ref({
             <Toast />
             <div class="px-3 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-                <Button size="small" :label="'Crear Venta'" severity="success" @click="BtnCrear"></Button>
+
 
             </div>
 
             <div class="align-middle">
 
                 <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
-                    bodyRow: { class: 'hover:cursor-pointer' }
-                }"
-                scrollable scrollHeight="800px" :virtualScrollerOptions="{ class:'min-h-screen', itemSize: 46 }"
-                     @row-click="clickDetalle" size="small">
+                    bodyRow: { class: 'hover:cursor-pointer p-1' }
+                }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ class: 'min-h-screen', itemSize: 46 }"
+                    @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -184,18 +175,17 @@ const filters = ref({
                         }
                     }"></Column>
 
-                    <Column header="Acciones" style="width:100px"
-                    :pt="{
+                    <Column header="Acciones" style="width:100px" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
                     }">
                         <template #body="slotProps">
-                            <Button v-if="permissions.includes('editar-ventas') && slotProps.data.estado=='PENDIENTE DE FACTURACIÓN'" @click="btnEditar(slotProps.data.id)"
-                                class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
-                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
-                                    class="fas fa-edit"></i></Button>
-
+                            <span
+                                class="inline-block rounded bg-sky-300 px-2 py-1 text-base font-semibold text-white mr-1 mb-1 hover:bg-sky-400">
+                                <a :href="route('envios.generar_ticket', slotProps.data.id)" target="_blank"><i
+                                        class="fas fa-print"></i></a>
+                            </span>
                         </template>
                     </Column>
                 </DataTable>

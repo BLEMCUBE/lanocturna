@@ -12,7 +12,6 @@ use App\Http\Resources\VentaResource;
 use App\Models\Configuracion;
 use App\Models\VentaDetalle;
 use Illuminate\Http\Request;
-
 use Illuminate\Validation\ValidationException;
 
 class ExpedicionController extends Controller
@@ -26,14 +25,6 @@ class ExpedicionController extends Controller
     public function index()
     {
 
-        /*$expedidiones= new VentaCollection(
-            Venta::where('destino',"WEB")
-            ->orWhere('destino',"SALON")
-            ->where('estado',"PENDIENTE DE FACTURACIÓN")
-            ->orWhere('estado',"FACTURADO")
-            ->orderBy('created_at', 'DESC')
-                ->get()
-        );*/
             $expedidiones= new VentaCollection(
                 Venta::where(function ($query) {
                     $query->where('destino',"WEB")

@@ -22,6 +22,9 @@ const form = useForm({
     observaciones: '',
     productos: [],
     cliente: '',
+    direccion:'',
+    localidad : '',
+    telefono :'',
 
 })
 
@@ -35,6 +38,9 @@ onMounted(() => {
     form.observaciones = datos.observaciones
     form.destino = datos.destino
     form.cliente = datos.cliente
+    form.direccion = datos.direccion
+    form.localidad = datos.localidad
+    form.telefono = datos.telefono
     form.moneda = datos.moneda
     form.estado = datos.estado
     form.productos = datos.productos
@@ -60,42 +66,42 @@ onMounted(() => {
                 class="mx-auto grid max-w-2xl grid-cols-1  gap-x-1 gap-y-1 px-4 py-2 sm:px-6 lg:max-w-7xl lg:grid-cols-3 lg:px-8">
 
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Fecha:
                         </b>
                         {{ form.fecha }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             N° de Venta:
                         </b>
                         {{ form.codigo }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Estado
                         </b>
                         {{ form.estado }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Total:
                         </b>
                         {{ form.total.toFixed(2) }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Total sin IVA:
                         </b>
                         {{ form.total_sin_iva.toFixed(2) }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Moneda:
                         </b>
                         {{ form.moneda }}
@@ -103,21 +109,21 @@ onMounted(() => {
                 </div>
 
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Vendedor:
                         </b>
                         {{ form.vendedor }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Facturado por:
                         </b>
                         {{ form.facturador }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Validado por:
                         </b>
                         {{ form.validador }}
@@ -125,21 +131,42 @@ onMounted(() => {
                 </div>
 
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Destino:
                         </b>
                         {{ form.destino }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Cliente:
                         </b>
                         {{ form.cliente }}
                     </p>
                 </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Localidad:
+                        </b>
+                        {{ form.localidad }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Dirección:
+                        </b>
+                        {{ form.direccion }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Télefono:
+                        </b>
+                        {{ form.telefono }}
+                    </p>
+                </div>
                 <div class="col-span-3">
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Observaciones:
                         </b>
                         {{ form.observaciones }}

@@ -143,32 +143,23 @@ class VentaController extends Controller
             ]);
         }
 
-        /*$venta = Venta::with(['detalles_ventas' => function ($query) {
-            $query->select('venta_detalles.*')->with(['producto' => function ($query) {
+
+        $venta = Venta::with(['detalles_ventas' => function ($query) {
+            $query->select('*')->with(['producto' => function ($query) {
                 $query->select('id', 'nombre', 'codigo_barra', 'origen');
             }]);
         }])
             ->with(['vendedor' => function ($query) {
                 $query->select('users.id', 'users.name');
             }])
-            ->orderBy('id', 'DESC')->findOrFail($id);*/
-//return $venta;
-$venta = Venta::with(['detalles_ventas' => function ($query) {
-    $query->select('*')->with(['producto' => function ($query) {
-        $query->select('id', 'nombre', 'codigo_barra', 'origen');
-    }]);
-}])
-    ->with(['vendedor' => function ($query) {
-        $query->select('users.id', 'users.name');
-    }])
-    ->with(['facturador' => function ($query) {
-        $query->select('id', 'name');
-    }])
-    ->with(['validador' => function ($query) {
-        $query->select('id', 'name');
-    }])
-    ->orderBy('id', 'DESC')->findOrFail($id);
-    //return $venta;
+            ->with(['facturador' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->with(['validador' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->orderBy('id', 'DESC')->findOrFail($id);
+        //return $venta;
         return Inertia::render('Venta/Edit', [
             'lista_destinos' => $lista_destinos,
             'venta' => $venta,
@@ -184,18 +175,17 @@ $venta = Venta::with(['detalles_ventas' => function ($query) {
         $last = Venta::latest()->first();
         $vendedor = auth()->user();
 
-        if (empty($last) || is_null($last)) {
+        /*if (empty($last) || is_null($last)) {
             $codigo = zero_fill(1, 8);
         } else {
             $codigo = zero_fill($last->codigo + 1, 8);
-        }
+        }*/
 
         DB::beginTransaction();
         try {
 
             //creando venta
             $venta = Venta::create([
-                'codigo' => $codigo,
                 'total_sin_iva' => $request->total_sin_iva ?? 0,
                 'total' => $request->total ?? 0,
                 'estado' => $request->estado,
@@ -207,7 +197,9 @@ $venta = Venta::with(['detalles_ventas' => function ($query) {
                 'vendedor_id' => $vendedor->id,
 
             ]);
-
+            $venta->update([
+            "codigo"=>zero_fill($venta->id,8)
+            ]);
             //creando detalle venta
             foreach ($request->productos as $producto) {
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\OpcionesController;
@@ -132,5 +133,18 @@ Route::controller(ExpedicionController::class)->group(function () {
     Route::get('/expediciones/{id}', 'show')->name('expediciones.show')->middleware('auth');
 });
 
+//Envio
+Route::controller(EnvioController::class)->group(function () {
+    Route::post('/envios/maestro', 'verificarCodigoMaestro')->name('envios.maestro')->middleware('auth');
+    Route::get('/envios/create', 'create')->name('envios.create')->middleware('auth');
+    Route::get('/envios/historial', 'historialEnvios')->name('envios.historial')->middleware('auth');
+    Route::post('/envios/store', 'store')->name('envios.store')->middleware('auth');
+    Route::post('/envios/update/{id}', 'validarProductos')->name('envios.update')->middleware('auth');
+    Route::get('/envios/detalle/{id}', 'detalle')->name('envios.detalle')->middleware('auth');
+    Route::get('/envios', 'index')->name('envios.index')->middleware('auth');
+    Route::get('/envios/ticket/{id}', 'generarTicket')->name('envios.generar_ticket')->middleware('auth');
+    Route::get('/envios/{id}', 'show')->name('envios.show')->middleware('auth');
+
+});
 
 require __DIR__.'/auth.php';

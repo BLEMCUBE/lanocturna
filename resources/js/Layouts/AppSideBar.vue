@@ -173,6 +173,27 @@ export default {
                     <span class="ml-3">Expedición</span>
                 </NavLinkSideBar>
             </li>
+            <li @click="setMenu('envios')" v-show="permissions.includes('lista-envios')">
+                <NavLinkSideBar icon-class="fas fa-truck"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('envios.index')"
+                    :active="route().current('envios.index')">
+                    <span class="ml-3">Envios</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('subir-envio')" v-show="permissions.includes('subir-envios')">
+                <NavLinkSideBar icon-class="fas fa-truck"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('envios.create')"
+                    :active="route().current('envios.create')">
+                    <span class="ml-3">Subir Envio</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('historial-envios')" v-show="permissions.includes('historial-envios')">
+                <NavLinkSideBar icon-class="fas fa-truck"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('envios.historial')"
+                    :active="route().current('envios.historial')">
+                    <span class="ml-3">Historial de Envios</span>
+                </NavLinkSideBar>
+            </li>
             <li @click="setMenu('imoprtaciones')" v-show="permissions.includes('lista-productos')">
                 <NavLinkSideBar icon-class="fa-solid fa-cart-plus"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"

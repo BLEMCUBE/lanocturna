@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('ventas', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')->nullable();
+            $table->string('nro_compra')->nullable();
             $table->string('moneda')->nullable();
             $table->float('tipo_cambio',8,2)->default(0);
             $table->float('total',8,2)->default(0);
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->json('cliente')->nullable();
             $table->text('motivo_anulacion')->nullable();
             $table->timestamp('fecha_anulacion')->nullable();
+            $table->string('tipo')->default('VENTA');
             $table->unsignedBigInteger('vendedor_id')->nullable();
             $table->unsignedBigInteger('facturador_id')->nullable();
             $table->unsignedBigInteger('validador_id')->nullable();
