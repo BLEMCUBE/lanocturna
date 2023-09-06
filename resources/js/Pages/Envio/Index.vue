@@ -11,12 +11,12 @@ import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Expedición"
-const ruta = 'expediciones'
+const titulo = "Envios"
+const ruta = 'envios'
 
 //actualizar pagina
-setTimeout(()=>{
-    if(route().current('expediciones.index')){
+setTimeout(() => {
+    if (route().current('envios.index')) {
         window.open(self.location, '_self');
     }
 }, 60000);
@@ -98,7 +98,7 @@ const filters = ref({
                             class: 'text-center p-2'
                         }
                     }"></Column>
-<Column field="codigo" header="N° de Pedido" sortable :pt="{
+                    <Column field="codigo" header="N° de Pedido" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
@@ -109,7 +109,7 @@ const filters = ref({
                         }
                     }"></Column>
 
-<Column field="estado" header="Estado del pedido" sortable :pt="{
+                    <Column field="estado" header="Estado del pedido" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }

@@ -62,27 +62,27 @@ onMounted(() => {
                             {{ form.nombre }}</h1>
                     </div>
 
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Origen:
                         </b>
                         {{ form.origen }}
                     </p>
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Código barra:
                         </b>
                         {{ form.codigo_barra }}
                     </p>
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Stock:
                         </b>
                         {{ form.stock }}
                     </p>
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Stock Mínimo:
                         </b>
                         {{ form.stock_minimo }}
                     </p>
-                    <p class="text-lg leading-6 mt-2 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Stock Futuro:
                         </b>
                         {{ form.stock_futuro }}

@@ -9,7 +9,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 const { permissions } = usePage().props.auth
 const toast = useToast();
 const titulo = "Detalle"
-const ruta = 'expediciones'
+const ruta = 'envios'
 const isShowModal = ref(false);
 const isConfirm = ref(false);
 const form = useForm({
@@ -26,6 +26,9 @@ const form = useForm({
     observaciones: '',
     productos: [],
     cliente: '',
+    direccion:'',
+    localidad : '',
+    telefono :'',
 
 })
 const cod_maestro = useForm({
@@ -145,6 +148,9 @@ onMounted(() => {
     form.fecha = datos.fecha
     form.codigo = datos.codigo
     form.cliente = datos.cliente
+    form.direccion = datos.direccion
+    form.localidad = datos.localidad
+    form.telefono = datos.telefono
     form.estado = datos.estado
     datos.productos.forEach(el => {
         form.productos.push(
@@ -167,16 +173,22 @@ onMounted(() => {
 <template>
     <Head :title="titulo" />
     <AppLayout
-        :pagina="[{ 'label': 'Expediciones', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
+        :pagina="[{ 'label': 'Envios', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <div
             class="card px-4 py-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <Toast />
 
+            <div class="px-2 py-0 m-0 mt-0 text-white  col-span-full  flex justify-start items-center">
+                <span
+                                class="inline-block rounded bg-sky-300 px-2 py-1 text-base font-semibold text-white mr-1 mb-1 hover:bg-sky-400">
+                                <a :href="route('envios.generar_ticket', form.id)" target="_blank"><i
+                                        class="fas fa-print"></i> Imprimir</a>
+                            </span>
+            </div>
             <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
                 <h5 class="text-2xl font-medium">Cliente: {{ form.cliente }}</h5>
             </div>
-
             <div
                 class="mx-auto grid max-w-2xl grid-cols-1  gap-x-1 gap-y-1 px-4 py-2 sm:px-6 lg:max-w-7xl lg:grid-cols-3 lg:px-8">
 
@@ -209,7 +221,28 @@ onMounted(() => {
                         {{ form.cliente }}
                     </p>
                 </div>
-                <div class="col-span-3">
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Localidad:
+                        </b>
+                        {{ form.localidad }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Dirección:
+                        </b>
+                        {{ form.direccion }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Télefono:
+                        </b>
+                        {{ form.telefono }}
+                    </p>
+                </div>
+                <div class="col-span-2">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                         Observaciones:
                         </b>

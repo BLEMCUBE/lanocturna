@@ -47,11 +47,12 @@ class VentaController extends Controller
             }
         }
 
+        $venta_query = Venta::orderBy('created_at', 'DESC')
+            ->get();
         return Inertia::render('Venta/Index', [
             'tipo_cambio' => $hoy_tipo_cambio,
             'ventas' => new VentaCollection(
-                Venta::orderBy('created_at', 'DESC')
-                    ->get()
+                $venta_query
             )
         ]);
     }
@@ -123,7 +124,6 @@ class VentaController extends Controller
     {
         //Lista cliente
         $lista_clientes = Cliente::get();
-        $lista_cliente = Cliente::select('id', 'nombre')->get();
 
         $clientes = [];
         foreach ($lista_clientes as $cliente) {
@@ -143,15 +143,23 @@ class VentaController extends Controller
             ]);
         }
 
+
         $venta = Venta::with(['detalles_ventas' => function ($query) {
-            $query->select('venta_detalles.*')->with(['producto' => function ($query) {
+            $query->select('*')->with(['producto' => function ($query) {
                 $query->select('id', 'nombre', 'codigo_barra', 'origen');
             }]);
         }])
             ->with(['vendedor' => function ($query) {
                 $query->select('users.id', 'users.name');
             }])
+            ->with(['facturador' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->with(['validador' => function ($query) {
+                $query->select('id', 'name');
+            }])
             ->orderBy('id', 'DESC')->findOrFail($id);
+        //return $venta;
         return Inertia::render('Venta/Edit', [
             'lista_destinos' => $lista_destinos,
             'venta' => $venta,
@@ -167,18 +175,17 @@ class VentaController extends Controller
         $last = Venta::latest()->first();
         $vendedor = auth()->user();
 
-        if (empty($last) || is_null($last)) {
+        /*if (empty($last) || is_null($last)) {
             $codigo = zero_fill(1, 8);
         } else {
             $codigo = zero_fill($last->codigo + 1, 8);
-        }
+        }*/
 
         DB::beginTransaction();
         try {
 
             //creando venta
             $venta = Venta::create([
-                'codigo' => $codigo,
                 'total_sin_iva' => $request->total_sin_iva ?? 0,
                 'total' => $request->total ?? 0,
                 'estado' => $request->estado,
@@ -190,7 +197,9 @@ class VentaController extends Controller
                 'vendedor_id' => $vendedor->id,
 
             ]);
-
+            $venta->update([
+            "codigo"=>zero_fill($venta->id,8)
+            ]);
             //creando detalle venta
             foreach ($request->productos as $producto) {
 
@@ -234,10 +243,10 @@ class VentaController extends Controller
             $venta->vendedor_id = $request->vendedor_id;
             $venta->save();
 
-              //eliminando  detalle
-              $venta->detalles_ventas()->delete();
+            //eliminando  detalle
+            $venta->detalles_ventas()->delete();
 
-                 //creando detalle venta
+            //creando detalle venta
             foreach ($request->productos as $producto) {
 
                 $venta->detalles_ventas()->create(
@@ -264,7 +273,7 @@ class VentaController extends Controller
     }
     public function show($id)
     {
-        $subtema = Venta::with(['detalles_ventas' => function ($query) {
+        $venta_query = Venta::with(['detalles_ventas' => function ($query) {
             $query->select('venta_detalles.*')->with(['producto' => function ($query) {
                 $query->select('id', 'nombre', 'codigo_barra', 'origen');
             }]);
@@ -272,9 +281,15 @@ class VentaController extends Controller
             ->with(['vendedor' => function ($query) {
                 $query->select('users.id', 'users.name');
             }])
+            ->with(['facturador' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->with(['validador' => function ($query) {
+                $query->select('id', 'name');
+            }])
             ->orderBy('id', 'DESC')->findOrFail($id);
-
-        $venta = new VentaResource($subtema);
+        //return $venta_query;
+        $venta = new VentaResource($venta_query);
         return Inertia::render('Venta/Show', [
             'venta' => $venta
         ]);
