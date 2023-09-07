@@ -27,6 +27,8 @@ class Venta extends Model
         'fecha_anulacion',
         'destino',
         'cliente',
+        'tipo',
+        'nro_compra',
         'vendedor_id',
         'facturador_id',
         'validador_id',

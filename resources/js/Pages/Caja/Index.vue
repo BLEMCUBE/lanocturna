@@ -71,11 +71,7 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="codigo" header="N° de Venta" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
+
                     <Column field="fecha" header="Facha y hora" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'

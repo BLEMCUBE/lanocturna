@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\VentaResource;
 use App\Models\Destino;
 use App\Models\TipoCambio;
+use Illuminate\Support\Facades\Request;
 
 
 class VentaController extends Controller
@@ -47,7 +48,12 @@ class VentaController extends Controller
             }
         }
 
-        $venta_query = Venta::orderBy('created_at', 'DESC')
+        $venta_query = Venta::select('*')->when(Request::input('inicio'), function ($query, $search) {
+            $query->whereDate('created_at', '>=', $search);
+        })
+        ->when(Request::input('fin'), function ($query, $search) {
+            $query->whereDate('created_at', '<=', $search);
+        })->orderBy('created_at', 'DESC')
             ->get();
         return Inertia::render('Venta/Index', [
             'tipo_cambio' => $hoy_tipo_cambio,

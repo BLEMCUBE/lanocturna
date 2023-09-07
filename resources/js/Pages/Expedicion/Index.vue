@@ -15,8 +15,8 @@ const titulo = "Expedición"
 const ruta = 'expediciones'
 
 //actualizar pagina
-setTimeout(()=>{
-    if(route().current('expediciones.index')){
+setTimeout(() => {
+    if (route().current('expediciones.index')) {
         window.open(self.location, '_self');
     }
 }, 60000);
@@ -98,7 +98,12 @@ const filters = ref({
                             class: 'text-center p-2'
                         }
                     }"></Column>
-<Column field="codigo" header="N° de Pedido" sortable :pt="{
+                    <Column field="destino" header="Destino" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="nro_compra" header="N° Compra" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
@@ -109,7 +114,7 @@ const filters = ref({
                         }
                     }"></Column>
 
-<Column field="estado" header="Estado del pedido" sortable :pt="{
+                    <Column field="estado" header="Estado del pedido" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }

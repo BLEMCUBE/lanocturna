@@ -31,6 +31,8 @@ class VentaCollection extends ResourceCollection
                     'validador' => $row->validador->name??'',
                     'estado' => $row->estado??'',
                     'tipo' => $row->tipo??'',
+                    'nro_compra' => $row->nro_compra??'',
+                    'tipo' => $row->tipo??'',
                     'observaciones' => $row->observaciones??'',
                     'total' => number_format($row->total,2)??'',
                     'moneda' => $row->moneda??'',

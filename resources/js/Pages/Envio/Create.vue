@@ -10,7 +10,7 @@ import Multiselect from '@vueform/multiselect';
 import Swal from 'sweetalert2';
 import { FilterMatchMode } from 'primevue/api';
 const toast = useToast();
-const titulo = "Subir Envio"
+const titulo = "Mercado Libre"
 const ruta = 'envios'
 
 const { tipo_cambio } = usePage().props
@@ -61,8 +61,8 @@ const form = useForm({
     destino: '',
     total: 0.0,
     total_sin_iva: 0.0,
-    moneda: '',
-    tipo:'envio',
+    moneda: 'Pesos',
+    tipo:'ENVIO',
     nro_compra:'',
     tipo_cambio: '',
     estado: 'FACTURADO',
@@ -210,7 +210,7 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-    router.get(route(ruta + '.index'))
+    router.get(route('inicio'))
 };
 
 

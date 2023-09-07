@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\VentaDetalle;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Elibyy\TCPDF\Facades\TCPDF;
+use Illuminate\Support\Facades\Request as Req;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class EnvioController extends Controller
@@ -43,7 +43,6 @@ class EnvioController extends Controller
                 $query->where('destino', "CADETERIA")
                     ->orWhere('destino', "FLEX")
                     ->orWhere('destino', "UES")
-                    ->orWhere('destino', "MERCADOLIBRE")
                     ->orWhere('destino', "DAC");
             })->where(function ($query) {
                 $query->where('estado', "PENDIENTE DE FACTURACIÓN")
@@ -113,10 +112,11 @@ class EnvioController extends Controller
 
             //creando venta
             $venta = Venta::create([
-                'nro_compra' => $request->total ?? 0,
+                'nro_compra' => $request->nro_compra??'',
                 'estado' => $request->estado,
                 'destino' => $request->destino,
-                'tipo' => $request->tipo,
+                'moneda' => $request->moneda,
+                'tipo' => $request->tipo??'ENVIO',
                 'vendedor_id' => $vendedor->id,
             ]);
             $venta->update([
@@ -179,11 +179,15 @@ class EnvioController extends Controller
         $venta_query = new VentaCollection(
             Venta::where(function ($query) {
                 $query->where('destino', "CADETERIA")
-                    ->orWhere('destino', "FLEX")
-                    ->orWhere('destino', "UES")
-                    ->orWhere('destino', "MERCADOLIBRE")
+                    //->orWhere('destino', "FLEX")
+                    //->orWhere('destino', "UES")
                     ->orWhere('destino', "DAC");
-            })->orderBy('id', 'DESC')->get()
+            })->select('*')->when(Req::input('inicio'), function ($query, $search) {
+                $query->whereDate('created_at', '>=', $search);
+            })
+            ->when(Req::input('fin'), function ($query, $search) {
+                $query->whereDate('created_at', '<=', $search);
+            })->where('estado','COMPLETADO')->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Historial', [
             'tipo_cambio' => $hoy_tipo_cambio,

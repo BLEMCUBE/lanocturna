@@ -181,10 +181,10 @@ export default {
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('subir-envio')" v-show="permissions.includes('subir-envios')">
-                <NavLinkSideBar icon-class="fas fa-truck"
+                <NavLinkSideBar icon-class="fas fa-store"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('envios.create')"
                     :active="route().current('envios.create')">
-                    <span class="ml-3">Subir Envio</span>
+                    <span class="ml-3">Mercado Libre</span>
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('historial-envios')" v-show="permissions.includes('historial-envios')">

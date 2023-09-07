@@ -68,11 +68,10 @@ class RolesAndPermissionsSeeder extends Seeder
             //Envios
             ['name' => 'lista-envios', 'description' => 'Envios'],
             ['name' => 'historial-envios', 'description' => 'Historial de Envios'],
-            ['name' => 'subir-envios', 'description' => 'Subir  Envio'],
+            ['name' => 'subir-envios', 'description' => 'Mercado Libre'],
 
             //Deposito
             ['name' => 'lista-depositos', 'description' => 'Deposito'],
-            ['name' => 'subir-pedidos', 'description' => 'Subir Pedido'],
 
             //configuraciones
             ['name' => 'configuraciones', 'description' => 'Código Maestro'],
