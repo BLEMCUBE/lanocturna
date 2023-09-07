@@ -30,3 +30,14 @@
   opacity: 0;
 }
 
+
+/*Datapicker next*/
+.mx-datepicker {
+    width: 100% !important;
+  }
+.mx-datepicker-range {
+    width: 100% !important;
+  }
+  .mx-input{
+    height: 36px !important;
+  }

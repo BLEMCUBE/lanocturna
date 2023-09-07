@@ -61,7 +61,7 @@ const form = useForm({
     destino: '',
     total: 0.0,
     total_sin_iva: 0.0,
-    moneda: '',
+    moneda: 'Pesos',
     tipo_cambio: '',
     estado: 'PENDIENTE DE FACTURACIÓN',
     observaciones: '',

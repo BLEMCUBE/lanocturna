@@ -112,34 +112,7 @@ onMounted(() => {
                         {{ form.fecha }}
                     </p>
                 </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            N° de Venta:
-                        </b>
-                        {{ form.codigo }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Estado
-                        </b>
-                        {{ form.estado }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Total:
-                        </b>
-                        {{ form.total.toFixed(2) }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Total sin IVA:
-                        </b>
-                        {{ form.total_sin_iva.toFixed(2) }}
-                    </p>
-                </div>
+
                 <div class="col-span-1">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Moneda:
@@ -155,20 +128,7 @@ onMounted(() => {
                         {{ form.vendedor }}
                     </p>
                 </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                        Facturado por:
-                        </b>
-                        {{ form.facturador }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                        Validado por:
-                        </b>
-                        {{ form.validador }}
-                    </p>
-                </div>
+
                 <div class="col-span-1">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Destino:
@@ -183,27 +143,7 @@ onMounted(() => {
                         {{ form.cliente }}
                     </p>
                 </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Dirección:
-                        </b>
-                        {{ form.direccion }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Télefono:
-                        </b>
-                        {{ form.telefono }}
-                    </p>
-                </div>
-                <div class="col-span-2">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Observaciones:
-                        </b>
-                        {{ form.observaciones }}
-                    </p>
-                </div>
+
                 <div class="col-span-3">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                         Observaciones:

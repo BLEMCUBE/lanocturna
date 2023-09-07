@@ -8,6 +8,7 @@ import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
+
 const toast = useToast();
 const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
@@ -98,7 +99,12 @@ const filters = ref({
                             class: 'text-center p-2'
                         }
                     }"></Column>
-                    <Column field="codigo" header="N° de Pedido" sortable :pt="{
+                    <Column field="destino" header="Destino" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="nro_compra" header="N° Compra" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }

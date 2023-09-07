@@ -10,11 +10,11 @@ import Multiselect from '@vueform/multiselect';
 import Swal from 'sweetalert2';
 import { FilterMatchMode } from 'primevue/api';
 const toast = useToast();
-const titulo = "Mercado Libre"
-const ruta = 'envios'
+const titulo = "Venta"
+const ruta = 'ventas'
 
-const { tipo_cambio } = usePage().props
 const { lista_destinos } = usePage().props
+const { productos } = usePage().props
 const prod = useForm({
     producto_id: '',
     nombre: '',
@@ -30,7 +30,6 @@ const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 const setDestino = (e) => {
-    var tipo = lista_destinos.find(prod => prod.value === e);
     form.destino = e;
 
 }
@@ -38,14 +37,16 @@ const setMoneda = (e) => {
 
     if (e == 'Pesos') {
         form.productos.forEach((item, index) => {
-            item['precio'] = roundNumber(parseFloat(item['precio'] * tipo_cambio).toFixed(2), 0.5, 'round')
+            item['precio'] = roundNumber(parseFloat(item['precio'] * form.tipo_cambio).toFixed(2), 0.5, 'round')
             item['total'] = item['cantidad'] * item['precio']
+            item['precio_sin_iva'] = item['precio'] /1.22
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
     } else {
         form.productos.forEach((item, index) => {
-            item['precio'] = parseFloat(item['precio'] / tipo_cambio).toFixed(2)
+            item['precio'] = parseFloat(item['precio'] / form.tipo_cambio).toFixed(2)
             item['total'] = item['cantidad'] * item['precio']
+            item['precio_sin_iva'] = item['precio'] /1.22
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
     }
@@ -57,15 +58,17 @@ const setMoneda = (e) => {
 
 
 const form = useForm({
+    id:'',
     vendedor_id: '',
     destino: '',
     total: 0.0,
+    vendedor: 0.0,
+    codigo:'',
     total_sin_iva: 0.0,
-    moneda: 'Pesos',
-    tipo:'ENVIO',
-    nro_compra:'',
+    moneda: '',
     tipo_cambio: '',
-    estado: 'FACTURADO',
+    nro_compra:'',
+    estado: '',
     observaciones: '',
     productos: [],
     cliente: {
@@ -75,7 +78,8 @@ const form = useForm({
 
 })
 const isShowModal = ref(false);
-const { productos } = usePage().props
+//const productos=ref([]);
+
 const lista_destino = ref({
     value: '',
     closeOnSelect: true,
@@ -85,7 +89,7 @@ const lista_destino = ref({
 });
 
 const lista_moneda = ref({
-    value: 'Pesos',
+    value: '',
     closeOnSelect: true,
     placeholder: "Seleccione",
     searchable: false,
@@ -95,9 +99,45 @@ const lista_moneda = ref({
     ],
 });
 onMounted(() => {
+    //productos.value=usePage().props.productos.data
     lista_destino.value.options = lista_destinos
-    form.tipo_cambio = tipo_cambio
-    form.moneda = "Pesos"
+    var dato=usePage().props.venta
+    form.tipo_cambio = parseFloat(dato.tipo_cambio).toFixed(2)
+    form.moneda=dato.moneda
+    form.destino=dato.destino
+    form.id=dato.id
+    form.vendedor_id=dato.vendedor_id
+    form.vendedor=dato.vendedor.name
+    form.observaciones=dato.observaciones
+    lista_moneda.value.value=dato.moneda
+    form.cliente=JSON.parse( dato.cliente)
+    form.estado=dato.estado
+    form.nro_compra=dato.nro_compra
+    form.codigo=dato.codigo
+    dato.detalles_ventas.forEach(el => {
+    var produ2 = productos.data.find(pr => pr.id === el.producto_id);
+    if(produ2!=undefined){
+        form.productos.push(
+            {
+                producto_id: el.producto_id,
+                nombre: produ2.nombre,
+                origen: produ2.origen,
+                cantidad: el.cantidad,
+                precio: el.precio,
+                precio_sin_iva: el.precio_sin_iva,
+                total_sin_iva: el.total_sin_iva,
+                stock: produ2.stock,
+                total: el.total
+            }
+            )
+        }
+        sumaTotal()
+        calculoSinIva()
+    });
+    //setMoneda(dato.moneda);
+
+
+
 })
 
 
@@ -153,21 +193,21 @@ const calculoSinIva = () => {
 }
 
 const sumaTotalProducto = ($event, id) => {
-    var precio_temp = (form.productos[id].precio === null) ? 1 : form.productos[id].precio
+    //var precio_temp = (form.productos[id].precio === null) ? 1 : form.productos[id].precio
     if ($event.target.value > 0) {
 
-        if (form.productos[id].stock >= form.productos[id].cantidad) {
-            form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
-            form.productos[id].total_sin_iva = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp/1.22).toFixed(2))
-            form.productos[id].precio_sin_iva=(form.productos[id].precio/1.22).toFixed(2)
-            sumaTotal()
-            calculoSinIva()
-        } else {
-            form.productos[id].cantidad = 1
-            form.productos[id].precio_sin_iva=form.productos[id].precio/1.22
-            form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
-            alerta('La cantidad supera el Stock', 'error')
-        }
+        //if (form.productos[id].stock >= form.productos[id].cantidad) {
+          //  form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
+            //form.productos[id].total_sin_iva = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp/1.22).toFixed(2))
+            //form.productos[id].precio_sin_iva=(form.productos[id].precio/1.22).toFixed(2)
+            //sumaTotal()
+            //calculoSinIva()
+        //} else {
+            //form.productos[id].cantidad = 1
+            //form.productos[id].precio_sin_iva=form.productos[id].precio/1.22
+            //form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
+            //alerta('La cantidad supera el Stock', 'error')
+        //}
     } else {
         return;
     }
@@ -177,13 +217,13 @@ const sumaTotalProducto = ($event, id) => {
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta + '.store'), {
+    form.post(route(ruta + '.updatemercado', form.id), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
-            show('success', 'Mensaje', 'Envio creado')
+            show('success', 'Mensaje', 'Venta Actualizada')
             setTimeout(() => {
-                router.get(route(ruta + '.create'));
+                router.get(route(ruta + '.index'));
             }, 1000);
         },
         onFinish: () => {
@@ -193,7 +233,6 @@ const submit = () => {
 
         }
     });
-
 
 
 };
@@ -210,7 +249,7 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-    router.get(route('inicio'))
+    router.get(route(ruta + '.index'))
 };
 
 
@@ -399,7 +438,6 @@ const cancelCrear = () => {
 
     </AppLayout>
 </template>
-
 
 
 <style type="text/css" scoped></style>
