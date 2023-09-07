@@ -85,7 +85,7 @@ if(value[0]!=null && value[1]!=null){
         }
         );
     }else{
-        router.get(route(ruta+'.index'))
+        router.get(route(ruta+'.historial'))
     }
 
 }
