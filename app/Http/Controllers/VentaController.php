@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EnvioUpdateRequest;
 use App\Http\Requests\VentaStoreRequest;
 use App\Http\Requests\VentaUpdateRequest;
 use App\Http\Resources\ProductoVentaCollection;
@@ -51,9 +52,9 @@ class VentaController extends Controller
         $venta_query = Venta::select('*')->when(Request::input('inicio'), function ($query, $search) {
             $query->whereDate('created_at', '>=', $search);
         })
-        ->when(Request::input('fin'), function ($query, $search) {
-            $query->whereDate('created_at', '<=', $search);
-        })->orderBy('created_at', 'DESC')
+            ->when(Request::input('fin'), function ($query, $search) {
+                $query->whereDate('created_at', '<=', $search);
+            })->orderBy('created_at', 'DESC')
             ->get();
         return Inertia::render('Venta/Index', [
             'tipo_cambio' => $hoy_tipo_cambio,
@@ -166,26 +167,31 @@ class VentaController extends Controller
             }])
             ->orderBy('id', 'DESC')->findOrFail($id);
         //return $venta;
-        return Inertia::render('Venta/Edit', [
-            'lista_destinos' => $lista_destinos,
-            'venta' => $venta,
-            'productos' => new ProductoVentaCollection(
-                Producto::orderBy('created_at', 'DESC')
-                    ->get()
-            )
-        ]);
+        if ($venta->tipo == "VENTA") {
+            return Inertia::render('Venta/Edit', [
+                'lista_destinos' => $lista_destinos,
+                'venta' => $venta,
+                'productos' => new ProductoVentaCollection(
+                    Producto::orderBy('created_at', 'DESC')
+                        ->get()
+                )
+            ]);
+        } else {
+
+            return Inertia::render('Venta/EditMercado', [
+                'lista_destinos' => $lista_destinos,
+                'venta' => $venta,
+                'productos' => new ProductoVentaCollection(
+                    Producto::orderBy('created_at', 'DESC')
+                        ->get()
+                )
+            ]);
+        }
     }
 
     public function store(VentaStoreRequest $request)
     {
-        $last = Venta::latest()->first();
         $vendedor = auth()->user();
-
-        /*if (empty($last) || is_null($last)) {
-            $codigo = zero_fill(1, 8);
-        } else {
-            $codigo = zero_fill($last->codigo + 1, 8);
-        }*/
 
         DB::beginTransaction();
         try {
@@ -204,7 +210,7 @@ class VentaController extends Controller
 
             ]);
             $venta->update([
-            "codigo"=>zero_fill($venta->id,8)
+                "codigo" => zero_fill($venta->id, 8)
             ]);
             //creando detalle venta
             foreach ($request->productos as $producto) {
@@ -249,6 +255,18 @@ class VentaController extends Controller
             $venta->vendedor_id = $request->vendedor_id;
             $venta->save();
 
+            if ($venta->old_estado != 'PENDIENTE DE FACTURACIÓN') {
+
+                //actualizando stock producto
+                foreach ($venta->detalles_ventas as $producto) {
+                    $prod = Producto::find($producto['producto_id']);
+                    $old_stock = $prod->stock;
+                    $new_stock = $old_stock + $producto['cantidad'];
+                    $prod->update([
+                        "stock" => $new_stock
+                    ]);
+                }
+            }
             //eliminando  detalle
             $venta->detalles_ventas()->delete();
 
@@ -267,6 +285,87 @@ class VentaController extends Controller
                 );
             }
 
+            if ($venta->old_estado != 'PENDIENTE DE FACTURACIÓN') {
+
+                //actualizando stock producto
+                foreach ($request->productos  as $proo) {
+                    $prod = Producto::find($proo['producto_id']);
+                    $old_stock = $prod->stock;
+                    $new_stock = $old_stock - $proo['cantidad'];
+                    $prod->update([
+                        "stock" => $new_stock
+                    ]);
+                }
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+    public function updatemercado(EnvioUpdateRequest $request, $id)
+    {
+        $venta = Venta::find($id);
+
+        DB::beginTransaction();
+        try {
+            $venta->codigo = $request->codigo;
+            $venta->total_sin_iva =  $request->total_sin_iva ?? 0;
+            $venta->total =  $request->total ?? 0;
+            $venta->moneda = $request->moneda;
+            $venta->tipo_cambio = $request->tipo_cambio;
+            $venta->destino = $request->destino;
+            $venta->cliente = json_encode($request->cliente);
+            $venta->observaciones = $request->observaciones;
+            $venta->vendedor_id = $request->vendedor_id;
+            $venta->save();
+
+            if ($venta->old_estado != 'PENDIENTE DE FACTURACIÓN') {
+
+                //actualizando stock producto
+                foreach ($venta->detalles_ventas as $producto) {
+                    $prod = Producto::find($producto['producto_id']);
+                    $old_stock = $prod->stock;
+                    $new_stock = $old_stock + $producto['cantidad'];
+                    $prod->update([
+                        "stock" => $new_stock
+                    ]);
+                }
+            }
+            //eliminando  detalle
+            $venta->detalles_ventas()->delete();
+
+            //creando detalle venta
+            foreach ($request->productos as $producto) {
+
+                $venta->detalles_ventas()->create(
+                    [
+                        "producto_id" => $producto['producto_id'],
+                        "precio" => $producto['precio'],
+                        "precio_sin_iva" => $producto['precio_sin_iva'],
+                        "cantidad" => $producto['cantidad'],
+                        "total" => $producto['total'],
+                        "total_sin_iva" => $producto['total_sin_iva'],
+                    ]
+                );
+            }
+
+            if ($venta->old_estado != 'PENDIENTE DE FACTURACIÓN') {
+
+                //actualizando stock producto
+                foreach ($request->productos  as $proo) {
+                    $prod = Producto::find($proo['producto_id']);
+                    $old_stock = $prod->stock;
+                    $new_stock = $old_stock - $proo['cantidad'];
+                    $prod->update([
+                        "stock" => $new_stock
+                    ]);
+                }
+            }
 
             DB::commit();
         } catch (Exception $e) {
@@ -299,5 +398,43 @@ class VentaController extends Controller
         return Inertia::render('Venta/Show', [
             'venta' => $venta
         ]);
+    }
+
+    public function destroy($id)
+    {
+        $venta = Venta::find($id);
+        $old_estado = $venta->estado;
+
+        DB::beginTransaction();
+        try {
+            $venta->estado = "ANULADO";
+            $venta->fecha_anulacion =  now();
+            $venta->save();
+
+
+
+            if ($old_estado != 'PENDIENTE DE FACTURACIÓN') {
+
+                //actualizando stock producto
+                foreach ($venta->detalles_ventas as $producto) {
+                    $prod = Producto::find($producto['producto_id']);
+                    $old_stock = $prod->stock;
+                    $new_stock = $old_stock + $producto['cantidad'];
+                    $prod->update([
+                        "stock" => $new_stock
+                    ]);
+                }
+            }
+            //eliminando  detalle
+            $venta->detalles_ventas()->delete();
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 }

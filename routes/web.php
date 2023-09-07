@@ -107,6 +107,7 @@ Route::controller(TipoCambioController::class)->group(function () {
 //Venta
 Route::controller(VentaController::class)->group(function () {
     Route::post('/ventas/update/{id}', 'update')->name('ventas.update')->middleware('auth');
+    Route::post('/ventas/updatemercado/{id}', 'updatemercado')->name('ventas.updatemercado')->middleware('auth');
     Route::get('/ventas/edit/{id}', 'edit')->name('ventas.edit')->middleware('auth');
     Route::get('/ventas/create', 'create')->name('ventas.create')->middleware('auth');
     Route::post('/ventas/store', 'store')->name('ventas.store')->middleware('auth');

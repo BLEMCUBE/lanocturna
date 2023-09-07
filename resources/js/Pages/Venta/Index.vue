@@ -114,16 +114,16 @@ const btnEditar = (id) => {
     router.get(route(ruta + '.edit', id));
 
 };
-const btnEliminar = (id, name) => {
+const btnEliminar = (id) => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
     alerta.fire({
         width: 350,
-        title: "Seguro de eliminar " + name,
-        text: 'Se eliminará definitivamente',
+        title: "Seguro de Anular ",
+        text: 'Se anulará definitivamente',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Eliminar',
+        confirmButtonText: 'Anular',
         cancelButtonText: 'Cancelar',
         cancelButtonColor: 'red',
         confirmButtonColor: '#2563EB',
@@ -135,7 +135,7 @@ const btnEliminar = (id, name) => {
                     preserveScroll: true,
                     forceFormData: true,
                     onSuccess: () => {
-                        show('success', 'Eliminado', 'Se ha eliminado')
+                        show('success', 'Eliminado', 'Se ha anulado')
                         setTimeout(() => {
                             router.get(route(ruta + '.index'));
                         }, 1000);
@@ -264,16 +264,23 @@ const filters = ref({
 
                     <Column header="Acciones" style="width:100px" :pt="{
                         bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center p-0'
                         }
                     }">
                         <template #body="slotProps">
                             <Button
-                                v-if="permissions.includes('editar-ventas') && slotProps.data.estado == 'PENDIENTE DE FACTURACIÓN'"
+                                v-if="permissions.includes('editar-ventas') && slotProps.data.estado !== 'ANULADO'"
                                 @click="btnEditar(slotProps.data.id)"
                                 class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
                                 v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
                                     class="fas fa-edit"></i></Button>
+                            <Button
+                                v-if="permissions.includes('eliminar-ventas') && slotProps.data.estado !== 'ANULADO'"
+                                @click="btnEliminar(slotProps.data.id)"
+                                class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 hover:bg-red-600 "
+                                v-tooltip.top="{ value: `Anular`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+                                    class="fas fa-ban"></i></Button>
+
 
                         </template>
                     </Column>
