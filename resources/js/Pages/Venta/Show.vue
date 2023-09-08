@@ -44,6 +44,8 @@ onMounted(() => {
     form.moneda = datos.moneda
     form.estado = datos.estado
     form.productos = datos.productos
+    form.fecha_facturacion = datos.fecha_facturacion
+    form.fecha_validacion = datos.fecha_validacion
     form.total_sin_iva = datos.total_sin_iva
     form.total = datos.total
     form.codigo = datos.codigo
@@ -124,12 +126,25 @@ onMounted(() => {
                 </div>
                 <div class="col-span-1">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Fecha Facturado:
+                        </b>
+                        {{ form.fecha_facturacion }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Validado por:
                         </b>
                         {{ form.validador }}
                     </p>
                 </div>
-
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Fecha Validado:
+                        </b>
+                        {{ form.fecha_validacion }}
+                    </p>
+                </div>
                 <div class="col-span-1">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Destino:

@@ -295,7 +295,7 @@ const cancelCrear = () => {
 
                                     </td>
                                     <td class="border border-gray-300"><input type="number" required v-model="producto.precio"
-                                            min="1" step="1" @input="sumaTotalProducto($event, index)"
+                                            min="0" step="1" @input="sumaTotalProducto($event, index)"
                                             class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
 
                                     </td>

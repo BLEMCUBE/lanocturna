@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
 use App\Http\Resources\ProductoCollection;
+use App\Models\ImportacionDetalle;
 use App\Models\Producto;
+use App\Models\VentaDetalle;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ProductoController extends Controller
@@ -88,11 +91,30 @@ class ProductoController extends Controller
         }
     }
 
+
     public function show($id)
     {
-        $producto = Producto::findOrFail($id);
+        $producto=Producto::with(['detalles_ventas' => function ($query) {
+            $query->select(DB::raw("*"))
+            ->with(['venta' => function ($query) {
+                $query->select(DB::raw("id,nro_compra,destino,
+                DATE_FORMAT(created_at ,'%d/%m/%Y %H:%i:%s') AS fecha"));
+            }]);
+        }])->with(['importacion_detalles' => function ($query) {
+            $query->select(DB::raw("*"))
+            ->with(['importacion' => function ($query) {
+                $query->select(DB::raw("id,nro_carpeta,nro_contenedor,
+                DATE_FORMAT(created_at ,'%d/%m/%Y %H:%i:%s') AS fecha"));
+            }]);
+        }])->select(DB::raw("productos.*"))
+        ->orderBy('id', 'ASC')->findOrFail($id);
+        $cantidad=VentaDetalle::where('producto_id',$id)->sum('cantidad');
+
+        $cantidad_importacion=ImportacionDetalle::where('codigo_barra',$producto->codigo_barra)->sum('cantidad_total');
         return Inertia::render('Producto/Show', [
-            'producto' => $producto
+            'producto' => $producto,
+            'cantidad' => $cantidad,
+            'cantidad_importacion' => $cantidad_importacion,
         ]);
     }
 

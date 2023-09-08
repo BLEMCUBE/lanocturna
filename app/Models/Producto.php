@@ -26,4 +26,8 @@ class Producto extends Model
     {
         return $this->hasMany(VentaDetalle::class);
     }
+    public function importacion_detalles()
+    {
+        return $this->hasMany(ImportacionDetalle::class,'codigo_barra','codigo_barra');
+    }
 }

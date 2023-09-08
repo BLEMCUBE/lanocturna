@@ -23,6 +23,10 @@ const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
 
 };
+const btnDescargar = (id) => {
+
+
+};
 const btnEditar = (id) => {
     router.get(route(ruta + '.edit', id));
 
@@ -59,6 +63,10 @@ const btnEliminar = (id, name) => {
     });
 }
 
+const clickDetalle = (e) => {
+    btnVer(e.data.id)
+}
+
 onMounted(() => {
 
     tabla_productos.value = usePage().props.productos.data;
@@ -72,6 +80,7 @@ const show = (tipo, titulo, mensaje) => {
 const BtnCrear = () => {
     router.get(route(ruta + '.create'));
 }
+
 
 
 const filters = ref({
@@ -95,8 +104,11 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable  showGridlines :filters="filters" :value="tabla_productos" paginator
-                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" size="small">
+                <DataTable resizableColumns showGridlines sortField="created_at" :sortOrder="-1" :filters="filters"
+                    :value="tabla_productos" :pt="{
+                        bodyRow: { class: 'hover:cursor-pointer' }
+                    }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"
+                    tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -104,11 +116,11 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="id" header="ID" sortable
-                    :pt="{
+                    <Column field="id" header="ID" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
-                        }}"></Column>
+                        }
+                    }"></Column>
 
                     <Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
                         bodyCell: {
@@ -148,9 +160,10 @@ const filters = ref({
                     <Column header="Acciones" style="width:130px">
                         <template #body="slotProps">
                             <button v-if="permissions.includes('editar-productos')"
-                                class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
-                                v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
-                                @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
+                                class="w-8 h-8 rounded bg-green-700  px-2 py-1 text-base font-normal text-black m-1 hover:bg-green-600"
+                                v-tooltip.top="{ value: `Descargar Excel`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
+                                @click.prevent="btnDescargar(slotProps.data.id)"><i
+                                    class="fas fa-file-excel text-white"></i></button>
 
                             <button v-if="permissions.includes('editar-productos')"
                                 class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"

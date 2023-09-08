@@ -32,6 +32,6 @@ class ImportacionDetalle extends Model
 
     public function importacion()
     {
-        return $this->hasMany(Importacion::class);
+        return $this->belongsTo(Importacion::class);
     }
 }

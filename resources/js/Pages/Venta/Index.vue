@@ -214,7 +214,7 @@ const filters = ref({
                                     format="DD/MM/YYYY"
                                     class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
                                      v-model:value="date" :shortcuts="shortcuts" lang="es"
-                                    placeholder="seleccione Fecha"></date-picker>
+                                    placeholder="Seleccione Fecha"></date-picker>
 
                         </div>
                     </template>

@@ -15,10 +15,12 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
 {
     private $importacion_id;
     private $estado;
-    public function  __construct($importacion_id, $estado)
+    private $mueve_stock;
+    public function  __construct($importacion_id, $estado,$mueve_stock)
     {
         $this->importacion_id = $importacion_id;
         $this->estado = $estado;
+        $this->mueve_stock = $mueve_stock;
     }
 
     //public function model(array $row)
@@ -49,6 +51,7 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
 
                 $producto = Producto::where('codigo_barra', '=', $row['codigo_barra'])->first();
 
+                if ($this->mueve_stock ==true) {
                 if ($this->estado == "Arribado") {
 
                     $producto->update([
@@ -60,6 +63,7 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
                         "stock_futuro" => $producto->stock_futuro + floatval($row['cantidad_total'])
                     ]);
                 }
+            }
             }
 
         }

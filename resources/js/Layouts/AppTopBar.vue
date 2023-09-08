@@ -62,7 +62,7 @@ const isOutsideClicked = (event) => {
 <template>
     <div class="layout-topbar bg-primary-900">
 
-        <a href="/" class="layout-topbar-logo text-white">
+        <a href="/inicio" class="layout-topbar-logo text-white">
             <img :src="Logo" alt="logo" />
             <span class="text-xl text-white">LA NOCTURNA</span>
         </a>

@@ -157,20 +157,16 @@ class CajaController extends Controller
 
     public function facturar($id)
     {
-        /*$venta = Venta::with(['detalles_ventas' => function ($query) {
-            $query->select('venta_detalles.*')->with(['producto' => function ($query) {
-                $query->select('id', 'nombre', 'codigo_barra', 'origen');
-            }]);
-        }]) ->orderBy('id', 'DESC')->findOrFail($id);*/
+
         $venta = Venta::with('detalles_ventas') ->orderBy('id', 'DESC')->findOrFail($id);
         $facturador = auth()->user();
-        //return $venta;
 
         DB::beginTransaction();
         try {
             $venta->estado = "FACTURADO";
             $venta->facturado = true;
             $venta->facturador_id =  $facturador->id;
+            $venta->fecha_facturacion=now();
             $venta->save();
 
             //actualizando stock producto

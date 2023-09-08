@@ -26,9 +26,9 @@ const form = useForm({
     observaciones: '',
     productos: [],
     cliente: '',
-    direccion:'',
-    localidad : '',
-    telefono :'',
+    direccion: '',
+    localidad: '',
+    telefono: '',
 
 })
 const cod_maestro = useForm({
@@ -62,7 +62,7 @@ const validarCodigo = ($event, id) => {
 
     var codigo = form.productos[id].codigo_barra;
     var texto = $event.target.value;
-    console.log('t ',texto)
+    console.log('t ', texto)
     if (texto.length > 0) {
         if (texto == codigo) {
             form.productos[id].producto_validado = true;
@@ -78,17 +78,17 @@ const validarCodigo = ($event, id) => {
 
 const BotonConfirmar = () => {
 
-    var total=form.productos.length;
-    var total_valido=0;
+    var total = form.productos.length;
+    var total_valido = 0;
     form.productos.forEach(el => {
-        if(el.producto_validado){
-            total_valido+=1
+        if (el.producto_validado) {
+            total_valido += 1
         }
     })
-    if(total==total_valido){
-        isConfirm.value=true;
-    }else{
-        isConfirm.value=false;
+    if (total == total_valido) {
+        isConfirm.value = true;
+    } else {
+        isConfirm.value = false;
 
     }
 }
@@ -172,8 +172,7 @@ onMounted(() => {
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout
-        :pagina="[{ 'label': 'Envios', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
+    <AppLayout :pagina="[{ 'label': 'Envios', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <div
             class="card px-4 py-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
@@ -181,10 +180,10 @@ onMounted(() => {
 
             <div class="px-2 py-0 m-0 mt-0 text-white  col-span-full  flex justify-start items-center">
                 <span
-                                class="inline-block rounded bg-sky-300 px-2 py-1 text-base font-semibold text-white mr-1 mb-1 hover:bg-sky-400">
-                                <a :href="route('envios.generar_ticket', form.id)" target="_blank"><i
-                                        class="fas fa-print"></i> Imprimir</a>
-                            </span>
+                    class="inline-block rounded bg-sky-300 px-2 py-1 text-base font-semibold text-white mr-1 mb-1 hover:bg-sky-400">
+                    <a :href="route('envios.generar_ticket', form.id)" target="_blank"><i class="fas fa-print"></i>
+                        Imprimir</a>
+                </span>
             </div>
             <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
                 <h5 class="text-2xl font-medium">Cliente: {{ form.cliente }}</h5>
@@ -244,7 +243,7 @@ onMounted(() => {
                 </div>
                 <div class="col-span-2">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                        Observaciones:
+                            Observaciones:
                         </b>
                         {{ form.observaciones }}
                     </p>
@@ -324,7 +323,7 @@ onMounted(() => {
                         </div>
 
                     </div>
-                    <div class="flex justify-end py-3" >
+                    <div class="flex justify-end py-3">
                         <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="closeModal"
                             type="button" />
 

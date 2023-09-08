@@ -91,17 +91,9 @@ class ExpedicionController extends Controller
             $venta->validado =true;
             $venta->estado="COMPLETADO";
             $venta->validador_id =  $validador->id;
+            $venta->fecha_validacion=now();
             $venta->save();
 
-            //actualizando stock producto
-            /*foreach ($venta->detalles_ventas as $producto) {
-                $prod = Producto::find($producto['producto_id']);
-                $old_stock = $prod->stock;
-                $new_stock = $old_stock - $producto['cantidad'];
-                $prod->update([
-                    "stock" => $new_stock
-                ]);
-            }*/
 
             foreach ($request->productos as $producto) {
                 $prod = VentaDetalle::find($producto['detalle_id']);

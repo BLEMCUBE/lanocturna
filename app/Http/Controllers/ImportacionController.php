@@ -29,10 +29,7 @@ class ImportacionController extends Controller
 
     public function index()
     {
-        /*return  new ImportacionCollection(
-            Importacion::orderBy('id', 'ASC')
-                ->get()
-        );*/
+
         return Inertia::render('Importacion/Index', [
             'productos' =>new ImportacionCollection(
                 Importacion::orderBy('id', 'DESC')
@@ -59,12 +56,15 @@ class ImportacionController extends Controller
                 'nro_contenedor' => $request->nro_contenedor ?? '',
                 'estado' => $request->estado ?? '',
                 'total' => $request->total ?? 0,
+                'fecha_arribado'=>$request->fecha_arribado??'',
+                'fecha_camino'=>$request->fecha_camino??'',
+                'mueve_stock'=>$request->mueve_stock??false,
                 'user_id' => $usuario->id
 
             ]);
 
             //importando excel
-            Excel::import(new ImportacionesImport($importacion->id,$importacion->estado), $file);
+            Excel::import(new ImportacionesImport($importacion->id,$importacion->estado,$importacion->mueve_stock), $file);
 
             //actualizando total
 
