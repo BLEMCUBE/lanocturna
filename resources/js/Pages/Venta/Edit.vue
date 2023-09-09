@@ -35,26 +35,32 @@ const setDestino = (e) => {
 }
 const setMoneda = (e) => {
 
-    if (e == 'Pesos') {
-        form.productos.forEach((item, index) => {
-            item['precio'] = roundNumber(parseFloat(item['precio'] * form.tipo_cambio).toFixed(2), 0.5, 'round')
-            item['total'] = item['cantidad'] * item['precio']
-            item['precio_sin_iva'] = item['precio'] /1.22
-            item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
-        })
-    } else {
-        form.productos.forEach((item, index) => {
-            item['precio'] = parseFloat(item['precio'] / form.tipo_cambio).toFixed(2)
-            item['total'] = item['cantidad'] * item['precio']
-            item['precio_sin_iva'] = item['precio'] /1.22
-            item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
-        })
-    }
-    form.moneda = e;
-    sumaTotal()
-    calculoSinIva()
+if (selectedMoneda.value.code == form.moneda)
+    return;
+if (selectedMoneda.value.code == 'Pesos') {
+    form.productos.forEach((item, index) => {
+        item['precio'] = roundNumber(parseFloat(item['precio'] * form.tipo_cambio).toFixed(2), 0.5, 'round')
+        item['total'] = item['cantidad'] * item['precio']
+        item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
+    })
+    form.moneda = selectedMoneda.value.code;
+} else {
+    form.productos.forEach((item, index) => {
+        item['precio'] = parseFloat(item['precio'] / form.tipo_cambio).toFixed(2)
+        item['total'] = item['cantidad'] * item['precio']
+        item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
+    })
+    form.moneda = selectedMoneda.value.code;
+}
+sumaTotal()
+calculoSinIva()
 }
 
+const selectedMoneda = ref();
+const monedas = ref([
+    { name: 'Pesos', code: 'Pesos' },
+    { name: 'Dólares', code: 'Dólares' },
+]);
 
 
 const form = useForm({
@@ -76,8 +82,6 @@ const form = useForm({
     },
 
 })
-const isShowModal = ref(false);
-//const productos=ref([]);
 
 const lista_destino = ref({
     value: '',
@@ -112,6 +116,7 @@ onMounted(() => {
     form.cliente=JSON.parse( dato.cliente)
     form.estado=dato.estado
     form.codigo=dato.codigo
+    selectedMoneda.value= monedas.value.find(pr => pr.code === dato.moneda);
     dato.detalles_ventas.forEach(el => {
     var produ2 = productos.data.find(pr => pr.id === el.producto_id);
     if(produ2!=undefined){
@@ -337,8 +342,14 @@ const cancelCrear = () => {
                         </div>
                         <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
                             <InputLabel for="moneda" value="Moneda" class="text-base font-medium leading-1 text-gray-900" />
-                            <Multiselect id="moneda" v-model="form.moneda" v-bind="lista_moneda" @select="setMoneda">
-                            </Multiselect>
+                            <Dropdown v-model="selectedMoneda" @change="setMoneda" :options="monedas" optionLabel="name"
+                                :pt="{
+                                    root: { class: 'w-auto' },
+                                    trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
+                                    item: ({ props, state, context }) => ({
+                                        class: context.selected ? 'text-white' : context.focused ? 'bg-blue-100' : undefined
+                                    })
+                                }" placeholder="Seleccione Moneda" />
                             <InputError class="mt-1 text-xs" :message="form.errors.moneda" />
                         </div>
 

@@ -18,6 +18,7 @@ class VentaUpdateRequest extends FormRequest
             //'nombre' => 'required',Rule::unique('productos')->ignore($id),
             'destino' => 'required',
             'productos' => 'required',
+            'moneda' => 'required',
            'cliente.nombre' => 'required',
            'cliente.direccion'=>'required_if:destino,CADETERIA|required_if:destino,DAC',
 
