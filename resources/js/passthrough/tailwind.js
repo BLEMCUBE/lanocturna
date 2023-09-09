@@ -388,7 +388,7 @@ const Tailwind_PT = {
       root: function root(_ref16) {
         var state = _ref16.state;
         return {
-          "class": ['rounded-lg shadow-lg border-0', 'max-h-90 transform scale-100', 'm-0 w-auto', 'dark:border dark:border-blue-900/40', {
+          "class": ['rounded-lg shadow-lg border-0', 'max-h-90 transform scale-100', 'm-0', 'dark:border dark:border-blue-900/40', {
             'transition-none transform-none !w-screen !h-screen !max-h-full !top-0 !left-0': state.maximized
           }]
         };

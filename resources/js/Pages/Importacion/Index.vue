@@ -164,16 +164,20 @@ const filters = ref({
                                 v-tooltip.top="{ value: `Descargar Excel`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
                                 @click.prevent="btnDescargar(slotProps.data.id)"><i
                                     class="fas fa-file-excel text-white"></i></button>
+                            <!--
 
-                            <button v-if="permissions.includes('editar-productos')"
-                                class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
+    <button v-if="permissions.includes('editar-productos')"
+    class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
                                 v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                 @click.prevent="btnEditar(slotProps.data.id)"><i class="fas fa-edit"></i></button>
-                            <button v-if="permissions.includes('eliminar-productos')"
+
+
+                                <button v-if="permissions.includes('eliminar-productos')"
                                 class="w-8 h-8 rounded bg-red-700   px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                 @click.prevent="btnEliminar(slotProps.data.id, slotProps.data.nombre)"><i
-                                    class="fas fa-trash-alt"></i></button>
+                                class="fas fa-trash-alt"></i></button>
+                            -->
 
                         </template>
                     </Column>

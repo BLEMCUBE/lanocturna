@@ -432,7 +432,7 @@ const cancelCrear = () => {
 
                     </div>
                     <div class="flex justify-end py-3">
-                        <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="cancelCrear"
+                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="cancelCrear"
                             type="button" />
 
                         <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
@@ -486,7 +486,7 @@ const cancelCrear = () => {
                                         <Button severity="success" @click="addToCart(slotProps.data.id)"
                                             icon="fas fa-cart-plus" :pt="{
                                                 root: {
-                                                    class: 'flex items-center justify-center font-medium w-full'
+                                                    class: 'flex items-center justify-center font-medium w-8'
                                                 }
                                             }"
                                             :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>

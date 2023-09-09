@@ -3,6 +3,7 @@
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\DepositoController;
 use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
@@ -47,7 +48,7 @@ Route::controller(OpcionesController::class)->group(function () {
     Route::get('/opciones/roles', 'getRoles')->name('opciones.roles')->middleware('auth');
 
 });
-//cofonfiguraciones
+//cofiguraciones
 Route::controller(ConfiguracionController::class)->group(function () {
     Route::get('/configuraciones', 'index')->name('configuraciones.index')->middleware('auth');
     Route::post('/configuraciones/update/{id}', 'update')->name('configuraciones.update')->middleware('auth');
@@ -95,7 +96,7 @@ Route::controller(ImportacionController::class)->group(function () {
     Route::delete('/importaciones/{id}', 'destroy')->name('importaciones.destroy')->middleware('auth');
 });
 
-//Cliente
+//TipoCambio
 Route::controller(TipoCambioController::class)->group(function () {
     Route::post('/tipo-cambio/update/{id}', 'update')->name('tipo_cambio.update')->middleware('auth');
     Route::get('/tipo-cambio', 'index')->name('tipo_cambio.index')->middleware('auth');
@@ -147,5 +148,16 @@ Route::controller(EnvioController::class)->group(function () {
     Route::get('/envios/{id}', 'show')->name('envios.show')->middleware('auth');
 
 });
+
+//Deposito
+Route::controller(DepositoController::class)->group(function () {
+    Route::post('/depositos/update/{id}', 'update')->name('depositos.update')->middleware('auth');
+    Route::get('/depositos/nombres', 'nombres')->name('depositos.nombres')->middleware('auth');
+    Route::get('/depositos', 'index')->name('depositos.index')->middleware('auth');
+    Route::get('/depositos/{id}', 'show')->name('depositos.show')->middleware('auth');
+    Route::post('/depositos/store', 'store')->name('depositos.store')->middleware('auth');
+    Route::delete('/depositos/{id}', 'destroy')->name('depositos.destroy')->middleware('auth');
+});
+
 
 require __DIR__.'/auth.php';

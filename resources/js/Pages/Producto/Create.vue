@@ -187,7 +187,7 @@ const pickFile = (e) => {
                     </div>
 
                     <div class="flex justify-end pt-2">
-                        <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="cancelCrear"
+                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="cancelCrear"
                             type="button" />
                         <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
                             :disabled="form.processing" />

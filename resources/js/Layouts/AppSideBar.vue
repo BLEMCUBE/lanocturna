@@ -194,11 +194,18 @@ export default {
                     <span class="ml-3">Historial de Envios</span>
                 </NavLinkSideBar>
             </li>
-            <li @click="setMenu('imoprtaciones')" v-show="permissions.includes('lista-productos')">
+            <li @click="setMenu('importaciones')" v-show="permissions.includes('lista-productos')">
                 <NavLinkSideBar icon-class="fa-solid fa-cart-plus"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
                     :href="route('importaciones.index')" :active="route().current('importaciones.index')">
                     <span class="ml-3">importaciones</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('depositos')" v-show="permissions.includes('lista-depositos')">
+                <NavLinkSideBar icon-class="fa-solid fa-cart-plus"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('depositos.nombres')" :active="route().current('depositos.nombres')">
+                    <span class="ml-3">Nombre Depósitos</span>
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('tipo_cambio')" v-show="permissions.includes('lista-productos')">

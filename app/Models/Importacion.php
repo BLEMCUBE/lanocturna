@@ -27,4 +27,8 @@ class Importacion extends Model
     {
         return $this->hasMany(ImportacionDetalle::class);
     }
+    public function depositos_detalles()
+    {
+        return $this->hasMany(DepositoDetalle::class);
+    }
 }
