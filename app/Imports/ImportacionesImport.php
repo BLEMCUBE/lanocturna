@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\DepositoDetalle;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
 //use Maatwebsite\Excel\Concerns\ToModel;
@@ -46,6 +47,21 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
                     "mueve_stock" => $row['mueve_stock'] ?? '',
                     "codigo_barra" => $row['codigo_barra'],
                     "importacion_id" => $this->importacion_id
+                ]);
+
+                DepositoDetalle::create([
+                    "sku" => $row['sku'],
+                    "precio" => $row['precio'],
+                    "unidad" => $row['unidad'],
+                    "pcs_bulto" => $row['pcs_bulto'],
+                    "bultos" => $row['bultos'],
+                    "valor_total" => $row['valor_total'],
+                    "cantidad_total" => $row['cantidad_total'],
+                    "cbm_bulto" => $row['cbm_bulto'],
+                    "cbm_total" => $row['cbm_total'],
+                    "codigo_barra" => $row['codigo_barra'],
+                    "importacion_id" => $this->importacion_id,
+                    "deposito_id" => 1
                 ]);
 
 

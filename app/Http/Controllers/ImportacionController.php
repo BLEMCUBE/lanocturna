@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ImportacionesExport;
 use App\Http\Requests\ImportacionStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
 use App\Http\Resources\ImportacionCollection;
@@ -150,6 +151,17 @@ class ImportacionController extends Controller
         $detalle = ImportacionDetalle::where('importacion_id',$id);
         $importacion->delete();
         $detalle->delete();
+
+    }
+
+    public function exportExcel($id)
+    {
+        //$importacion = Importacion::find($id);
+        //return $importacion;
+        return Excel::download(new ImportacionesExport($id), 'ImportacionExcel.xlsx');
+        //$detalle = ImportacionDetalle::where('importacion_id',$id);
+        //$importacion->delete();
+        //$detalle->delete();
 
     }
 

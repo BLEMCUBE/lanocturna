@@ -94,6 +94,7 @@ Route::controller(ImportacionController::class)->group(function () {
     Route::get('/importaciones', 'index')->name('importaciones.index')->middleware('auth');
     Route::post('/importaciones/store', 'store')->name('importaciones.store')->middleware('auth');
     Route::delete('/importaciones/{id}', 'destroy')->name('importaciones.destroy')->middleware('auth');
+    Route::get('/importaciones/{id}/export', 'exportExcel')->name('importaciones.exportar')->middleware('auth');
 });
 
 //TipoCambio
@@ -152,6 +153,7 @@ Route::controller(EnvioController::class)->group(function () {
 //Deposito
 Route::controller(DepositoController::class)->group(function () {
     Route::post('/depositos/update/{id}', 'update')->name('depositos.update')->middleware('auth');
+    Route::post('/depositos/update-deposito/{id}', 'updateDeposito')->name('depositos.updateDeposito')->middleware('auth');
     Route::get('/depositos/nombres', 'nombres')->name('depositos.nombres')->middleware('auth');
     Route::get('/depositos', 'index')->name('depositos.index')->middleware('auth');
     Route::get('/depositos/{id}', 'show')->name('depositos.show')->middleware('auth');

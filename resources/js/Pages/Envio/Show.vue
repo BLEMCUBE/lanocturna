@@ -62,7 +62,6 @@ const validarCodigo = ($event, id) => {
 
     var codigo = form.productos[id].codigo_barra;
     var texto = $event.target.value;
-    console.log('t ', texto)
     if (texto.length > 0) {
         if (texto == codigo) {
             form.productos[id].producto_validado = true;

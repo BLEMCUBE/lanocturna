@@ -23,7 +23,7 @@ class DepositoDetalle extends Model
         'bultos',
         'codigo_barra',
         'importacion_id',
-        'desposito_id',
+        'deposito_id',
         'user_id'
 
     ];
@@ -39,5 +39,11 @@ class DepositoDetalle extends Model
     public function importacion()
     {
         return $this->belongsTo(Importacion::class);
+    }
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class,'codigo_barra','codigo_barra');
+
     }
 }

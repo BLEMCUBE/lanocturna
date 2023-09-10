@@ -34,4 +34,10 @@ class ImportacionDetalle extends Model
     {
         return $this->belongsTo(Importacion::class);
     }
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class,'codigo_barra','codigo_barra');
+
+    }
 }

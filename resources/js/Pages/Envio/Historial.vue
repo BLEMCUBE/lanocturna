@@ -68,7 +68,6 @@ const date = ref([new Date(), new Date()]);
 //const date = ref([]);
 //filtrado
 const filtrado = (value) => {
-console.log('d ',value)
 if(value[0]!=null && value[1]!=null){
 
     router.get('/envios/historial/',

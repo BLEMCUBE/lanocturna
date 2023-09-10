@@ -75,6 +75,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'crear-depositos', 'description' => 'Crear Depósito'],
             ['name' => 'editar-depositos', 'description' => 'Editar Depósito'],
             ['name' => 'nombre-depositos', 'description' => 'Nombre Depósitos'],
+            ['name' => 'mover-depositos', 'description' => 'Mover Bultos'],
 
             //configuraciones
             ['name' => 'configuraciones', 'description' => 'Código Maestro'],

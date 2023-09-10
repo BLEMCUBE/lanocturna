@@ -202,7 +202,14 @@ export default {
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('depositos')" v-show="permissions.includes('lista-depositos')">
-                <NavLinkSideBar icon-class="fa-solid fa-cart-plus"
+                <NavLinkSideBar icon-class="fa-solid fa-warehouse"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('depositos.index')" :active="route().current('depositos.index')">
+                    <span class="ml-3">Depósitos</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('nombre-depositos')" v-show="permissions.includes('nombre-depositos')">
+                <NavLinkSideBar icon-class="fa-solid fa-warehouse"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
                     :href="route('depositos.nombres')" :active="route().current('depositos.nombres')">
                     <span class="ml-3">Nombre Depósitos</span>

@@ -344,10 +344,10 @@ const cancelCrear = () => {
                             <InputLabel for="moneda" value="Moneda" class="text-base font-medium leading-1 text-gray-900" />
                             <Dropdown v-model="selectedMoneda" @change="setMoneda" :options="monedas" optionLabel="name"
                                 :pt="{
-                                    root: { class: 'w-auto' },
+                                    root: { class: 'w-full' },
                                     trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
                                     item: ({ props, state, context }) => ({
-                                        class: context.selected ? 'text-white' : context.focused ? 'bg-blue-100' : undefined
+                                        class: context.selected ? 'text-white bg-primary-900' : context.focused ? 'bg-blue-100' : undefined
                                     })
                                 }" placeholder="Seleccione Moneda" />
                             <InputError class="mt-1 text-xs" :message="form.errors.moneda" />

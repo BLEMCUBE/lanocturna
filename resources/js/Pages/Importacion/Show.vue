@@ -100,7 +100,7 @@ const filters = ref({
 
                                 <div class="flex  items-center gap-2">
                                     <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
-                                        :src="slotProps.data.imagen" alt="image description">
+                                        :src="slotProps.data.imagen" alt="image">
                                     <p class="text-xs">{{ slotProps.data.nombre }}</p>
                                 </div>
                             </template>
