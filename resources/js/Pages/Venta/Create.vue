@@ -36,20 +36,23 @@ const setDestino = (e) => {
 }
 const setMoneda = (e) => {
 
-    if (e == 'Pesos') {
+    if (selectedMoneda.value.code == form.moneda)
+        return;
+    if (selectedMoneda.value.code == 'Pesos') {
         form.productos.forEach((item, index) => {
             item['precio'] = roundNumber(parseFloat(item['precio'] * tipo_cambio).toFixed(2), 0.5, 'round')
             item['total'] = item['cantidad'] * item['precio']
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
+        form.moneda = selectedMoneda.value.code;
     } else {
         form.productos.forEach((item, index) => {
             item['precio'] = parseFloat(item['precio'] / tipo_cambio).toFixed(2)
             item['total'] = item['cantidad'] * item['precio']
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
+        form.moneda = selectedMoneda.value.code;
     }
-    form.moneda = e;
     sumaTotal()
     calculoSinIva()
 }
@@ -72,7 +75,6 @@ const form = useForm({
     },
 
 })
-const isShowModal = ref(false);
 const { productos } = usePage().props
 const lista_destino = ref({
     value: '',
@@ -82,16 +84,7 @@ const lista_destino = ref({
     options: [],
 });
 
-const lista_moneda = ref({
-    value: 'Pesos',
-    closeOnSelect: true,
-    placeholder: "Seleccione",
-    searchable: false,
-    options: [
-        { "value": "Pesos", "label": "Pesos" },
-        { "value": "Dólares", "label": "Dólares" },
-    ],
-});
+
 onMounted(() => {
     lista_destino.value.options = lista_destinos
     form.tipo_cambio = tipo_cambio
@@ -147,22 +140,22 @@ const removerProducto = (index) => {
 
 const calculoSinIva = () => {
 
-    form.total_sin_iva = (form.total /1.22).toFixed(2)
+    form.total_sin_iva = (form.total / 1.22).toFixed(2)
 }
 
 const sumaTotalProducto = ($event, id) => {
     var precio_temp = (form.productos[id].precio === null) ? 1 : form.productos[id].precio
-    if ($event.target.value > 0) {
+    if ($event.target.value > -1) {
 
         if (form.productos[id].stock >= form.productos[id].cantidad) {
             form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
-            form.productos[id].total_sin_iva = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp/1.22).toFixed(2))
-            form.productos[id].precio_sin_iva=(form.productos[id].precio/1.22).toFixed(2)
+            form.productos[id].total_sin_iva = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp / 1.22).toFixed(2))
+            form.productos[id].precio_sin_iva = (form.productos[id].precio / 1.22).toFixed(2)
             sumaTotal()
             calculoSinIva()
         } else {
             form.productos[id].cantidad = 1
-            form.productos[id].precio_sin_iva=form.productos[id].precio/1.22
+            form.productos[id].precio_sin_iva = form.productos[id].precio / 1.22
             form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
             alerta('La cantidad supera el Stock', 'error')
         }
@@ -170,7 +163,11 @@ const sumaTotalProducto = ($event, id) => {
         return;
     }
 }
-
+const selectedMoneda = ref({ name: 'Pesos', code: 'Pesos' });
+const monedas = ref([
+    { name: 'Pesos', code: 'Pesos' },
+    { name: 'Dólares', code: 'Dólares' },
+]);
 //envio de formulario
 const submit = () => {
 
@@ -215,7 +212,8 @@ const cancelCrear = () => {
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': 'Ventas', link: false, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
+    <AppLayout
+        :pagina="[{ 'label': 'Ventas', link: false, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <!--Contenido-->
         <div
             class="grid grid-cols-12 p-0 m-0 gap-2 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
@@ -255,12 +253,13 @@ const cancelCrear = () => {
                                             @input.prevent="sumaTotalProducto($event, index)" />
 
                                     </td>
-                                    <td class="border border-gray-300"><input type="number" required v-model="producto.precio"
-                                            min="1" step="1" @input="sumaTotalProducto($event, index)"
+                                    <td class="border border-gray-300"><input type="number" required
+                                            v-model="producto.precio" min="0" step="1"
+                                            @input="sumaTotalProducto($event, index)"
                                             class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
 
                                     </td>
-                                    <td class="border border-gray-300 p-2">{{ producto.total }}  </td>
+                                    <td class="border border-gray-300 p-2">{{ producto.total }} </td>
                                     <td class="border-none  border-gray-300 p-1 ">
                                         <div
                                             class="rounded-md p-1 flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
@@ -274,7 +273,8 @@ const cancelCrear = () => {
                             <tfoot>
                                 <tr>
                                     <td colspan="4" class="text-end"><b>Total: </b></td>
-                                    <td class="text-end"><b> {{ form.moneda=='Pesos'?'$ ':'USD ' }} {{ form.total }} </b></td>
+                                    <td class="text-end"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{ form.total }} </b>
+                                    </td>
                                 </tr>
 
                             </tfoot>
@@ -298,8 +298,15 @@ const cancelCrear = () => {
                         </div>
                         <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
                             <InputLabel for="moneda" value="Moneda" class="text-base font-medium leading-1 text-gray-900" />
-                            <Multiselect id="moneda" v-model="form.moneda" v-bind="lista_moneda" @select="setMoneda">
-                            </Multiselect>
+
+                            <Dropdown v-model="selectedMoneda" @change="setMoneda" :options="monedas" optionLabel="name"
+                                :pt="{
+                                    root: { class: 'w-full' },
+                                    trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
+                                    item: ({ props, state, context }) => ({
+                                        class: context.selected ? 'text-white bg-primary-900' : context.focused ? 'bg-blue-100' : undefined
+                                    })
+                                }" placeholder="Seleccione Moneda" />
                             <InputError class="mt-1 text-xs" :message="form.errors.moneda" />
                         </div>
 
@@ -392,7 +399,7 @@ const cancelCrear = () => {
 
                     </div>
                     <div class="flex justify-end py-3">
-                        <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="cancelCrear"
+                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="cancelCrear"
                             type="button" />
 
                         <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
@@ -443,10 +450,13 @@ const cancelCrear = () => {
                                     </div>
 
                                     <div class="">
-                                        <Button severity="success" @click="addToCart(slotProps.data.id)"
+                                        <Button severity="success" aria-label="Add" @click="addToCart(slotProps.data.id)"
                                             icon="fas fa-cart-plus" :pt="{
                                                 root: {
-                                                    class: 'flex items-center justify-center font-medium w-full'
+                                                    class: 'flex items-center justify-center font-medium w-8'
+                                                },
+                                                label: {
+                                                    class: 'hidden'
                                                 }
                                             }"
                                             :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>

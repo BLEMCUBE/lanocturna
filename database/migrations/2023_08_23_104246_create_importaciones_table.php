@@ -17,7 +17,11 @@ return new class extends Migration
             $table->string('nro_contenedor')->nullable();
             $table->string('estado')->nullable();
             $table->float('total',8,2)->default(0);
+            $table->timestamp('fecha_arribado')->nullable();
+            $table->timestamp('fecha_camino')->nullable();
+            $table->boolean('mueve_stock')->default(false);
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->timestamps();
 
             $table->foreign('user_id')
             ->references('id')
@@ -25,7 +29,6 @@ return new class extends Migration
             ->onDelete('set null')
             ->onUpdate('set null');
 
-            $table->timestamps();
         });
     }
 

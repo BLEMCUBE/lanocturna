@@ -71,7 +71,11 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'subir-envios', 'description' => 'Mercado Libre'],
 
             //Deposito
-            ['name' => 'lista-depositos', 'description' => 'Deposito'],
+            ['name' => 'lista-depositos', 'description' => 'Depósitos'],
+            ['name' => 'crear-depositos', 'description' => 'Crear Depósito'],
+            ['name' => 'editar-depositos', 'description' => 'Editar Depósito'],
+            ['name' => 'nombre-depositos', 'description' => 'Nombre Depósitos'],
+            ['name' => 'mover-depositos', 'description' => 'Mover Bultos'],
 
             //configuraciones
             ['name' => 'configuraciones', 'description' => 'Código Maestro'],

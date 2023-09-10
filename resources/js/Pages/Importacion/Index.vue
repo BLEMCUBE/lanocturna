@@ -23,6 +23,10 @@ const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
 
 };
+const btnDescargar = (id) => {
+    router.get(route(ruta + '.exportar', id));
+
+};
 const btnEditar = (id) => {
     router.get(route(ruta + '.edit', id));
 
@@ -59,6 +63,10 @@ const btnEliminar = (id, name) => {
     });
 }
 
+const clickDetalle = (e) => {
+    btnVer(e.data.id)
+}
+
 onMounted(() => {
 
     tabla_productos.value = usePage().props.productos.data;
@@ -72,6 +80,7 @@ const show = (tipo, titulo, mensaje) => {
 const BtnCrear = () => {
     router.get(route(ruta + '.create'));
 }
+
 
 
 const filters = ref({
@@ -95,8 +104,11 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable  showGridlines :filters="filters" :value="tabla_productos" paginator
-                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" size="small">
+                <DataTable showGridlines sortField="created_at" :sortOrder="-1" :filters="filters" :value="tabla_productos"
+                    :pt="{
+                        bodyRow: { class: 'hover:cursor-pointer' }
+                    }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"
+                    tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -104,11 +116,11 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="id" header="ID" sortable
-                    :pt="{
+                    <Column field="id" header="ID" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
-                        }}"></Column>
+                        }
+                    }"></Column>
 
                     <Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
                         bodyCell: {
@@ -145,22 +157,35 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column header="Acciones" style="width:130px">
+                    <Column header="Acciones" style="width:130px" :pt="{
+                            bodycell: { class: 'px-auto text-center' }
+                        }">
                         <template #body="slotProps">
-                            <button v-if="permissions.includes('editar-productos')"
-                                class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
-                                v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
-                                @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
 
-                            <button v-if="permissions.includes('editar-productos')"
-                                class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
+
+                            <div class="px-2 py-1 text-white  col-span-full  flex justify-center items-center">
+                                <span
+                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
+                                    class=" w-8 h-8inline-block rounded bg-green-600  text-base font-semibold text-white mr-1 mb-1 hover:bg-green-600">
+                                    <a :href="route('importaciones.exportar', slotProps.data.id)" target="_blank"><i
+                                            class="fas fa-file-excel text-white px-2 py-1"></i>
+                                    </a>
+                                </span>
+                            </div>
+                            <!--
+
+    <button v-if="permissions.includes('editar-productos')"
+    class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
                                 v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                 @click.prevent="btnEditar(slotProps.data.id)"><i class="fas fa-edit"></i></button>
-                            <button v-if="permissions.includes('eliminar-productos')"
+
+
+                                <button v-if="permissions.includes('eliminar-productos')"
                                 class="w-8 h-8 rounded bg-red-700   px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                 @click.prevent="btnEliminar(slotProps.data.id, slotProps.data.nombre)"><i
-                                    class="fas fa-trash-alt"></i></button>
+                                class="fas fa-trash-alt"></i></button>
+                            -->
 
                         </template>
                     </Column>

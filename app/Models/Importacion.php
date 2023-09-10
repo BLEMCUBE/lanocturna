@@ -16,6 +16,9 @@ class Importacion extends Model
         'nro_contenedor',
         'estado',
         'total',
+        'fecha_arribado',
+        'fecha_camino',
+        'mueve_stock',
         'user_id',
 
     ];
@@ -23,5 +26,9 @@ class Importacion extends Model
     public function importaciones_detalles()
     {
         return $this->hasMany(ImportacionDetalle::class);
+    }
+    public function depositos_detalles()
+    {
+        return $this->hasMany(DepositoDetalle::class);
     }
 }

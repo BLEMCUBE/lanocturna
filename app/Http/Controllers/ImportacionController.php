@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ImportacionesExport;
 use App\Http\Requests\ImportacionStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
 use App\Http\Resources\ImportacionCollection;
@@ -29,10 +30,7 @@ class ImportacionController extends Controller
 
     public function index()
     {
-        /*return  new ImportacionCollection(
-            Importacion::orderBy('id', 'ASC')
-                ->get()
-        );*/
+
         return Inertia::render('Importacion/Index', [
             'productos' =>new ImportacionCollection(
                 Importacion::orderBy('id', 'DESC')
@@ -59,12 +57,15 @@ class ImportacionController extends Controller
                 'nro_contenedor' => $request->nro_contenedor ?? '',
                 'estado' => $request->estado ?? '',
                 'total' => $request->total ?? 0,
+                'fecha_arribado'=>$request->fecha_arribado??'',
+                'fecha_camino'=>$request->fecha_camino??'',
+                'mueve_stock'=>$request->mueve_stock??false,
                 'user_id' => $usuario->id
 
             ]);
 
             //importando excel
-            Excel::import(new ImportacionesImport($importacion->id,$importacion->estado), $file);
+            Excel::import(new ImportacionesImport($importacion->id,$importacion->estado,$importacion->mueve_stock), $file);
 
             //actualizando total
 
@@ -150,6 +151,17 @@ class ImportacionController extends Controller
         $detalle = ImportacionDetalle::where('importacion_id',$id);
         $importacion->delete();
         $detalle->delete();
+
+    }
+
+    public function exportExcel($id)
+    {
+        //$importacion = Importacion::find($id);
+        //return $importacion;
+        return Excel::download(new ImportacionesExport($id), 'ImportacionExcel.xlsx');
+        //$detalle = ImportacionDetalle::where('importacion_id',$id);
+        //$importacion->delete();
+        //$detalle->delete();
 
     }
 

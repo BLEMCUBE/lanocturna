@@ -25,6 +25,8 @@ class Venta extends Model
         'estado',
         'motivo_anulacion',
         'fecha_anulacion',
+        'fecha_facturacion',
+        'fecha_anulacion',
         'destino',
         'cliente',
         'tipo',

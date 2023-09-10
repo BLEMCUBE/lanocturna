@@ -43,6 +43,8 @@ onMounted(() => {
     form.telefono = datos.telefono
     form.moneda = datos.moneda
     form.estado = datos.estado
+    form.fecha_facturacion = datos.fecha_facturacion
+    form.fecha_validacion = datos.fecha_validacion
     form.productos = datos.productos
     form.total_sin_iva = datos.total_sin_iva
     form.total = datos.total
@@ -72,39 +74,12 @@ onMounted(() => {
                         {{ form.fecha }}
                     </p>
                 </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            N° de Venta:
-                        </b>
-                        {{ form.codigo }}
-                    </p>
-                </div>
+
                 <div class="col-span-1">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Estado
                         </b>
                         {{ form.estado }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Total:
-                        </b>
-                        {{ form.total.toFixed(2) }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Total sin IVA:
-                        </b>
-                        {{ form.total_sin_iva.toFixed(2) }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Moneda:
-                        </b>
-                        {{ form.moneda }}
                     </p>
                 </div>
 
@@ -124,9 +99,23 @@ onMounted(() => {
                 </div>
                 <div class="col-span-1">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Fecha Facturado:
+                        </b>
+                        {{ form.fecha_facturacion }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Validado por:
                         </b>
                         {{ form.validador }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Fecha Validado:
+                        </b>
+                        {{ form.fecha_validacion }}
                     </p>
                 </div>
 

@@ -35,26 +35,32 @@ const setDestino = (e) => {
 }
 const setMoneda = (e) => {
 
-    if (e == 'Pesos') {
-        form.productos.forEach((item, index) => {
-            item['precio'] = roundNumber(parseFloat(item['precio'] * form.tipo_cambio).toFixed(2), 0.5, 'round')
-            item['total'] = item['cantidad'] * item['precio']
-            item['precio_sin_iva'] = item['precio'] /1.22
-            item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
-        })
-    } else {
-        form.productos.forEach((item, index) => {
-            item['precio'] = parseFloat(item['precio'] / form.tipo_cambio).toFixed(2)
-            item['total'] = item['cantidad'] * item['precio']
-            item['precio_sin_iva'] = item['precio'] /1.22
-            item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
-        })
-    }
-    form.moneda = e;
-    sumaTotal()
-    calculoSinIva()
+if (selectedMoneda.value.code == form.moneda)
+    return;
+if (selectedMoneda.value.code == 'Pesos') {
+    form.productos.forEach((item, index) => {
+        item['precio'] = roundNumber(parseFloat(item['precio'] * form.tipo_cambio).toFixed(2), 0.5, 'round')
+        item['total'] = item['cantidad'] * item['precio']
+        item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
+    })
+    form.moneda = selectedMoneda.value.code;
+} else {
+    form.productos.forEach((item, index) => {
+        item['precio'] = parseFloat(item['precio'] / form.tipo_cambio).toFixed(2)
+        item['total'] = item['cantidad'] * item['precio']
+        item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
+    })
+    form.moneda = selectedMoneda.value.code;
+}
+sumaTotal()
+calculoSinIva()
 }
 
+const selectedMoneda = ref();
+const monedas = ref([
+    { name: 'Pesos', code: 'Pesos' },
+    { name: 'Dólares', code: 'Dólares' },
+]);
 
 
 const form = useForm({
@@ -76,8 +82,6 @@ const form = useForm({
     },
 
 })
-const isShowModal = ref(false);
-//const productos=ref([]);
 
 const lista_destino = ref({
     value: '',
@@ -112,6 +116,7 @@ onMounted(() => {
     form.cliente=JSON.parse( dato.cliente)
     form.estado=dato.estado
     form.codigo=dato.codigo
+    selectedMoneda.value= monedas.value.find(pr => pr.code === dato.moneda);
     dato.detalles_ventas.forEach(el => {
     var produ2 = productos.data.find(pr => pr.id === el.producto_id);
     if(produ2!=undefined){
@@ -295,7 +300,7 @@ const cancelCrear = () => {
 
                                     </td>
                                     <td class="border border-gray-300"><input type="number" required v-model="producto.precio"
-                                            min="1" step="1" @input="sumaTotalProducto($event, index)"
+                                            min="0" step="1" @input="sumaTotalProducto($event, index)"
                                             class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
 
                                     </td>
@@ -337,8 +342,14 @@ const cancelCrear = () => {
                         </div>
                         <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
                             <InputLabel for="moneda" value="Moneda" class="text-base font-medium leading-1 text-gray-900" />
-                            <Multiselect id="moneda" v-model="form.moneda" v-bind="lista_moneda" @select="setMoneda">
-                            </Multiselect>
+                            <Dropdown v-model="selectedMoneda" @change="setMoneda" :options="monedas" optionLabel="name"
+                                :pt="{
+                                    root: { class: 'w-full' },
+                                    trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
+                                    item: ({ props, state, context }) => ({
+                                        class: context.selected ? 'text-white bg-primary-900' : context.focused ? 'bg-blue-100' : undefined
+                                    })
+                                }" placeholder="Seleccione Moneda" />
                             <InputError class="mt-1 text-xs" :message="form.errors.moneda" />
                         </div>
 
@@ -431,7 +442,7 @@ const cancelCrear = () => {
 
                     </div>
                     <div class="flex justify-end py-3">
-                        <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="cancelCrear"
+                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="cancelCrear"
                             type="button" />
 
                         <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
@@ -482,10 +493,13 @@ const cancelCrear = () => {
                                     </div>
 
                                     <div class="">
-                                        <Button severity="success" @click="addToCart(slotProps.data.id)"
+                                        <Button severity="success" aria-label="Add" @click="addToCart(slotProps.data.id)"
                                             icon="fas fa-cart-plus" :pt="{
                                                 root: {
-                                                    class: 'flex items-center justify-center font-medium w-full'
+                                                    class: 'flex items-center justify-center font-medium w-8'
+                                                },
+                                                label: {
+                                                    class: 'hidden'
                                                 }
                                             }"
                                             :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>

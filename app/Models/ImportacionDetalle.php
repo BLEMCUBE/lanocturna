@@ -32,6 +32,12 @@ class ImportacionDetalle extends Model
 
     public function importacion()
     {
-        return $this->hasMany(Importacion::class);
+        return $this->belongsTo(Importacion::class);
+    }
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class,'codigo_barra','codigo_barra');
+
     }
 }

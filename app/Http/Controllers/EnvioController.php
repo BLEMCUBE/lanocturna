@@ -118,6 +118,8 @@ class EnvioController extends Controller
                 'moneda' => $request->moneda,
                 'tipo' => $request->tipo??'ENVIO',
                 'vendedor_id' => $vendedor->id,
+                'facturador_id' => $vendedor->id,
+                'fecha_facturacion' =>now()
             ]);
             $venta->update([
                 "codigo" => zero_fill($venta->id, 8)
@@ -179,8 +181,8 @@ class EnvioController extends Controller
         $venta_query = new VentaCollection(
             Venta::where(function ($query) {
                 $query->where('destino', "CADETERIA")
-                    //->orWhere('destino', "FLEX")
-                    //->orWhere('destino', "UES")
+                    ->orWhere('destino', "FLEX")
+                    ->orWhere('destino', "UES")
                     ->orWhere('destino', "DAC");
             })->select('*')->when(Req::input('inicio'), function ($query, $search) {
                 $query->whereDate('created_at', '>=', $search);
@@ -268,6 +270,7 @@ class EnvioController extends Controller
             $venta->validado = true;
             $venta->estado = "COMPLETADO";
             $venta->validador_id =  $validador->id;
+            $venta->fecha_validacion=now();
             $venta->save();
 
             foreach ($request->productos as $producto) {

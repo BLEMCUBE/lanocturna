@@ -59,7 +59,7 @@ const validarCodigo = ($event, id) => {
 
     var codigo = form.productos[id].codigo_barra;
     var texto = $event.target.value;
-    console.log('t ',texto)
+
     if (texto.length > 0) {
         if (texto == codigo) {
             form.productos[id].producto_validado = true;
@@ -292,7 +292,7 @@ onMounted(() => {
 
                     </div>
                     <div class="flex justify-end py-3" >
-                        <Button label="Cancelar" :pt="{ root: 'mr-5' }" severity="danger" size="small" @click="closeModal"
+                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="closeModal"
                             type="button" />
 
                         <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': cod_maestro.processing }"

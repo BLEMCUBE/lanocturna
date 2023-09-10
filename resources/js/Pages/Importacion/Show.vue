@@ -5,7 +5,7 @@ import { Head, usePage } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
 const { importacion } = usePage().props
 const { importacion_detalle } = usePage().props
-
+import moment from 'moment';
 
 const titulo = "Detalle Importación"
 const ruta = 'importaciones'
@@ -47,8 +47,12 @@ const filters = ref({
                     <p>{{ importacion.total }}</p>
                 </div>
                 <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
-                    <b>Fecha :</b>
-                    <p>{{ importacion.fecha }}</p>
+                    <b>Fecha En Camino :</b>
+                    <p>{{ moment(importacion.fecha_camino).format('DD/MM/YYYY') }}</p>
+                </div>
+                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                    <b>Fecha Arribado :</b>
+                    <p>{{ moment(importacion.fecha_arribado).format('DD/MM/YYYY') }}</p>
                 </div>
                 <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
                     <b>Cantidad productos :</b>
@@ -65,9 +69,10 @@ const filters = ref({
                 <!-- Línea con gradiente -->
                 <div class="align-middle">
 
-                    <DataTable showGridlines resizableColumns columnResizeMode="fit" :filters="filters"
-                        :value="importacion_detalle" paginator :rows="20" :rowsPerPageOptions="[5, 10, 20, 50]"
-                        tableStyle="min-width: 50rem" size="small">
+
+                    <DataTable showGridlines sortField="id" :sortOrder="1" :filters="filters"
+                       resizableColumns :value="importacion_detalle" scrollable scrollHeight="800px"
+                        :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -95,7 +100,7 @@ const filters = ref({
 
                                 <div class="flex  items-center gap-2">
                                     <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
-                                        :src="slotProps.data.imagen" alt="image description">
+                                        :src="slotProps.data.imagen" alt="image">
                                     <p class="text-xs">{{ slotProps.data.nombre }}</p>
                                 </div>
                             </template>
@@ -152,17 +157,18 @@ const filters = ref({
                                 class: 'text-center'
                             }
                         }"></Column>
-                        <Column field="created_at" sortable header="Fecha" :pt="{
+                        <Column sortable header="Fecha" :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             }
-                        }"></Column>
-                        <Column header="Acciones" style="width:130px">
-                            <template #body="slotProps">
+                        }">
 
+                        <template #body="slotProps">
 
+                            {{moment(slotProps.data.created_at).format('DD/MM/YYYY')}}
                             </template>
-                        </Column>
+                    </Column>
+
                     </DataTable>
 
                 </div>

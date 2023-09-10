@@ -388,7 +388,7 @@ const Tailwind_PT = {
       root: function root(_ref16) {
         var state = _ref16.state;
         return {
-          "class": ['rounded-lg shadow-lg border-0', 'max-h-90 transform scale-100', 'm-0 w-auto', 'dark:border dark:border-blue-900/40', {
+          "class": ['rounded-lg shadow-lg border-0', 'max-h-90 transform scale-100', 'm-0', 'dark:border dark:border-blue-900/40', {
             'transition-none transform-none !w-screen !h-screen !max-h-full !top-0 !left-0': state.maximized
           }]
         };
@@ -1238,7 +1238,7 @@ const Tailwind_PT = {
       root: function root(_ref63) {
         var props = _ref63.props;
         return {
-          "class": ['cursor-pointer inline-flex relative select-none', 'bg-white border border-gray-400 transition-colors duration-200 ease-in-out rounded-md', 'dark:bg-gray-900 dark:border-blue-900/40 dark:hover:border-blue-300', 'w-full md:w-24', 'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
+          "class": ['cursor-pointer inline-flex relative select-none', 'bg-white border border-gray-300 transition-colors duration-200 ease-in-out rounded', 'dark:bg-gray-900 dark:border-blue-900/40 dark:hover:border-blue-300', 'w-full md:w-full', 'hover:border-blue-500 focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] dark:focus:shadow-[0_0_0_0.2rem_rgba(147,197,253,0.5)]', {
             'opacity-60 select-none pointer-events-none cursor-default': props.disabled
           }]
         };
@@ -1246,13 +1246,13 @@ const Tailwind_PT = {
       input: function input(_ref64) {
         var props = _ref64.props;
         return {
-          "class": ['cursor-pointer block flex flex-auto overflow-hidden overflow-ellipsis whitespace-nowrap relative', 'bg-transparent border-0 text-gray-800', 'dark:text-white/80', 'p-3 transition duration-200 bg-transparent rounded appearance-none font-sans text-base', 'focus:outline-none focus:shadow-none', {
+          "class": ['cursor-pointer block flex flex-auto overflow-hidden overflow-ellipsis whitespace-nowrap relative', 'bg-transparent border-0 text-gray-800', 'dark:text-white/80', 'py-1 px-3 transition duration-200 bg-transparent rounded appearance-none font-sans text-base', 'focus:outline-none focus:shadow-none', {
             'pr-7': props.showClear
           }]
         };
       },
       trigger: {
-        "class": ['flex items-center justify-center shrink-0', 'bg-transparent text-gray-500 w-12 rounded-tr-lg rounded-br-lg']
+        "class": ['flex items-center justify-center shrink-0', 'bg-transparent text-gray-400 w-10 rounded-tr-lg rounded-br-lg']
       },
       wrapper: {
         "class": ['max-h-[200px] overflow-auto', 'bg-white text-gray-700 border-0 rounded-md shadow-lg', 'dark:bg-gray-900 dark:text-white/80']
@@ -1263,7 +1263,7 @@ const Tailwind_PT = {
       item: function item(_ref65) {
         var context = _ref65.context;
         return {
-          "class": ['cursor-pointer font-normal overflow-hidden relative whitespace-nowrap', 'm-0 p-3 border-0  transition-shadow duration-200 rounded-none', 'dark:text-white/80 dark:hover:bg-gray-800', 'hover:text-gray-700 hover:bg-gray-200', {
+          "class": ['cursor-pointer font-normal overflow-hidden relative whitespace-nowrap', 'm-0 p-2 border-0  transition-shadow duration-200 rounded-none', 'dark:text-white/80 dark:hover:bg-gray-800', 'hover:text-gray-700 hover:bg-gray-200', {
             'text-gray-700': !context.focused && !context.selected,
             'bg-gray-300 text-gray-700 dark:text-white/80 dark:bg-gray-800/90': context.focused && !context.selected,
             'bg-blue-400 text-blue-700 dark:bg-blue-400 dark:text-white/80': context.focused && context.selected,

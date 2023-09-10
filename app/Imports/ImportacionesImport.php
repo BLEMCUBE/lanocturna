@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\DepositoDetalle;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
 //use Maatwebsite\Excel\Concerns\ToModel;
@@ -15,10 +16,12 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
 {
     private $importacion_id;
     private $estado;
-    public function  __construct($importacion_id, $estado)
+    private $mueve_stock;
+    public function  __construct($importacion_id, $estado,$mueve_stock)
     {
         $this->importacion_id = $importacion_id;
         $this->estado = $estado;
+        $this->mueve_stock = $mueve_stock;
     }
 
     //public function model(array $row)
@@ -46,9 +49,25 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
                     "importacion_id" => $this->importacion_id
                 ]);
 
+                DepositoDetalle::create([
+                    "sku" => $row['sku'],
+                    "precio" => $row['precio'],
+                    "unidad" => $row['unidad'],
+                    "pcs_bulto" => $row['pcs_bulto'],
+                    "bultos" => $row['bultos'],
+                    "valor_total" => $row['valor_total'],
+                    "cantidad_total" => $row['cantidad_total'],
+                    "cbm_bulto" => $row['cbm_bulto'],
+                    "cbm_total" => $row['cbm_total'],
+                    "codigo_barra" => $row['codigo_barra'],
+                    "importacion_id" => $this->importacion_id,
+                    "deposito_id" => 1
+                ]);
+
 
                 $producto = Producto::where('codigo_barra', '=', $row['codigo_barra'])->first();
 
+                if ($this->mueve_stock ==true) {
                 if ($this->estado == "Arribado") {
 
                     $producto->update([
@@ -60,6 +79,7 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
                         "stock_futuro" => $producto->stock_futuro + floatval($row['cantidad_total'])
                     ]);
                 }
+            }
             }
 
         }

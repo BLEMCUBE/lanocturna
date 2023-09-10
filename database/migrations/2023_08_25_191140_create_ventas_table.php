@@ -27,6 +27,8 @@ return new class extends Migration
             $table->json('cliente')->nullable();
             $table->text('motivo_anulacion')->nullable();
             $table->timestamp('fecha_anulacion')->nullable();
+            $table->timestamp('fecha_facturacion')->nullable();
+            $table->timestamp('fecha_validacion')->nullable();
             $table->string('tipo')->default('VENTA');
             $table->unsignedBigInteger('vendedor_id')->nullable();
             $table->unsignedBigInteger('facturador_id')->nullable();

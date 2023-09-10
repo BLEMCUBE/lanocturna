@@ -146,7 +146,7 @@ const filters = ref({
                     }">
                         <template #body="slotProps">
                             <img class="rounded  bg-white shadow-2xl border-2 text-center w-12 h-12 object-contain"
-                                :src="slotProps.data.imagen" alt="image description">
+                                :src="slotProps.data.imagen" alt="image">
                         </template>
                     </Column>
                     <Column field="origen" header="Origen" sortable></Column>
