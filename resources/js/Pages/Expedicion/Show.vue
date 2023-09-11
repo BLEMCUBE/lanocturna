@@ -146,6 +146,7 @@ onMounted(() => {
     form.codigo = datos.codigo
     form.cliente = datos.cliente
     form.estado = datos.estado
+    form.observaciones = datos.observaciones
     datos.productos.forEach(el => {
         form.productos.push(
             {

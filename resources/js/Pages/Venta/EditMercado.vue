@@ -21,7 +21,7 @@ const prod = useForm({
     origen: '',
     imagen: '',
     cantidad: '',
-    precio_sin_iva: '',
+    precio_sin_iva: 0,
     precio: '',
     total_sin_iva: '',
     total: '',
@@ -123,11 +123,11 @@ onMounted(() => {
                 nombre: produ2.nombre,
                 origen: produ2.origen,
                 cantidad: el.cantidad,
-                precio: el.precio,
-                precio_sin_iva: el.precio_sin_iva,
-                total_sin_iva: el.total_sin_iva,
+                precio: 0.0,
+                precio_sin_iva:0.0,
+                total_sin_iva: 0,
                 stock: produ2.stock,
-                total: el.total
+                total: 0
             }
             )
         }
@@ -414,11 +414,11 @@ const cancelCrear = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="">
+                                    <div class="px-auto">
                                         <Button severity="success" aria-label="Add" @click="addToCart(slotProps.data.id)"
                                             icon="fas fa-cart-plus" :pt="{
                                                 root: {
-                                                    class: 'flex items-center justify-center font-medium w-8'
+                                                    class: 'flex items-center justify-center font-medium w-10'
                                                 },
                                                 label: {
                                                     class: 'hidden'

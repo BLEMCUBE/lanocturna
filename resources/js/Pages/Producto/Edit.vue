@@ -21,6 +21,7 @@ const form = useForm({
     codigo_barra: '',
     stock: 0,
     stock_minimo: 0,
+    //stock_futuro:'',
     imagen: '',
     photo: ''
 })
@@ -34,6 +35,7 @@ onMounted(() => {
     form.codigo_barra = datos.codigo_barra
     form.stock = datos.stock
     form.stock_minimo = datos.stock_minimo
+    form.stock_futuro = datos.stock_futuro
     //previewImage.value= usePage().props.base_url+datos.imagen
     previewImage.value = datos.imagen
     form.imagen = datos.imagen
@@ -63,6 +65,11 @@ const submit = () => {
 
 
 };
+const setStock = (e) => {
+    if(e.target.value.length>0)
+
+    form.stock_futuro =  parseFloat(form.stock_futuro) +parseFloat( e.target.value);
+}
 const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
@@ -147,7 +154,7 @@ const pickFile = (e) => {
                             <InputLabel for="stock" value="Stock"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <input type="number" required
-                                v-model="form.stock" step="1" min="0" @update:modelValue="setStock($event)"
+                                v-model="form.stock" step="1" min="0" @keyup="setStock($event)"
                                 class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
 
                             <InputError class="mt-1 text-xs" :message="form.errors.stock" />

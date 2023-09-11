@@ -19,18 +19,18 @@
     <tbody>
     @foreach($invoices as $invoice)
         <tr>
-            <td>{{ $invoice->sku }}</td>
-            <td>{{ $invoice->producto->nombre }}</td>
-            <td>{{$invoice->producto->aduana }}</td>
-            <td>{{ $invoice->precio }}</td>
-            <td>{{ $invoice->unidad }}</td>
-            <td>{{ $invoice->pcs_bulto }}</td>
-            <td>{{ $invoice->bultos }}</td>
-            <td>{{ $invoice->cantidad_total }}</td>
-            <td>{{ $invoice->valor_total }}</td>
-            <td>{{ $invoice->cbm_bulto }}</td>
-            <td>{{ $invoice->cbm_total }}</td>
-            <td>{{ strval( $invoice->codigo_barra) }}</td>
+            <td>{{ $invoice->sku??'' }}</td>
+            <td>{{ $invoice->producto->nombre??'' }}</td>
+            <td>{{$invoice->producto->aduana??'' }}</td>
+            <td>{{ $invoice->precio??'' }}</td>
+            <td>{{ $invoice->unidad??'' }}</td>
+            <td>{{ $invoice->pcs_bulto??'' }}</td>
+            <td>{{ $invoice->bultos??'' }}</td>
+            <td>{{ $invoice->cantidad_total??'' }}</td>
+            <td>{{ $invoice->valor_total??'' }}</td>
+            <td>{{ $invoice->cbm_bulto??'' }}</td>
+            <td>{{ $invoice->cbm_total??'' }}</td>
+            <td>{{ strval( $invoice->codigo_barra)??'' }}</td>
         </tr>
     @endforeach
     </tbody>

@@ -80,7 +80,7 @@ const filters = ref({
                         </template>
                         <template #empty> No existe Resultado </template>
                         <template #loading> Cargando... </template>
-                        <Column field="id" header="ID" sortable :pt="{
+                        <Column field="sku" header="Origen" sortable :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             },
@@ -152,6 +152,9 @@ const filters = ref({
                                 class: 'text-center'
                             }
                         }"></Column>
+                        <!--
+
+
                         <Column field="aduana" sortable header="Nombre Aduana" :pt="{
                             bodyCell: {
                                 class: 'text-center'
@@ -168,7 +171,7 @@ const filters = ref({
                             {{moment(slotProps.data.created_at).format('DD/MM/YYYY')}}
                             </template>
                     </Column>
-
+   -->
                     </DataTable>
 
                 </div>

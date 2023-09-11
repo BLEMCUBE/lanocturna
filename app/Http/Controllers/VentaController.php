@@ -314,11 +314,12 @@ class VentaController extends Controller
         DB::beginTransaction();
         try {
             $venta->codigo = $request->codigo;
-            $venta->total_sin_iva =  $request->total_sin_iva ?? 0;
-            $venta->total =  $request->total ?? 0;
+            $venta->total_sin_iva =  0;
+            $venta->total =  0;
             $venta->moneda = $request->moneda;
             $venta->tipo_cambio = $request->tipo_cambio;
             $venta->destino = $request->destino;
+            $venta->nro_compra=$request->nro_compra;
             $venta->cliente = json_encode($request->cliente);
             $venta->observaciones = $request->observaciones;
             $venta->vendedor_id = $request->vendedor_id;
@@ -345,11 +346,11 @@ class VentaController extends Controller
                 $venta->detalles_ventas()->create(
                     [
                         "producto_id" => $producto['producto_id'],
-                        "precio" => $producto['precio'],
-                        "precio_sin_iva" => $producto['precio_sin_iva'],
+                        "precio" => 0,
+                        "precio_sin_iva" => 0,
                         "cantidad" => $producto['cantidad'],
-                        "total" => $producto['total'],
-                        "total_sin_iva" => $producto['total_sin_iva'],
+                        "total" => 0,
+                        "total_sin_iva" => 0,
                     ]
                 );
             }
