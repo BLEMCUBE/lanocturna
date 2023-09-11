@@ -7,6 +7,7 @@ use App\Http\Controllers\DepositoController;
 use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
+use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\RoleController;
@@ -31,9 +32,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/inicio', function () {
-    return Inertia::render('Inicio');
-})->middleware(['auth', 'verified'])->name('inicio');
+Route::get('/inicio', [InicioController::class, 'index'])->name('inicio')->middleware(['auth', 'verified']);
 
 //Roles
 Route::controller(RoleController::class)->group(function () {

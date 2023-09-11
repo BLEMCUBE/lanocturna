@@ -223,7 +223,7 @@ const submit = () => {
         onSuccess: () => {
             show('success', 'Mensaje', 'Venta Actualizada')
             setTimeout(() => {
-                router.get(route(ruta + '.index'));
+                //router.get(route(ruta + '.index'));
             }, 1000);
         },
         onFinish: () => {
