@@ -492,22 +492,12 @@ const cancelCrear = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <!--
 
-                                    <div class="">
-                                        <Button severity="success" @click="modalProducto(slotProps.data.id)" icon="fas fa-cart-plus" :pt="{
-                                            root: {
-                                                class: 'flex items-center justify-center font-medium w-full'
-                                            }
-                                        }" :disabled="slotProps.data.stock === 'OUTOFSTOCK'"></Button>
-                                    </div>
-                                -->
-
-                                    <div class="">
+                                    <div class="px-auto">
                                         <Button severity="success" @click="addToCart(slotProps.data.id)"
                                            icon="fas fa-cart-plus" :pt="{
                                                 root: {
-                                                    class: 'flex items-center justify-center font-medium w-full'
+                                                    class: 'flex items-center justify-center font-medium w-10'
                                                 }
                                             }" :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
                                     </div>

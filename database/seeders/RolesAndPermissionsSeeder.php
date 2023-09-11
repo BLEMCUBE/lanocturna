@@ -83,6 +83,9 @@ class RolesAndPermissionsSeeder extends Seeder
             //Roles y permisos
             ['name' => 'ver-roles', 'description' => 'Roles y permisos'],
 
+             //graficos
+             ['name' => 'grafico-ventas', 'description' => 'Gráfico Ventas'],
+
 
 
         ];

@@ -376,11 +376,11 @@ const cancelCrear = () => {
                                         </div>
                                     </div>
 
-                                    <div class="">
+                                    <div class="px-auto">
                                         <Button severity="success" aria-label="Add" @click="addToCart(slotProps.data.id)"
                                             icon="fas fa-cart-plus" :pt="{
                                                 root: {
-                                                    class: 'flex items-center justify-center font-medium w-8'
+                                                    class: 'flex items-center justify-center font-medium w-10'
                                                 },
                                                 label: {
                                                     class: 'hidden'

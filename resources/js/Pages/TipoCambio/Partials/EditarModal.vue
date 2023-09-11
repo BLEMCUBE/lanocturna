@@ -88,7 +88,7 @@ const show = (tipo, titulo, mensaje) => {
     <section>
         <button type="button" @click="addCliente"><i class="fas fa-edit"></i></button>
 
-        <Dialog v-model:visible="isShowModal" modal :header="'Crear ' + titulo" :style="{ width: '50vw' }" position="top"
+        <Dialog v-model:visible="isShowModal" modal :header="'Crear ' + titulo" :style="{ width: '30vw' }" position="top"
             :pt="{
                 header: {
                     class: 'mt-6 p-2 lg:p-4 '

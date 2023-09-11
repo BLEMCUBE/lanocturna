@@ -192,7 +192,7 @@ const calculoSinIva = () => {
 
 const sumaTotalProducto = ($event, id) => {
     var precio_temp = (form.productos[id].precio === null) ? 1 : form.productos[id].precio
-    if ($event.target.value > 0) {
+    if ($event.target.value > -1) {
 
         if (form.productos[id].stock >= form.productos[id].cantidad) {
             form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
@@ -482,15 +482,19 @@ const cancelCrear = () => {
                                         </div>
                                     </div>
 
-                                    <div class="">
-                                        <Button severity="success" @click="addToCart(slotProps.data.id)"
+                                    <div class="px-auto">
+                                        <Button severity="success" aria-label="Add" @click="addToCart(slotProps.data.id)"
                                             icon="fas fa-cart-plus" :pt="{
                                                 root: {
-                                                    class: 'flex items-center justify-center font-medium w-8'
+                                                    class: 'flex items-center justify-center font-medium w-10'
+                                                },
+                                                label: {
+                                                    class: 'hidden'
                                                 }
                                             }"
                                             :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
                                     </div>
+
 
                                 </div>
                             </div>

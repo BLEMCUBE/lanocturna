@@ -22,6 +22,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import VueApexCharts from "vue3-apexcharts";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 library.add(fas);
 import { fab } from '@fortawesome/free-brands-svg-icons';
@@ -147,6 +148,7 @@ createInertiaApp({
         .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(pinia)
+            .use(VueApexCharts)
             .use(PrimeVue, { unstyled: false, ripple: true,
                 pt: Tailwind_PT })
             .use(ConfirmationService)

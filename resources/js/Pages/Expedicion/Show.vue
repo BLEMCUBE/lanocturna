@@ -146,6 +146,7 @@ onMounted(() => {
     form.codigo = datos.codigo
     form.cliente = datos.cliente
     form.estado = datos.estado
+    form.observaciones = datos.observaciones
     datos.productos.forEach(el => {
         form.productos.push(
             {
@@ -269,7 +270,7 @@ onMounted(() => {
 
 
             <!--Modal codigo maestro-->
-            <Dialog v-model:visible="isShowModal" modal header="Código Maestro" :style="{ width: '50vw' }" position="top"
+            <Dialog v-model:visible="isShowModal" modal header="Código Maestro" :style="{ width: '30vw' }" position="top"
                 :pt="{
                     header: {
                         class: 'mt-6 p-2 lg:p-4 '
@@ -279,9 +280,9 @@ onMounted(() => {
                     },
                 }">
                 <form @submit.prevent="validarCodigoMaestro">
-                    <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 2xl:gap-6 mb-2">
+                    <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 lg:gap-6 mb-2">
 
-                        <div class="col-span-6 shadow-default xl:col-span-6">
+                        <div class="col-span-6 shadow-default lg:col-span-6">
                             <InputLabel for="codigo" value="Código"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <input type="password" v-model="cod_maestro.codigo"

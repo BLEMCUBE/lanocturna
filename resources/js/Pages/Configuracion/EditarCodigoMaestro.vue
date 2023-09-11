@@ -63,7 +63,7 @@ onMounted(() => {
         <Head title="Configuraciones" />
         <AppLayout :pagina="[{ 'label': titulo, link: false }]">
             <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg xl:col-span-6 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg lg:col-span-6 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -76,7 +76,7 @@ onMounted(() => {
                 <form @submit.prevent="submit">
                     <div class="px-2 pt-4 pb-0 grid grid-cols-12 gap-4 mb-2">
 
-                        <div class="col-span-12 shadow-default xl:col-span-6">
+                        <div class="col-span-12 shadow-default lg:col-span-6">
                             <InputLabel for="codigo" value="Código"
                                 class="block text-base font-medium leading-6 text-gray-900" />
 
@@ -86,7 +86,7 @@ onMounted(() => {
                             <input type="hidden" v-model="form.slug">
                             <InputError class="mt-1 text-xs" :message="form.errors.codigo" />
                         </div>
-                        <div class="col-span-12 shadow-default xl:col-span-6">
+                        <div class="col-span-12 shadow-default lg:col-span-6">
                             <InputLabel for="codigo2" value="Repetir Código"
                                 class="block text-base font-medium leading-6 text-gray-900" />
 

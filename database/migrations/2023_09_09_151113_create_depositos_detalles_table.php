@@ -14,14 +14,10 @@ return new class extends Migration
         Schema::create('depositos_detalles', function (Blueprint $table) {
             $table->id();
             $table->string('sku')->nullable();
-            $table->float('precio',8,2)->default(0);
             $table->string('unidad')->nullable();
             $table->integer('pcs_bulto')->default(0);
             $table->integer('bultos')->nullable();
             $table->float('cantidad_total',8,2)->default(0);
-            $table->float('valor_total',8,2)->default(0);
-            $table->float('cbm_bulto',8,2)->default(0);
-            $table->float('cbm_total',8,2)->default(0);
             $table->string('codigo_barra')->nullable();
             $table->unsignedBigInteger('deposito_id')->nullable();
             $table->unsignedBigInteger('importacion_id')->nullable();
