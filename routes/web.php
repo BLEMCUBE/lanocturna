@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\CompraController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\DepositoController;
 use App\Http\Controllers\EnvioController;
@@ -158,6 +159,18 @@ Route::controller(DepositoController::class)->group(function () {
     Route::get('/depositos/{id}', 'show')->name('depositos.show')->middleware('auth');
     Route::post('/depositos/store', 'store')->name('depositos.store')->middleware('auth');
     Route::delete('/depositos/{id}', 'destroy')->name('depositos.destroy')->middleware('auth');
+});
+
+//Compra
+Route::controller(CompraController::class)->group(function () {
+    Route::post('/compras/update/{id}', 'update')->name('compras.update')->middleware('auth');
+    Route::get('/compras/edit/{id}', 'edit')->name('compras.edit')->middleware('auth');
+    Route::get('/compras/create', 'create')->name('compras.create')->middleware('auth');
+    Route::post('/compras/store', 'store')->name('compras.store')->middleware('auth');
+    Route::get('/compras', 'index')->name('compras.index')->middleware('auth');
+    Route::get('/compras/{id}', 'show')->name('compras.show')->middleware('auth');
+    Route::delete('/compras/{id}', 'destroy')->name('compras.destroy')->middleware('auth');
+
 });
 
 

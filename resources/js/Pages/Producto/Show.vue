@@ -1,10 +1,10 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm } from '@inertiajs/vue3';
+import { Head, usePage, useForm,router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
 const previewImage = ref('/images/productos/sin_foto.png');
-
+const { permissions } = usePage().props.auth
 const titulo = "Detalle Producto"
 const ruta = 'productos'
 const { cantidad } = usePage().props
@@ -45,7 +45,10 @@ const filters = ref({
 const filters_importacion = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+const btnEditar = (id) => {
+    router.get(route(ruta + '.edit', id));
 
+};
 </script>
 <template>
     <Head :title="titulo" />
@@ -54,6 +57,20 @@ const filters_importacion = ref({
         <div
             class="card px-4 py-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
+            <div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
+                <Button label="Editar" v-if="permissions.includes('editar-productos')"
+                    @click="btnEditar(form.id)" :pt="{
+                        root: {
+                            class: 'flex items-center  bg-primary-900 justify-center font-medium w-10'
+                        },
+                        label: {
+                            class: 'hidden'
+                        }
+                    }"
+                    v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+                        class="fas fa-edit"></i></Button>
+
+            </div>
             <div class=" px-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>

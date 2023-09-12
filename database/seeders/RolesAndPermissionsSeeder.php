@@ -28,10 +28,10 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'eliminar-usuarios', 'description' => 'Eliminar Usuario'],
 
             //Clientes
-            ['name' => 'lista-clientes', 'description' => 'Lista Clientes'],
+            /*['name' => 'lista-clientes', 'description' => 'Lista Clientes'],
             ['name' => 'crear-clientes', 'description' => 'Crear Cliente'],
             ['name' => 'editar-clientes', 'description' => 'Editar Cliente'],
-            ['name' => 'eliminar-clientes', 'description' => 'Eliminar Cliente'],
+            ['name' => 'eliminar-clientes', 'description' => 'Eliminar Cliente'],*/
 
             //Productos
             ['name' => 'lista-productos', 'description' => 'Lista Productos'],
@@ -58,6 +58,12 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'facturar-ventas', 'description' => 'Facturar Venta'],
             ['name' => 'editar-ventas', 'description' => 'Editar Venta'],
             ['name' => 'eliminar-ventas', 'description' => 'Anular Venta'],
+
+            //Compras
+            ['name' => 'lista-compras', 'description' => 'Historial de Compras'],
+            ['name' => 'crear-compras', 'description' => 'Crear Compra'],
+            ['name' => 'editar-compras', 'description' => 'Editar Compra'],
+            ['name' => 'eliminar-compras', 'description' => 'Anular Compra'],
 
             //Caja
             ['name' => 'lista-cajas', 'description' => 'Caja'],

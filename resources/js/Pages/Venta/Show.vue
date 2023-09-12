@@ -1,9 +1,8 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm } from '@inertiajs/vue3';
-
-const previewImage = ref('/images/productos/sin_foto.png');
+import { Head, usePage, useForm,router } from '@inertiajs/vue3';
+const { permissions } = usePage().props.auth
 
 const titulo = "Detalle Venta"
 const ruta = 'ventas'
@@ -22,12 +21,15 @@ const form = useForm({
     observaciones: '',
     productos: [],
     cliente: '',
-    direccion:'',
-    localidad : '',
-    telefono :'',
+    direccion: '',
+    localidad: '',
+    telefono: '',
 
 })
+const btnEditar = (id) => {
+    router.get(route(ruta + '.edit', id));
 
+};
 onMounted(() => {
     var datos = usePage().props.venta.data;
     form.id = datos.id
@@ -60,8 +62,25 @@ onMounted(() => {
         <div
             class="card px-4 py-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
+
+
+            <div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
+                <Button label="Editar" v-if="permissions.includes('editar-ventas') && form.estado !== 'ANULADO'"
+                    @click="btnEditar(form.id)" :pt="{
+                        root: {
+                            class: 'flex items-center  bg-primary-900 justify-center font-medium w-10'
+                        },
+                        label: {
+                            class: 'hidden'
+                        }
+                    }"
+                    v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+                        class="fas fa-edit"></i></Button>
+
+            </div>
             <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+
             </div>
 
             <div
@@ -220,7 +239,8 @@ onMounted(() => {
                     <tfoot>
                         <tr>
                             <td colspan="5" class="text-end"><b>Total: </b></td>
-                            <td class="text-center"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{ form.total.toFixed(2) }}
+                            <td class="text-center"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{
+                                form.total.toFixed(2) }}
                                 </b></td>
                         </tr>
 

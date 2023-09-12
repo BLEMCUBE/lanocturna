@@ -48,6 +48,7 @@ export default {
                 ok('error', 'No se ha especificado el tipo de cambio para el día')
             }
         }
+
         const ok = (icono, mensaje) => {
 
             Swal.fire({
@@ -201,6 +202,23 @@ export default {
                     <span class="ml-3">importaciones</span>
                 </NavLinkSideBar>
             </li>
+
+            <li @click="setMenu('compras')" v-show="permissions.includes('lista-ventas')">
+                <NavLinkSideBar icon-class="fa fa-shopping-cart"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('compras.index')"
+                    :active="route().current('compras.index')">
+                    <span class="ml-3">Historial de Compras</span>
+                </NavLinkSideBar>
+            </li>
+
+            <li @click="setMenu('crear-compras')" v-show="permissions.includes('crear-ventas')">
+                <NavLinkSideBar icon-class="fa fa-shopping-cart" :href="route('compras.create')"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :active="route().current('compras.create')">
+                    <span class="ml-3">Compra en plaza</span>
+                </NavLinkSideBar>
+            </li>
             <!--
 
             <li @click="setMenu('depositos')" v-show="permissions.includes('lista-depositos')">
@@ -219,7 +237,7 @@ export default {
             </li>
 
             -->
-            <li @click="setMenu('tipo_cambio')" v-show="permissions.includes('lista-productos')">
+            <li @click="setMenu('tipo_cambio')" v-show="permissions.includes('lista-tipocambio')">
                 <NavLinkSideBar icon-class="far fa-money-bill-alt"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
                     :href="route('tipo_cambio.index')" :active="route().current('tipo_cambio.index')">

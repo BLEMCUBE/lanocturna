@@ -47,7 +47,7 @@ class EnvioController extends Controller
             })->where(function ($query) {
                 $query->where('estado', "PENDIENTE DE FACTURACIÓN")
                     ->orWhere('estado', "FACTURADO");
-            })->orderBy('id', 'DESC')->get()
+            })->select('*')->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Index', [
             'ventas' => $expedidiones

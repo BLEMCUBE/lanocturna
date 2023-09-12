@@ -409,6 +409,7 @@ class VentaController extends Controller
         DB::beginTransaction();
         try {
             $venta->estado = "ANULADO";
+            $venta->facturado = 0;
             $venta->fecha_anulacion =  now();
             $venta->save();
 
