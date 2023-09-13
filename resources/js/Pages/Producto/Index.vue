@@ -119,6 +119,7 @@ const filters = ref({
                     bodyRow:{class:'hover:cursor-pointer'},
                     root:{class:'w-auto'}
                 }"
+                :globalFilterFields="['codigo_barra','origen','nombre']"
                 scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
                 @row-click="clickDetalle"
                  size="small">

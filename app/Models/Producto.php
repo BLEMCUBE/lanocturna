@@ -20,6 +20,8 @@ class Producto extends Model
         'stock',
         'stock_minimo',
         'stock_futuro',
+        'en_camino',
+        'arribado',
     ];
 
     public function detalles_ventas()

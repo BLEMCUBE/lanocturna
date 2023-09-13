@@ -87,14 +87,17 @@ Route::controller(ProductoController::class)->group(function () {
 
 //Importacion
 Route::controller(ImportacionController::class)->group(function () {
+    Route::delete('/importaciones/{id}', 'destroy')->name('importaciones.destroy')->middleware('auth');
     Route::get('/importaciones/create', 'create')->name('importaciones.create')->middleware('auth');
     Route::get('/importaciones/{id}', 'edit')->name('importaciones.edit')->middleware('auth');
+    Route::get('/importaciones/{id}/export', 'exportExcel')->name('importaciones.exportar')->middleware('auth');
     Route::get('/importaciones/{id}/show', 'show')->name('importaciones.show')->middleware('auth');
+    Route::get('/importaciones/{id}/showmodal', 'showModal')->name('importaciones.showmodal')->middleware('auth');
+    Route::get('/importaciones/{id}/showproductomodal', 'showProductoModal')->name('importaciones.showproductomodal')->middleware('auth');
+    Route::post('/importaciones/{id}/updateproducto', 'updateProducto')->name('importaciones.updateproducto')->middleware('auth');
     Route::post('/importaciones/update/{id}', 'update')->name('importaciones.update')->middleware('auth');
     Route::get('/importaciones', 'index')->name('importaciones.index')->middleware('auth');
     Route::post('/importaciones/store', 'store')->name('importaciones.store')->middleware('auth');
-    Route::delete('/importaciones/{id}', 'destroy')->name('importaciones.destroy')->middleware('auth');
-    Route::get('/importaciones/{id}/export', 'exportExcel')->name('importaciones.exportar')->middleware('auth');
 });
 
 //TipoCambio

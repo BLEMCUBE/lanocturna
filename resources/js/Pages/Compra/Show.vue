@@ -31,8 +31,6 @@ onMounted(() => {
     form.proveedor = datos.proveedor
     form.estado = datos.estado
     form.productos = datos.productos
-
-
 });
 
 
