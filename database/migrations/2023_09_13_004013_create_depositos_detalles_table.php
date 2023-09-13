@@ -19,9 +19,9 @@ return new class extends Migration
             $table->integer('bultos')->nullable();
             $table->float('cantidad_total',8,2)->default(0);
             $table->string('codigo_barra')->nullable();
+            $table->string('estado')->nullable();
+            $table->string('mueve_stock')->nullable();
             $table->unsignedBigInteger('deposito_id')->nullable();
-            $table->unsignedBigInteger('importacion_id')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
 
             $table->foreign('deposito_id')
@@ -30,17 +30,6 @@ return new class extends Migration
             ->onDelete('set null')
             ->onUpdate('set null');
 
-            $table->foreign('importacion_id')
-            ->references('id')
-            ->on('importaciones')
-            ->onDelete('set null')
-            ->onUpdate('set null');
-
-            $table->foreign('user_id')
-            ->references('id')
-            ->on('users')
-            ->onDelete('set null')
-            ->onUpdate('set null');
         });
     }
 

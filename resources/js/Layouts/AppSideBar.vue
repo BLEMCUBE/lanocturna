@@ -219,7 +219,6 @@ export default {
                     <span class="ml-3">Compra en plaza</span>
                 </NavLinkSideBar>
             </li>
-            <!--
 
             <li @click="setMenu('depositos')" v-show="permissions.includes('lista-depositos')">
                 <NavLinkSideBar icon-class="fa-solid fa-warehouse"
@@ -231,12 +230,12 @@ export default {
             <li @click="setMenu('nombre-depositos')" v-show="permissions.includes('nombre-depositos')">
                 <NavLinkSideBar icon-class="fa-solid fa-warehouse"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('depositos.nombres')" :active="route().current('depositos.nombres')">
+                    :href="route('depositoslista.index')" :active="route().current('depositoslista.index')">
                     <span class="ml-3">Nombre Depósitos</span>
                 </NavLinkSideBar>
             </li>
 
-            -->
+
             <li @click="setMenu('tipo_cambio')" v-show="permissions.includes('lista-tipocambio')">
                 <NavLinkSideBar icon-class="far fa-money-bill-alt"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"

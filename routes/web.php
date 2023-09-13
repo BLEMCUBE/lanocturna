@@ -5,6 +5,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\DepositoController;
+use App\Http\Controllers\DepositoListaController;
 use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
@@ -153,6 +154,13 @@ Route::controller(EnvioController::class)->group(function () {
 
 });
 
+//DepositoLista
+Route::controller(DepositoListaController::class)->group(function () {
+    Route::post('/depositoslista/update/{id}', 'update')->name('depositoslista.update')->middleware('auth');
+    Route::get('/depositoslista/{id}', 'show')->name('depositoslista.show')->middleware('auth');
+    Route::get('/depositoslista', 'index')->name('depositoslista.index')->middleware('auth');
+    Route::post('/depositoslista/store', 'store')->name('depositoslista.store')->middleware('auth');
+});
 //Deposito
 Route::controller(DepositoController::class)->group(function () {
     Route::post('/depositos/update/{id}', 'update')->name('depositos.update')->middleware('auth');

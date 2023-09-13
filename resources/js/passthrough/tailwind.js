@@ -3213,7 +3213,7 @@ const Tailwind_PT = {
             var props = _ref151.props,
               state = _ref151.state;
             return {
-                "class": ['inline-flex cursor-pointer user-none', 'bg-white border rounded-md', 'transition duration-200', 'h-8 mx-2 w-16', 'dark:bg-gray-950 dark:border-blue-900/40',
+                "class": ['inline-flex cursor-pointer user-none', 'bg-white border rounded-md', 'transition duration-200', 'h-8 mx-2 w-auto', 'dark:bg-gray-950 dark:border-blue-900/40',
               //DarkMode
               {
                 'outline-none outline-offset-0 shadow-[0_0_0_0.2rem_rgba(191,219,254,1)] border-primary-100': state.focused && !props.disabled,

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Deposito;
+use App\Models\DepositoLista;
 
 class DepositoSeeder extends Seeder
 {
@@ -20,7 +20,7 @@ class DepositoSeeder extends Seeder
         ];
 
         foreach ($depositos as $deposito) {
-            Deposito::create($deposito);
+            DepositoLista::create($deposito);
         }
     }
 }
