@@ -73,7 +73,7 @@ class ProductoController extends Controller
         $producto->codigo_barra     = $request->input('codigo_barra');
         $producto->stock = $request->input('stock');
         $producto->stock_minimo = $request->input('stock_minimo');
-        $producto->stock_futuro = $producto->arribado+$request->input('stock');
+        $producto->stock_futuro = $producto->en_camino+$request->input('stock');
         $producto->save();
 
         //imagen

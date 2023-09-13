@@ -21,6 +21,8 @@ class VentaCollection extends ResourceCollection
                     'id' => $row->id,
                     'codigo' => $row->codigo??'',
                     'cliente'=>$dat->nombre??'',
+                    'empresa'=>$dat->empresa??'',
+                    'rut'=>$dat->rut??'',
                     'destino' => $row->destino??'',
                     'localidad' => $dat->localidad??'',
                     'direccion' => $dat->direccion??'',

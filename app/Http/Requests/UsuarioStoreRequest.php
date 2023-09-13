@@ -18,7 +18,7 @@ class UsuarioStoreRequest extends FormRequest
             'rol' => 'required',
             'username' => 'required|unique:users|alpha_num:ascii',
             //'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{10,}$/',
-            'password'=>'required|min:10',
+            'password'=>'required|min:4',
             'photo' => 'image|max:2048|nullable'
             //'password2' => 'required|same:password',
 
