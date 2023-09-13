@@ -15,7 +15,7 @@ class DepositoSeeder extends Seeder
     public function run()
     {
         $depositos =  [
-            ["nombre" => "DEPÓSITO VIRTUAL","descripcion"=>"Depósito en donde se registran todos bultos importados"],
+            ["nombre" => "DEPÓSITO TEMPORAL","descripcion"=>"Depósito en donde se registran todos bultos importados"],
             ["nombre" => "TIENDA","descripcion"=>"Tienda"],
         ];
 

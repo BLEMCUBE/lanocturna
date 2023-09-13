@@ -88,8 +88,8 @@ const show = (tipo, titulo, mensaje) => {
 const BtnCrear = () => {
     router.get(route(ruta + '.create'));
 }
-const clickDetalle=(e)=>{
-btnVer(e.data.id)
+const clickDetalle = (e) => {
+    btnVer(e.data.id)
 }
 
 
@@ -105,24 +105,31 @@ const filters = ref({
 
             <!--Contenido-->
             <Toast />
-            <div class="px-3 pb-2 col-span-full flex justify-between items-center">
-                <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+            <div class="px-3 pb-2 col-span-full flex justify-start items-center">
+                <h5 class="text-2xl font-medium pr-5">{{ titulo }}</h5>
+            </div>
 
+            <div class="px-3 pb-2 col-span-full flex justify-end items-center">
+                <span
+                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
+                                    <a :href="route('productos.exportar')" target="_blank"
+                                    class="py-auto"><i
+                                            class="fas fa-file-excel text-white"></i>
+                                    </a>
+
+                                </span>
                 <Button size="small" :label="'Agregar Producto'" severity="success" @click="BtnCrear"></Button>
 
             </div>
 
             <div class="align-middle">
 
-                <DataTable :rowClass="rowClass" showGridlines :filters="filters" :value="tabla_productos"
-                :pt="{
-                    bodyRow:{class:'hover:cursor-pointer'},
-                    root:{class:'w-auto'}
-                }"
-                :globalFilterFields="['codigo_barra','origen','nombre']"
-                scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
-                @row-click="clickDetalle"
-                 size="small">
+                <DataTable :rowClass="rowClass" showGridlines :filters="filters" :value="tabla_productos" :pt="{
+                    bodyRow: { class: 'hover:cursor-pointer' },
+                    root: { class: 'w-auto' }
+                }" :globalFilterFields="['codigo_barra', 'origen', 'nombre']" scrollable scrollHeight="800px"
+                    :virtualScrollerOptions="{ itemSize: 46 }" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -145,8 +152,8 @@ const filters = ref({
                         bodyCell: {
                             class: 'flex justify-center text-center w-12'
                         },
-                        headerCell:{
-                            class:'w-10'
+                        headerCell: {
+                            class: 'w-10'
                         }
                     }">
                         <template #body="slotProps">
@@ -154,11 +161,11 @@ const filters = ref({
                                 :src="slotProps.data.imagen" alt="image">
                         </template>
                     </Column>
-                    <Column field="origen" header="Origen" sortable
-                    :pt="{
+                    <Column field="origen" header="Origen" sortable :pt="{
                         bodyCell: {
                             class: 'text-center w-36'
-                        }}"></Column>
+                        }
+                    }"></Column>
                     <Column field="nombre" header="Nombre" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'

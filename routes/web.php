@@ -77,6 +77,9 @@ Route::controller(ClienteController::class)->group(function () {
 
 //Producto
 Route::controller(ProductoController::class)->group(function () {
+    Route::get('/productos/export', 'exportExcel')->name('productos.exportar')->middleware('auth');
+    Route::post('/productos/importar', 'importExcel')->name('productos.importar')->middleware('auth');
+    Route::get('/productos/vistaimportar', 'vistaImportar')->name('productos.vistaimportar')->middleware('auth');
     Route::get('/productos/create', 'create')->name('productos.create')->middleware('auth');
     Route::get('/productos/{id}', 'edit')->name('productos.edit')->middleware('auth');
     Route::get('/productos/{id}/show', 'show')->name('productos.show')->middleware('auth');

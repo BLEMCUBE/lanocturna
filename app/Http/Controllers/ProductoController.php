@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductosExport;
+use App\Http\Requests\ProductoImportRequest;
 use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
 use App\Http\Resources\ProductoCollection;
+use App\Imports\ProductoImport;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
 use App\Models\VentaDetalle;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -130,6 +134,22 @@ class ProductoController extends Controller
             unlink($url_save);
         }
         $producto->delete();
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new ProductosExport(), 'productos.xlsx');
+    }
+    public function vistaImportar()
+    {
+        return Inertia::render('Producto/Importar');
+    }
+    public function importExcel(ProductoImportRequest $request)
+    {
+        $file = $request->file('archivo');
+           //importando excel
+           Excel::import(new ProductoImport(), $file);
+
     }
 
 
