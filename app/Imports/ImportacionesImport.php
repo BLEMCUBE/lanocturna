@@ -49,6 +49,7 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
                 ]);
 
                 $producto = Producto::where('codigo_barra', '=', $row['codigo_barra'])->first();
+                if(!empty($producto)){
 
                 if ($this->mueve_stock ==true) {
                 if ($this->estado == "Arribado") {
@@ -71,6 +72,7 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
                     ]);
                 }
             }
+        }
             }
 
         }
