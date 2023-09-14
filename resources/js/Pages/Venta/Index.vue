@@ -219,7 +219,7 @@ const filters = ref({
                     <template #loading> Cargando... </template>
                     <Column field="fecha" header="Fecha y Hora" sortable :pt="{
                         bodyCell: {
-                            class: 'text-center w-14'
+                            class: 'text-center w-24'
                         }
                     }"></Column>
                     <Column field="nro_compra" header="Nº  Compra" sortable :pt="{

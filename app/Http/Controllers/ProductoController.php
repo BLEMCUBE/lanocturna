@@ -159,8 +159,15 @@ class ProductoController extends Controller
 
         foreach ($productos as $producto) {
           $act=   Producto::where('id', '=', $producto->id)->first();
+          $stock_act=0;
+          if($act->stock<=0){
+            $stock_act=0;
+          }else{
+            $stock_act=$act->stock;
+          }
           $act->update([
-            "stock_futuro"=>$producto->stock
+            "stock"=>$stock_act,
+            "stock_futuro"=>$stock_act
           ]);
         }
         return 'Stock futuro Actualizado';

@@ -194,7 +194,7 @@ const filters = ref({
 
                 <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer p-1' }
-                }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ class: 'min-h-screen', itemSize: 46 }"
+                }" scrollable scrollHeight="800px"  columnResizeMode="expand"  :virtualScrollerOptions="{  itemSize: 46 }"
                     @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="grid grid-cols-6 gap-4">
