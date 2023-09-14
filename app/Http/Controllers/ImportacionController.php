@@ -308,12 +308,13 @@ class ImportacionController extends Controller
                 $new_arribado = $producto->arribado - $detalle->cantidad_total;
 
                 $new_futuro = $new_stock + $producto->en_camino;
-
+                if ($producto->arribado >0) {
                 $producto->update([
                     "stock" => $new_stock,
                     "arribado" => $new_arribado,
                     "stock_futuro" => $new_futuro,
                 ]);
+            }
             }
         }
         if ($estado == 'En camino') {
@@ -324,10 +325,12 @@ class ImportacionController extends Controller
                     ->first();
                 $new_camino = $producto->en_camino - $detalle->cantidad_total;
                 $new_futuro =  $producto->stock + $new_camino;
+                if ($producto->en_camino >0) {
                 $producto->update([
                     "en_camino" => $new_camino,
                     "stock_futuro" => $new_futuro,
                 ]);
+            }
             }
         }
 

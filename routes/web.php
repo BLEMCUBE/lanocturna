@@ -78,6 +78,7 @@ Route::controller(ClienteController::class)->group(function () {
 //Producto
 Route::controller(ProductoController::class)->group(function () {
     Route::get('/productos/export', 'exportExcel')->name('productos.exportar')->middleware('auth');
+    Route::get('/productos/actualizarfuturo', 'actualizarFuturo')->name('productos.actualizarfuturo')->middleware('auth');
     Route::post('/productos/importar', 'importExcel')->name('productos.importar')->middleware('auth');
     Route::get('/productos/vistaimportar', 'vistaImportar')->name('productos.vistaimportar')->middleware('auth');
     Route::get('/productos/create', 'create')->name('productos.create')->middleware('auth');
@@ -168,7 +169,7 @@ Route::controller(DepositoListaController::class)->group(function () {
 Route::controller(DepositoController::class)->group(function () {
     Route::post('/depositos/update/{id}', 'update')->name('depositos.update')->middleware('auth');
     Route::post('/depositos/update-deposito/{id}', 'updateDeposito')->name('depositos.updateDeposito')->middleware('auth');
-    Route::get('/depositos/nombres', 'nombres')->name('depositos.nombres')->middleware('auth');
+    Route::get('/depositos/historial', 'historial')->name('depositos.historial')->middleware('auth');
     Route::get('/depositos', 'index')->name('depositos.index')->middleware('auth');
     Route::get('/depositos/{id}', 'show')->name('depositos.show')->middleware('auth');
     Route::post('/depositos/store', 'store')->name('depositos.store')->middleware('auth');

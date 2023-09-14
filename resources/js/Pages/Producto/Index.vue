@@ -112,7 +112,7 @@ const filters = ref({
             <div class="px-3 pb-2 col-span-full flex justify-end items-center">
                 <span
                                     v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
+                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center mr-5 items-center text-base font-semibold text-white hover:bg-green-600">
                                     <a :href="route('productos.exportar')" target="_blank"
                                     class="py-auto"><i
                                             class="fas fa-file-excel text-white"></i>

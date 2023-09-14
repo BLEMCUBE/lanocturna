@@ -152,5 +152,19 @@ class ProductoController extends Controller
 
     }
 
+    public function actualizarFuturo()
+    {
+
+        $productos=Producto::all();
+
+        foreach ($productos as $producto) {
+          $act=   Producto::where('id', '=', $producto->id)->first();
+          $act->update([
+            "stock_futuro"=>$producto->stock
+          ]);
+        }
+        return 'Stock futuro Actualizado';
+    }
+
 
 }
