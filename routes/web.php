@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\CompraController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\DepositoController;
+use App\Http\Controllers\DepositoListaController;
 use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
@@ -75,6 +77,10 @@ Route::controller(ClienteController::class)->group(function () {
 
 //Producto
 Route::controller(ProductoController::class)->group(function () {
+    Route::get('/productos/export', 'exportExcel')->name('productos.exportar')->middleware('auth');
+    Route::get('/productos/actualizarfuturo', 'actualizarFuturo')->name('productos.actualizarfuturo')->middleware('auth');
+    Route::post('/productos/importar', 'importExcel')->name('productos.importar')->middleware('auth');
+    Route::get('/productos/vistaimportar', 'vistaImportar')->name('productos.vistaimportar')->middleware('auth');
     Route::get('/productos/create', 'create')->name('productos.create')->middleware('auth');
     Route::get('/productos/{id}', 'edit')->name('productos.edit')->middleware('auth');
     Route::get('/productos/{id}/show', 'show')->name('productos.show')->middleware('auth');
@@ -86,14 +92,17 @@ Route::controller(ProductoController::class)->group(function () {
 
 //Importacion
 Route::controller(ImportacionController::class)->group(function () {
+    Route::delete('/importaciones/{id}', 'destroy')->name('importaciones.destroy')->middleware('auth');
     Route::get('/importaciones/create', 'create')->name('importaciones.create')->middleware('auth');
     Route::get('/importaciones/{id}', 'edit')->name('importaciones.edit')->middleware('auth');
+    Route::get('/importaciones/{id}/export', 'exportExcel')->name('importaciones.exportar')->middleware('auth');
     Route::get('/importaciones/{id}/show', 'show')->name('importaciones.show')->middleware('auth');
+    Route::get('/importaciones/{id}/showmodal', 'showModal')->name('importaciones.showmodal')->middleware('auth');
+    Route::get('/importaciones/{id}/showproductomodal', 'showProductoModal')->name('importaciones.showproductomodal')->middleware('auth');
+    Route::post('/importaciones/{id}/updateproducto', 'updateProducto')->name('importaciones.updateproducto')->middleware('auth');
     Route::post('/importaciones/update/{id}', 'update')->name('importaciones.update')->middleware('auth');
     Route::get('/importaciones', 'index')->name('importaciones.index')->middleware('auth');
     Route::post('/importaciones/store', 'store')->name('importaciones.store')->middleware('auth');
-    Route::delete('/importaciones/{id}', 'destroy')->name('importaciones.destroy')->middleware('auth');
-    Route::get('/importaciones/{id}/export', 'exportExcel')->name('importaciones.exportar')->middleware('auth');
 });
 
 //TipoCambio
@@ -149,15 +158,34 @@ Route::controller(EnvioController::class)->group(function () {
 
 });
 
+//DepositoLista
+Route::controller(DepositoListaController::class)->group(function () {
+    Route::post('/depositoslista/update/{id}', 'update')->name('depositoslista.update')->middleware('auth');
+    Route::get('/depositoslista/{id}', 'show')->name('depositoslista.show')->middleware('auth');
+    Route::get('/depositoslista', 'index')->name('depositoslista.index')->middleware('auth');
+    Route::post('/depositoslista/store', 'store')->name('depositoslista.store')->middleware('auth');
+});
 //Deposito
 Route::controller(DepositoController::class)->group(function () {
     Route::post('/depositos/update/{id}', 'update')->name('depositos.update')->middleware('auth');
     Route::post('/depositos/update-deposito/{id}', 'updateDeposito')->name('depositos.updateDeposito')->middleware('auth');
-    Route::get('/depositos/nombres', 'nombres')->name('depositos.nombres')->middleware('auth');
+    Route::get('/depositos/historial', 'historial')->name('depositos.historial')->middleware('auth');
     Route::get('/depositos', 'index')->name('depositos.index')->middleware('auth');
     Route::get('/depositos/{id}', 'show')->name('depositos.show')->middleware('auth');
     Route::post('/depositos/store', 'store')->name('depositos.store')->middleware('auth');
     Route::delete('/depositos/{id}', 'destroy')->name('depositos.destroy')->middleware('auth');
+});
+
+//Compra
+Route::controller(CompraController::class)->group(function () {
+    Route::post('/compras/update/{id}', 'update')->name('compras.update')->middleware('auth');
+    Route::get('/compras/edit/{id}', 'edit')->name('compras.edit')->middleware('auth');
+    Route::get('/compras/create', 'create')->name('compras.create')->middleware('auth');
+    Route::post('/compras/store', 'store')->name('compras.store')->middleware('auth');
+    Route::get('/compras', 'index')->name('compras.index')->middleware('auth');
+    Route::get('/compras/{id}', 'show')->name('compras.show')->middleware('auth');
+    Route::delete('/compras/{id}', 'destroy')->name('compras.destroy')->middleware('auth');
+
 });
 
 

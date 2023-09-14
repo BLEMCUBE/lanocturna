@@ -109,10 +109,7 @@ const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
 
 };
-const btnEditar = (id) => {
-    router.get(route(ruta + '.edit', id));
 
-};
 const btnEliminar = (id) => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
@@ -199,7 +196,7 @@ const filters = ref({
 
                 <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer' }
-                }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ class: 'min-h-screen', itemSize: 46 }"
+                }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"
                     @row-click="clickDetalle" size="small">
 
                     <template #header>
@@ -211,7 +208,7 @@ const filters = ref({
 
                                 <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
                                     format="DD/MM/YYYY"
-                                    class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
+                                    class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
                                      v-model:value="date" :shortcuts="shortcuts" lang="es"
                                     placeholder="Seleccione Fecha"></date-picker>
 
@@ -220,26 +217,26 @@ const filters = ref({
 
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="fecha" header="fecha y hora" sortable :pt="{
+                    <Column field="fecha" header="Fecha y Hora" sortable :pt="{
                         bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center w-24'
                         }
                     }"></Column>
                     <Column field="nro_compra" header="Nº  Compra" sortable :pt="{
                         bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center w-14'
                         }
                     }"></Column>
 
                     <Column field="cliente" header="Cliente" sortable :pt="{
                         bodyCell: {
-                            class: 'text-center border'
+                            class: 'text-center border w-20'
                         }
                     }"></Column>
 
                     <Column field="estado" header="Estado" sortable :pt="{
                         bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center w-24'
                         }
                     }">
                         <template #body="slotProps">
@@ -251,13 +248,13 @@ const filters = ref({
 
                     <Column field="total" sortable header="Total" :pt="{
                         bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center w-20'
                         }
                     }"></Column>
 
                     <Column field="observaciones" sortable header="Observaciones" :pt="{
                         bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center w-36'
                         }
                     }"></Column>
 
@@ -267,12 +264,7 @@ const filters = ref({
                         }
                     }">
                         <template #body="slotProps">
-                            <Button
-                                v-if="permissions.includes('editar-ventas') && slotProps.data.estado !== 'ANULADO'"
-                                @click="btnEditar(slotProps.data.id)"
-                                class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
-                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
-                                    class="fas fa-edit"></i></Button>
+
                             <Button
                                 v-if="permissions.includes('eliminar-ventas') && slotProps.data.estado !== 'ANULADO'"
                                 @click="btnEliminar(slotProps.data.id)"

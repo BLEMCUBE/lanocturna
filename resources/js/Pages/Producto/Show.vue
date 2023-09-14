@@ -1,8 +1,9 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm } from '@inertiajs/vue3';
+import { Head, usePage, useForm,router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
+const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
 
 const titulo = "Detalle Producto"
@@ -45,7 +46,10 @@ const filters = ref({
 const filters_importacion = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+const btnEditar = (id) => {
+    router.get(route(ruta + '.edit', id));
 
+};
 </script>
 <template>
     <Head :title="titulo" />
@@ -57,52 +61,74 @@ const filters_importacion = ref({
             <div class=" px-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
+            <div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
+                <Button label="Editar" v-if="permissions.includes('editar-productos')"
+                    @click="btnEditar(form.id)" :pt="{
+                        root: {
+                            class: 'flex items-center  bg-primary-900 justify-center font-medium w-10'
+                        },
+                        label: {
+                            class: 'hidden'
+                        }
+                    }"
+                    v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+                        class="fas fa-edit"></i></Button>
 
-            <div
-                class="mx-auto grid max-w-2xl grid-cols-1  gap-x-10 gap-y-16 px-4 py-5 sm:px-6 sm:py-5 lg:max-w-7xl lg:grid-cols-3 lg:px-8">
+            </div>
 
-                <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+
+            <div class="mx-auto grid max-w-2xl grid-cols-1  gap-2 sm:px-6 sm:py-5 lg:max-w-7xl lg:grid-cols-3 lg:px-8">
+
+                <div class="grid grid-cols-2 gap-2">
                     <div class="col-span-2">
-                        <img class="w-full text-center rounded-xl" :alt="form.nombre" :src="form.imagen" />
+                        <img class="w-48 text-center rounded-xl" :alt="form.nombre" :src="form.imagen" />
                     </div>
                 </div>
-                <div class="col-span-2">
-                    <div class="border-b border-gray-200 pb-4">
-                        <h1
-                            class="lg:text-2xl text-lg font-semibold lg:leading-6 leading-7 text-gray-800 dark:text-white mt-2">
+                <div class="col-span-2 grid grid-cols-4 gap-2">
+
+                    <div class="col-span-4 border-b border-gray-200">
+                        <h1 class="lg:text-2xl text-lg font-semibold leading-0 text-gray-800 mt-2">
                             {{ form.nombre }}</h1>
                     </div>
 
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Nombre Aduana:
-                        </b>
-                        {{ form.aduana }}
-                    </p>
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Origen:
-                        </b>
-                        {{ form.origen }}
-                    </p>
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Código barra:
-                        </b>
-                        {{ form.codigo_barra }}
-                    </p>
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Stock:
-                        </b>
-                        {{ form.stock }}
-                    </p>
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Stock Mínimo:
-                        </b>
-                        {{ form.stock_minimo }}
-                    </p>
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Stock Futuro:
-                        </b>
-                        {{ form.stock_futuro }}
-                    </p>
+                    <div class="col-span-4">
+                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                                Nombre Aduana:
+                            </b>
+                            {{ form.aduana }}
+                        </p>
+                    </div>
+
+                    <div class="col-span-2">
+                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                                Origen:
+                            </b>
+                            {{ form.origen }}
+                        </p>
+                    </div>
+
+                    <div class="col-span-2">
+                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                                Código barra:
+                            </b>
+                            {{ form.codigo_barra }}
+                        </p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                                Stock:
+                            </b>
+                            {{ form.stock }}
+                        </p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                                Stock Futuro:
+                            </b>
+                            {{ form.stock_futuro }}
+                        </p>
+                    </div>
+
                 </div>
 
             </div>
@@ -115,9 +141,10 @@ const filters_importacion = ref({
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable showGridlines sortField="venta.fecha" :sortOrder="-1" :filters="filters" :value="tabla_vendidos" :pt="{
-                        bodyRow: { class: '' }
-                    }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"
+                    <DataTable showGridlines sortField="venta.fecha" :sortOrder="-1" :filters="filters"
+                        :value="tabla_vendidos" :pt="{
+                            bodyRow: { class: '' }
+                        }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"
                         tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
@@ -156,9 +183,10 @@ const filters_importacion = ref({
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable showGridlines sortField="importacion.fecha" :sortOrder="-1" :filters="filters_importacion" :value="tabla_importaciones" :pt="{
-                        bodyRow: { class: '' }
-                    }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"
+                    <DataTable showGridlines sortField="importacion.fecha" :sortOrder="-1" :filters="filters_importacion"
+                        :value="tabla_importaciones" :pt="{
+                            bodyRow: { class: '' }
+                        }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"
                         tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">

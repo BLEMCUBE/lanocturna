@@ -52,14 +52,22 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
 
                 if ($this->mueve_stock ==true) {
                 if ($this->estado == "Arribado") {
-
+                    $old_arribado=$producto->arribado;
+                    $stock_old=$producto->stock;
                     $producto->update([
-                        "stock" => $producto->stock + floatval($row['cantidad_total'])
+
+                        "stock" => $producto->stock + floatval($row['cantidad_total']),
+                        "arribado" => $old_arribado + floatval($row['cantidad_total']),
+                        "stock_futuro" => $stock_old + $producto->en_camino+floatval($row['cantidad_total']),
                     ]);
                 }
+
                 if ($this->estado == "En camino") {
+                    $old_en_camino=$producto->en_camino;
+                    $stock_old=$producto->stock;
                     $producto->update([
-                        "stock_futuro" => $producto->stock_futuro + floatval($row['cantidad_total'])
+                        "en_camino" => $old_en_camino +  floatval($row['cantidad_total']),
+                        "stock_futuro" => $stock_old + $producto->en_camino+floatval($row['cantidad_total']),
                     ]);
                 }
             }

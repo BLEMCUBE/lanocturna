@@ -19,7 +19,6 @@ class DepositoController extends Controller
     {
         //protegiendo el controlador segun el rol
         //$this->middleware(['auth', 'permission:lista-depositos'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-depositos'])->only(['store']);
         //$this->middleware(['auth', 'permission:editar-depositos'])->only(['update']);
     }
 
@@ -47,7 +46,7 @@ class DepositoController extends Controller
         ]);
     }
 
-    public function nombres()
+    public function historial()
     {
 
         return Inertia::render('Deposito/Index', [

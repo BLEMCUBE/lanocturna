@@ -194,7 +194,7 @@ const filters = ref({
 
                 <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer p-1' }
-                }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ class: 'min-h-screen', itemSize: 46 }"
+                }" scrollable scrollHeight="800px"  columnResizeMode="expand"  :virtualScrollerOptions="{  itemSize: 46 }"
                     @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="grid grid-cols-6 gap-4">
@@ -205,7 +205,7 @@ const filters = ref({
 
                                 <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
                                     format="DD/MM/YYYY"
-                                    class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
+                                    class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
                                      v-model:value="date" :shortcuts="shortcuts" lang="es"
                                     placeholder="Seleccione Fecha"></date-picker>
 
@@ -213,7 +213,7 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="fecha" header="fecha y hora" sortable :pt="{
+                    <Column field="fecha" header="Fecha y Hora" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Deposito;
+use App\Models\DepositoLista;
 
 class DepositoSeeder extends Seeder
 {
@@ -15,12 +15,12 @@ class DepositoSeeder extends Seeder
     public function run()
     {
         $depositos =  [
-            ["nombre" => "DEPÓSITO VIRTUAL","descripcion"=>"Depósito en donde se registran todos bultos importados"],
+            ["nombre" => "DEPÓSITO TEMPORAL","descripcion"=>"Depósito en donde se registran todos bultos importados"],
             ["nombre" => "TIENDA","descripcion"=>"Tienda"],
         ];
 
         foreach ($depositos as $deposito) {
-            Deposito::create($deposito);
+            DepositoLista::create($deposito);
         }
     }
 }

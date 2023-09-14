@@ -20,11 +20,17 @@ class Producto extends Model
         'stock',
         'stock_minimo',
         'stock_futuro',
+        'en_camino',
+        'arribado',
     ];
 
     public function detalles_ventas()
     {
         return $this->hasMany(VentaDetalle::class);
+    }
+    public function detalles_compras()
+    {
+        return $this->hasMany(CompraDetalle::class);
     }
 
     public function importacion_detalles()

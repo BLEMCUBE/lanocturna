@@ -175,7 +175,8 @@ class CajaController extends Controller
                 $old_stock = $prod->stock;
                 $new_stock = $old_stock - $producto['cantidad'];
                 $prod->update([
-                    "stock" => $new_stock
+                    "stock" => $new_stock,
+                    "stock_futuro"=>$new_stock+$prod->en_camino
                 ]);
             }
               //eliminando  detalle

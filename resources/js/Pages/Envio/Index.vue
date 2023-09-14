@@ -94,7 +94,7 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="fecha" header="fecha y hora" sortable :pt="{
+                    <Column field="fecha" header="Fecha y Hora" sortable :pt="{
                         bodyCell: {
                             class: 'text-center p-2'
                         }
