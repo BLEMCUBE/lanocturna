@@ -100,8 +100,7 @@ const filters = ref({
 <template>
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
-        <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+        <div class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12">
 
             <!--Contenido-->
             <Toast />
@@ -111,22 +110,21 @@ const filters = ref({
 
             <div class="px-3 pb-2 col-span-full flex justify-end items-center">
                 <span
-                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center mr-5 items-center text-base font-semibold text-white hover:bg-green-600">
-                                    <a :href="route('productos.exportar')" target="_blank"
-                                    class="py-auto"><i
-                                            class="fas fa-file-excel text-white"></i>
-                                    </a>
+                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                    class=" w-8 h-8 rounded bg-green-600 flex justify-center mr-5 items-center text-base font-semibold text-white hover:bg-green-600">
+                    <a :href="route('productos.exportar')" target="_blank" class="py-auto"><i
+                            class="fas fa-file-excel text-white"></i>
+                    </a>
 
-                                </span>
+                </span>
                 <Button size="small" :label="'Agregar Producto'" severity="success" @click="BtnCrear"></Button>
 
             </div>
 
             <div class="align-middle">
 
-                <DataTable :rowClass="rowClass" showGridlines :filters="filters" :value="tabla_productos" :pt="{
-                    bodyRow: { class: 'hover:cursor-pointer' },
+                <DataTable :rowClass="rowClass" :filters="filters" :value="tabla_productos" :pt="{
+                    bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                     root: { class: 'w-auto' }
                 }" :globalFilterFields="['codigo_barra', 'origen', 'nombre']" scrollable scrollHeight="800px"
                     :virtualScrollerOptions="{ itemSize: 46 }" @row-click="clickDetalle" size="small">

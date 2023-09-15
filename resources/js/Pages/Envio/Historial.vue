@@ -192,15 +192,15 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
-                    bodyRow: { class: 'hover:cursor-pointer p-1' }
-                }" scrollable scrollHeight="800px"  columnResizeMode="expand"  :virtualScrollerOptions="{  itemSize: 46 }"
+                <DataTable :filters="filters" :value="tabla_ventas" :pt="{
+                    bodyRow: { class: 'hover:cursor-pointer p-1 hover:bg-gray-100 hover:text-black' }
+                }" scrollable scrollHeight="800px"   :virtualScrollerOptions="{  itemSize: 46 }"
                     @row-click="clickDetalle" size="small">
                     <template #header>
-                        <div class="grid grid-cols-6 gap-4">
+                        <div class="grid grid-cols-6 gap-4 m-1.5">
                             <InputText v-model="filters['global'].value" placeholder="Buscar"
                             :pt="{
-                                root:{class:'col-span-6 lg:col-span-2'}
+                                root:{class:'col-span-6 lg:col-span-2 m-1.5'}
                             }"/>
 
                                 <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
@@ -214,24 +214,72 @@ const filters = ref({
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
                     <Column field="fecha" header="Fecha y Hora" sortable :pt="{
+                        bodyCellContent: {
+                            class: 'text-center w-40'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-40'
+                        },
+                        headerCell: {
+
+                            class: 'text-center w-40'
+                        },
                         bodyCell: {
+
                             class: 'text-center'
                         }
                     }"></Column>
                     <Column field="destino" header="Destino" sortable :pt="{
+                         bodyCellContent: {
+                            class: 'text-center w-40'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-40'
+                        },
+                        headerCell: {
+
+                            class: 'text-center w-40'
+                        },
                         bodyCell: {
+
                             class: 'text-center'
                         }
                     }"></Column>
 
                     <Column field="nro_compra" header="N° Compra" sortable :pt="{
+                         bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
+                        },
+                        headerCell: {
+
+                            class: 'text-center w-52'
+                        },
                         bodyCell: {
-                            class: 'text-center border'
+
+                            class: 'text-center'
                         }
                     }"></Column>
                     <Column field="cliente" header="Cliente" sortable :pt="{
+                         bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
+                        },
+                        headerCell: {
+
+                            class: 'text-center w-52'
+                        },
                         bodyCell: {
-                            class: 'text-center border'
+
+                            class: 'text-center'
                         }
                     }"></Column>
                     <!--

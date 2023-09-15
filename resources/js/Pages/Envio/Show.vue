@@ -150,6 +150,7 @@ onMounted(() => {
     form.direccion = datos.direccion
     form.localidad = datos.localidad
     form.telefono = datos.telefono
+    form.observaciones = datos.observaciones
     form.estado = datos.estado
     datos.productos.forEach(el => {
         form.productos.push(
@@ -228,18 +229,19 @@ onMounted(() => {
                 </div>
                 <div class="col-span-1">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Dirección:
-                        </b>
-                        {{ form.direccion }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Télefono:
                         </b>
                         {{ form.telefono }}
                     </p>
                 </div>
+                <div class="col-span-3">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Dirección:
+                        </b>
+                        {{ form.direccion }}
+                    </p>
+                </div>
+
                 <div class="col-span-2">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Observaciones:

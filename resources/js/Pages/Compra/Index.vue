@@ -181,7 +181,7 @@ const filters = ref({
                         <div class="grid grid-cols-6 gap-4">
                             <InputText v-model="filters['global'].value" placeholder="Buscar"
                             :pt="{
-                                root:{class:'col-span-6 lg:col-span-2'}
+                                root:{class:'col-span-6 lg:col-span-2 m-1.5'}
                             }"/>
 
                                 <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
@@ -214,6 +214,11 @@ const filters = ref({
 
 
                     <Column field="observaciones" sortable header="Observaciones" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }"></Column>
+                    <Column field="estado" header="Estado" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
