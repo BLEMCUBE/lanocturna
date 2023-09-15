@@ -49,6 +49,7 @@ class VentaUpdateRequest extends FormRequest
         return [
             function (Validator $validator) {
                 $errores = [];
+                if ($validator->errors()->has('productos.*')) {
                 foreach ($validator->errors()->get('productos.*') as $key => $message) {
                     // ...
                     array_push($errores, $message[0]);
@@ -57,6 +58,7 @@ class VentaUpdateRequest extends FormRequest
                     'campos_productos',
                     $errores
                 );
+            }
             }
         ];
     }

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-
+use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class EnvioUpdateRequest extends FormRequest
@@ -19,6 +19,7 @@ class EnvioUpdateRequest extends FormRequest
             'destino' => 'required',
             'nro_compra'=> 'required',
              'productos' => 'required',
+             'productos.*.cantidad' => 'required',
 
         ];
 
@@ -29,7 +30,27 @@ class EnvioUpdateRequest extends FormRequest
         return [
              'nro_compra.required' => 'Este campo es obligatorio.',
              'destino.required' => 'Este campo es obligatorio.',
+             'productos.*.cantidad.required' => 'Cantidad fila  # :position es obligatorio.',
              'productos.required' => 'Debe Seleccionar un producto',
+        ];
+    }
+    public function after(): array
+    {
+
+        return [
+            function (Validator $validator) {
+                $errores = [];
+                if ($validator->errors()->has('productos.*')) {
+                foreach ($validator->errors()->get('productos.*') as $key => $message) {
+                    // ...
+                    array_push($errores, $message[0]);
+                }
+                $validator->errors()->add(
+                    'campos_productos',
+                    $errores
+                );
+            }
+            }
         ];
     }
 }
