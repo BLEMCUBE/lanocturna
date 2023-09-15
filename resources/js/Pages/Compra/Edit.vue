@@ -65,7 +65,7 @@ onMounted(() => {
 const addToCart = (id) => {
     form.clearErrors();
     var produ = productos.data.find(pr => pr.id === id);
-    if (produ.stock > 0) {
+    if (produ.stock >= 0) {
         form.productos.push(
             {
                 producto_id: produ.id,
