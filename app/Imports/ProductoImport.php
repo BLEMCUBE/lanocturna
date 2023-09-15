@@ -21,7 +21,7 @@ class ProductoImport implements ToCollection, WithHeadingRow, WithCalculatedForm
         foreach ($rows as $row) {
 
             if (!empty($row['origen'])) {
-                $producto = Producto::where('codigo_barra', '=', $row['codigo_barra'])->first();
+                $producto = Producto::where('origen', '=', $row['origen'])->first();
                     $producto->update([
                         "stock" => intval($row['stock']),
                         "stock_futuro" => intval($row['stock_futuro']),

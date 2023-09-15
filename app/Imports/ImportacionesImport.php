@@ -48,7 +48,7 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
                     "importacion_id" => $this->importacion_id
                 ]);
 
-                $producto = Producto::where('codigo_barra', '=', $row['codigo_barra'])->first();
+                $producto = Producto::where('origen', '=', $row['sku'])->first();
                 if(!empty($producto)){
 
                 if ($this->mueve_stock ==true) {

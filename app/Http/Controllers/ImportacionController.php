@@ -136,7 +136,7 @@ class ImportacionController extends Controller
     {
 
         $importacion_detalle = ImportacionDetalle::find($id);
-        $producto = Producto::where('codigo_barra', '=', $importacion_detalle->codigo_barra)->first();
+        $producto = Producto::where('origen', '=', $importacion_detalle->sku)->first();
         $estado = $request->estado;
         DB::beginTransaction();
         try {
@@ -217,8 +217,8 @@ class ImportacionController extends Controller
             if ($estado == 'Arribado') {
                 //creando detalle importacion
                 foreach ($importacion->importaciones_detalles as $detalle) {
-                    $codigo = $detalle->codigo_barra;
-                    $producto = Producto::where('codigo_barra', '=', $codigo)
+                    $codigo = $detalle->sku;
+                    $producto = Producto::where('origen', '=', $codigo)
                         ->first();
                     $new_encamino = $producto->en_camino - $detalle->cantidad_total;
                     $new_arribado = $producto->arribado + $detalle->cantidad_total;
@@ -235,8 +235,8 @@ class ImportacionController extends Controller
             if ($estado == 'En camino') {
                 //actualizando stock productos
                 foreach ($importacion->importaciones_detalles as $detalle) {
-                    $codigo = $detalle->codigo_barra;
-                    $producto = Producto::where('codigo_barra', '=', $codigo)
+                    $codigo = $detalle->sku;
+                    $producto = Producto::where('origen', '=', $codigo)
                         ->first();
 
                     $new_arribado = $producto->arribado - $detalle->cantidad_total;
@@ -301,8 +301,8 @@ class ImportacionController extends Controller
         if ($estado == 'Arribado') {
             //creando detalle venta
             foreach ($importacion->importaciones_detalles as $detalle) {
-                $codigo = $detalle->codigo_barra;
-                $producto = Producto::where('codigo_barra', '=', $codigo)
+                $codigo = $detalle->sku;
+                $producto = Producto::where('origen', '=', $codigo)
                     ->first();
                 $new_stock = $producto->stock - $detalle->cantidad_total;
                 $new_arribado = $producto->arribado - $detalle->cantidad_total;
@@ -320,8 +320,8 @@ class ImportacionController extends Controller
         if ($estado == 'En camino') {
             //creando detalle venta
             foreach ($importacion->importaciones_detalles as $detalle) {
-                $codigo = $detalle->codigo_barra;
-                $producto = Producto::where('codigo_barra', '=', $codigo)
+                $codigo = $detalle->sku;
+                $producto = Producto::where('origen', '=', $codigo)
                     ->first();
                 $new_camino = $producto->en_camino - $detalle->cantidad_total;
                 $new_futuro =  $producto->stock + $new_camino;
