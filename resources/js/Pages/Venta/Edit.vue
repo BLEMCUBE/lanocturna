@@ -40,15 +40,17 @@ if (selectedMoneda.value.code == form.moneda)
 if (selectedMoneda.value.code == 'Pesos') {
     form.productos.forEach((item, index) => {
         item['precio'] = roundNumber(parseFloat(item['precio'] * form.tipo_cambio).toFixed(2), 0.5, 'round')
-        item['total'] = item['cantidad'] * item['precio']
-        item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
+        item['total'] = (item['cantidad'] * item['precio']).toFixed(2)
+        item['precio_sin_iva'] = (parseFloat(item['precio'] ) / 1.22).toFixed(2)
+        item['total_sin_iva'] = (item['cantidad'] * item['precio_sin_iva']).toFixed(2)
     })
     form.moneda = selectedMoneda.value.code;
 } else {
     form.productos.forEach((item, index) => {
         item['precio'] = parseFloat(item['precio'] / form.tipo_cambio).toFixed(2)
-        item['total'] = item['cantidad'] * item['precio']
-        item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
+        item['total'] = (item['cantidad'] * item['precio']).toFixed(2)
+        item['precio_sin_iva'] = (parseFloat(item['precio'] ) / 1.22).toFixed(2)
+        item['total_sin_iva'] = (item['cantidad'] * item['precio_sin_iva']).toFixed(2)
     })
     form.moneda = selectedMoneda.value.code;
 }
@@ -226,7 +228,8 @@ const submit = () => {
         onSuccess: () => {
             show('success', 'Mensaje', 'Venta Actualizada')
             setTimeout(() => {
-                router.get(route(ruta + '.index'));
+                //router.get(route(ruta + '.index'));
+                router.get(route('inicio'))
             }, 1000);
         },
         onFinish: () => {
@@ -252,7 +255,7 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-    router.get(route(ruta + '.index'))
+    router.get(route('inicio'))
 };
 
 
@@ -324,7 +327,8 @@ const cancelCrear = () => {
                             </tfoot>
                         </table>
                         <div class="col-span-12  p-2 xl:col-span-12">
-                            <InputError class="mt-1 text-xs w-full " :message="form.errors.productos" />
+                            <InputError class="mt-1 text-lg w-full " :message="form.errors.productos" />
+                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg" :message="error" />
                         </div>
                         <!--Tabla-->
                         <!--Datos Ventas-->

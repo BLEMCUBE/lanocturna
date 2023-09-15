@@ -92,18 +92,8 @@ class CompraController extends Controller
                 'facturador_id' => $usuario->id,
 
             ]);
-            //actualizando stock producto
-            foreach ($compra->detalles_compras as $produc) {
-                $prod = Producto::find($produc['producto_id']);
-                $old_stock = $prod->stock;
 
-                $new_stock = $old_stock + $produc['cantidad'];
-                $prod->update([
-                    "stock" => $new_stock,
-                    "stock_futuro"=>$new_stock+$prod->en_camino
-                ]);
-            }
-            //creando detalle venta
+            //creando detalle compra
             foreach ($request->productos as $producto) {
 
                 $compra->detalles_compras()->create(
@@ -120,7 +110,7 @@ class CompraController extends Controller
                 $prod = Producto::find($produc['producto_id']);
                 $old_stock = $prod->stock;
 
-                $new_stock = $old_stock - $produc['cantidad'];
+                $new_stock = $old_stock + $produc['cantidad'];
                 $prod->update([
                     "stock" => $new_stock,
                     "stock_futuro"=>$new_stock+$prod->en_camino
@@ -152,7 +142,7 @@ class CompraController extends Controller
              foreach ($venta->detalles_compras as $producto) {
                 $prod = Producto::find($producto['producto_id']);
                 $old_stock = $prod->stock;
-                $new_stock = $old_stock + $producto['cantidad'];
+                $new_stock = $old_stock - $producto['cantidad'];
                 $prod->update([
                     "stock" => $new_stock,
                     "stock_futuro"=>$new_stock+$prod->en_camino
@@ -176,7 +166,7 @@ class CompraController extends Controller
             foreach ($request->productos  as $proo2) {
                 $prod = Producto::find($proo2['producto_id']);
                 $old_stock = $prod->stock;
-                $new_stock = $old_stock - $proo2['cantidad'];
+                $new_stock = $old_stock + $proo2['cantidad'];
                 $prod->update([
                     "stock" => $new_stock,
                     "stock_futuro"=>$new_stock+$prod->en_camino
@@ -225,7 +215,7 @@ class CompraController extends Controller
                 foreach ($venta->detalles_compras as $producto) {
                     $prod = Producto::find($producto['producto_id']);
                     $old_stock = $prod->stock;
-                    $new_stock = $old_stock + $producto['cantidad'];
+                    $new_stock = $old_stock - $producto['cantidad'];
                     $prod->update([
                         "stock" => $new_stock,
                         "stock_futuro"=>$new_stock+$prod->en_camino
