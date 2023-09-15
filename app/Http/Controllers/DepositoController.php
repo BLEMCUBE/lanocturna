@@ -96,8 +96,8 @@ class DepositoController extends Controller
     {
         $detalle = DepositoDetalle::find($id);
 
-        $existeDeposito=DepositoDetalle::where('codigo_barra',$detalle->codigo_barra)->where('deposito_id',$request->destino_id)->first();
-        $datosOrigen=DepositoDetalle::where('codigo_barra',$detalle->codigo_barra)->where('deposito_id',$request->origen_id)->first();
+        $existeDeposito=DepositoDetalle::where('origen',$detalle->sku)->where('deposito_id',$request->destino_id)->first();
+        $datosOrigen=DepositoDetalle::where('origen',$detalle->sku)->where('deposito_id',$request->origen_id)->first();
 
 
         //return !is_null($existeDeposito);

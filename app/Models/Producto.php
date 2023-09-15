@@ -35,11 +35,11 @@ class Producto extends Model
 
     public function importacion_detalles()
     {
-        return $this->hasMany(ImportacionDetalle::class,'codigo_barra','codigo_barra');
+        return $this->hasMany(ImportacionDetalle::class,'sku','origen');
     }
 
     public function deposito_detalles()
     {
-        return $this->hasMany(DepositoDetalle::class,'codigo_barra','codigo_barra');
+        return $this->hasMany(DepositoDetalle::class,'sku','origen');
     }
 }

@@ -127,7 +127,7 @@ class ProductoController extends Controller
         ->orderBy('id', 'ASC')->findOrFail($id);
         $cantidad=VentaDetalle::where('producto_id',$id)->sum('cantidad');
 
-        $cantidad_importacion=ImportacionDetalle::where('codigo_barra',$producto->codigo_barra)->sum('cantidad_total');
+        $cantidad_importacion=ImportacionDetalle::where('sku',$producto->origen)->sum('cantidad_total');
         return Inertia::render('Producto/Show', [
             'producto' => $producto,
             'cantidad' => $cantidad,
