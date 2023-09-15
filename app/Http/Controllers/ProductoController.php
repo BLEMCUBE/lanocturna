@@ -58,6 +58,13 @@ class ProductoController extends Controller
             ]);
         }
 
+        $new_stock =  $producto->stock;
+        $producto->update([
+            "stock" => $new_stock,
+            "stock_futuro"=>$new_stock+$producto->en_camino
+        ]);
+
+
     }
 
     public function edit($id){
@@ -94,6 +101,11 @@ class ProductoController extends Controller
             ]);
             $request->photo->move(public_path('images/productos'), $fileName);
         }
+        $new_stock =  $producto->stock;
+        $producto->update([
+            "stock" => $new_stock,
+            "stock_futuro"=>$new_stock+$producto->en_camino
+        ]);
     }
 
 
