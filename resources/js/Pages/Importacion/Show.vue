@@ -86,11 +86,11 @@ const clickDetalle=(e)=>{
                 <div class="align-middle">
 
 
-                    <DataTable showGridlines sortField="id" :sortOrder="1" :filters="filters"
+                    <DataTable sortField="id" :sortOrder="1" :filters="filters"
                        :value="importacion_detalle" scrollable scrollHeight="800px"
                        @row-click="clickDetalle"
                        :pt="{
-                    bodyRow:{class:'hover:cursor-pointer'},
+                    bodyRow:{class:'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                     root:{class:'w-auto'}
                 }"
                         :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem" size="small">
@@ -113,14 +113,14 @@ const clickDetalle=(e)=>{
                                 class: 'flex items-center'
                             },
                             bodyCellContent:{
-                                class:'flex items-center w'
+                                class:'flex items-center'
                             }
 
                         }">
                             <template #body="slotProps">
 
                                 <div class="flex  items-center">
-                                    <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
+                                    <img class="rounded  bg-white shadow-2xl text-center w-10 h-10 object-contain"
                                         :src="slotProps.data.imagen" alt="image">
                                     <p class="text-xs text-center flex-wrap">{{ slotProps.data.nombre }}</p>
                                 </div>
