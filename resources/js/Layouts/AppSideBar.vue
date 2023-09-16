@@ -111,7 +111,7 @@ export default {
             </div>
         </div>
 -->
-        <ul class="font-normal">
+        <ul>
             <li @click="setMenu('inicio')">
 
                 <NavLinkSideBar icon-class="fas fa-home"
@@ -257,10 +257,6 @@ export default {
                     <span class="ml-3">Código Maestro</span>
                 </NavLinkSideBar>
             </li>
-
-        </ul>
-
-        <ul class="font-normal">
             <li @click="setMenu('roles')" v-show="permissions.includes('ver-roles')">
                 <NavLinkSideBar icon-class="fas fa-user-tag"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('roles.index')"
@@ -268,7 +264,6 @@ export default {
                     <span class="ml-3">Roles y Permisos</span>
                 </NavLinkSideBar>
             </li>
-
         </ul>
 
     </div>

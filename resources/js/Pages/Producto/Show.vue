@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm,router } from '@inertiajs/vue3';
+import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
 const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
@@ -62,15 +62,14 @@ const btnEditar = (id) => {
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
             <div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
-                <Button label="Editar" v-if="permissions.includes('editar-productos')"
-                    @click="btnEditar(form.id)" :pt="{
-                        root: {
-                            class: 'flex items-center  bg-primary-900 justify-center font-medium w-10'
-                        },
-                        label: {
-                            class: 'hidden'
-                        }
-                    }"
+                <Button label="Editar" v-if="permissions.includes('editar-productos')" @click="btnEditar(form.id)" :pt="{
+                    root: {
+                        class: 'flex items-center  bg-primary-900 justify-center font-medium w-10'
+                    },
+                    label: {
+                        class: 'hidden'
+                    }
+                }"
                     v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
                         class="fas fa-edit"></i></Button>
 
@@ -195,12 +194,15 @@ const btnEditar = (id) => {
                         </template>
                         <template #empty> No existe Resultado </template>
                         <template #loading> Cargando... </template>
+                        <!--
 
-                        <Column field="importacion.fecha" sortable header="Fecha" :pt="{
-                            bodyCell: {
-                                class: 'text-center'
-                            }
-                        }"></Column>
+    <Column field="importacion.fecha" sortable header="Fecha" :pt="{
+        bodyCell: {
+            class: 'text-center'
+        }
+    }"></Column>
+-->
+
                         <Column field="importacion.nro_carpeta" header="No. de Carpeta" sortable :pt="{
                             bodyCell: {
                                 class: 'text-center'
