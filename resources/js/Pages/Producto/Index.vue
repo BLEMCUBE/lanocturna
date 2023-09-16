@@ -88,8 +88,8 @@ const show = (tipo, titulo, mensaje) => {
 const BtnCrear = () => {
     router.get(route(ruta + '.create'));
 }
-const clickDetalle=(e)=>{
-btnVer(e.data.id)
+const clickDetalle = (e) => {
+    btnVer(e.data.id)
 }
 
 
@@ -100,27 +100,34 @@ const filters = ref({
 <template>
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
-        <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+        <div class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12">
 
             <!--Contenido-->
             <Toast />
-            <div class="px-3 pb-2 col-span-full flex justify-between items-center">
-                <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+            <div class="px-3 pb-2 col-span-full flex justify-start items-center">
+                <h5 class="text-2xl font-medium pr-5">{{ titulo }}</h5>
+            </div>
 
+            <div class="px-3 pb-2 col-span-full flex justify-end items-center">
+                <span
+                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                    class=" w-8 h-8 rounded bg-green-600 flex justify-center mr-5 items-center text-base font-semibold text-white hover:bg-green-600">
+                    <a :href="route('productos.exportar')" target="_blank" class="py-auto"><i
+                            class="fas fa-file-excel text-white"></i>
+                    </a>
+
+                </span>
                 <Button size="small" :label="'Agregar Producto'" severity="success" @click="BtnCrear"></Button>
 
             </div>
 
             <div class="align-middle">
 
-                <DataTable :rowClass="rowClass" showGridlines :filters="filters" :value="tabla_productos"
-                :pt="{
-                    bodyRow:{class:'hover:cursor-pointer'}
-                }"
-                scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem"
-                @row-click="clickDetalle"
-                 size="small">
+                <DataTable :rowClass="rowClass" :filters="filters" :value="tabla_productos" :pt="{
+                    bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+                    root: { class: 'w-auto' }
+                }" :globalFilterFields="['codigo_barra', 'origen', 'nombre']" scrollable scrollHeight="800px"
+                    :virtualScrollerOptions="{ itemSize: 46 }" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -131,25 +138,32 @@ const filters = ref({
 
                     <Column field="stock" sortable header="Stock" :pt="{
                         bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center w-12'
                         }
                     }"></Column>
                     <Column field="stock_futuro" sortable header="Stock futuro" :pt="{
                         bodyCell: {
-                            class: 'text-center'
+                            class: 'text-center w-12'
                         }
                     }"></Column>
-                    <Column field="imagen" header="Imagen" style="width:60px" :pt="{
+                    <Column field="imagen" header="Imagen" :pt="{
                         bodyCell: {
-                            class: 'flex justify-center text-center'
+                            class: 'flex justify-center text-center w-12'
+                        },
+                        headerCell: {
+                            class: 'w-10'
                         }
                     }">
                         <template #body="slotProps">
-                            <img class="rounded  bg-white shadow-2xl border-2 text-center w-12 h-12 object-contain"
+                            <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
                                 :src="slotProps.data.imagen" alt="image">
                         </template>
                     </Column>
-                    <Column field="origen" header="Origen" sortable></Column>
+                    <Column field="origen" header="Origen" sortable :pt="{
+                        bodyCell: {
+                            class: 'text-center w-36'
+                        }
+                    }"></Column>
                     <Column field="nombre" header="Nombre" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
@@ -158,7 +172,7 @@ const filters = ref({
 
 
 
-                    <Column header="Acciones" style="width:130px">
+                    <Column header="Acciones" style="width:80px" class="px-auto">
                         <template #body="slotProps">
                             <!--
 
@@ -168,12 +182,8 @@ const filters = ref({
                                 @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
                             -->
 
-                            <button v-if="permissions.includes('editar-productos')"
-                                class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
-                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                @click.prevent="btnEditar(slotProps.data.id)"><i class="fas fa-edit"></i></button>
                             <button v-if="permissions.includes('eliminar-productos')"
-                                class="w-8 h-8 rounded bg-red-700   px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
+                                class="w-8 h-8 rounded bg-red-700  border border-white px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                 @click.prevent="btnEliminar(slotProps.data.id, slotProps.data.nombre)"><i
                                     class="fas fa-trash-alt"></i></button>

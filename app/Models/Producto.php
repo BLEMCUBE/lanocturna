@@ -20,20 +20,26 @@ class Producto extends Model
         'stock',
         'stock_minimo',
         'stock_futuro',
+        'en_camino',
+        'arribado',
     ];
 
     public function detalles_ventas()
     {
         return $this->hasMany(VentaDetalle::class);
     }
+    public function detalles_compras()
+    {
+        return $this->hasMany(CompraDetalle::class);
+    }
 
     public function importacion_detalles()
     {
-        return $this->hasMany(ImportacionDetalle::class,'codigo_barra','codigo_barra');
+        return $this->hasMany(ImportacionDetalle::class,'sku','origen');
     }
 
     public function deposito_detalles()
     {
-        return $this->hasMany(DepositoDetalle::class,'codigo_barra','codigo_barra');
+        return $this->hasMany(DepositoDetalle::class,'sku','origen');
     }
 }

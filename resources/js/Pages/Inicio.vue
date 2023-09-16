@@ -304,7 +304,7 @@ const shortcuts = [
     <AppLayout>
 
         <div class="card px-4 mb-4 col-span-12 rounded-lg">
-            <div class="px-  col-span-full flex justify-between items-center">
+            <div class="col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">Panel</h5>
             </div>
             <div class="grid grid-cols-12 gap-4 mt-4 mb-2" v-if="permissions.includes('grafico-ventas')">

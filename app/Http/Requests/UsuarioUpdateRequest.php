@@ -19,7 +19,7 @@ class UsuarioUpdateRequest extends FormRequest
             'name' => 'required',
             'rol' => 'required',
             'username' => 'required|alpha_num:ascii',Rule::unique('users')->ignore($id),
-            'password'=>'nullable|min:10',
+            'password'=>'nullable|min:4',
             'photo' => 'image|max:2048|nullable'
 
         ];

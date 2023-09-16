@@ -263,7 +263,8 @@ class VentaController extends Controller
                     $old_stock = $prod->stock;
                     $new_stock = $old_stock + $producto['cantidad'];
                     $prod->update([
-                        "stock" => $new_stock
+                        "stock" => $new_stock,
+                        "stock_futuro"=>$new_stock+$prod->en_camino
                     ]);
                 }
             }
@@ -293,7 +294,8 @@ class VentaController extends Controller
                     $old_stock = $prod->stock;
                     $new_stock = $old_stock - $proo['cantidad'];
                     $prod->update([
-                        "stock" => $new_stock
+                        "stock" => $new_stock,
+                        "stock_futuro"=>$new_stock+$prod->en_camino
                     ]);
                 }
             }
@@ -333,7 +335,8 @@ class VentaController extends Controller
                     $old_stock = $prod->stock;
                     $new_stock = $old_stock + $producto['cantidad'];
                     $prod->update([
-                        "stock" => $new_stock
+                        "stock" => $new_stock,
+                        "stock_futuro"=>$new_stock+$prod->en_camino
                     ]);
                 }
             }
@@ -363,7 +366,8 @@ class VentaController extends Controller
                     $old_stock = $prod->stock;
                     $new_stock = $old_stock - $proo['cantidad'];
                     $prod->update([
-                        "stock" => $new_stock
+                        "stock" => $new_stock,
+                        "stock_futuro"=>$new_stock+$prod->en_camino
                     ]);
                 }
             }
@@ -409,6 +413,7 @@ class VentaController extends Controller
         DB::beginTransaction();
         try {
             $venta->estado = "ANULADO";
+            $venta->facturado = 0;
             $venta->fecha_anulacion =  now();
             $venta->save();
 
@@ -422,7 +427,8 @@ class VentaController extends Controller
                     $old_stock = $prod->stock;
                     $new_stock = $old_stock + $producto['cantidad'];
                     $prod->update([
-                        "stock" => $new_stock
+                        "stock" => $new_stock,
+                        "stock_futuro"=>$new_stock+$prod->en_camino
                     ]);
                 }
             }

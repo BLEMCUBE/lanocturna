@@ -19,8 +19,6 @@ class RolesAndPermissionsSeeder extends Seeder
         */
         $this->permissions =  [
 
-            ['name' => 'importaciones', 'description' => 'Importaciones'],
-
             //Usuarios
             ['name' => 'lista-usuarios', 'description' => 'Lista Usuarios'],
             ['name' => 'crear-usuarios', 'description' => 'Crear Usuario'],
@@ -28,21 +26,19 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'eliminar-usuarios', 'description' => 'Eliminar Usuario'],
 
             //Clientes
-            ['name' => 'lista-clientes', 'description' => 'Lista Clientes'],
+            /*['name' => 'lista-clientes', 'description' => 'Lista Clientes'],
             ['name' => 'crear-clientes', 'description' => 'Crear Cliente'],
             ['name' => 'editar-clientes', 'description' => 'Editar Cliente'],
-            ['name' => 'eliminar-clientes', 'description' => 'Eliminar Cliente'],
+            ['name' => 'eliminar-clientes', 'description' => 'Eliminar Cliente'],*/
 
             //Productos
             ['name' => 'lista-productos', 'description' => 'Lista Productos'],
             ['name' => 'crear-productos', 'description' => 'Crear Producto'],
-            ['name' => 'detalle-productos', 'description' => 'Detalle Producto'],
             ['name' => 'editar-productos', 'description' => 'Editar Producto'],
             ['name' => 'eliminar-productos', 'description' => 'Eliminar Producto'],
 
             //Importaciones
             ['name' => 'lista-importaciones', 'description' => 'Lista Importaciones'],
-            //['name' => 'crear-importaciones', 'description' => 'Crear Importación'],
             ['name' => 'excel-importaciones', 'description' => 'Importar Excel'],
             ['name' => 'detalle-importaciones', 'description' => 'Detalle Importación'],
             ['name' => 'editar-importaciones', 'description' => 'Editar Importación'],
@@ -51,13 +47,18 @@ class RolesAndPermissionsSeeder extends Seeder
             //Tipo de cambio
             ['name' => 'lista-tipocambio', 'description' => 'Tipo de cambio'],
 
-
             //Ventas
             ['name' => 'lista-ventas', 'description' => 'Historial de Ventas'],
             ['name' => 'crear-ventas', 'description' => 'Crear Venta'],
             ['name' => 'facturar-ventas', 'description' => 'Facturar Venta'],
             ['name' => 'editar-ventas', 'description' => 'Editar Venta'],
             ['name' => 'eliminar-ventas', 'description' => 'Anular Venta'],
+
+            //Compras
+            ['name' => 'lista-compras', 'description' => 'Historial de Compras'],
+            ['name' => 'crear-compras', 'description' => 'Crear Compra'],
+            ['name' => 'editar-compras', 'description' => 'Editar Compra'],
+            ['name' => 'eliminar-compras', 'description' => 'Anular Compra'],
 
             //Caja
             ['name' => 'lista-cajas', 'description' => 'Caja'],
@@ -70,13 +71,6 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'historial-envios', 'description' => 'Historial de Envios'],
             ['name' => 'subir-envios', 'description' => 'Mercado Libre'],
 
-            //Deposito
-            ['name' => 'lista-depositos', 'description' => 'Depósitos'],
-            ['name' => 'crear-depositos', 'description' => 'Crear Depósito'],
-            ['name' => 'editar-depositos', 'description' => 'Editar Depósito'],
-            ['name' => 'nombre-depositos', 'description' => 'Nombre Depósitos'],
-            ['name' => 'mover-depositos', 'description' => 'Mover Bultos'],
-
             //configuraciones
             ['name' => 'configuraciones', 'description' => 'Código Maestro'],
 
@@ -85,6 +79,12 @@ class RolesAndPermissionsSeeder extends Seeder
 
              //graficos
              ['name' => 'grafico-ventas', 'description' => 'Gráfico Ventas'],
+
+            //Deposito
+            ['name' => 'lista-depositos', 'description' => 'Depósitos'],
+            ['name' => 'historial-depositos', 'description' => 'Historial Depósitos'],
+            ['name' => 'nombre-depositos', 'description' => 'Nombre Depósitos'],
+            ['name' => 'mover-depositos', 'description' => 'Mover Bultos'],
 
 
 

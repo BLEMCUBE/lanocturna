@@ -35,14 +35,14 @@ onMounted(() => {
         <AppLayout :pagina="[{ 'label': titulo, link: false }]">
 
             <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg lg:col-span-6 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg lg:col-span-4 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <div class="px-5 col-span-full flex justify-between items-center">
                 <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Configuraciones</h1>
             </div>
             <div
-                class="p-2 mb-4 bg-white col-span-6  rounded-lg shadow-sm 2xl:col-span-12 dark:border-gray-700 sm:p-4 dark:bg-gray-800">
+                class="p-2 mb-4 bg-white col-span-4 lg:col-span-12 rounded-lg shadow-sm sm:p-4">
 
                 <div :key="config.id" class="col-span-6 mt-3 shadow-default xl:col-span-6" v-for="config in tabla_categorias">
                     <InputLabel :for="config.slug" :value="config.key" class="text-base font-bold leading-6 text-gray-900" />

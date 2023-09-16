@@ -292,7 +292,8 @@ const cancelCrear = () => {
                             -->
                         </table>
                         <div class="col-span-12  p-2 xl:col-span-12">
-                            <InputError class="mt-1 text-xs w-full " :message="form.errors.productos" />
+                            <InputError class="mt-1 text-lg w-full " :message="form.errors.productos" />
+                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg" :message="error" />
                         </div>
                         <!--Tabla-->
                         <!--Datos Ventas-->

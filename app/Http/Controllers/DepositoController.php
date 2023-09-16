@@ -19,7 +19,6 @@ class DepositoController extends Controller
     {
         //protegiendo el controlador segun el rol
         //$this->middleware(['auth', 'permission:lista-depositos'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-depositos'])->only(['store']);
         //$this->middleware(['auth', 'permission:editar-depositos'])->only(['update']);
     }
 
@@ -47,7 +46,7 @@ class DepositoController extends Controller
         ]);
     }
 
-    public function nombres()
+    public function historial()
     {
 
         return Inertia::render('Deposito/Index', [
@@ -97,8 +96,8 @@ class DepositoController extends Controller
     {
         $detalle = DepositoDetalle::find($id);
 
-        $existeDeposito=DepositoDetalle::where('codigo_barra',$detalle->codigo_barra)->where('deposito_id',$request->destino_id)->first();
-        $datosOrigen=DepositoDetalle::where('codigo_barra',$detalle->codigo_barra)->where('deposito_id',$request->origen_id)->first();
+        $existeDeposito=DepositoDetalle::where('origen',$detalle->sku)->where('deposito_id',$request->destino_id)->first();
+        $datosOrigen=DepositoDetalle::where('origen',$detalle->sku)->where('deposito_id',$request->origen_id)->first();
 
 
         //return !is_null($existeDeposito);

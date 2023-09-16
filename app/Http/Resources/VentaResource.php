@@ -20,6 +20,8 @@ class VentaResource extends JsonResource
             'id' => $this->id,
             'cliente' => $dat->nombre ?? '',
             'direccion' => $dat->direccion ?? '',
+            'empresa'=>$dat->empresa??'',
+            'rut'=>$dat->rut??'',
             'telefono' => $dat->telefono ?? '',
             'localidad' => $dat->localidad ?? '',
             'codigo' => $this->codigo ?? '',

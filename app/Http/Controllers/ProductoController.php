@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductosExport;
+use App\Http\Requests\ProductoImportRequest;
 use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
 use App\Http\Resources\ProductoCollection;
+use App\Imports\ProductoImport;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
 use App\Models\VentaDetalle;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -54,6 +58,13 @@ class ProductoController extends Controller
             ]);
         }
 
+        $new_stock =  $producto->stock;
+        $producto->update([
+            "stock" => $new_stock,
+            "stock_futuro"=>$new_stock+$producto->en_camino
+        ]);
+
+
     }
 
     public function edit($id){
@@ -73,7 +84,7 @@ class ProductoController extends Controller
         $producto->codigo_barra     = $request->input('codigo_barra');
         $producto->stock = $request->input('stock');
         $producto->stock_minimo = $request->input('stock_minimo');
-        $producto->stock_futuro = $producto->stock_futuro+$request->input('stock');
+        $producto->stock_futuro = $producto->en_camino+$request->input('stock');
         $producto->save();
 
         //imagen
@@ -90,6 +101,11 @@ class ProductoController extends Controller
             ]);
             $request->photo->move(public_path('images/productos'), $fileName);
         }
+        $new_stock =  $producto->stock;
+        $producto->update([
+            "stock" => $new_stock,
+            "stock_futuro"=>$new_stock+$producto->en_camino
+        ]);
     }
 
 
@@ -111,7 +127,7 @@ class ProductoController extends Controller
         ->orderBy('id', 'ASC')->findOrFail($id);
         $cantidad=VentaDetalle::where('producto_id',$id)->sum('cantidad');
 
-        $cantidad_importacion=ImportacionDetalle::where('codigo_barra',$producto->codigo_barra)->sum('cantidad_total');
+        $cantidad_importacion=ImportacionDetalle::where('sku',$producto->origen)->sum('cantidad_total');
         return Inertia::render('Producto/Show', [
             'producto' => $producto,
             'cantidad' => $cantidad,
@@ -130,6 +146,43 @@ class ProductoController extends Controller
             unlink($url_save);
         }
         $producto->delete();
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new ProductosExport(), 'productos.xlsx');
+    }
+    public function vistaImportar()
+    {
+        return Inertia::render('Producto/Importar');
+    }
+    public function importExcel(ProductoImportRequest $request)
+    {
+        $file = $request->file('archivo');
+           //importando excel
+           Excel::import(new ProductoImport(), $file);
+
+    }
+
+    public function actualizarFuturo()
+    {
+
+        $productos=Producto::all();
+
+        foreach ($productos as $producto) {
+          $act=   Producto::where('id', '=', $producto->id)->first();
+          $stock_act=0;
+          if($act->stock<=0){
+            $stock_act=0;
+          }else{
+            $stock_act=$act->stock;
+          }
+          $act->update([
+            "stock"=>$stock_act,
+            "stock_futuro"=>$stock_act
+          ]);
+        }
+        return 'Stock futuro Actualizado';
     }
 
 

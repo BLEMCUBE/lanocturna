@@ -66,6 +66,8 @@ onMounted(() => {
     form.observaciones = datos.observaciones
     form.destino = datos.destino
     form.cliente = datos.cliente
+    form.empresa = datos.empresa
+    form.rut = datos.rut
     form.direccion = datos.direccion
     form.localidad = datos.localidad
     form.telefono = datos.telefono
@@ -75,6 +77,7 @@ onMounted(() => {
     form.total_sin_iva = datos.total_sin_iva
     form.total = datos.total
     form.codigo = datos.codigo
+    form.tipo_cambio = datos.tipo_cambio.toFixed(2)
 
 });
 
@@ -120,6 +123,13 @@ onMounted(() => {
                         {{ form.moneda }}
                     </p>
                 </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Tipo Cambio:
+                        </b>
+                        {{ form.tipo_cambio }}
+                    </p>
+                </div>
 
                 <div class="col-span-1">
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
@@ -141,6 +151,20 @@ onMounted(() => {
                             Cliente:
                         </b>
                         {{ form.cliente }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Empresa:
+                        </b>
+                        {{ form.empresa }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Rut:
+                        </b>
+                        {{ form.rut }}
                     </p>
                 </div>
 

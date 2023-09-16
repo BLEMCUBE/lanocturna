@@ -51,7 +51,7 @@ class ExpedicionController extends Controller
         }])
             ->with(['vendedor' => function ($query) {
                 $query->select('users.id', 'users.name');
-            }])
+            }])->select('*')
             ->orderBy('id', 'DESC')->findOrFail($id);
 
         $venta = new VentaResource($subtema);

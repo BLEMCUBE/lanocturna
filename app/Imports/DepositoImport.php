@@ -65,7 +65,7 @@ class DepositoImport implements ToCollection, WithHeadingRow, WithCalculatedForm
                 ]);
 
 
-                $producto = Producto::where('codigo_barra', '=', $row['codigo_barra'])->first();
+                $producto = Producto::where('origen', '=', $row['sku'])->first();
 
                 if ($this->mueve_stock ==true) {
                 if ($this->estado == "Arribado") {

@@ -80,8 +80,8 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
-                    bodyRow: { class: 'hover:cursor-pointer' }
+                <DataTable :filters="filters" :value="tabla_ventas" :pt="{
+                    bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100'  }
                 }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
@@ -94,30 +94,59 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="fecha" header="fecha y hora" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center p-2'
+                    <Column field="fecha" header="Fecha y Hora" sortable :pt="{
+                        bodyCellContent: {
+                            class: 'text-center w-40'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-40'
                         }
                     }"></Column>
                     <Column field="destino" header="Destino" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
+                        bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
                         }
                     }"></Column>
                     <Column field="nro_compra" header="N° Compra" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
+                        bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
                         }
                     }"></Column>
                     <Column field="cliente" header="Cliente" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
+                         bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
+                        }
+                    }"></Column>
+                    <Column field="observaciones" header="Observaciones" sortable :pt="{
+                        bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
                         }
                     }"></Column>
 
                     <Column field="estado" header="Estado del pedido" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
+                       bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
                         }
                     }">
                         <template #body="slotProps">

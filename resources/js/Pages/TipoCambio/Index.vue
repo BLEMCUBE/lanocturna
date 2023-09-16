@@ -77,7 +77,7 @@ const filters = ref({
             <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-                <CrearModal v-if="permissions.includes('crear-clientes')"></CrearModal>
+                <CrearModal ></CrearModal>
             </div>
             <div class="align-middle">
                 <DataTable showGridlines size="small" v-model:filters="filters" :value="tabla_clientes" :paginator="true"
@@ -115,13 +115,12 @@ const filters = ref({
                     }">
                         <template #body="slotProps">
                             <div v-if="slotProps.data.visible">
-                                <span v-if="permissions.includes('editar-clientes')"
-                                class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
+                                <span                                 class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
                                 <EditarModal :cliente-id="slotProps.data.id"></EditarModal>
                             </span>
                         </div>
                             <!--
-                                <span v-if="permissions.includes('eliminar-clientes')"
+                                <span
 
                                 class="inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-red-600">
                                 <button @click.prevent="eliminar(slotProps.data.id, slotProps.data.name)"><i

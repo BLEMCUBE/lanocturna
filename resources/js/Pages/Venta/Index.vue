@@ -64,23 +64,23 @@ const date = ref([new Date(), new Date()]);
 //const date = ref([]);
 //filtrado
 const filtrado = (value) => {
-if(value[0]!=null && value[1]!=null){
+    if (value[0] != null && value[1] != null) {
 
-    router.get('/ventas/',
-    {
-        inicio: moment(value[0]).format('YYYY-MM-DD'),
-        fin: moment(value[1]).format('YYYY-MM-DD')
-    },
-    {
-            preserveState: true,
-            onSuccess: () => {
-                tabla_ventas.value = usePage().props.ventas.data;
+        router.get('/ventas/',
+            {
+                inicio: moment(value[0]).format('YYYY-MM-DD'),
+                fin: moment(value[1]).format('YYYY-MM-DD')
+            },
+            {
+                preserveState: true,
+                onSuccess: () => {
+                    tabla_ventas.value = usePage().props.ventas.data;
+                }
+
             }
-
-        }
         );
-    }else{
-        router.get(route(ruta+'.index'))
+    } else {
+        router.get(route(ruta + '.index'))
     }
 
 }
@@ -109,10 +109,7 @@ const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
 
 };
-const btnEditar = (id) => {
-    router.get(route(ruta + '.edit', id));
 
-};
 const btnEliminar = (id) => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
@@ -185,7 +182,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12">
 
             <!--Contenido-->
             <Toast />
@@ -197,50 +194,98 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable showGridlines :filters="filters" :value="tabla_ventas" :pt="{
-                    bodyRow: { class: 'hover:cursor-pointer' }
-                }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ class: 'min-h-screen', itemSize: 46 }"
-                    @row-click="clickDetalle" size="small">
+                <DataTable  :filters="filters" :value="tabla_ventas"  :pt="{
+                    bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100' }
+                }" scrollable scrollHeight="100vh"
+                :virtualScrollerOptions="{itemSize: 46 }" @row-click="clickDetalle"
+                    size="small">
 
                     <template #header>
-                        <div class="grid grid-cols-6 gap-4">
-                            <InputText v-model="filters['global'].value" placeholder="Buscar"
-                            :pt="{
-                                root:{class:'col-span-6 lg:col-span-2'}
-                            }"/>
+                        <div class="grid grid-cols-6 gap-4 m-1.5">
+                            <InputText v-model="filters['global'].value" placeholder="Buscar" :pt="{
+                                root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
+                            }" />
 
-                                <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
-                                    format="DD/MM/YYYY"
-                                    class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
-                                     v-model:value="date" :shortcuts="shortcuts" lang="es"
-                                    placeholder="Seleccione Fecha"></date-picker>
+                            <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
+                                class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
+                                v-model:value="date" :shortcuts="shortcuts" lang="es"
+                                placeholder="Seleccione Fecha"></date-picker>
 
                         </div>
                     </template>
 
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="fecha" header="fecha y hora" sortable :pt="{
+                    <Column field="fecha" header="Fecha y Hora" sortable :pt="{
+                        bodyCellContent: {
+                            class: 'text-center w-40'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-40'
+                        },
+                        headerCell: {
+
+                            class: 'text-center w-40'
+                        },
                         bodyCell: {
+
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="nro_compra" header="Nº  Compra" sortable :pt="{
+                    <Column field="nro_compra" header="Nº Compra"  context="small" sortable :pt="{
+
+                        bodyCellContent: {
+                            class: ' w-40'
+                        },
+                        headerCell: {
+                            class: 'w-40'
+                        },
                         bodyCell: {
+
                             class: 'text-center'
-                        }
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-40'
+                        },
+
                     }"></Column>
 
                     <Column field="cliente" header="Cliente" sortable :pt="{
+                        bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
+                        },
+                        headerCell: {
+
+                            class: 'text-center w-52'
+                        },
                         bodyCell: {
-                            class: 'text-center border'
+
+                            class: 'text-center'
                         }
                     }"></Column>
 
                     <Column field="estado" header="Estado" sortable :pt="{
+                        bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
+                        },
+                        headerCell: {
+
+                            class: 'text-center w-52'
+                        },
                         bodyCell: {
+
                             class: 'text-center'
-                        }
+                        },
                     }">
                         <template #body="slotProps">
                             <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
@@ -250,15 +295,31 @@ const filters = ref({
                     </Column>
 
                     <Column field="total" sortable header="Total" :pt="{
+                        bodyCellContent: {
+                            class: 'text-center w-36'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-36'
+                        },
+                        headerCell: {
+
+                            class: 'text-center w-36'
+                        },
                         bodyCell: {
-                            class: 'text-center'
+
+                            class: 'text-end'
                         }
                     }"></Column>
 
                     <Column field="observaciones" sortable header="Observaciones" :pt="{
+                        bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
                         bodyCell: {
-                            class: 'text-center'
-                        }
+
+class: 'text-center'
+},
                     }"></Column>
 
                     <Column header="Acciones" style="width:100px" :pt="{
@@ -267,14 +328,8 @@ const filters = ref({
                         }
                     }">
                         <template #body="slotProps">
-                            <Button
-                                v-if="permissions.includes('editar-ventas') && slotProps.data.estado !== 'ANULADO'"
-                                @click="btnEditar(slotProps.data.id)"
-                                class="w-8 h-8 rounded bg-primary-900 px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
-                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
-                                    class="fas fa-edit"></i></Button>
-                            <Button
-                                v-if="permissions.includes('eliminar-ventas') && slotProps.data.estado !== 'ANULADO'"
+
+                            <Button v-if="permissions.includes('eliminar-ventas') && slotProps.data.estado !== 'ANULADO'"
                                 @click="btnEliminar(slotProps.data.id)"
                                 class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 hover:bg-red-600 "
                                 v-tooltip.top="{ value: `Anular`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i

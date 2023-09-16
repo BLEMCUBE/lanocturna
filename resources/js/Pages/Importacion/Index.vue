@@ -31,12 +31,12 @@ const btnEditar = (id) => {
     router.get(route(ruta + '.edit', id));
 
 };
-const btnEliminar = (id, name) => {
+const btnEliminar = (id) => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
     alerta.fire({
         width: 350,
-        title: "Seguro de eliminar " + name,
+        title: "Seguro de eliminar ",
         text: 'Se eliminará definitivamente',
         icon: 'question',
         showCancelButton: true,
@@ -163,29 +163,23 @@ const filters = ref({
                         <template #body="slotProps">
 
 
-                            <div class="px-2 py-1 text-white  col-span-full  flex justify-center items-center">
+                            <div class="p-4 text-white flex justify-center items-center">
                                 <span
-                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
-                                    class=" w-8 h-8inline-block rounded bg-green-600  text-base font-semibold text-white mr-1 mb-1 hover:bg-green-600">
-                                    <a :href="route('importaciones.exportar', slotProps.data.id)" target="_blank"><i
-                                            class="fas fa-file-excel text-white px-2 py-1"></i>
+                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
+                                    <a :href="route('importaciones.exportar', slotProps.data.id)" target="_blank"
+                                    class="py-auto"><i
+                                            class="fas fa-file-excel text-white"></i>
                                     </a>
+
                                 </span>
-                            </div>
-                            <!--
-
-    <button v-if="permissions.includes('editar-productos')"
-    class="w-8 h-8 rounded bg-primary-900   px-2 py-1 text-base font-normal text-white m-1 hover:bg-primary-100"
-                                v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                @click.prevent="btnEditar(slotProps.data.id)"><i class="fas fa-edit"></i></button>
-
-
-                                <button v-if="permissions.includes('eliminar-productos')"
-                                class="w-8 h-8 rounded bg-red-700   px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
+                                <Button
+                                class="w-8 h-8 rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                @click.prevent="btnEliminar(slotProps.data.id, slotProps.data.nombre)"><i
-                                class="fas fa-trash-alt"></i></button>
-                            -->
+                                @click.prevent="btnEliminar(slotProps.data.id)"><i
+                                class="fas fa-trash-alt"></i></Button>
+                            </div>
+
 
                         </template>
                     </Column>

@@ -138,7 +138,7 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="fecha" header="fecha y hora" sortable :pt="{
+                    <Column field="fecha" header="Fecha y Hora" sortable :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }

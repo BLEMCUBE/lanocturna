@@ -1,36 +1,44 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head, usePage,router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
+import moment from 'moment';
+import EditarModal from '@/Pages/Importacion/EditarModal.vue';
+import EditarProductoModal from '@/Pages/Importacion/EditarProductoModal.vue';
 const { importacion } = usePage().props
 const { importacion_detalle } = usePage().props
-import moment from 'moment';
-
 const titulo = "Detalle Importación"
 const ruta = 'importaciones'
 
-
-onMounted(() => {
-
-    //importacion.value = usePage().props.importacion;
-
-
-});
-
 const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+
+const clickDetalle=(e)=>{
+    console.log('e ',e.data.id)
+    document.getElementById("show-"+e.data.id).click();
+//btnVer(e.data.id)
+}
 </script>
 <template>
     <Head :title="titulo" />
     <AppLayout
         :pagina="[{ 'label': 'Importaciones', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-0 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 py-3 mb-0 bg-white col-span-12 justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <div class="mb-5 px-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+            </div>
+            <div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
+                <span class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
+                    <EditarModal :clienteId="importacion.id">
+
+                    </EditarModal>
+                </span>
+
+
             </div>
 
             <div class="grid grid-cols-6 my-2 col-span-12 ">
@@ -41,6 +49,14 @@ const filters = ref({
                 <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
                     <b> BL o No. de Contenedor:</b>
                     <p>{{ importacion.nro_contenedor }}</p>
+                </div>
+                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                    <b> Estado:</b>
+                    <p>{{ importacion.estado }}</p>
+                </div>
+                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                    <b> Mueve Stock:</b>
+                    <p>{{ (importacion.mueve_stock)?' SI ':' NO ' }}</p>
                 </div>
                 <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
                     <b>Total:</b>
@@ -70,8 +86,13 @@ const filters = ref({
                 <div class="align-middle">
 
 
-                    <DataTable showGridlines sortField="id" :sortOrder="1" :filters="filters"
-                       resizableColumns :value="importacion_detalle" scrollable scrollHeight="800px"
+                    <DataTable sortField="id" :sortOrder="1" :filters="filters"
+                       :value="importacion_detalle" scrollable scrollHeight="800px"
+                       @row-click="clickDetalle"
+                       :pt="{
+                    bodyRow:{class:'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+                    root:{class:'w-auto'}
+                }"
                         :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
@@ -87,21 +108,21 @@ const filters = ref({
                             headerContent: { class: 'break-words ' }
 
                         }"></Column>
-                        <Column field="imagen" header="Referencia" style="width:300px" :pt="{
+                        <Column field="imagen" header="Referencia"  :pt="{
                             bodyCell: {
-                                class: 'flex items-center break-words  '
+                                class: 'flex items-center'
+                            },
+                            bodyCellContent:{
+                                class:'flex items-center'
                             }
-                            ,
-                            headerContent: { class: 'break-words ' }
-
 
                         }">
                             <template #body="slotProps">
 
-                                <div class="flex  items-center gap-2">
-                                    <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
+                                <div class="flex  items-center">
+                                    <img class="rounded  bg-white shadow-2xl text-center w-10 h-10 object-contain"
                                         :src="slotProps.data.imagen" alt="image">
-                                    <p class="text-xs">{{ slotProps.data.nombre }}</p>
+                                    <p class="text-xs text-center flex-wrap">{{ slotProps.data.nombre }}</p>
                                 </div>
                             </template>
                         </Column>
@@ -119,27 +140,36 @@ const filters = ref({
                         <Column field="pcs_bulto" header="PCS Bulto" sortable :pt="{
                             bodyCell: {
                                 class: 'text-center'
+                            },
+                            headerContent: {
+                                class: 'text-center break-all w-16'
                             }
 
                         }"></Column>
                         <Column field="bultos" sortable header="Bultos" :pt="{
                             bodyCell: {
                                 class: 'text-center'
+                            },
+                            headerCell: {
+                                class: 'text-center'
                             }
                         }"></Column>
-                        <Column field="cantidad_total" sortable header="Cantidad" :pt="{
+                        <Column field="cantidad_total" sortable header="Cantidad Total" :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             }
                         }"></Column>
-                        <Column field="valor_total" sortable header="T. Valor" :pt="{
+                        <Column field="valor_total" sortable header="Valor Total" :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             }
                         }"></Column>
                         <Column field="cbm_bulto" sortable header="CBM/Bulto" :pt="{
-                            bodyCell: {
+                             bodyCell: {
                                 class: 'text-center'
+                            },
+                            headerContent: {
+                                class: 'text-center break-all w-16'
                             }
                         }"></Column>
                         <Column field="cbm_total" sortable header="Total CBM" :pt="{
@@ -152,26 +182,20 @@ const filters = ref({
                                 class: 'text-center'
                             }
                         }"></Column>
-                        <!--
-
-
-                        <Column field="aduana" sortable header="Nombre Aduana" :pt="{
+                          <Column :pt="{
                             bodyCell: {
-                                class: 'text-center'
-                            }
-                        }"></Column>
-                        <Column sortable header="Fecha" :pt="{
-                            bodyCell: {
-                                class: 'text-center'
+                                class: 'hidden'
+                            },
+                            headerCell: {
+                                class: 'hidden'
                             }
                         }">
 
                         <template #body="slotProps">
 
-                            {{moment(slotProps.data.created_at).format('DD/MM/YYYY')}}
+                           <EditarProductoModal :clienteId="slotProps.data.id" ></EditarProductoModal>
                             </template>
                     </Column>
-   -->
                     </DataTable>
 
                 </div>

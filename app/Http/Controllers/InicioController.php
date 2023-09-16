@@ -44,7 +44,7 @@ class InicioController extends Controller
                 $datos_grafico_ventas,
                 [
                     "categoria" => $consulta_venta->fecha,
-                    "datos" => $consulta_venta->total,
+                    "datos" => round(floatval($consulta_venta->total),2),
                 ]
             );
         }

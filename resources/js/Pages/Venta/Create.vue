@@ -42,6 +42,7 @@ const setMoneda = (e) => {
         form.productos.forEach((item, index) => {
             item['precio'] = roundNumber(parseFloat(item['precio'] * tipo_cambio).toFixed(2), 0.5, 'round')
             item['total'] = item['cantidad'] * item['precio']
+            item['precio_sin_iva'] = (parseFloat(item['precio'] ) / 1.22).toFixed(2)
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
         form.moneda = selectedMoneda.value.code;
@@ -49,6 +50,7 @@ const setMoneda = (e) => {
         form.productos.forEach((item, index) => {
             item['precio'] = parseFloat(item['precio'] / tipo_cambio).toFixed(2)
             item['total'] = item['cantidad'] * item['precio']
+            item['precio_sin_iva'] = (parseFloat(item['precio'] ) / 1.22).toFixed(2)
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
         form.moneda = selectedMoneda.value.code;
@@ -205,7 +207,8 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-    router.get(route(ruta + '.index'))
+    //router.get(route(ruta + '.index'))
+    router.get(route('inicio'))
 };
 
 
@@ -280,7 +283,8 @@ const cancelCrear = () => {
                             </tfoot>
                         </table>
                         <div class="col-span-12  p-2 xl:col-span-12">
-                            <InputError class="mt-1 text-xs w-full " :message="form.errors.productos" />
+                            <InputError class="mt-1 text-lg w-full " :message="form.errors.productos" />
+                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg" :message="error" />
                         </div>
                         <!--Tabla-->
                         <!--Datos Ventas-->

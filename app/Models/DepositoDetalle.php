@@ -39,7 +39,7 @@ class DepositoDetalle extends Model
 
     public function producto()
     {
-        return $this->belongsTo(Producto::class,'codigo_barra','codigo_barra');
+        return $this->belongsTo(Producto::class,'sku','origen');
 
     }
 }
