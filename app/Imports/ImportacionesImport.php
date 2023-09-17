@@ -51,7 +51,7 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
                 $producto = Producto::where('origen', '=', $row['sku'])->first();
                 if(!empty($producto)){
 
-                if ($this->mueve_stock ==true) {
+                if ($this->mueve_stock ==1) {
                 if ($this->estado == "Arribado") {
                     $old_arribado=$producto->arribado;
                     $stock_old=$producto->stock;
