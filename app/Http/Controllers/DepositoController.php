@@ -6,9 +6,11 @@ use App\Http\Requests\CambiarDepositoRequest;
 use App\Http\Requests\DepositoStoreRequest;
 use App\Http\Requests\DepositoUpdateRequest;
 use App\Http\Resources\DepositoCollection;
+use App\Http\Resources\DepositoHistorialCollection;
 use App\Imports\DepositoImport;
 use App\Models\Deposito;
 use App\Models\DepositoDetalle;
+use App\Models\DepositoHistorial;
 use App\Models\DepositoLista;
 use App\Models\DepositoProducto;
 use App\Models\Producto;
@@ -89,9 +91,9 @@ class DepositoController extends Controller
     public function historial()
     {
 
-        return Inertia::render('Deposito/Index', [
-            'tipo_cambio' => new DepositoCollection(
-                Deposito::orderBy('id', 'ASC')
+        return Inertia::render('Deposito/Historial', [
+            'historial' => new DepositoHistorialCollection(
+                DepositoHistorial::orderBy('id', 'ASC')
                     ->get()
             )
         ]);
@@ -330,7 +332,20 @@ class DepositoController extends Controller
 
             $ne_pcs_bulto = $datosOrigen->pcs_bulto;
             $ne_bultos = $datosOrigen->bultos - $request->bultos;
+            $da_producto=Producto::where('origen','=',$request->sku)->first();
+            $da_origen=DepositoLista::where('id','=',$request->origen_id)->first();
+            $da_destino=DepositoLista::where('id','=',$request->destino_id)->first();
+            $usuario = auth()->user();
+            $datos_historial=[
+                "sku"=>$request->sku,
+                "producto"=>$da_producto->nombre,
+                "bultos"=>$request->bultos,
+                "origen"=>$da_origen->nombre,
+                "destino"=>$da_destino->nombre,
+                "usuario"=>$usuario->name,
+            ];
 
+            //return $datos_historial;
 
             if (empty($datosDestino) || is_null($datosDestino)) {
 
@@ -361,6 +376,11 @@ class DepositoController extends Controller
                     "cantidad_total" => $nuevo_bulto * $datosOrigen->pcs_bulto,
                 ]);
             }
+            DepositoHistorial::create([
+                "datos"=>json_encode($datos_historial),
+            ]);
+            //guardando en tabla deposito historial
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
