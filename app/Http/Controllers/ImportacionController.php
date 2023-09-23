@@ -22,10 +22,10 @@ class ImportacionController extends Controller
     public function __construct()
     {
         //protegiendo el controlador segun el rol
-        $this->middleware(['auth', 'permission:lista-importaciones'])->only('index');
-        $this->middleware(['auth', 'permission:crear-importaciones'])->only(['store']);
-        $this->middleware(['auth', 'permission:editar-importaciones'])->only(['update']);
-        $this->middleware(['auth', 'permission:eliminar-importaciones'])->only(['destroy']);
+        //$this->middleware(['auth', 'permission:lista-importaciones'])->only('index');
+        //$this->middleware(['auth', 'permission:crear-importaciones'])->only(['store']);
+        //$this->middleware(['auth', 'permission:editar-importaciones'])->only(['update']);
+        //$this->middleware(['auth', 'permission:eliminar-importaciones'])->only(['destroy']);
     }
 
     public function index()
@@ -213,7 +213,7 @@ class ImportacionController extends Controller
 
         DB::beginTransaction();
         try {
-
+            if ($estado != $importacion->estado) {
             if ($estado == 'Arribado') {
                 //creando detalle importacion
                 foreach ($importacion->importaciones_detalles as $detalle) {
@@ -251,6 +251,7 @@ class ImportacionController extends Controller
                         "stock_futuro" => $new_futuro,
                     ]);
                 }
+            }
             }
 
             $importacion->nro_carpeta = $request->input('nro_carpeta');

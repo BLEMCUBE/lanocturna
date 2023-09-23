@@ -3434,7 +3434,7 @@ const Tailwind_PT = {
         rowtoggler: function rowtoggler(_ref165) {
           var context = _ref165.context;
           return {
-            "class": ['relative inline-flex items-center justify-center align-center cursor-pointer select-none overflow-hidden bg-transparent', 'w-8 h-8 border-0 rounded mr-0.5', context.selected ? 'text-blue-700' : 'text-gray-500', 'dark:text-white/70' //Dark Mode
+            "class": ['relative inline-flex items-center justify-center align-center cursor-pointer select-none overflow-hidden bg-transparent', 'w-12 h-12 border-0 rounded m-2', context.selected ? 'text-blue-700' : 'text-gray-500', 'dark:text-white/70' //Dark Mode
             ]
           };
         },
@@ -3549,7 +3549,7 @@ const Tailwind_PT = {
             var context = _ref174.context,
               props = _ref174.props;
             return {
-              "class": ['text-center  leading-[1.4rem] text-xs border-0 border-b cursor-pointer border-solid border-secondary-900 dark:border-blue-900/40 font-semibold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'py-1.5 px-1'  : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
+              "class": ['text-center  leading-[1.4rem] text-md border-0 border-b cursor-pointer border-solid border-secondary-900 dark:border-blue-900/40 font-semibold', 'transition duration-200', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'py-1.5 px-1'  : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-2',
               // Size
               context.sorted ? 'border border-solid  border-gray-600 bg-secondary-100 text-slate-700' : 'border border-solid  border-gray-600 bg-secondary-100 text-slate-700',
               // Sort
@@ -3571,7 +3571,7 @@ const Tailwind_PT = {
             var props = _ref175.props,
             context = _ref175.context;
           return {
-            "class": ['text-left border-0  leading-[1rem] border-solid text-xs border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
+            "class": ['text-left border-0  leading-[2rem] border-solid text-md border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
             // Size
             'dark:text-white/80 dark:border-blue-900/40',
             // Dark Mode
@@ -3798,7 +3798,7 @@ const Tailwind_PT = {
           },
 
         rowexpansion: {
-          "class": 'bg-white text-gray-600 dark:bg-gray-900 dark:text-white/80'
+          "class": 'bg-white text-gray-600   dark:bg-gray-900 dark:text-white/80'
         },
         rowgroupheader: {
           "class": ['sticky z-[1]', 'bg-white text-gray-600', 'transition duration-200']
@@ -3807,7 +3807,7 @@ const Tailwind_PT = {
           "class": ['sticky z-[1]', 'bg-white text-gray-600', 'transition duration-200']
         },
         rowgrouptoggler: {
-          "class": ['text-left m-0 p-0 cursor-pointer select-none', 'inline-flex items-center justify-center overflow-hidden relative', 'w-8 h-8 text-gray-500 border-0 bg-transparent rounded-[50%]', 'transition duration-200', 'dark:text-white/70' // Dark Mode
+          "class": ['text-left  cursor-pointer select-none', 'inline-flex items-center justify-center overflow-hidden relative', 'w-8 h-8 text-gray-500 border-0 bg-transparent rounded-[50%]', 'transition duration-200', 'dark:text-white/70' // Dark Mode
           ]
         },
 

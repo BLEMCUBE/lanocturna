@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DepositoDetalle extends Model
+class DepositoProducto extends Model
 {
     use  HasFactory;
 
-    protected $table = 'depositos_detalles';
+    protected $table = 'depositos_productos';
     protected $fillable = [
         'id',
         'sku',
@@ -18,16 +18,14 @@ class DepositoDetalle extends Model
         'bultos',
         'cantidad_total',
         'codigo_barra',
-        'estado',
-        'mueve_stock',
-        'deposito_id'
+        'deposito_lista_id'
     ];
 
 
 
-    public function deposito()
+    public function deposito_lista()
     {
-        return $this->belongsTo(Deposito::class);
+        return $this->belongsTo(DepositoLista::class);
     }
 
 

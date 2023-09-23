@@ -15,7 +15,7 @@ class ImportacionUpdateRequest extends FormRequest
     {
         $id = $this->input('id');
         return [
-            'nro_carpeta' => 'required',Rule::unique('compras')->ignore($id),
+            'nro_carpeta' => 'required',Rule::unique('importaciones')->ignore($id),
             'nro_contenedor' => 'required',
              'estado' => 'required',
              'fecha_arribado' => 'required',

@@ -32,6 +32,9 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
+/*Route::get('/demo', function () {
+    return Inertia::render('Pixijs');
+});*/
 
 
 Route::get('/inicio', [InicioController::class, 'index'])->name('inicio')->middleware(['auth', 'verified']);
@@ -168,7 +171,13 @@ Route::controller(DepositoListaController::class)->group(function () {
 //Deposito
 Route::controller(DepositoController::class)->group(function () {
     Route::post('/depositos/update/{id}', 'update')->name('depositos.update')->middleware('auth');
-    Route::post('/depositos/update-deposito/{id}', 'updateDeposito')->name('depositos.updateDeposito')->middleware('auth');
+    Route::get('/depositos/create', 'create')->name('depositos.create')->middleware('auth');
+    Route::get('/depositos/bultos', 'bultos')->name('depositos.bultos')->middleware('auth');
+    Route::get('/depositos/{id}/showproductomodal', 'showProductoModal')->name('depositos.showproductomodal')->middleware('auth');
+    Route::get('/depositos/{id}/showcambiarproducto', 'showCambiarProducto')->name('depositos.showcambiarproducto')->middleware('auth');
+    Route::get('/depositos/{id}/showmodal', 'showModal')->name('depositos.showmodal')->middleware('auth');
+    Route::post('/depositos/update-deposito/{id}', 'updateDeposito')->name('depositos.updatedeposito')->middleware('auth');
+    Route::post('/depositos/{id}/updateproducto', 'updateProducto')->name('depositos.updateproducto')->middleware('auth');
     Route::get('/depositos/historial', 'historial')->name('depositos.historial')->middleware('auth');
     Route::get('/depositos', 'index')->name('depositos.index')->middleware('auth');
     Route::get('/depositos/{id}', 'show')->name('depositos.show')->middleware('auth');

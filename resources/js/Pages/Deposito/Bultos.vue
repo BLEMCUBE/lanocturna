@@ -11,8 +11,8 @@ import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_productos = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Importaciones"
-const ruta = 'importaciones'
+const titulo = "Bultos importados"
+const ruta = 'depositos'
 
 const formDelete = useForm({
     id: '',
@@ -27,10 +27,7 @@ const btnDescargar = (id) => {
     router.get(route(ruta + '.exportar', id));
 
 };
-const btnEditar = (id) => {
-    router.get(route(ruta + '.edit', id));
 
-};
 const btnEliminar = (id) => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
@@ -91,23 +88,25 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 py-3 mb-4 bg-white col-span-12 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
             <div class="px-3 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
 
-                <Button size="small" :label="'Importar Excel'" severity="success" @click="BtnCrear"></Button>
+                <Button size="small" :label="'Importar Bultos'" severity="success" @click="BtnCrear"></Button>
 
             </div>
 
             <div class="align-middle">
 
-                <DataTable showGridlines sortField="created_at" :sortOrder="-1" :filters="filters" :value="tabla_productos"
+                <DataTable sortField="created_at" :sortOrder="-1" :filters="filters" :value="tabla_productos"
                     :pt="{
-                        bodyRow: { class: 'hover:cursor-pointer' }
-                    }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"
+                        bodyRow: { class: 'hover:cursor-pointer h-auto py-2' },
+                        root:{class:'h-auto'},
+                        virtualScroller:{class:'h-auto'}
+                    }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
@@ -137,22 +136,12 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="total" sortable header="Total" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="cbm_total" sortable header="Total CBM" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
                     <Column field="cantidad_productos" sortable header="Cantidad productos" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="created_at" sortable header="Fecha" :pt="{
+                    <Column field="created_at" sortable header="Fecha se subida" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
@@ -163,16 +152,19 @@ const filters = ref({
                         <template #body="slotProps">
 
 
-                            <div class="p-0 text-white flex justify-center items-center">
+                            <div class="py-3 text-white flex justify-center items-center"
+                            v-if="slotProps.data.estado=='En Camino'">
+                                <!--
                                 <span
                                     v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                     class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
-                                    <a :href="route('importaciones.exportar', slotProps.data.id)" target="_blank"
+                                    <a :href="route('depositos.exportar', slotProps.data.id)" target="_blank"
                                     class="py-auto"><i
                                             class="fas fa-file-excel text-white"></i>
                                     </a>
-
                                 </span>
+                                -->
+                                {{ slotProps.data.estado }}
                                 <Button
                                 class="w-8 h-8 rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
