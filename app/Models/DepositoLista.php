@@ -22,6 +22,10 @@ class DepositoLista extends Model
     {
         return $this->hasMany(DepositoDetalle::class);
     }
+    public function depositos_productos()
+    {
+        return $this->hasMany(DepositoProducto::class);
+    }
 
     public function usuario()
     {

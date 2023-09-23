@@ -7,18 +7,19 @@ import axios from 'axios';
 import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
-const titulo = "Bultos"
+const titulo = "Mover Bultos"
 const ruta = "depositos"
-
+const maxBultos = ref();
 //Variables
 const isShowModal = ref(false);
-const fec_nac = ref()
 
 const form = useForm({
     id: '',
     bultos:'',
     origen_id:'',
     destino_id:'',
+    sku:'',
+
 
 })
 
@@ -40,16 +41,20 @@ const addCliente = () => {
 };
 
 const dataEdit = (id) => {
-    axios.get(route(ruta + '.show', id))
+
+    axios.get(route(ruta + '.showcambiarproducto', id))
         .then(res => {
-            isShowModal.value = true;
-            var datos = res.data.deposito
+            var datos = res.data.deposito_detalle
             form.id = datos.id
+            form.sku = datos.sku
             form.bultos = datos.bultos
-            form.nombre_deposito = datos.deposito.nombre
-            form.origen_id = datos.deposito.id
+            form.nombre_deposito = datos.deposito_lista.nombre
+            form.nombre_producto = datos.producto.nombre
+            form.origen_id = datos.deposito_lista.id
+
             monedas.value=res.data.lista_depositos
-            form.origen_id = datos.deposito.id
+            maxBultos.value=datos.bultos
+            isShowModal.value = true;
 
         })
 
@@ -73,7 +78,7 @@ const closeModal = () => {
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta + '.updateDeposito', form.id), {
+    form.post(route(ruta + '.updatedeposito', form.id), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
@@ -106,15 +111,21 @@ const show = (tipo, titulo, mensaje) => {
          position="top"
             :pt="{
                 header: {
-                    class: 'mt-6 p-2 lg:p-4 '
+                    class: 'mt-6 p-2'
                 },
                 content: {
                     class: 'p-4 lg:p-4'
                 },
             }">
             <form @submit.prevent="submit">
-                <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 lg:gap-6 mb-2">
+                <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 lg:gap-4 mb-2">
+                    <div class="col-span-6 shadow-default">
+                        <InputLabel  :value="'SKU: '+ form.sku"
+                            class="block text-base font-medium leading-6 text-gray-900" />
+                        <InputLabel  :value="'PRODUCTO: '+ form.nombre_producto"
+                            class="block text-base font-medium leading-6 text-gray-900" />
 
+                    </div>
                     <div class="col-span-6 shadow-default">
                         <InputLabel for="origen" value="Origen"
                             class="block text-base font-medium leading-6 text-gray-900" />
@@ -141,7 +152,7 @@ const show = (tipo, titulo, mensaje) => {
                     <div class="col-span-6 shadow-default">
                         <InputLabel for="bultos" value="Bultos"
                             class="block text-base font-medium leading-6 text-gray-900" />
-                        <input type="number" v-model="form.bultos" step="1"
+                        <input type="number" v-model="form.bultos" step="1" :max="maxBultos"
                             class="p-inputtext p-component h-9 w-full text-end
                             font-normal text-gray-700  border border-gray-300 transition-colors
                              duration-200 appearance-none rounded-md text-sm px-3 py-1">

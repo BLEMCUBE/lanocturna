@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class DepositoCollection extends ResourceCollection
+class DepositoHistorialCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -16,16 +16,17 @@ class DepositoCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection->transform(function($row, $key) {
+                $dat=json_decode($row->datos);
                 return [
                     'id' => $row->id,
-                    'nro_carpeta' => $row->nro_carpeta,
-                    'nro_contenedor'=>$row->nro_contenedor??'',
-                    'estado' => $row->estado??'',
-                    'total'=>number_format($row->total, 2,',', '.')??0,
-                    'cantidad_productos'=>$row->depositos_detalles->count('deposito_id'),
-                    'created_at'=>!is_null($row->created_at)?$row->created_at->format('d/m/Y H:i:s'):'',
+                    'sku'=>$dat->sku??'',
+                    'producto'=>$dat->producto??'',
+                    'bultos'=>$dat->bultos??'',
+                    'origen'=>$dat->origen??'',
+                    'destino'=>$dat->destino??'',
+                    'usuario'=>$dat->usuario??'',
+                    'fecha'=>Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at)->format('d/m/Y H:i:s'),
                 ];
-
             }),
             'links' => [
                 'self' => 'link-value',

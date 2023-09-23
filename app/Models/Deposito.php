@@ -12,8 +12,13 @@ class Deposito extends Model
     protected $table = 'depositos';
     protected $fillable = [
         'id',
-        'nombre',
-        'descripcion',
+        'nro_carpeta',
+        'nro_contenedor',
+        'estado',
+        'total',
+        'fecha_arribado',
+        'fecha_camino',
+        'mueve_stock',
         'user_id',
 
     ];

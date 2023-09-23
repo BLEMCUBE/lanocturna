@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CambiarDepositoRequest;
 use App\Http\Requests\DepositoListaStoreRequest;
-use App\Http\Requests\DepositoStoreRequest;
-use App\Http\Requests\DepositoUpdateRequest;
-use App\Http\Resources\DepositoCollection;
+use App\Http\Requests\DepositoListaUpdateRequest;
 use App\Http\Resources\DepositoListaCollection;
 use App\Models\DepositoLista;
-use App\Models\DepositoDetalle;
-use App\Models\Producto;
 use Inertia\Inertia;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -47,13 +42,13 @@ class DepositoListaController extends Controller
         ]);
     }
 
-    public function store(DepositoStoreRequest $request)
+    public function store(DepositoListaStoreRequest $request)
     {
 
         $cliente = DepositoLista::create($request->all());
     }
 
-       public function update(DepositoListaStoreRequest $request, $id)
+       public function update(DepositoListaUpdateRequest $request, $id)
     {
         $tipo_cambio = DepositoLista::findOrFail($id);
         $tipo_cambio->update($request->all());
