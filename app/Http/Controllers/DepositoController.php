@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CambiarDepositoRequest;
+use App\Http\Requests\DepositoImportacionUpdateRequest;
 use App\Http\Requests\DepositoStoreRequest;
 use App\Http\Requests\DepositoUpdateRequest;
 use App\Http\Resources\DepositoCollection;
@@ -93,7 +94,7 @@ class DepositoController extends Controller
 
         return Inertia::render('Deposito/Historial', [
             'historial' => new DepositoHistorialCollection(
-                DepositoHistorial::orderBy('id', 'ASC')
+                DepositoHistorial::orderBy('id', 'DESC')
                     ->get()
             )
         ]);
@@ -318,7 +319,21 @@ class DepositoController extends Controller
         }
     }
 
+    public function updateProducto(DepositoImportacionUpdateRequest $request, $id)
+    {
+        $deposito_detalle = DepositoDetalle::find($id);
 
+        //Guardando producto depositodetalle
+         $deposito_detalle->update([
+            "unidad"=>$request->unidad,
+            "bultos"=>$request->bultos,
+            "pcs_bulto"=>$request->pcs_bulto,
+            "cantidad_total"=>$request->cantidad_total,
+        ]);
+
+
+        return Redirect::back();
+    }
     public function updateDeposito(CambiarDepositoRequest $request, $id)
     {
 
@@ -332,17 +347,17 @@ class DepositoController extends Controller
 
             $ne_pcs_bulto = $datosOrigen->pcs_bulto;
             $ne_bultos = $datosOrigen->bultos - $request->bultos;
-            $da_producto=Producto::where('origen','=',$request->sku)->first();
-            $da_origen=DepositoLista::where('id','=',$request->origen_id)->first();
-            $da_destino=DepositoLista::where('id','=',$request->destino_id)->first();
+            $da_producto = Producto::where('origen', '=', $request->sku)->first();
+            $da_origen = DepositoLista::where('id', '=', $request->origen_id)->first();
+            $da_destino = DepositoLista::where('id', '=', $request->destino_id)->first();
             $usuario = auth()->user();
-            $datos_historial=[
-                "sku"=>$request->sku,
-                "producto"=>$da_producto->nombre,
-                "bultos"=>$request->bultos,
-                "origen"=>$da_origen->nombre,
-                "destino"=>$da_destino->nombre,
-                "usuario"=>$usuario->name,
+            $datos_historial = [
+                "sku" => $request->sku,
+                "producto" => $da_producto->nombre,
+                "bultos" => $request->bultos,
+                "origen" => $da_origen->nombre,
+                "destino" => $da_destino->nombre,
+                "usuario" => $usuario->name,
             ];
 
             //return $datos_historial;
@@ -377,7 +392,7 @@ class DepositoController extends Controller
                 ]);
             }
             DepositoHistorial::create([
-                "datos"=>json_encode($datos_historial),
+                "datos" => json_encode($datos_historial),
             ]);
             //guardando en tabla deposito historial
 
