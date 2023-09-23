@@ -51,7 +51,7 @@ const btnEliminar = (id) => {
                     onSuccess: () => {
                         show('success', 'Eliminado', 'Se ha eliminado')
                         setTimeout(() => {
-                            router.get(route(ruta + '.index'));
+                            router.get(route(ruta + '.bultos'));
                         }, 1000);
 
                     }
@@ -153,7 +153,7 @@ const filters = ref({
 
 
                             <div class="py-3 text-white flex justify-center items-center"
-                            v-if="slotProps.data.estado=='En Camino'">
+                            v-if="slotProps.data.estado=='En camino'">
                                 <!--
                                 <span
                                     v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
