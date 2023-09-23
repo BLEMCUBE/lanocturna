@@ -16,7 +16,6 @@ const filters = ref({
 });
 
 const clickDetalle=(e)=>{
-    console.log('e ',e.data.id)
     document.getElementById("show-"+e.data.id).click();
 //btnVer(e.data.id)
 }

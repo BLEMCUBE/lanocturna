@@ -15,13 +15,12 @@ class DepositoDetalle extends Model
         'sku',
         'unidad',
         'pcs_bulto',
-        'cantidad_total',
         'bultos',
+        'cantidad_total',
         'codigo_barra',
-        'importacion_id',
-        'deposito_id',
-        'user_id'
-
+        'estado',
+        'mueve_stock',
+        'deposito_id'
     ];
 
 
@@ -32,10 +31,6 @@ class DepositoDetalle extends Model
     }
 
 
-    public function importacion()
-    {
-        return $this->belongsTo(Importacion::class);
-    }
 
     public function producto()
     {

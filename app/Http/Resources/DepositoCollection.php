@@ -18,8 +18,11 @@ class DepositoCollection extends ResourceCollection
             'data' => $this->collection->transform(function($row, $key) {
                 return [
                     'id' => $row->id,
-                    'nombre' => $row->nombre,
-                    'descripcion'=>$row->descripcion??'',
+                    'nro_carpeta' => $row->nro_carpeta,
+                    'nro_contenedor'=>$row->nro_contenedor??'',
+                    'estado' => $row->estado??'',
+                    'total'=>number_format($row->total, 2,',', '.')??0,
+                    'cantidad_productos'=>$row->depositos_detalles->count('deposito_id'),
                     'created_at'=>!is_null($row->created_at)?$row->created_at->format('d/m/Y H:i:s'):'',
                 ];
 

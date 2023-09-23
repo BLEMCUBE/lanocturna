@@ -163,7 +163,7 @@ const filters = ref({
                         <template #body="slotProps">
 
 
-                            <div class="p-4 text-white flex justify-center items-center">
+                            <div class="p-0 text-white flex justify-center items-center">
                                 <span
                                     v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                     class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">

@@ -227,6 +227,20 @@ export default {
                     <span class="ml-3">Depósitos</span>
                 </NavLinkSideBar>
             </li>
+            <li @click="setMenu('subir-depositos')" v-show="permissions.includes('historial-depositos')">
+                <NavLinkSideBar icon-class="fa-solid fa-warehouse"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('depositos.create')" :active="route().current('depositos.create')">
+                    <span class="ml-3">Subir Bultos a Depósitos</span>
+                </NavLinkSideBar>
+            </li>
+            <li @click="setMenu('bultos-depositos')" v-show="permissions.includes('historial-depositos')">
+                <NavLinkSideBar icon-class="fa-solid fa-warehouse"
+                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
+                    :href="route('depositos.bultos')" :active="route().current('depositos.bultos')">
+                    <span class="ml-3">Bultos Importados</span>
+                </NavLinkSideBar>
+            </li>
             <li @click="setMenu('historial-depositos')" v-show="permissions.includes('historial-depositos')">
                 <NavLinkSideBar icon-class="fa-solid fa-warehouse"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
