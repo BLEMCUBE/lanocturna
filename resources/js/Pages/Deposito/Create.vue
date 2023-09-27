@@ -4,7 +4,7 @@ import { ref, onMounted } from 'vue'
 import { Head, useForm, router } from '@inertiajs/vue3';
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
-import CheckboxName from '@/Components/CheckboxName.vue';
+
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Multiselect from '@vueform/multiselect';
@@ -16,8 +16,9 @@ import 'vue-datepicker-next/index.css';
 import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
-const fecha_arr = ref();
-const fecha_cam = ref();
+const inputArchivo=ref(null);
+const isShowModalProducto = ref(false);
+const errorsFilas=ref();
 const form = useForm({
     nro_carpeta: '',
     nro_contenedor: '',
@@ -52,22 +53,32 @@ const submit = () => {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
-            show('success', 'Mensaje', 'Producto creado')
+            show('success', 'Mensaje', 'Importacion bultos creado')
             setTimeout(() => {
-                router.get(route(ruta + '.index'));
+                router.get(route(ruta + '.bultos'));
             }, 1000);
         },
         onFinish: () => {
 
         },
-        onError: () => {
-
-        }
+        onError: (er) => {
+            if(er.filas!=undefined){
+            if(er.filas.length>1){
+                errorsFilas.value=er.filas.slice(1);
+                isShowModalProducto.value = true;
+            }
+        }}
     });
 
 
 
 };
+const closeModalProducto = () => {
+    inputArchivo.value.value = null //reset input type file
+    form.reset('archivo');
+    isShowModalProducto.value = false;
+};
+
 const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
@@ -82,13 +93,7 @@ const pickFile = (e) => {
 
 
 }
-const check = (checked) => {
-    if (checked) {
-        form.mueve_stock = true
-    } else {
-        form.mueve_stock = false
-    }
-};
+
 
 </script>
 <template>
@@ -138,21 +143,12 @@ const check = (checked) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.estado" />
                         </div>
 
-                        <div class="col-span-12 shadow-default lg:col-span-3 my-auto">
-                            <!--
-                            <InputLabel for="estado" value="Mueve Stock?"
-                                class="block text-base font-medium leading-6 text-gray-900" />
-                            <CheckboxName :checked="form.mueve_stock" fieldId="si" @update:checked="check($event)"
-                                label="SI">
-                            </CheckboxName>
-                        -->
-                        </div>
-
 
                         <div class="col-span-12 shadow-default lg:col-span-3 my-auto">
                             <InputLabel for="fecha_camino" value="Fecha En Camino"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <date-picker :clearable="false" :editable="true" type="date" value-type="YYYY-MM-DD" format="DD/MM/YYYY"
+                            <date-picker :clearable="false" :editable="true" type="date" value-type="YYYY-MM-DD"
+                                format="DD/MM/YYYY"
                                 class="p-inputtext p-component col-span-6  text-gray-700  bg-white  transition-colors duration-200 border-0 px-0 py-0"
                                 v-model:value="form.fecha_camino" lang="es" placeholder="Seleccione Fecha"></date-picker>
                             <InputError class="mt-1 text-xs" :message="form.errors.fecha_camino" />
@@ -161,7 +157,8 @@ const check = (checked) => {
                         <div class="col-span-12 shadow-default lg:col-span-3 my-auto">
                             <InputLabel for="estado" value="Fecha Arribado"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <date-picker :clearable="false" :editable="true" type="date" value-type="YYYY-MM-DD" format="DD/MM/YYYY"
+                            <date-picker :clearable="false" :editable="true" type="date" value-type="YYYY-MM-DD"
+                                format="DD/MM/YYYY"
                                 class="p-inputtext p-component col-span-6  text-gray-700  bg-white  transition-colors duration-200 border-0 px-0 py-0"
                                 v-model:value="form.fecha_arribado" lang="es" placeholder="Seleccione Fecha"></date-picker>
                             <InputError class="mt-1 text-xs" :message="form.errors.fecha_arribado" />
@@ -172,7 +169,7 @@ const check = (checked) => {
                         <div class="col-span-12 shadow-default lg:col-span-12">
                             <InputLabel for="file_input1" value="Archivo Excel"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <input @input="pickFile" type="file" class="block w-full text-xs text-gray-500
+                            <input ref="inputArchivo" @input="pickFile" type="file" class="block w-full text-xs text-gray-500
                                 file:mr-4 file:py-2 file:px-4
                                 file:rounded file:border-0
                                 file:text-sm file:font-medium
@@ -187,15 +184,70 @@ const check = (checked) => {
                     </div>
 
                     <div class="flex justify-end pt-2">
-                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="cancelCrear"
-                            type="button" />
-                        <Button label="Guardar" @click.prevent="submit" size="small" type="button" :class="{ 'opacity-50': form.processing }"
-                            :disabled="form.processing" />
+                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small"
+                            @click="cancelCrear" type="button" />
+                        <Button label="Guardar" @click.prevent="submit" size="small" type="button"
+                            :class="{ 'opacity-50': form.processing }" :disabled="form.processing" />
                     </div>
                 </form>
 
             </div>
             <!--Contenido-->
+
+            <!--Modal productos-->
+            <Dialog v-model:visible="isShowModalProducto" modal :style="{ width: '25vw' }" :pt="{
+                header: {
+                    class: 'mt-5 pb-2 px-5'
+                },
+                content: {
+                    class: 'p-4'
+                },
+            }">
+                <p class="mb-2 font-bold text-md">
+                    Los siguientes productos no estan registrado , por favor registre y vuelva a intentar.
+                </p>
+
+                <table class="w-full border">
+                    <thead>
+                        <tr class="w-full border">
+                            <th class="w-26 text-center border">
+                                Fila
+                            </th>
+                            <th class="text-center border">
+                                Sku
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr  class="w-full text-center border" v-for="item in errorsFilas">
+                            <td class="text-center border">
+                                {{item.fila}}
+                            </td>
+                            <td class="text-center border">
+                                {{item.sku}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <template #header>
+                    <div class="flex flex-column align-items-center" style="flex: 1">
+                        <div class="text-center">
+                            <i class="pi pi-exclamation-triangle text-yellow-500" style="font-size: 3rem"></i>
+                        </div>
+                        <div class="font-bold text-2xl m-3">No se ha podido importar</div>
+                    </div>
+                </template>
+
+
+                <div class="flex justify-end py-3">
+                    <Button label="Aceptar" size="small" type="button" @click="closeModalProducto()" />
+
+                </div>
+
+            </Dialog>
+            <!--Modal productos-->
 
         </div>
 

@@ -5,10 +5,7 @@ import { useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import axios from 'axios';
 import { useToast } from "primevue/usetoast";
-import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
-import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 
 const toast = useToast();
@@ -21,7 +18,6 @@ const isShowModal = ref(false);
 const form = useForm({
     id: '',
     precio: '',
-    unidad: '',
     pcs_bulto: '',
     bultos: '',
     cantidad_total: '',
@@ -61,7 +57,6 @@ const dataEdit = (id) => {
         .then(res => {
             var datos = res.data.importacion_detalle
             form.id = datos.id
-            form.unidad = datos.unidad
             form.precio = datos.precio
             form.pcs_bulto = datos.pcs_bulto
             form.bultos = datos.bultos
@@ -121,8 +116,8 @@ const show = (tipo, titulo, mensaje) => {
 <template>
     <section>
         <button type="button" @click="addCliente" :id="'show-' + props.clienteId"><i class="fas fa-edit"></i></button>
-        <Toast />
-        <Dialog v-model:visible="isShowModal" modal :header="'Editar ' + titulo" :style="{ width: '30vw' }" position="top"
+
+        <Dialog v-model:visible="isShowModal" modal :header="'Editar ' + titulo" :style="{ width: '40vw' }" position="top"
             :pt="{
                 header: {
                     class: 'mt-6 p-2'
@@ -145,18 +140,7 @@ const show = (tipo, titulo, mensaje) => {
                     </div>
 
 
-                    <div class="col-span-12 shadow-default lg:col-span-6">
-                        <InputLabel for="unidad" value="Unidad"
-                        class="block text-base font-medium leading-6 text-gray-900" />
-
-                        <InputText type="text" id="unidad" v-model="form.unidad" placeholder="Ingrese unidad" :pt="{
-                            root: { class: 'h-9 w-full' }
-                        }" />
-                        <InputError class="mt-1 text-xs" :message="form.errors.unidad" />
-                    </div>
-
-
-                    <div class="col-span-12 shadow-default lg:col-span-6">
+                    <div class="col-span-12 shadow-default lg:col-span-4">
                         <InputLabel for="pcs_bulto" value="PCS Bulto"
                             class="block text-base font-medium leading-6 text-gray-900" />
                         <input type="number" v-model="form.pcs_bulto" class="p-inputtext p-component text-gray-700 bg-white
@@ -165,7 +149,7 @@ const show = (tipo, titulo, mensaje) => {
                         <InputError class="mt-1 text-xs" :message="form.errors.pcs_bulto" />
                     </div>
 
-                    <div class="col-span-12 shadow-default lg:col-span-6">
+                    <div class="col-span-12 shadow-default lg:col-span-4">
                         <InputLabel for="bultos" value="Bultos"
                             class="block text-base font-medium leading-6 text-gray-900" />
                         <input type="number" v-model="form.bultos" class="p-inputtext p-component text-gray-700 bg-white
@@ -174,7 +158,7 @@ const show = (tipo, titulo, mensaje) => {
                         <InputError class="mt-1 text-xs" :message="form.errors.bultos" />
                     </div>
 
-                    <div class="col-span-12 shadow-default lg:col-span-6">
+                    <div class="col-span-12 shadow-default lg:col-span-4">
                         <InputLabel for="cantidad_total" value="Cantidad Total"
                             class="block text-base font-medium leading-6 text-gray-900" />
                         <input type="number" v-model="form.cantidad_total" class="p-inputtext p-component text-gray-700 bg-white

@@ -99,14 +99,14 @@ const filters = ref({
 
             </div>
 
-            <div class="align-middle">
+            <div class="align-middle p-3">
 
                 <DataTable sortField="created_at" :sortOrder="-1" :filters="filters" :value="tabla_productos"
                     :pt="{
                         bodyRow: { class: 'hover:cursor-pointer h-auto py-2' },
                         root:{class:'h-auto'},
                         virtualScroller:{class:'h-auto'}
-                    }" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
+                    }" scrollable scrollHeight="500px" :virtualScrollerOptions="{ itemSize: 46 }"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
@@ -115,11 +115,14 @@ const filters = ref({
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="id" header="ID" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
+                    <!--
+
+                        <Column field="id" header="ID" sortable :pt="{
+                            bodyCell: {
+                                class: 'text-center'
+                            }
+                        }"></Column>
+                    -->
 
                     <Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
                         bodyCell: {
@@ -136,7 +139,7 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-                    <Column field="cantidad_productos" sortable header="Cantidad productos" :pt="{
+                    <Column field="cantidad_productos" sortable header="Cantidad filas" :pt="{
                         bodyCell: {
                             class: 'text-center'
                         }
@@ -164,7 +167,6 @@ const filters = ref({
                                     </a>
                                 </span>
                                 -->
-                                {{ slotProps.data.estado }}
                                 <Button
                                 class="w-8 h-8 rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"

@@ -13,11 +13,9 @@ class DepositoProducto extends Model
     protected $fillable = [
         'id',
         'sku',
-        'unidad',
         'pcs_bulto',
         'bultos',
         'cantidad_total',
-        'codigo_barra',
         'deposito_lista_id'
     ];
 

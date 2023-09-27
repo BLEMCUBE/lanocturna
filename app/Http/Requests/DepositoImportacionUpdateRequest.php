@@ -15,11 +15,9 @@ class DepositoImportacionUpdateRequest extends FormRequest
     {
         $id = $this->input('id');
         return [
-             'unidad' => 'required',
              'pcs_bulto' => 'required',
              'cantidad_total' => 'required',
              'bultos' => 'required',
-
         ];
 
     }

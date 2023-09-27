@@ -4,7 +4,6 @@ namespace App\Imports;
 
 use App\Models\DepositoDetalle;
 use App\Models\DepositoProducto;
-use App\Models\Producto;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Illuminate\Support\Collection;
@@ -30,47 +29,40 @@ class DepositoImport implements ToCollection, WithHeadingRow, WithCalculatedForm
         foreach ($rows as $row) {
 
             if (!empty($row['sku'])) {
-               DepositoDetalle::create([
+                DepositoDetalle::create([
                     "sku" => $row['sku'],
-                    "unidad" => $row['unidad'],
                     "pcs_bulto" => $row['pcs_bulto'],
                     "bultos" => $row['bultos'],
                     "cantidad_total" => $row['cantidad_total'],
-                    "estado" => $this->estado ?? '',
-                    "codigo_barra" => $row['codigo_barra'],
                     "deposito_id" => $this->deposito_id
                 ]);
 
                 //buscando producto en deposito
                 $producto = DepositoProducto::where('sku', '=', $row['sku'])
-                ->where('deposito_lista_id', '=',1)->first();
+                    ->where('pcs_bulto', '=', $row['pcs_bulto'])
+                    ->where('deposito_lista_id', '=', 1)->first();
 
                 if ($this->estado == "Arribado") {
-                if(empty($producto) || is_null($producto)){
-                    DepositoProducto::create([
-                        "sku" => $row['sku'],
-                        "unidad" => $row['unidad'],
-                        "pcs_bulto" => $row['pcs_bulto'],
-                        "bultos" => $row['bultos'],
-                        "cantidad_total" => $row['cantidad_total'],
-                        "codigo_barra" => $row['codigo_barra'],
-                        "deposito_lista_id" => 1
-                    ]);
+                    if (empty($producto) || is_null($producto)) {
+                        DepositoProducto::create([
+                            "sku" => $row['sku'],
+                            "pcs_bulto" => $row['pcs_bulto'],
+                            "bultos" => $row['bultos'],
+                            "cantidad_total" => $row['cantidad_total'],
+                            "deposito_lista_id" => 1
+                        ]);
+                    } else {
+                        $new_pc_bulto = $producto->pcs_bulto; //  floatval($row['pcs_bulto']);
+                        $new_bultos = $producto->bultos + floatval($row['bultos']);
 
-                    //dd( 'crear');
-                }else{
-                    $producto->update([
-                        "pcs_bulto" => $producto->pcs_bulto+  floatval($row['pcs_bulto']),
-                        "bultos" => $producto->bultos + floatval($row['bultos']),
-                        "cantidad_total" => $producto->cantidad_total + floatval($row['cantidad_total']),
-                    ]);
-                    //dd( 'actualizar');
+                        $producto->update([
+                            "pcs_bulto" => $new_pc_bulto,
+                            "bultos" => $new_bultos,
+                            "cantidad_total" => $new_bultos * $new_pc_bulto,
+                        ]);
+                    }
                 }
             }
-            }
-
-
-
         }
     }
 }

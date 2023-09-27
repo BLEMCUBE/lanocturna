@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+
 class DepositoUpdateRequest extends FormRequest
 {
     public function authorize()
@@ -16,16 +17,14 @@ class DepositoUpdateRequest extends FormRequest
         $id = $this->input('id');
         return [
 
-            'nro_carpeta' => 'required',Rule::unique('depositos')->ignore($id),
+            'nro_carpeta' => 'required', Rule::unique('depositos')->ignore($id),
             'nro_contenedor' => 'required',
-             'estado' => 'required',
-             'fecha_arribado' => 'required',
-             'fecha_camino' => 'required',
+            'estado' => 'required',
+            'fecha_arribado' => 'required',
+            'fecha_camino' => 'required',
 
 
         ];
-
-
     }
 
     public function messages()
@@ -34,7 +33,7 @@ class DepositoUpdateRequest extends FormRequest
             'nro_carpeta.required' => 'Este campo es obligatorio.',
             'nro_contenedor.required' => 'Este campo es obligatorio.',
             'estado.required' => 'Este campo es obligatorio.',
-            'fecha_arribo.required' => 'Este campo es obligatorio.',
+            'fecha_arribado.required' => 'Este campo es obligatorio.',
             'fecha_camino.required' => 'Este campo es obligatorio.',
         ];
     }

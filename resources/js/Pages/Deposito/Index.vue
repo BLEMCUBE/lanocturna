@@ -2,7 +2,7 @@
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import CambiarDepositoModal from '@/Pages/Deposito/Partials/CambiarDepositoModal.vue';
@@ -16,18 +16,79 @@ const toast = useToast();
 const titulo = "Depósitos"
 const ruta = 'depositos'
 const lista_depositos = ref();
-const expandedRowGroups = ref();
-
 const formDelete = useForm({
     id: '',
 });
 
 onMounted(() => {
     lista_depositos.value = usePage().props.depositos;
-    expandedRows.value = lista_depositos.value.filter((p) => p.id);
+    //expandedRows.value = lista_depositos.value.filter((p) => p.id);
+    expandedRows.value = null;
 
 });
+const btnEliminar = (id) => {
 
+    const alerta = Swal.mixin({ buttonsStyling: true });
+    alerta.fire({
+        width: 350,
+        title: "Seguro de eliminar ",
+        text: 'Se eliminará definitivamente, tenga en cuenta que no podrá editar la importacion de bultos donde el producto este incluido.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
+        cancelButtonColor: 'red',
+        confirmButtonColor: '#2563EB',
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+            formDelete.delete(route(ruta + '.destroydeposito', id),
+                {
+                    preserveScroll: true,
+                    forceFormData: true,
+                    onSuccess: () => {
+                        show('success', 'Eliminado', 'Se ha eliminado')
+                        setTimeout(() => {
+                            router.get(route(ruta + '.index'));
+                        }, 1000);
+
+                    }
+                });
+        }
+    });
+}
+
+
+const rowClass = (data) => {
+
+    var valores = data.productos.map((el) => {
+        return el.sku.toLowerCase();
+    })
+    var producto = data.productos.map((el) => {
+        return el.nombre.toLowerCase();
+    })
+
+    if (filters.value.global.value != undefined && filters.value.global.value != '') {
+        const result = valores.filter((word) => word.includes(filters.value.global.value.toLowerCase()));
+        const prod = producto.filter((word) => word.includes(filters.value.global.value.toLowerCase()));
+
+        return [
+            {
+
+                'bg-orange-400': result.length > 0 || prod.length > 0
+            },
+
+        ];
+
+    }
+    else {
+        return [
+            'bg-secondary-900/70'
+        ];
+    }
+
+
+};
 
 const collapseAll = () => {
     expandedRows.value = null;
@@ -40,10 +101,12 @@ const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
 
+
+
 const filters = ref({
+
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     'productos': { value: null, matchMode: FilterMatchMode.CONTAINS },
-
 });
 </script>
 <template>
@@ -51,7 +114,6 @@ const filters = ref({
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
             class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
-
             <!--Contenido-->
             <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
@@ -59,9 +121,9 @@ const filters = ref({
             </div>
             <div class="align-middle">
 
-                <DataTable v-model:expandedRows="expandedRows" showGridlines size="small"
-                    :globalFilterFields="['productos']" :value="lista_depositos" scrollable scrollHeight="800px"
-                    :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem" :pt="{
+                <DataTable v-model:expandedRows="expandedRows" showGridlines size="small" v-bind:rowClass="rowClass"
+                    :value="lista_depositos" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
+                    tableStyle="min-width: 50rem" :pt="{
 
                     }">
 
@@ -79,12 +141,12 @@ const filters = ref({
                     <template #loading> Cargando... </template>
 
                     <Column expander style="width: 4rem" :pt="{
-                        bodyCell: { class: 'bg-secondary-900/70 font-bold m-2 text-2xl text-center' },
-                        headerCell: { class: 'uppercase bg-secondary-900 text-md' },
+                        bodyCell: { class: 'bg-secondary-900/30 font-bold m-2 text-2xl text-center' },
+                        headerCell: { class: 'uppercase bg-secondary-900 text-md ' },
                     }" />
 
                     <Column sortable field="nombre" header="Déposito" :pt="{
-                        bodyCell: { class: 'bg-secondary-900/70 font-bold text-center'  },
+                        bodyCell: { class: 'bg-secondary-900/30 font-bold text-center'  },
                         headerCell: { class: 'uppercase bg-secondary-100 text-md' },
 
 
@@ -92,7 +154,7 @@ const filters = ref({
                     }"></Column>
 
                     <Column header="Cantidad Productos" :pt="{
-                        bodyCell: { class: 'bg-secondary-900/70 font-bold w-24  text-center' },
+                        bodyCell: { class: 'bg-secondary-900/30 font-bold w-24  text-center' },
                         headerContent: { class: ' mx-2' },
                         headerCell: { class: 'uppercase bg-secondary-900 text-md' },
 
@@ -104,15 +166,15 @@ const filters = ref({
                     </Column>
                     <template #expansion="slotProps">
                         <div class="px-1">
-                            <DataTable :value="slotProps.data.productos" scrollable scrollHeight="400px"
+                            <DataTable :value="slotProps.data.productos" scrollable scrollHeight="300px"
                                 :virtualScrollerOptions="{ itemSize: 46 }" v-model:filters="filters">
 
                                 <Column field="sku" filterField="sku" header="Sku" sortable :pt="{
-                                  bodyCell: { class: 'text-center p-0 m-0 w-36' },
-                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-36' },
+                                    bodyCell: { class: 'text-center p-0 m-0 w-36' },
+                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-36 ' },
                                     headerContent: {
 
-                                        class: 'text-center w-36'
+                                        class: 'text-center w-36 stickyToTopTableHeaders'
                                     },
                                     bodyCellContent: {
 
@@ -156,20 +218,7 @@ const filters = ref({
 
                                 }">
                                 </Column>
-                                <Column field="codigo_barra" header="Código de barra" sortable :pt="{
-                                    bodyCell: { class: 'text-center p-0 m-0 w-36' },
-                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-36' },
-                                    headerContent: {
 
-                                        class: 'text-center w-36'
-                                    },
-                                    bodyCellContent: {
-
-                                        class: 'text-center w-36'
-                                    },
-
-                                }">
-                                </Column>
                                 <Column field="bultos" header="Bultos" sortable :pt="{
                                     bodyCell: { class: 'text-center p-0 m-0 w-36' },
                                     headerCell: { class: 'bg-sky-300 p-0 m-0 w-36' },
@@ -225,6 +274,13 @@ const filters = ref({
                                                 <CambiarDepositoModal :detalle-id="slotProps.data.id">
                                                 </CambiarDepositoModal>
                                             </span>
+
+                                            <Button v-if="slotProps.data.deposito_lista_id == '2'"
+                                                class="w-8 h-8 rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
+                                                v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                                @click.prevent="btnEliminar(slotProps.data.id)"><i
+                                                    class="fas fa-trash-alt"></i></Button>
+
                                         </div>
 
                                     </template>
@@ -245,4 +301,10 @@ const filters = ref({
 </template>
 
 
-<style type="text/css"></style>
+<style type="text/css" scoped>
+.stickyToTopTableHeaders {
+    position: sticky;
+    background-color: #fff;
+    z-index: 1100;
+}
+</style>

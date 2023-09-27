@@ -18,6 +18,7 @@ const form = useForm({
     bultos:'',
     origen_id:'',
     destino_id:'',
+    pcs_bulto:'',
     sku:'',
 
 
@@ -48,10 +49,10 @@ const dataEdit = (id) => {
             form.id = datos.id
             form.sku = datos.sku
             form.bultos = datos.bultos
+            form.pcs_bulto = datos.pcs_bulto
             form.nombre_deposito = datos.deposito_lista.nombre
             form.nombre_producto = datos.producto.nombre
             form.origen_id = datos.deposito_lista.id
-
             monedas.value=res.data.lista_depositos
             maxBultos.value=datos.bultos
             isShowModal.value = true;
@@ -107,7 +108,7 @@ const show = (tipo, titulo, mensaje) => {
         <button  type="button" @click="addCliente"><i class="fas fa-exchange-alt"></i></button>
 
         <Dialog v-model:visible="isShowModal" modal :header="'Mover ' + titulo"
-        :style="{ width: '20vw' }" :breakpoints="{ '960px': '75vw', '641px': '100vw' }"
+        :style="{ width: '25vw' }" :breakpoints="{ '960px': '30vw', '641px': '30vw' }"
          position="top"
             :pt="{
                 header: {
