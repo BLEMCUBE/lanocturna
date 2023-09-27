@@ -104,7 +104,7 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable showGridlines sortField="created_at" :sortOrder="-1" :filters="filters" :value="tabla_productos"
+                <DataTable sortField="created_at" :sortOrder="-1" :filters="filters" :value="tabla_productos"
                     :pt="{
                         bodyRow: { class: 'hover:cursor-pointer' }
                     }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 }"

@@ -86,7 +86,7 @@ const clickDetalle=(e)=>{
 
 
                     <DataTable sortField="id" :sortOrder="1" :filters="filters"
-                       :value="importacion_detalle" scrollable scrollHeight="800px"
+                       :value="importacion_detalle" scrollable scrollHeight="500px"
                        @row-click="clickDetalle"
                        :pt="{
                     bodyRow:{class:'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },

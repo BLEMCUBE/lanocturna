@@ -13,13 +13,9 @@ class DepositoDetalle extends Model
     protected $fillable = [
         'id',
         'sku',
-        'unidad',
         'pcs_bulto',
         'bultos',
         'cantidad_total',
-        'codigo_barra',
-        'estado',
-        'mueve_stock',
         'deposito_id'
     ];
 

@@ -140,7 +140,7 @@ const btnEditar = (id) => {
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable showGridlines sortField="venta.fecha" :sortOrder="-1" :filters="filters"
+                    <DataTable sortField="venta.fecha" :sortOrder="-1" :filters="filters"
                         :value="tabla_vendidos" :pt="{
                             bodyRow: { class: '' }
                         }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"

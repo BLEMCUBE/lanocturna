@@ -16,6 +16,7 @@ use App\Models\DepositoLista;
 use App\Models\DepositoProducto;
 use App\Models\Producto;
 use Inertia\Inertia;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\Redirect;
@@ -48,16 +49,17 @@ class DepositoController extends Controller
         foreach ($query_depositos as $deposito) {
 
             foreach ($deposito->depositos_productos as $prod) {
+                $pr = Producto::where('origen', $prod->sku)->first();
                 array_push($det_producto, [
                     "id" => $prod->id,
                     "sku" => $prod->sku,
                     "bultos" => $prod->bultos,
                     "pcs_bulto" => $prod->pcs_bulto,
                     "cantidad_total" => $prod->cantidad_total,
-                    "producto_id" => $prod->producto->id,
-                    "nombre" => $prod->producto->nombre,
-                    "imagen" => $prod->producto->imagen,
-                    "codigo_barra" => $prod->producto->codigo_barra,
+                    "producto_id" => $pr->id,
+                    "nombre" => $pr->nombre,
+                    "imagen" => $pr->imagen,
+                    'deposito_lista_id'=>$deposito->id
                 ]);
             }
             array_push($depositos, [
@@ -68,6 +70,7 @@ class DepositoController extends Controller
             ]);
             $det_producto = [];
         }
+        //return $depositos;
         return Inertia::render('Deposito/Index', [
             'depositos' => $depositos
         ]);
@@ -105,38 +108,58 @@ class DepositoController extends Controller
 
         $usuario = auth()->user();
         $file = $request->file('archivo');
-        DB::beginTransaction();
-        try {
+        $no_existe = [];
+        $filas = Excel::toArray([], $file);
 
-            //creando deposito
-            $deposito = Deposito::create([
-                'nro_carpeta' => $request->nro_carpeta ?? '',
-                'nro_contenedor' => $request->nro_contenedor ?? '',
-                'estado' => $request->estado ?? '',
-                'total' => $request->total ?? 0,
-                'fecha_arribado' => $request->fecha_arribado ?? '',
-                'fecha_camino' => $request->fecha_camino ?? '',
-                'mueve_stock' => $request->mueve_stock ?? false,
-                'user_id' => $usuario->id
+        foreach ($filas[0] as $key => $fila) {
+            $prod = Producto::where('origen', '=', $fila[0])->first();
+            if (empty($prod)) {
+                array_push($no_existe, [
+                    'fila' => $key + 1,
+                    'sku' => $fila[0],
+                ]);
+            }
+        }
+        if (count($no_existe) > 1) {
 
+            throw ValidationException::withMessages([
+                'filas' => [$no_existe]
             ]);
+        } else {
 
-            //importando excel
-            Excel::import(new DepositoImport($deposito->id, $deposito->estado), $file);
+            DB::beginTransaction();
+            try {
+
+                //creando deposito
+                $deposito = Deposito::create([
+                    'nro_carpeta' => $request->nro_carpeta ?? '',
+                    'nro_contenedor' => $request->nro_contenedor ?? '',
+                    'estado' => $request->estado ?? '',
+                    'total' => $request->total ?? 0,
+                    'fecha_arribado' => $request->fecha_arribado ?? '',
+                    'fecha_camino' => $request->fecha_camino ?? '',
+                    'user_id' => $usuario->id
+
+                ]);
+
+                ///importando excel
+                Excel::import(new DepositoImport($deposito->id, $deposito->estado), $file);
 
 
-            DB::commit();
-            return Redirect::route('depositos.bultos')->with([
-                // 'success' =>  $venta->codigo
-            ]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
+                DB::commit();
+                return Redirect::route('depositos.bultos')->with([
+                    // 'success' =>  $venta->codigo
+                ]);
+            } catch (Exception $e) {
+                DB::rollBack();
+                return [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ];
+            }
         }
     }
+
     public function showModal($id)
     {
 
@@ -153,7 +176,9 @@ class DepositoController extends Controller
 
         if ($importacion->estado == 'Arribado') {
             foreach ($detalle_deposito as $producto) {
-                $datoProducto = DepositoProducto::where('sku', $producto->sku)->where('deposito_lista_id', 1)->first();
+                $datoProducto = DepositoProducto::where('sku', $producto->sku)->where('deposito_lista_id', 1)
+                ->where('pcs_bulto', '=', $producto->pcs_bulto)
+                ->first();
                 if (!empty($datoProducto) || !is_null($datoProducto)) {
 
                     if ($producto->bultos > $datoProducto->bultos) {
@@ -219,24 +244,38 @@ class DepositoController extends Controller
             "deposito_detalle" => $deposito_detalle,
         ]);
     }
+
+    //detalle de excel importado a deposito
     public function show($id)
     {
-        $deposito = DB::table('depositos as impor')
-            ->select(DB::raw("impor.*,DATE_FORMAT(impor.created_at,'%d/%m/%y %H:%i:%s') AS fecha,
-    FORMAT(impor.total, 2, 'en_US') as total"))
+        $deposito = Deposito::with(['depositos_detalles' => function ($query) {
+            $query->select(
+                'id',
+                'sku',
+                'pcs_bulto',
+                'bultos',
+                'cantidad_total',
+                'deposito_id',
+            )->with(['producto' => function ($query) {
+                $query->select('id', 'nombre', 'codigo_barra', 'origen', 'imagen');
+            }]);
+        }])->select(
+            'id',
+            'nro_carpeta',
+            'nro_contenedor',
+            'estado',
+            'fecha_arribado',
+            'fecha_camino',
+            DB::raw("DATE_FORMAT(created_at,'%d/%m/%y %H:%i:%s') AS fecha")
+        )
             ->where('id', $id)->first();
-
-        $deposito_detalle = DB::table('depositos_detalles as det')
-            ->join('productos as prod', 'prod.origen', '=', 'det.sku')
-            ->select(DB::raw("det.*,prod.nombre,prod.aduana,prod.imagen,prod.id as producto_id"))
-            ->where('deposito_id', $id)->get();
 
         return Inertia::render('Deposito/Show', [
             'deposito' => $deposito,
-            'deposito_detalle' => $deposito_detalle,
         ]);
     }
 
+    //actualizando importacion y actualizando deposito producto
     public function update(DepositoUpdateRequest $request, $id)
     {
         $importacion = Deposito::find($id);
@@ -252,16 +291,15 @@ class DepositoController extends Controller
                     foreach ($importacion->depositos_detalles as $detalle) {
                         $codigo = $detalle->sku;
                         $producto = DepositoProducto::where('sku', '=', $codigo)
+                        ->where('pcs_bulto', '=', $detalle->pcs_bulto)
                             ->where('deposito_lista_id', '=', 1)->first();
                         if (empty($producto) || is_null($producto)) {
                             //creando registro deposito
                             $nuevo = [
                                 "sku" => $detalle->sku,
-                                "unidad" => $detalle->unidad,
                                 "pcs_bulto" => $detalle->pcs_bulto,
                                 "bultos" => $detalle->bultos,
                                 "cantidad_total" => $detalle->bultos * $detalle->pcs_bulto,
-                                "codigo_barra" => $detalle->codigo_barra,
                                 "deposito_lista_id" => 1
                             ];
                             DepositoProducto::create($nuevo);
@@ -282,6 +320,7 @@ class DepositoController extends Controller
                     foreach ($importacion->depositos_detalles as $detalle) {
                         $codigo = $detalle->sku;
                         $producto = DepositoProducto::where('sku', '=', $codigo)
+                        ->where('pcs_bulto', '=', $detalle->pcs_bulto)
                             ->where('deposito_lista_id', '=', 1)->first();
                         if (!empty($producto) || !is_null($producto)) {
                             $nuevo_bulto = $producto->bultos - $detalle->bultos;
@@ -294,14 +333,12 @@ class DepositoController extends Controller
                 }
             }
 
-
             $importacion->nro_carpeta = $request->nro_carpeta ?? '';
             $importacion->nro_contenedor = $request->nro_contenedor ?? '';
             $importacion->estado = $request->estado ?? '';
             $importacion->total = $request->total ?? 0;
             $importacion->fecha_arribado = $request->fecha_arribado ?? '';
             $importacion->fecha_camino = $request->fecha_camino ?? '';
-            $importacion->mueve_stock = $request->mueve_stock ?? false;
             $importacion->user_id = $usuario->id;
             $importacion->save();
 
@@ -319,28 +356,32 @@ class DepositoController extends Controller
         }
     }
 
+    //actualizar producto deposito
     public function updateProducto(DepositoImportacionUpdateRequest $request, $id)
     {
         $deposito_detalle = DepositoDetalle::find($id);
 
         //Guardando producto depositodetalle
-         $deposito_detalle->update([
-            "unidad"=>$request->unidad,
-            "bultos"=>$request->bultos,
-            "pcs_bulto"=>$request->pcs_bulto,
-            "cantidad_total"=>$request->cantidad_total,
+        $deposito_detalle->update([
+            "bultos" => $request->bultos,
+            "pcs_bulto" => $request->pcs_bulto,
+            "cantidad_total" => $request->cantidad_total,
         ]);
 
 
         return Redirect::back();
     }
+    //actualizar deposito
     public function updateDeposito(CambiarDepositoRequest $request, $id)
     {
 
         //buscando producto en deposito
-
-        $datosOrigen = DepositoProducto::where('sku', $request->sku)->where('deposito_lista_id', $request->origen_id)->first();
-        $datosDestino = DepositoProducto::where('sku', $request->sku)->where('deposito_lista_id', $request->destino_id)->first();
+        $datosOrigen = DepositoProducto::where('sku', $request->sku)
+        ->where('pcs_bulto', '=', $request->pcs_bulto)
+        ->where('deposito_lista_id', $request->origen_id)->first();
+        $datosDestino = DepositoProducto::where('sku', $request->sku)
+        ->where('pcs_bulto', '=', $request->pcs_bulto)
+        ->where('deposito_lista_id', $request->destino_id)->first();
 
         DB::beginTransaction();
         try {
@@ -360,7 +401,6 @@ class DepositoController extends Controller
                 "usuario" => $usuario->name,
             ];
 
-            //return $datos_historial;
 
             if (empty($datosDestino) || is_null($datosDestino)) {
 
@@ -372,11 +412,9 @@ class DepositoController extends Controller
                 //creando registro deposito
                 $nuevo = [
                     "sku" => $datosOrigen->sku,
-                    "unidad" => $datosOrigen->unidad,
                     "pcs_bulto" => $datosOrigen->pcs_bulto,
                     "bultos" => $request->bultos,
                     "cantidad_total" => $request->bultos * $datosOrigen->pcs_bulto,
-                    "codigo_barra" => $datosOrigen->codigo_barra,
                     "deposito_lista_id" => $request->destino_id
                 ];
                 DepositoProducto::create($nuevo);
@@ -406,7 +444,7 @@ class DepositoController extends Controller
         }
     }
 
-
+    //eliminar importacion
     public function destroy($id)
     {
         $importacion = Deposito::find($id);
@@ -419,5 +457,12 @@ class DepositoController extends Controller
 
         $importacion->depositos_detalles()->delete();
         $importacion->delete();
+    }
+
+    //retirando definitamente del deposito
+    public function destroyDeposito($id)
+    {
+        $deposito = DepositoProducto::find($id);
+        $deposito->delete();
     }
 }

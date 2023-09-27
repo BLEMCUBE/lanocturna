@@ -38,7 +38,7 @@ const filters = ref({
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
             <div class="align-middle">
-                <DataTable size="small" :filters="filters" :value="lista_depositos" scrollable scrollHeight="800px"
+                <DataTable size="small" :filters="filters" :value="lista_depositos" scrollable scrollHeight="500px"
                     :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem">
 
                     <template #header size="small" class="bg-secondary-900">

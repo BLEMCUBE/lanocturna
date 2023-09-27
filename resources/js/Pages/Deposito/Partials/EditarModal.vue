@@ -138,9 +138,8 @@ const show = (tipo, titulo, mensaje) => {
             },
         }">
             <p class="mb-2 font-bold">
-                Los siguientes productos deben ser movido al DEPÓSITO TEMPORAL, para poder cambiar de estado.
+                Los siguientes productos deben ser movido al DEPÓSITO TEMPORAL para poder cambiar de estado o ya se ha retirado definitivamente del depósito.
             </p>
-
             <DataTable :value="productos_movidos" :pt="{
 
                 root: { class: 'text-xs' }

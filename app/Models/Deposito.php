@@ -18,7 +18,6 @@ class Deposito extends Model
         'total',
         'fecha_arribado',
         'fecha_camino',
-        'mueve_stock',
         'user_id',
 
     ];
