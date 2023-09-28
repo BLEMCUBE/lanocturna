@@ -7,7 +7,7 @@ import moment from 'moment';
 import EditarModal from '@/Pages/Deposito/Partials/EditarModal.vue';
 import EditarProductoModal from '@/Pages/Deposito/Partials/EditarProductoModal.vue';
 const { deposito } = usePage().props
-const titulo = "Detalle Subir bultos a Déposito"
+const titulo = "Detalle Subir bultos a Depósito"
 const ruta = 'depositos'
 const isShowModalProducto = ref(false);
 const filters = ref({

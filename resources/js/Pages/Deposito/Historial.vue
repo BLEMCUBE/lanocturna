@@ -38,11 +38,16 @@ const filters = ref({
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
             <div class="align-middle">
-                <DataTable size="small" :filters="filters" :value="lista_depositos" scrollable scrollHeight="500px"
-                    :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem">
+                <DataTable size="small" showGridlines :filters="filters" :value="lista_depositos" :paginator="true"
+                    :rows="20" :rowsPerPageOptions="[5, 10, 20, 50]"
+                :pt="{
+                    root:{class:'text-xs'}
+                }"
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                    tableStyle="width: 100%">
 
                     <template #header size="small" class="bg-secondary-900">
-                        <div class="flex justify-content-end text-base text-primary-900">
+                        <div class="flex justify-content-end text-sm text-primary-900">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
                         </div>
                     </template>
@@ -62,27 +67,38 @@ const filters = ref({
                     }">
                     </Column>
                     <Column sortable field="producto" header="producto" :pt="{
-                        bodyCell: { class: 'text-center w-auto' },
+                        bodyCell: { class: 'text-center w-72' },
                         headerTitle: {
-                            class: 'uppercase text-center w-auto'
+                            class: 'uppercase text-center w-72'
                         },
                         bodyCellContent: {
-                            class: ' text-center w-auto'
+                            class: ' text-center w-72'
                         },
                     }">
                     </Column>
                     <Column sortable field="bultos" header="bultos" :pt="{
-                        bodyCell: { class: 'text-center  w-32' },
-                        headerCell: { class: 'bg-secondary-100 w-32' },
+                        bodyCell: { class: 'text-center  w-24' },
+                        headerCell: { class: 'bg-secondary-100 w-24' },
                         headerTitle: {
-                            class: 'text-center uppercase w-32'
+                            class: 'text-center uppercase w-24'
                         },
                         bodyCellContent: {
-                            class: ' text-center w-32'
+                            class: ' text-center w-24'
                         },
                     }">
                     </Column>
-                    <Column sortable field="origen" header="Déposito Origen" :pt="{
+                    <Column sortable field="pcs_bulto" header="pcs bulto" :pt="{
+                        bodyCell: { class: 'text-center  w-24' },
+                        headerCell: { class: 'bg-secondary-100 w-24' },
+                        headerTitle: {
+                            class: 'text-center uppercase w-24'
+                        },
+                        bodyCellContent: {
+                            class: ' text-center w-24'
+                        },
+                    }">
+                    </Column>
+                    <Column sortable field="origen" header="Depósito Origen" :pt="{
                         bodyCell: { class: 'text-center w-48' },
 
                         bodyCellContent: {
@@ -92,7 +108,7 @@ const filters = ref({
                             class: 'uppercase text-center w-48'
                         },
                     }"></Column>
-                    <Column sortable field="destino" header="Déposito Destino" :pt="{
+                    <Column sortable field="destino" header="Depósito Destino" :pt="{
                         bodyCell: { class: 'text-center w-48' },
                         headerCell: { class: 'uppercase bg-secondary-100  w-48' },
 

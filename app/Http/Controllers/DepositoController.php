@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DepositoExport;
 use App\Http\Requests\CambiarDepositoRequest;
 use App\Http\Requests\DepositoImportacionUpdateRequest;
 use App\Http\Requests\DepositoStoreRequest;
@@ -396,6 +397,7 @@ class DepositoController extends Controller
                 "sku" => $request->sku,
                 "producto" => $da_producto->nombre,
                 "bultos" => $request->bultos,
+                "pcs_bulto" => $da_origen->pcs_bulto,
                 "origen" => $da_origen->nombre,
                 "destino" => $da_destino->nombre,
                 "usuario" => $usuario->name,
@@ -464,5 +466,10 @@ class DepositoController extends Controller
     {
         $deposito = DepositoProducto::find($id);
         $deposito->delete();
+    }
+
+    public function exportExcel($id)
+    {
+        return Excel::download(new DepositoExport($id), 'DepositoExcel.xlsx');
     }
 }

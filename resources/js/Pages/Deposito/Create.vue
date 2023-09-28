@@ -9,7 +9,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Multiselect from '@vueform/multiselect';
 const toast = useToast();
-const titulo = "Subir Bultos a Déposito"
+const titulo = "Subir Bultos a Depósito"
 const ruta = 'depositos'
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
