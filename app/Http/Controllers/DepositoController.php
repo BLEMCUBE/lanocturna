@@ -397,7 +397,7 @@ class DepositoController extends Controller
                 "sku" => $request->sku,
                 "producto" => $da_producto->nombre,
                 "bultos" => $request->bultos,
-                "pcs_bulto" => $da_origen->pcs_bulto,
+                "pcs_bulto" => $request->pcs_bulto,
                 "origen" => $da_origen->nombre,
                 "destino" => $da_destino->nombre,
                 "usuario" => $usuario->name,
