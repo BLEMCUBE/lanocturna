@@ -245,7 +245,7 @@ export default {
                 <NavLinkSideBar icon-class="fa-solid fa-warehouse"
                     class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
                     :href="route('depositos.historial')" :active="route().current('depositos.historial')">
-                    <span class="ml-3">Historial Dépositos</span>
+                    <span class="ml-3">Historial Depósitos</span>
                 </NavLinkSideBar>
             </li>
             <li @click="setMenu('nombre-depositos')" v-show="permissions.includes('nombre-depositos')">

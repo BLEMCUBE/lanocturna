@@ -8,9 +8,9 @@ import Swal from 'sweetalert2';
 import CambiarDepositoModal from '@/Pages/Deposito/Partials/CambiarDepositoModal.vue';
 
 import { FilterMatchMode } from 'primevue/api';
-//const { permissions } = usePage().props.auth
+const { roles } = usePage().props.auth
 const expandedRows = ref([]);
-
+console.log(roles)
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const titulo = "Depósitos"
@@ -145,7 +145,7 @@ const filters = ref({
                         headerCell: { class: 'uppercase bg-secondary-900 text-md ' },
                     }" />
 
-                    <Column sortable field="nombre" header="Déposito" :pt="{
+                    <Column sortable field="nombre" header="Depósito" :pt="{
                         bodyCell: { class: 'bg-secondary-900/30 font-bold text-center'  },
                         headerCell: { class: 'uppercase bg-secondary-100 text-md' },
 
@@ -162,6 +162,24 @@ const filters = ref({
                         <template #body="slotProps">
                             {{ (slotProps.data.productos.length)
                             }}
+                        </template>
+                    </Column>
+                    <Column header="" :pt="{
+                        bodyCell: { class: 'bg-secondary-900/30 font-bold w-14  text-center' },
+                        headerContent: { class: 'mx-2 text-cente' },
+                        headerCell: { class: 'uppercase bg-secondary-900 text-md' },
+
+                    }">
+                        <template #body="slotProps">
+                                <div v-if="roles.includes('Super Administrador')||roles.includes('Administrador')"
+                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
+                                    <a :href="route('depositos.exportar', slotProps.data.id)" target="_blank"
+                                    class="py-auto p-2 text-xl"><i
+                                            class="fas fa-file-excel text-white"></i>
+                                    </a>
+                                </div>
+
                         </template>
                     </Column>
                     <template #expansion="slotProps">
