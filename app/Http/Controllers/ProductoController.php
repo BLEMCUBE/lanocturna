@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ProductosExport;
+use App\Exports\ProductoVentaExport;
 use App\Http\Requests\ProductoImportRequest;
 use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
@@ -16,6 +17,8 @@ use App\Models\VentaDetalle;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Request;
+
 
 class ProductoController extends Controller
 {
@@ -242,6 +245,24 @@ class ProductoController extends Controller
         ]);
     }
 
+    public function exportProductoVentas($id)
+    {
+        $producto=DB::table('ventas as ve')
+        ->join('venta_detalles as det', 've.id', '=', 'det.venta_id')
+        ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
+        ->select(DB::raw("DATE_FORMAT(ve.created_at ,'%d/%m/%Y') AS fecha"),
+         'prod.origen','prod.id','det.precio','det.cantidad','ve.destino','ve.nro_compra','prod.nombre'
+         )
+         ->when(Request::input('inicio'), function ($query) {
+            $query->whereDate('ve.created_at', '>=', Request::input('inicio'));
+        })
+        ->when(Request::input('inicio'), function ($query) {
+            $query->whereDate('ve.created_at', '<=', Request::input('fin'));
+        })
+            ->where('prod.id','=',$id)
+        ->orderBy('ve.created_at', 'DESC')->get();
 
+        return Excel::download(new ProductoVentaExport($producto), 'ProductoVentas.xlsx');
+    }
 
 }

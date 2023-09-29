@@ -22,7 +22,7 @@
       transform: translateX(0);
     }
     .layout-wrapper.layout-static .layout-main-container {
-      margin-left: 220px;
+      margin-left: 260px;
     }
     .layout-wrapper.layout-static.layout-static-inactive .layout-sidebar {
       transform: translateX(-100%);

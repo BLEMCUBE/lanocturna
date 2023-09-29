@@ -12,7 +12,7 @@ import axios from 'axios';
 
 const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
-
+const { roles } = usePage().props.auth
 const titulo = "Detalle Producto"
 const ruta = 'productos'
 const cantidad = ref()
@@ -33,11 +33,14 @@ const form = useForm({
 })
 const date = ref([new Date(), new Date()]);
 const date2 = ref([new Date(), new Date()]);
+//const fechaVentaExport = ref({inicio:'',fin:''});
+const fechaVentaExport = ref([]);
+
 
 //filtrado
 const filtradoVenta = (value) => {
     if (value[0] != null && value[1] != null) {
-
+        fechaVentaExport.value = [value[0], value[1]]
         axios.get(route(ruta + '.productoventa', [usePage().props.producto.id, moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')]))
             .then(res => {
                 var datos = res.data
@@ -49,6 +52,19 @@ const filtradoVenta = (value) => {
         location.reload()
     }
 }
+
+//descarga excel
+const descargaExcelProductoVentas = (id) => {
+
+    console.log(fechaVentaExport);
+    if (fechaVentaExport.value[0] != null && fechaVentaExport.value[1] != null) {
+        window.open(route('productos.exportproductoventas', [form.id, { 'inicio': fechaVentaExport.value[0], 'fin': fechaVentaExport.value[1] }]), '_blank');
+    } else {
+
+        window.open(route('productos.exportproductoventas', [form.id]), '_blank');
+    }
+}
+
 //filtrado importacion
 const filtradoImportacion = (value) => {
     if (value[0] != null && value[1] != null) {
@@ -266,6 +282,14 @@ const clickDetImportacion = (e) => {
                                     <date-picker @change="filtradoVenta" type="date" range value-type="YYYY-MM-DD"
                                         format="DD/MM/YYYY" v-model:value="date" :shortcuts="shortcuts" lang="es"
                                         :clearable="false" placeholder="seleccione Fecha"></date-picker>
+                                </div>
+                                <div v-if="roles.includes('Super Administrador') || roles.includes('Administrador')"
+                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 text-xs text-white rounded' } }"
+                                    class=" w-10 h-8  ml-5 rounded flex justify-center items-center text-base font-semibold text-white mr-1">
+                                    <Button @click="descargaExcelProductoVentas(form.id)" :pt="{
+                                        root: { class: 'py-auto px-3 py-2.5 text-xl bg-green-600 border-none hover:bg-green-500' }
+                                    }"><i class="fas fa-file-excel text-white text-xl"></i>
+                                    </Button>
                                 </div>
                             </div>
                         </template>

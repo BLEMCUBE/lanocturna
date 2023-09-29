@@ -81,6 +81,7 @@ Route::controller(ClienteController::class)->group(function () {
 //Producto
 Route::controller(ProductoController::class)->group(function () {
     Route::get('/productos/export', 'exportExcel')->name('productos.exportar')->middleware('auth');
+    Route::get('/productos/{id}/exportproductoventas', 'exportProductoVentas')->name('productos.exportproductoventas')->middleware('auth');
     Route::get('/productos/actualizarfuturo', 'actualizarFuturo')->name('productos.actualizarfuturo')->middleware('auth');
     //Route::post('/productos/importar', 'importExcel')->name('productos.importar')->middleware('auth');
     Route::get('/productos/vistaimportar', 'vistaImportar')->name('productos.vistaimportar')->middleware('auth');
