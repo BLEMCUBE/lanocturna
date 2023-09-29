@@ -90,6 +90,8 @@ Route::controller(ProductoController::class)->group(function () {
     Route::post('/productos/update/{id}', 'update')->name('productos.update')->middleware('auth');
     Route::get('/productos', 'index')->name('productos.index')->middleware('auth');
     Route::post('/productos/store', 'store')->name('productos.store')->middleware('auth');
+    Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productos.productoventa')->middleware('auth');
+    Route::get('/productoimportacion/{id}/{inicio}/{fin}', 'productoImportacion')->name('productos.productoimportacion')->middleware('auth');
     Route::delete('/productos/{id}', 'destroy')->name('productos.destroy')->middleware('auth');
 });
 
