@@ -20,6 +20,7 @@ class Importacion extends Model
         'fecha_camino',
         'mueve_stock',
         'user_id',
+        'created_at'
 
     ];
 

@@ -2,10 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\DepositoDetalle;
 use App\Models\DepositoProducto;
-use App\Models\Importacion;
-use App\Models\ImportacionDetalle;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;

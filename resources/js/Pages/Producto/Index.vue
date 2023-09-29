@@ -77,7 +77,8 @@ const btnEliminar = (id, name) => {
 
 onMounted(() => {
 
-    tabla_productos.value = usePage().props.productos.data;
+    //tabla_productos.value = usePage().props.productos.data;
+    tabla_productos.value = Array.from(usePage().props.productos.data, (x) => x);
 
 });
 
@@ -154,6 +155,8 @@ const filters = ref({
                             class: 'w-10'
                         }
                     }">
+                        <template #loading>
+                        </template>
                         <template #body="slotProps">
                             <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
                                 :src="slotProps.data.imagen" alt="image">
@@ -173,6 +176,8 @@ const filters = ref({
 
 
                     <Column header="Acciones" style="width:80px" class="px-auto">
+                        <template #loading>
+                        </template>
                         <template #body="slotProps">
                             <!--
 

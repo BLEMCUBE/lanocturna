@@ -89,7 +89,7 @@ const ok = (icono,mensaje) => {
 }
 
 const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 </script>
 <template>
@@ -108,7 +108,7 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable  showGridlines :filters="filters" :value="tabla_ventas" paginator
+                <DataTable   :filters="filters" :value="tabla_ventas" paginator
                     :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">

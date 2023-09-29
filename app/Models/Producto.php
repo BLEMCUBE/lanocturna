@@ -22,6 +22,7 @@ class Producto extends Model
         'stock_futuro',
         'en_camino',
         'arribado',
+        'created_at'
     ];
 
     public function detalles_ventas()

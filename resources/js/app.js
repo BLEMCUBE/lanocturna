@@ -8,16 +8,14 @@ import '../css/content.css';
 import '../css/topbar.css';
 import '../css/responsive.css';
 //import "primeflex/primeflex.css";
-//import 'primevue/resources/themes/tailwind-light/theme.css';
-//import Tailwind from 'primevue/passthrough/tailwind'
-import Tailwind_PT from "@/passthrough/tailwind";
-//import 'primevue/resources/themes/lara-light-teal/theme.css';
-//import 'primevue/resources/primevue.min.css';
-
 import 'primeicons/primeicons.css';
 import { createApp, h } from 'vue';
+
 import { createInertiaApp } from '@inertiajs/vue3';
 import PrimeVue from 'primevue/config';
+import Tailwind_PT from "@/passthrough/tailwind";
+import MyDesignSystem from "@/passthrough/designsystem";
+//import Tailwind from "primevue/passthrough/tailwind";
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { library } from "@fortawesome/fontawesome-svg-core";

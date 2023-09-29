@@ -3,17 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ProductosExport;
+use App\Exports\ProductoVentaExport;
 use App\Http\Requests\ProductoImportRequest;
 use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
 use App\Http\Resources\ProductoCollection;
 use App\Imports\ProductoImport;
+use App\Models\Importacion;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
+use App\Models\Venta;
 use App\Models\VentaDetalle;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Request;
+
 
 class ProductoController extends Controller
 {
@@ -115,21 +120,31 @@ class ProductoController extends Controller
             $query->select(DB::raw("*"))
             ->with(['venta' => function ($query) {
                 $query->select(DB::raw("id,nro_compra,destino,
-                DATE_FORMAT(created_at ,'%d/%m/%Y %H:%i:%s') AS fecha"));
+                DATE_FORMAT(created_at ,'%d/%m/%Y') AS fecha"));
             }]);
         }])->with(['importacion_detalles' => function ($query) {
             $query->select(DB::raw("*"))
             ->with(['importacion' => function ($query) {
                 $query->select(DB::raw("id,nro_carpeta,nro_contenedor,
-                DATE_FORMAT(created_at ,'%d/%m/%Y %H:%i:%s') AS fecha"));
+                DATE_FORMAT(fecha_arribado ,'%d/%m/%Y') AS fecha"));
             }]);
         }])->select(DB::raw("productos.*"))
         ->orderBy('id', 'ASC')->findOrFail($id);
-        $cantidad=VentaDetalle::where('producto_id',$id)->sum('cantidad');
 
+        //return $producto;
+        $productoImportacion=DB::table('importaciones as imp')
+        ->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
+        ->join('productos as prod', 'prod.origen', '=', 'det.sku')
+        ->select('imp.nro_carpeta','imp.nro_contenedor','imp.nro_contenedor',
+         'det.precio','det.pcs_bulto','det.bultos','det.pcs_bulto','det.cantidad_total','det.valor_total',
+         'det.cbm_bulto','det.cbm_total','det.importacion_id',DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado")
+         )->where('prod.id','=',$id)
+        ->get();
+        $cantidad=VentaDetalle::where('producto_id',$id)->sum('cantidad');
         $cantidad_importacion=ImportacionDetalle::where('sku',$producto->origen)->sum('cantidad_total');
         return Inertia::render('Producto/Show', [
             'producto' => $producto,
+            'productoImportacion' => $productoImportacion,
             'cantidad' => $cantidad,
             'cantidad_importacion' => $cantidad_importacion,
         ]);
@@ -185,5 +200,69 @@ class ProductoController extends Controller
         return 'Stock futuro Actualizado';
     }
 
+
+    public function productoVenta($id,$inicio,$fin){
+
+        $producto=Producto::with(['detalles_ventas' => function ($query) use ($inicio,$fin) {
+            $query->select(DB::raw("*"))
+            ->with(['venta' => function ($query) {
+                $query
+                ->select('*',DB::raw("id,nro_compra,destino,created_at,
+                DATE_FORMAT(created_at ,'%d/%m/%Y') AS fecha"));
+            }])->whereDate('created_at', '>=', $inicio)
+            ->whereDate('created_at', '<=', $fin);
+        }])->select(DB::raw("productos.*"))
+        ->orderBy('id', 'ASC')->findOrFail($id);
+        $cantidad=VentaDetalle::where('producto_id',$id)->whereDate('created_at', '>=', $inicio)
+        ->whereDate('created_at', '<=', $fin)->sum('cantidad');
+        return response()->json([
+            'producto' => $producto,
+            'cantidad' => $cantidad,
+        ]);
+    }
+
+    public function productoImportacion($id,$inicio,$fin){
+
+
+        $producto=DB::table('importaciones as imp')
+        ->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
+        ->join('productos as prod', 'prod.origen', '=', 'det.sku')
+        ->select('imp.nro_carpeta','imp.nro_contenedor','imp.nro_contenedor','imp.fecha_arribado',
+         'det.precio','det.sku','det.unidad','det.pcs_bulto','det.bultos','det.pcs_bulto','det.cantidad_total','det.valor_total',
+         'det.cbm_bulto','det.cbm_total','det.importacion_id',DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado"),
+         'prod.origen','prod.id'
+         )
+        ->whereDate('imp.fecha_arribado', '>=', $inicio)
+            ->whereDate('imp.fecha_arribado', '<=', $fin)
+            ->where('prod.id','=',$id)
+        ->orderBy('id', 'ASC')->get();
+        $origen=Producto::findOrFail($id);
+
+        $cantidad_importacion=$producto->where('sku',$origen->origen)->sum('cantidad_total');
+        return response()->json([
+            'producto' => $producto,
+            'cantidad_importacion' => $cantidad_importacion,
+        ]);
+    }
+
+    public function exportProductoVentas($id)
+    {
+        $producto=DB::table('ventas as ve')
+        ->join('venta_detalles as det', 've.id', '=', 'det.venta_id')
+        ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
+        ->select(DB::raw("DATE_FORMAT(ve.created_at ,'%d/%m/%Y') AS fecha"),
+         'prod.origen','prod.id','det.precio','det.cantidad','ve.destino','ve.nro_compra','prod.nombre'
+         )
+         ->when(Request::input('inicio'), function ($query) {
+            $query->whereDate('ve.created_at', '>=', Request::input('inicio'));
+        })
+        ->when(Request::input('inicio'), function ($query) {
+            $query->whereDate('ve.created_at', '<=', Request::input('fin'));
+        })
+            ->where('prod.id','=',$id)
+        ->orderBy('ve.created_at', 'DESC')->get();
+
+        return Excel::download(new ProductoVentaExport($producto), 'ProductoVentas.xlsx');
+    }
 
 }

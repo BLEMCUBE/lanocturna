@@ -3,13 +3,21 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
+import DatePicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
+import moment from 'moment';
+import 'vue-datepicker-next/locale/es.es.js';
+import axios from 'axios';
+
 const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
-
+const { roles } = usePage().props.auth
 const titulo = "Detalle Producto"
 const ruta = 'productos'
-const { cantidad } = usePage().props
-const { cantidad_importacion } = usePage().props
+const cantidad = ref()
+const cantidad_importacion = ref()
+//const { cantidad_importacion } = usePage().props
 const tabla_vendidos = ref()
 const tabla_importaciones = ref()
 const form = useForm({
@@ -23,10 +31,131 @@ const form = useForm({
     imagen: '',
     photo: ''
 })
+const date = ref([new Date(), new Date()]);
+const date2 = ref([new Date(), new Date()]);
+//const fechaVentaExport = ref({inicio:'',fin:''});
+const fechaVentaExport = ref([]);
+
+
+//filtrado
+const filtradoVenta = (value) => {
+    if (value[0] != null && value[1] != null) {
+        fechaVentaExport.value = [value[0], value[1]]
+        axios.get(route(ruta + '.productoventa', [usePage().props.producto.id, moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')]))
+            .then(res => {
+                var datos = res.data
+                cantidad.value = datos.cantidad
+                tabla_vendidos.value = Array.from(datos.producto.detalles_ventas, (x) => x);
+            })
+    } else {
+
+        location.reload()
+    }
+}
+
+//descarga excel
+const descargaExcelProductoVentas = (id) => {
+
+    console.log(fechaVentaExport);
+    if (fechaVentaExport.value[0] != null && fechaVentaExport.value[1] != null) {
+        window.open(route('productos.exportproductoventas', [form.id, { 'inicio': fechaVentaExport.value[0], 'fin': fechaVentaExport.value[1] }]), '_blank');
+    } else {
+
+        window.open(route('productos.exportproductoventas', [form.id]), '_blank');
+    }
+}
+
+//filtrado importacion
+const filtradoImportacion = (value) => {
+    if (value[0] != null && value[1] != null) {
+        axios.get(route(ruta + '.productoimportacion', [usePage().props.producto.id, moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')]))
+            .then(res => {
+                var datos = res.data
+                cantidad_importacion.value = datos.cantidad_importacion
+                tabla_importaciones.value = Array.from(datos.producto, (x) => x);
+            })
+    } else {
+
+        location.reload()
+    }
+}
+//*datepicker  */
+const shortcuts = [
+    {
+        text: 'Hoy',
+        onClick() {
+            const date = [new Date(), new Date()];
+            return date;
+        },
+    },
+    {
+        text: 'Ayer',
+        onClick() {
+            const date = [subDays(new Date(), 1), subDays(new Date(), 1)];
+            //date.setTime(date.getTime() - 3600 * 1000 * 24);
+
+            return date;
+        },
+    },
+    {
+        text: 'Este mes',
+        onClick() {
+            const date = [startOfMonth(new Date()), endOfMonth(new Date())];
+
+            return date;
+        },
+    },
+    {
+        text: 'Este año',
+        onClick() {
+            const date = [startOfYear(new Date()), endOfYear(new Date())];
+
+            return date;
+        },
+    },
+]
+const shortcuts2 = [
+    {
+        text: 'Hoy',
+        onClick() {
+            const date2 = [new Date(), new Date()];
+            return date2;
+        },
+    },
+    {
+        text: 'Ayer',
+        onClick() {
+            const date2 = [subDays(new Date(), 1), subDays(new Date(), 1)];
+            //date.setTime(date.getTime() - 3600 * 1000 * 24);
+
+            return date2;
+        },
+    },
+    {
+        text: 'Este mes',
+        onClick() {
+            const date2 = [startOfMonth(new Date()), endOfMonth(new Date())];
+
+            return date2;
+        },
+    },
+    {
+        text: 'Este año',
+        onClick() {
+            const date2 = [startOfYear(new Date()), endOfYear(new Date())];
+
+            return date2;
+        },
+    },
+]
 
 onMounted(() => {
-    tabla_vendidos.value = usePage().props.producto.detalles_ventas;
-    tabla_importaciones.value = usePage().props.producto.importacion_detalles;
+    //tabla_vendidos.value = usePage().props.producto.detalles_ventas;
+    tabla_vendidos.value = Array.from(usePage().props.producto.detalles_ventas, (x) => x);
+    //tabla_importaciones.value = usePage().props.producto.importacion_detalles;
+    cantidad_importacion.value = usePage().props.cantidad_importacion;
+    cantidad.value = usePage().props.cantidad;
+    tabla_importaciones.value = Array.from(usePage().props.productoImportacion, (x) => x);
     var datos = usePage().props.producto;
     form.id = datos.id
     form.nombre = datos.nombre
@@ -50,6 +179,14 @@ const btnEditar = (id) => {
     router.get(route(ruta + '.edit', id));
 
 };
+const clickDetalle = (e) => {
+
+    router.get(route('ventas.show', e.data.venta_id));
+}
+const clickDetImportacion = (e) => {
+    router.get(route('importaciones.show', e.data.importacion_id));
+}
+
 </script>
 <template>
     <Head :title="titulo" />
@@ -69,8 +206,7 @@ const btnEditar = (id) => {
                     label: {
                         class: 'hidden'
                     }
-                }"
-                    v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+                }" v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
                         class="fas fa-edit"></i></Button>
 
             </div>
@@ -88,14 +224,6 @@ const btnEditar = (id) => {
                     <div class="col-span-4 border-b border-gray-200">
                         <h1 class="lg:text-2xl text-lg font-semibold leading-0 text-gray-800 mt-2">
                             {{ form.nombre }}</h1>
-                    </div>
-
-                    <div class="col-span-4">
-                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
-                                Nombre Aduana:
-                            </b>
-                            {{ form.aduana }}
-                        </p>
                     </div>
 
                     <div class="col-span-2">
@@ -140,14 +268,29 @@ const btnEditar = (id) => {
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable sortField="venta.fecha" :sortOrder="-1" :filters="filters"
+                    <DataTable sortField="venta.fecha" :sortOrder="-1" :filters="filters" @row-click="clickDetalle"
                         :value="tabla_vendidos" :pt="{
-                            bodyRow: { class: '' }
-                        }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"
-                        tableStyle="min-width: 50rem" size="small">
+                            bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+                            root: { class: 'w-auto' }
+                        }" scrollable scrollHeight="350px" :virtualScrollerOptions="{
+    numToleratedItems: 30, itemSize: 46
+}" tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />
+                                <div class="ml-5 col-span-1 md:col-span-3 lg:col-span-3">
+                                    <date-picker @change="filtradoVenta" type="date" range value-type="YYYY-MM-DD"
+                                        format="DD/MM/YYYY" v-model:value="date" :shortcuts="shortcuts" lang="es"
+                                        :clearable="false" placeholder="seleccione Fecha"></date-picker>
+                                </div>
+                                <div v-if="roles.includes('Super Administrador') || roles.includes('Administrador')"
+                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 text-xs text-white rounded' } }"
+                                    class=" w-10 h-8  ml-5 rounded flex justify-center items-center text-base font-semibold text-white mr-1">
+                                    <Button @click="descargaExcelProductoVentas(form.id)" :pt="{
+                                        root: { class: 'py-auto px-3 py-2.5 text-xl bg-green-600 border-none hover:bg-green-500' }
+                                    }"><i class="fas fa-file-excel text-white text-xl"></i>
+                                    </Button>
+                                </div>
                             </div>
                         </template>
                         <template #empty> No existe Resultado </template>
@@ -159,6 +302,11 @@ const btnEditar = (id) => {
                             }
                         }"></Column>
                         <Column field="cantidad" sortable header="Cantidad" :pt="{
+                            bodyCell: {
+                                class: 'text-center'
+                            }
+                        }"></Column>
+                        <Column field="precio" sortable header="Precio" :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             }
@@ -182,33 +330,31 @@ const btnEditar = (id) => {
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable showGridlines sortField="importacion.fecha" :sortOrder="-1" :filters="filters_importacion"
-                        :value="tabla_importaciones" :pt="{
-                            bodyRow: { class: '' }
+                    <DataTable sortField="importacion.fecha" :sortOrder="-1" :filters="filters_importacion"
+                        @row-click="clickDetImportacion" :value="tabla_importaciones" :pt="{
+                            bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+                            root: { class: 'w-auto' }
                         }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"
                         tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
                                 <InputText v-model="filters_importacion['global'].value" placeholder="Buscar" />
+                                <div class="ml-5 col-span-1 md:col-span-3 lg:col-span-3">
+                                    <date-picker @change="filtradoImportacion" type="date" range value-type="YYYY-MM-DD"
+                                        format="DD/MM/YYYY" v-model:value="date2" :shortcuts="shortcuts2" lang="es"
+                                        placeholder="seleccione Fecha" :clearable="false"></date-picker>
+                                </div>
                             </div>
                         </template>
                         <template #empty> No existe Resultado </template>
                         <template #loading> Cargando... </template>
-                        <!--
 
-    <Column field="importacion.fecha" sortable header="Fecha" :pt="{
-        bodyCell: {
-            class: 'text-center'
-        }
-    }"></Column>
--->
-
-                        <Column field="importacion.nro_carpeta" header="No. de Carpeta" sortable :pt="{
+                        <Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             }
                         }"></Column>
-                        <Column field="importacion.nro_contenedor" header="BL o No. de Contenedor" sortable :pt="{
+                        <Column field="fecha_arribado" header="Fecha Arribo" sortable :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             }
@@ -255,15 +401,7 @@ const btnEditar = (id) => {
                             }
                         }"></Column>
 
-                        <Column sortable header="Nombre Aduana" :pt="{
-                            bodyCell: {
-                                class: 'text-center'
-                            }
-                        }">
-                            <template #body="slotProps">
-                                {{ form.aduana }}
-                            </template>
-                        </Column>
+
 
                     </DataTable>
 

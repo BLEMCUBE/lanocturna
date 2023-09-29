@@ -24,7 +24,8 @@ class ImportacionDetalle extends Model
         'codigo_barra',
         'estado',
         'mueve_stock',
-        'importacion_id'
+        'importacion_id',
+        'created_at'
 
     ];
 

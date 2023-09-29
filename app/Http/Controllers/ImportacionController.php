@@ -33,7 +33,7 @@ class ImportacionController extends Controller
 
         return Inertia::render('Importacion/Index', [
             'productos' => new ImportacionCollection(
-                Importacion::orderBy('id', 'DESC')
+                Importacion::orderBy('fecha_arribado', 'DESC')
                     ->get()
             )
         ]);
@@ -68,7 +68,6 @@ class ImportacionController extends Controller
             Excel::import(new ImportacionesImport($importacion->id, $importacion->estado, $importacion->mueve_stock), $file);
 
             //actualizando total
-
             $importaci = ImportacionDetalle::where('importacion_id', $importacion->id)->get();
             $importacion->update([
                 "total" => $importaci->sum('valor_total')
