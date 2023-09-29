@@ -26,7 +26,7 @@ class TipoCambioController extends Controller
 
         return Inertia::render('TipoCambio/Index', [
             'tipo_cambio' => new TipoCambioCollection(
-                TipoCambio::orderBy('id', 'ASC')
+                TipoCambio::orderBy('id', 'DESC')
                     ->get()
             )
         ]);

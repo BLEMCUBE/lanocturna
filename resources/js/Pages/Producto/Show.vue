@@ -26,7 +26,8 @@ const form = useForm({
 
 onMounted(() => {
     tabla_vendidos.value = usePage().props.producto.detalles_ventas;
-    tabla_importaciones.value = usePage().props.producto.importacion_detalles;
+    //tabla_importaciones.value = usePage().props.producto.importacion_detalles;
+    tabla_importaciones.value = Array.from(usePage().props.producto.importacion_detalles, (x) => x);
     var datos = usePage().props.producto;
     form.id = datos.id
     form.nombre = datos.nombre
@@ -141,9 +142,11 @@ const btnEditar = (id) => {
                 <div class="align-middle p-2">
 
                     <DataTable sortField="venta.fecha" :sortOrder="-1" :filters="filters"
+
                         :value="tabla_vendidos" :pt="{
                             bodyRow: { class: '' }
-                        }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"
+                        }" scrollable scrollHeight="350px" :virtualScrollerOptions="{
+                            numToleratedItems:30, itemSize: 46 }"
                         tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
@@ -182,7 +185,7 @@ const btnEditar = (id) => {
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable showGridlines sortField="importacion.fecha" :sortOrder="-1" :filters="filters_importacion"
+                    <DataTable  sortField="importacion.fecha" :sortOrder="-1" :filters="filters_importacion"
                         :value="tabla_importaciones" :pt="{
                             bodyRow: { class: '' }
                         }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"

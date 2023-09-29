@@ -8,6 +8,7 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/**/*.js',
         './resources/js/**/*.vue',
+        //"./src/**/*.{vue,js,ts,jsx,tsx}",
         './node_modules/primevue/**/*.{vue,js,ts,jsx,tsx}',
         //'./node_modules/primeflex/primeflex.css'
 

@@ -32,7 +32,7 @@ const filters = ref({
                 </div>
                 <div class="align-middle">
 
-                    <DataTable showGridlines size="small" v-model:filters="filters"
+                    <DataTable  size="small" v-model:filters="filters"
                         :value="tabla_categorias" :paginator="true" :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
 
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"

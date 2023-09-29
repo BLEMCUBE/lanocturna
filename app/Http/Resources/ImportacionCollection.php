@@ -24,6 +24,7 @@ class ImportacionCollection extends ResourceCollection
                     'total'=>number_format($row->total, 2,',', '.')??0,
                     'cbm_total'=>number_format($row->importaciones_detalles->sum('cbm_total'), 2,',', '.')??0,
                     'cantidad_productos'=>$row->importaciones_detalles->count('importacion_id'),
+                    'fecha_arribado'=>!is_null($row->fecha_arribado)?Carbon::createFromFormat('Y-m-d H:i:s', $row->fecha_arribado)->format('d/m/Y'):'',
                     'created_at'=>!is_null($row->created_at)?$row->created_at->format('d/m/Y H:i:s'):'',
                 ];
 

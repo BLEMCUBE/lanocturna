@@ -381,7 +381,7 @@ const cancelCrear = () => {
 
             <!--Productos-->
             <div class="p-0 mb-0 col-span-12  lg:col-span-4 ">
-                <DataTable showGridlines :filters="filters" scrollable scrollHeight="550px"
+                <DataTable  :filters="filters" scrollable scrollHeight="550px"
                     :globalFilterFields="['origen', 'nombre']" :value="productos.data"
                     :virtualScrollerOptions="{ itemSize: 46 }" size="small">
                     <template #header>

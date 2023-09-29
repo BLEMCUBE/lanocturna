@@ -148,7 +148,9 @@ const clickDetalle = (e) => {
 }
 onMounted(() => {
 
-    tabla_ventas.value = usePage().props.ventas.data;
+    //tabla_ventas.value = usePage().props.ventas.data;
+    tabla_ventas.value =Array.from( usePage().props.ventas.data, (x) => x);
+
 
 });
 
@@ -196,8 +198,8 @@ const filters = ref({
 
                 <DataTable  :filters="filters" :value="tabla_ventas"  :pt="{
                     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100' }
-                }" scrollable scrollHeight="100vh"
-                :virtualScrollerOptions="{itemSize: 46 }" @row-click="clickDetalle"
+                }" scrollable scrollHeight="400px"
+                :virtualScrollerOptions="{itemSize: 46,numToleratedItems:20 }" @row-click="clickDetalle"
                     size="small">
 
                     <template #header>
@@ -232,7 +234,8 @@ const filters = ref({
 
                             class: 'text-center'
                         }
-                    }"></Column>
+                    }">   <template #loading>
+                        </template></Column>
                     <Column field="nro_compra" header="Nº Compra"  context="small" sortable :pt="{
 
                         bodyCellContent: {
@@ -250,25 +253,33 @@ const filters = ref({
                             class: 'text-center w-40'
                         },
 
-                    }"></Column>
+                    }">
+                       <template #loading>
+                        </template></Column>
 
                     <Column field="cliente" header="Cliente" sortable :pt="{
                         bodyCellContent: {
-                            class: 'text-center w-52'
+                            class: 'text-center w-56'
                         },
                         headerContent: {
 
-                            class: 'text-center w-52'
+                            class: 'text-center w-56'
                         },
                         headerCell: {
 
-                            class: 'text-center w-52'
+                            class: 'text-center w-56'
                         },
                         bodyCell: {
 
                             class: 'text-center'
                         }
-                    }"></Column>
+                    }">
+                       <template #loading>
+                        <div class="flex align-items-center" :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
+
+</div>
+                        </template>
+                    </Column>
 
                     <Column field="estado" header="Estado" sortable :pt="{
                         bodyCellContent: {
@@ -287,6 +298,8 @@ const filters = ref({
                             class: 'text-center'
                         },
                     }">
+                       <template #loading>
+                        </template>
                         <template #body="slotProps">
                             <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
                                 {{ slotProps.data.estado }}
@@ -327,6 +340,8 @@ class: 'text-center'
                             class: 'text-center p-0'
                         }
                     }">
+                       <template #loading>
+                        </template>
                         <template #body="slotProps">
 
                             <Button v-if="permissions.includes('eliminar-ventas') && slotProps.data.estado !== 'ANULADO'"

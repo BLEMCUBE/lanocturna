@@ -10,9 +10,15 @@ const { importacion } = usePage().props
 const { importacion_detalle } = usePage().props
 const titulo = "Detalle Importación"
 const ruta = 'importaciones'
-
+const import_detalle = ref()
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+onMounted(() => {
+
+
+    import_detalle.value =Array.from( importacion_detalle, (x) => x);
+
 });
 
 const clickDetalle=(e)=>{
@@ -86,13 +92,13 @@ const clickDetalle=(e)=>{
 
 
                     <DataTable sortField="id" :sortOrder="1" :filters="filters"
-                       :value="importacion_detalle" scrollable scrollHeight="500px"
+                       :value="import_detalle" scrollable scrollHeight="500px"
                        @row-click="clickDetalle"
                        :pt="{
                     bodyRow:{class:'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
-                    root:{class:'w-auto'}
+
                 }"
-                        :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem" size="small">
+                        :virtualScrollerOptions="{ numToleratedItems:5, itemSize: 46 }" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />

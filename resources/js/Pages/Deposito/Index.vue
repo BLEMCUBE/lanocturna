@@ -10,7 +10,6 @@ import CambiarDepositoModal from '@/Pages/Deposito/Partials/CambiarDepositoModal
 import { FilterMatchMode } from 'primevue/api';
 const { roles } = usePage().props.auth
 const expandedRows = ref([]);
-console.log(roles)
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const titulo = "Depósitos"
@@ -121,7 +120,7 @@ const filters = ref({
             </div>
             <div class="align-middle">
 
-                <DataTable v-model:expandedRows="expandedRows" showGridlines size="small" v-bind:rowClass="rowClass"
+                <DataTable v-model:expandedRows="expandedRows"  size="small" v-bind:rowClass="rowClass"
                     :value="lista_depositos" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
                     tableStyle="min-width: 50rem" :pt="{
 
