@@ -14,6 +14,7 @@ use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TipoCambioController;
+use App\Http\Controllers\TipoCambioYuanController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VentaController;
 use Illuminate\Support\Facades\Route;
@@ -118,6 +119,15 @@ Route::controller(TipoCambioController::class)->group(function () {
     Route::get('/tipo-cambio/{id}', 'show')->name('tipo_cambio.show')->middleware('auth');
     Route::post('/tipo-cambio/store', 'store')->name('tipo_cambio.store')->middleware('auth');
     Route::delete('/tipo-cambio/{id}', 'destroy')->name('tipo_cambio.destroy')->middleware('auth');
+});
+
+//TipoCambioYuan
+Route::controller(TipoCambioYuanController::class)->group(function () {
+    Route::post('/tipo-cambio-yuan/update/{id}', 'update')->name('tipo_cambio_yuan.update')->middleware('auth');
+    Route::get('/tipo-cambio-yuan', 'index')->name('tipo_cambio_yuan.index')->middleware('auth');
+    Route::get('/tipo-cambio-yuan/{id}', 'show')->name('tipo_cambio_yuan.show')->middleware('auth');
+    Route::post('/tipo-cambio-yuan/store', 'store')->name('tipo_cambio_yuan.store')->middleware('auth');
+    Route::delete('/tipo-cambio-yuan/{id}', 'destroy')->name('tipo_cambio_yuan.destroy')->middleware('auth');
 });
 
 //Venta

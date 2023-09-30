@@ -75,27 +75,27 @@ const showDropdown = ref(false)
             <li @click="setMenu('inicio')">
 
                 <NavLinkSideBar icon-class="fas fa-home"
-                    class="flex items-center justify-start px-2 py-2 text-base font-medium" :href="route('inicio')"
+                    class="flex items-center justify-start px-3 py-2 text-base font-medium" :href="route('inicio')"
                     :active="route().current('inicio')">
-                    <span class="ml-3 uppercase">Inicio</span>
+                    <span class="ml-2 uppercase">Inicio</span>
 
                 </NavLinkSideBar>
             </li>
 
             <li @click="setMenu('productos')" v-show="permissions.includes('lista-productos')">
                 <NavLinkSideBar icon-class="fas fa-boxes"
-                    class="flex items-center justify-start px-2 py-2 text-base font-medium" :href="route('productos.index')"
+                    class="flex items-center justify-start px-3 py-2 text-base font-medium" :href="route('productos.index')"
                     :active="route().current('productos.index')">
-                    <span class="ml-3 uppercase">Productos</span>
+                    <span class="ml-2 uppercase">Productos</span>
                 </NavLinkSideBar>
             </li>
             <!--Configuraciones-->
-            <Disclosure as="div" class="py-1" v-slot="{ open }"
+            <Disclosure as="div" class="p-0" v-slot="{ open }"
                 :default-open="configStore.getCurrentMenu == 'configuraciones'"
                 v-show="permissions.includes('menu-configuraciones')">
                 <h3 class="flow-root text-white hover:text-primary-900">
                     <DisclosureButton
-                        class="flex w-full items-center p-2 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
+                        class="flex w-full items-center py-2 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
                         <div
                             class="font-medium static  flex justify-start items-center w-full py-2 text-white hover:bg-secondary-100 hover:text-primary-900">
                             <div
@@ -116,24 +116,19 @@ const showDropdown = ref(false)
                 <DisclosurePanel class="pt-1" as="div">
 
                     <div class="flex items-center">
-                        <li @click="setMenu('configuraciones')" class="w-full"
-                            v-show="permissions.includes('lista-usuarios')">
-                            <NavLinkSideBar icon-class="fas fa-user-friends"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                        <li @click="setMenu('configuraciones')" class="w-full" v-show="permissions.includes('lista-usuarios')">
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('usuarios.index')" :active="route().current('usuarios.index')">
-                                <span class="ml-3 uppercase">Usuarios</span>
+                                <span class="ml-2 uppercase">Usuarios</span>
                             </NavLinkSideBar>
                         </li>
 
-
                     </div>
-
                     <div class="flex items-center">
                         <li @click="setMenu('configuraciones')" class="w-full" v-show="permissions.includes('ver-roles')">
-                            <NavLinkSideBar icon-class="fas fa-user-tag"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('roles.index')" :active="route().current('roles.index')">
-                                <span class="ml-3 uppercase">Roles y Permisos</span>
+                                <span class="ml-2 uppercase">Roles y Permisos</span>
                             </NavLinkSideBar>
                         </li>
 
@@ -142,20 +137,18 @@ const showDropdown = ref(false)
                     <div class="flex items-center">
                         <li @click="setMenu('configuraciones')" class="w-full"
                             v-show="permissions.includes('lista-tipocambio')">
-                            <NavLinkSideBar icon-class="far fa-money-bill-alt"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('tipo_cambio.index')" :active="route().current('tipo_cambio.index')">
-                                <span class="ml-3 uppercase">Tipo de Cambio</span>
+                                <span class="ml-2 uppercase">Tipo de Cambio</span>
                             </NavLinkSideBar>
                         </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('configuraciones')" class="w-full"
                             v-show="permissions.includes('lista-tipocambio')">
-                            <NavLinkSideBar icon-class="far fa-money-bill-alt"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                                :href="route('tipo_cambio.index')" :active="route().current('tipo_cambio.index')">
-                                <span class="ml-3 uppercase">Tipo de Cambio Yuanes</span>
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('tipo_cambio_yuan.index')" :active="route().current('tipo_cambio_yuan.index')">
+                                <span class="ml-2 uppercase">Tipo de Cambio Yuanes</span>
                             </NavLinkSideBar>
                         </li>
                     </div>
@@ -164,10 +157,9 @@ const showDropdown = ref(false)
 
                         <li @click="setMenu('configuraciones')" class="w-full"
                             v-show="permissions.includes('configuraciones')">
-                            <NavLinkSideBar icon-class="fas fa-key"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('configuraciones.index')" :active="route().current('configuraciones.index')">
-                                <span class="ml-3 uppercase">Código Maestro</span>
+                                <span class="ml-2 uppercase">Código Maestro</span>
                             </NavLinkSideBar>
                         </li>
                     </div>
@@ -185,7 +177,7 @@ const showDropdown = ref(false)
                             class="font-medium static  flex justify-start items-center w-full py-2 text-white hover:bg-secondary-100 hover:text-primary-900">
                             <div
                                 class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
-                                <i class="fa fa-shopping-cart mr-3"></i>
+                                <i class="fa fa-shopping-cart mr-3 ml-1"></i>
                                 Compras
                                 <div class="pr-2 py-4 absolute right-0 z-50 ">
                                     <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
@@ -203,10 +195,9 @@ const showDropdown = ref(false)
 
                     <div class="flex items-center">
                         <li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('lista-importaciones')">
-                            <NavLinkSideBar icon-class="fa-solid fa-cart-plus"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('importaciones.index')" :active="route().current('importaciones.index')">
-                                <span class="ml-3 uppercase">importaciones</span>
+                                <span class="ml-2 uppercase">importaciones</span>
                             </NavLinkSideBar>
                         </li>
 
@@ -215,10 +206,10 @@ const showDropdown = ref(false)
                     <div class="flex items-center">
 
                         <li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('crear-ventas')">
-                            <NavLinkSideBar icon-class="fa fa-shopping-cart" :href="route('compras.create')"
+                            <NavLinkSideBar :href="route('compras.create')"
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :active="route().current('compras.create')">
-                                <span class="ml-3 uppercase">Compra en plaza</span>
+                                <span class="ml-2 uppercase">Compra en plaza</span>
                             </NavLinkSideBar>
                         </li>
 
@@ -226,10 +217,9 @@ const showDropdown = ref(false)
 
                     <div class="flex items-center">
                         <li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('lista-ventas')">
-                            <NavLinkSideBar icon-class="fa fa-shopping-cart"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('compras.index')" :active="route().current('compras.index')">
-                                <span class="ml-3 uppercase">Historial de Compras</span>
+                                <span class="ml-2 uppercase">Historial de Compras</span>
                             </NavLinkSideBar>
                         </li>
                     </div>
@@ -248,7 +238,7 @@ const showDropdown = ref(false)
                             class="font-medium static  flex justify-start items-center w-full py-2 text-white hover:bg-secondary-100 hover:text-primary-900">
                             <div
                                 class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
-                                <i class="fa fa-shopping-cart mr-3"></i>
+                                <i class="fas fa-cash-register mr-3 ml-1"></i>
                                 Ventas
                                 <div class="pr-2 my-4 absolute right-0 ">
                                     <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
@@ -266,10 +256,10 @@ const showDropdown = ref(false)
                     <div class="flex items-center">
                         <li @click="setMenu('ventas'); btnCrear()" class="w-full"
                             v-show="permissions.includes('crear-ventas')">
-                            <NavLinkSideBar icon-class="fa fa-shopping-cart" :href="linkCrear"
+                            <NavLinkSideBar :href="linkCrear"
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :active="route().current('ventas.create')">
-                                <span class="ml-3 uppercase">Crear Venta</span>
+                                <span class="ml-2 uppercase">Crear Venta</span>
                             </NavLinkSideBar>
                         </li>
 
@@ -277,10 +267,9 @@ const showDropdown = ref(false)
 
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-cajas')">
-                            <NavLinkSideBar icon-class="fa fa-cash-register"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('cajas.index')" :active="route().current('cajas.index')">
-                                <span class="ml-3 uppercase">Caja</span>
+                                <span class="ml-2 uppercase">Caja</span>
                             </NavLinkSideBar>
                         </li>
 
@@ -288,46 +277,41 @@ const showDropdown = ref(false)
 
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('subir-envios')">
-                            <NavLinkSideBar icon-class="fas fa-store"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('envios.create')" :active="route().current('envios.create')">
-                                <span class="ml-3 uppercase">Mercado Libre</span>
+                                <span class="ml-2 uppercase">Mercado Libre</span>
                             </NavLinkSideBar>
                         </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-expediciones')">
-                            <NavLinkSideBar icon-class="fas fa-warehouse"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('expediciones.index')" :active="route().current('expediciones.index')">
-                                <span class="ml-3 uppercase">Expedición</span>
+                                <span class="ml-2 uppercase">Expedición</span>
                             </NavLinkSideBar>
                         </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
-                            <NavLinkSideBar icon-class="fas fa-truck"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('envios.index')" :active="route().current('envios.index')">
-                                <span class="ml-3 uppercase ">Envios</span>
+                                <span class="ml-2 uppercase ">Envios</span>
                             </NavLinkSideBar>
                         </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('historial-envios')">
-                            <NavLinkSideBar icon-class="fas fa-truck"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('envios.historial')" :active="route().current('envios.historial')">
-                                <span class="ml-3 uppercase">Historial de Envios</span>
+                                <span class="ml-2 uppercase">Historial de Envios</span>
                             </NavLinkSideBar>
                         </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-ventas')">
-                            <NavLinkSideBar icon-class="fa fa-shopping-cart"
-                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            <NavLinkSideBar class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('ventas.index')" :active="route().current('ventas.index')">
-                                <span class="ml-3 uppercase">Historial de Ventas</span>
+                                <span class="ml-2 uppercase">Historial de Ventas</span>
                             </NavLinkSideBar>
                         </li>
                     </div>
@@ -362,10 +346,10 @@ const showDropdown = ref(false)
 
                     <div class="flex items-center">
                         <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('lista-depositos')">
-                            <NavLinkSideBar icon-class="fa-solid fa-warehouse"
+                            <NavLinkSideBar
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('depositos.index')" :active="route().current('depositos.index')">
-                                <span class="ml-3 uppercase">Servicios</span>
+                                <span class="ml-2 uppercase">Servicios</span>
                             </NavLinkSideBar>
                         </li>
 
