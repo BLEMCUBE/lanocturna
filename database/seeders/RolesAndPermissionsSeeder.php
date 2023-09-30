@@ -82,9 +82,10 @@ class RolesAndPermissionsSeeder extends Seeder
 
             //Deposito
             ['name' => 'lista-depositos', 'description' => 'Depósitos'],
-            ['name' => 'historial-depositos', 'description' => 'Historial Depósitos'],
-            ['name' => 'nombre-depositos', 'description' => 'Nombre Depósitos'],
-            ['name' => 'mover-depositos', 'description' => 'Mover Bultos'],
+            ['name' => 'subir-depositos', 'description' => 'Subir Bultos Depósito'],
+            ['name' => 'bultos-depositos', 'description' => 'Bultos Importados'],
+            ['name' => 'historial-depositos', 'description' => 'Historial De Depósito'],
+            ['name' => 'nombre-depositos', 'description' => 'Nombre Depósito'],
 
             //lista productos mas vendidos
             ['name' => 'productos-vendidos', 'description' => 'Listado productos más vendidos'],

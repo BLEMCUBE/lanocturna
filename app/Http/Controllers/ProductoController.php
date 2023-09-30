@@ -12,6 +12,7 @@ use App\Imports\ProductoImport;
 use App\Models\Importacion;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
+use App\Models\TipoCambioYuan;
 use App\Models\Venta;
 use App\Models\VentaDetalle;
 use Maatwebsite\Excel\Facades\Excel;
@@ -142,10 +143,29 @@ class ProductoController extends Controller
         ->get();
         $cantidad=VentaDetalle::where('producto_id',$id)->sum('cantidad');
         $cantidad_importacion=ImportacionDetalle::where('sku',$producto->origen)->sum('cantidad_total');
+        $tipo_cambio_yuan=TipoCambioYuan::latest()->first();
+        $ultimo_importacion=ImportacionDetalle::select('precio')->where('sku',$producto->origen)->latest()->first();
+        $ultimo_precio=0;
+        $ultimo_yang=0;
+        $costo_aprox=0.0;
+        if(!empty($ultimo_importacion)){
+            $ultimo_precio=$ultimo_importacion->precio;
+            if(!empty($tipo_cambio_yuan)){
+                $ultimo_yang=$tipo_cambio_yuan->valor;
+                $costo_aprox=$ultimo_precio*1.70/$ultimo_yang;
+
+            }
+
+        }
+
+
+        //return $tipo_cambio_yuan;
         return Inertia::render('Producto/Show', [
             'producto' => $producto,
             'productoImportacion' => $productoImportacion,
             'cantidad' => $cantidad,
+            'costo_aprox' =>number_format( $costo_aprox,2,','),
+            'ultimo_yang' => $ultimo_yang,
             'cantidad_importacion' => $cantidad_importacion,
         ]);
     }

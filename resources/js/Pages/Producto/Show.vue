@@ -9,10 +9,13 @@ import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import axios from 'axios';
+import InputError from '@/Components/InputError.vue';
 
 const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
 const { roles } = usePage().props.auth
+const { costo_aprox } = usePage().props
+const { ultimo_yang } = usePage().props
 const titulo = "Detalle Producto"
 const ruta = 'productos'
 const cantidad = ref()
@@ -255,7 +258,14 @@ const clickDetImportacion = (e) => {
                             {{ form.stock_futuro }}
                         </p>
                     </div>
-
+                    <div class="col-span-4">
+                        <p class="text-xl leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Costo aprox. USD (iva inc):
+                            </b>
+                             {{ costo_aprox }}
+                        </p>
+                        <InputError v-if="ultimo_yang<=0" class="mt-1 text-xs" message="Debe de registrar tipo de cambio yuanes" />
+                    </div>
                 </div>
 
             </div>
