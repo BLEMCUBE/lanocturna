@@ -13,6 +13,7 @@ use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RotacionStockController;
 use App\Http\Controllers\TipoCambioController;
 use App\Http\Controllers\TipoCambioYuanController;
 use App\Http\Controllers\UsuarioController;
@@ -212,5 +213,11 @@ Route::controller(CompraController::class)->group(function () {
 
 });
 
+//Rotacion
+Route::controller(RotacionStockController::class)->group(function () {
+    //Route::get('/rotacion-stock/{id}/exportproductoventas', 'exportProductoVentas')->name('rotacion-stock.exportproductoventas')->middleware('auth');
+    Route::get('/rotacion-stock', 'index')->name('rotacion-stock.index')->middleware('auth');
+//    Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productos.productoventa')->middleware('auth');
+});
 
 require __DIR__.'/auth.php';

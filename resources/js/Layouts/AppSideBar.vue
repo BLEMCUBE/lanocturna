@@ -224,6 +224,14 @@ const showDropdown = ref(false)
                             </NavLinkSideBarNotIcon>
                         </li>
                     </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('rotacion-stock')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('rotacion-stock.index')" :active="route().current('rotacion-stock.index')">
+                                <span class="ml-2 uppercase">Rotación de stock</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
                 </DisclosurePanel>
             </Disclosure>
             <!--Compras-->

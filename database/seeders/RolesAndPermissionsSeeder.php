@@ -19,67 +19,71 @@ class RolesAndPermissionsSeeder extends Seeder
         */
         $this->permissions =  [
 
-            //Usuarios
-            ['name' => 'lista-usuarios', 'description' => 'Lista Usuarios'],
-            ['name' => 'crear-usuarios', 'description' => 'Crear Usuario'],
-            ['name' => 'editar-usuarios', 'description' => 'Editar Usuario'],
-            ['name' => 'eliminar-usuarios', 'description' => 'Eliminar Usuario'],
-
-            //Clientes
-            /*['name' => 'lista-clientes', 'description' => 'Lista Clientes'],
-            ['name' => 'crear-clientes', 'description' => 'Crear Cliente'],
-            ['name' => 'editar-clientes', 'description' => 'Editar Cliente'],
-            ['name' => 'eliminar-clientes', 'description' => 'Eliminar Cliente'],*/
-
             //Productos
             ['name' => 'lista-productos', 'description' => 'Lista Productos'],
             ['name' => 'crear-productos', 'description' => 'Crear Producto'],
             ['name' => 'editar-productos', 'description' => 'Editar Producto'],
             ['name' => 'eliminar-productos', 'description' => 'Eliminar Producto'],
 
+
+            //Grupo configuraciones
+            ['name' => 'menu-configuraciones', 'description' => 'Menú configuraciones'],
+            //Usuarios
+            ['name' => 'lista-usuarios', 'description' => 'Lista Usuarios'],
+            ['name' => 'crear-usuarios', 'description' => 'Crear Usuario'],
+            ['name' => 'editar-usuarios', 'description' => 'Editar Usuario'],
+            ['name' => 'eliminar-usuarios', 'description' => 'Eliminar Usuario'],
+            //Roles y permisos
+            ['name' => 'ver-roles', 'description' => 'Roles y permisos'],
+            //codigo
+            ['name' => 'configuraciones', 'description' => 'Código Maestro'],
+            //Tipo de cambio
+            ['name' => 'lista-tipocambio', 'description' => 'Tipo de cambio'],
+            //Tipo de cambio yuanes
+            ['name' => 'lista-tipocambio-yuanes', 'description' => 'Tipo de cambio Yuanes'],
+            //graficos
+            ['name' => 'grafico-ventas', 'description' => 'Gráfico Ventas'],
+            //lista productos mas vendidos
+            ['name' => 'productos-vendidos', 'description' => 'Listado productos más vendidos'],
+
+
+            //GRUPO COMPRAS
+            ['name' => 'menu-compras', 'description' => 'Menú Compras'],
+            //Compras
+            ['name' => 'lista-compras', 'description' => 'Historial de Compras'],
+            ['name' => 'crear-compras', 'description' => 'Crear Compra'],
+            ['name' => 'editar-compras', 'description' => 'Editar Compra'],
+            ['name' => 'eliminar-compras', 'description' => 'Anular Compra'],
             //Importaciones
             ['name' => 'lista-importaciones', 'description' => 'Lista Importaciones'],
             ['name' => 'excel-importaciones', 'description' => 'Importar Excel'],
             ['name' => 'detalle-importaciones', 'description' => 'Detalle Importación'],
             ['name' => 'editar-importaciones', 'description' => 'Editar Importación'],
             ['name' => 'eliminar-importaciones', 'description' => 'Eliminar Importación'],
+            //Rotación de Stock
+            ['name' => 'rotacion-stock', 'description' => 'Rotación de Stock'],
 
-            //Tipo de cambio
-            ['name' => 'lista-tipocambio', 'description' => 'Tipo de cambio'],
 
+            //GRUPO VENTAS
+            ['name' => 'menu-ventas', 'description' => 'Menú Ventas'],
             //Ventas
             ['name' => 'lista-ventas', 'description' => 'Historial de Ventas'],
             ['name' => 'crear-ventas', 'description' => 'Crear Venta'],
             ['name' => 'facturar-ventas', 'description' => 'Facturar Venta'],
             ['name' => 'editar-ventas', 'description' => 'Editar Venta'],
             ['name' => 'eliminar-ventas', 'description' => 'Anular Venta'],
-
-            //Compras
-            ['name' => 'lista-compras', 'description' => 'Historial de Compras'],
-            ['name' => 'crear-compras', 'description' => 'Crear Compra'],
-            ['name' => 'editar-compras', 'description' => 'Editar Compra'],
-            ['name' => 'eliminar-compras', 'description' => 'Anular Compra'],
-
             //Caja
             ['name' => 'lista-cajas', 'description' => 'Caja'],
-
             //Expedición
             ['name' => 'lista-expediciones', 'description' => 'Expedición'],
-
             //Envios
             ['name' => 'lista-envios', 'description' => 'Envios'],
             ['name' => 'historial-envios', 'description' => 'Historial de Envios'],
             ['name' => 'subir-envios', 'description' => 'Mercado Libre'],
 
-            //configuraciones
-            ['name' => 'configuraciones', 'description' => 'Código Maestro'],
 
-            //Roles y permisos
-            ['name' => 'ver-roles', 'description' => 'Roles y permisos'],
-
-            //graficos
-            ['name' => 'grafico-ventas', 'description' => 'Gráfico Ventas'],
-
+            //GRUPO DEPOSITOS
+            ['name' => 'menu-depositos', 'description' => 'Menú Depósitos'],
             //Deposito
             ['name' => 'lista-depositos', 'description' => 'Depósitos'],
             ['name' => 'subir-depositos', 'description' => 'Subir Bultos Depósito'],
@@ -87,26 +91,11 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'historial-depositos', 'description' => 'Historial De Depósito'],
             ['name' => 'nombre-depositos', 'description' => 'Nombre Depósito'],
 
-            //lista productos mas vendidos
-            ['name' => 'productos-vendidos', 'description' => 'Listado productos más vendidos'],
 
-            //Tipo de cambio yuanes
-            ['name' => 'lista-tipocambio-yuanes', 'description' => 'Tipo de cambio Yuanes'],
-
-            //Menu
-            ['name' => 'menu-configuraciones', 'description' => 'Menú configuraciones'],
-            ['name' => 'menu-compras', 'description' => 'Menú Compras'],
-            ['name' => 'menu-ventas', 'description' => 'Menú Ventas'],
-            ['name' => 'menu-depositos', 'description' => 'Menú Depósitos'],
+            //GRUPO SERVICIOS
             ['name' => 'menu-servicios', 'description' => 'Menú Servicio Técnico'],
-
             //Servicio Tecnico
-            ['name' => 'lista-servicios', 'description' => 'Servicio Técnico'],
-
-
-
-
-
+            ['name' => 'lista-servicios', 'description' => 'Lista Servicios Técnicos'],
 
 
         ];
