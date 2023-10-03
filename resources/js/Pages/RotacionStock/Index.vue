@@ -14,12 +14,12 @@ import InputError from '@/Components/InputError.vue';
 const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
 const { roles } = usePage().props.auth
+const { meses } = usePage().props
 const titulo = "Rotación de Stock"
 const ruta = 'rotacion-stock'
-const cantidad = ref()
-const cantidad_importacion = ref()
+const mes = ref()
+
 const tabla_vendidos = ref()
-const tabla_importaciones = ref()
 const form = useForm({
     id: '',
     origen: '',
@@ -31,12 +31,14 @@ const form = useForm({
     imagen: '',
     photo: ''
 })
-const date = ref([new Date(), new Date()]);
+const date = ref();
+date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
+//const date = ref([new Date(), new Date()]);
 //const fechaVentaExport = ref({inicio:'',fin:''});
 const fechaVentaExport = ref([]);
 
 //filtrado
-const filtradoVenta = (value) => {
+/*const filtradoVenta = (value) => {
     if (value[0] != null && value[1] != null) {
         fechaVentaExport.value = [value[0], value[1]]
         axios.get(route(ruta + '.productoventa', [usePage().props.producto.id, moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')]))
@@ -49,17 +51,40 @@ const filtradoVenta = (value) => {
 
         location.reload()
     }
+}*/
+
+//filtrado
+const filtradoVenta = (value) => {
+    if (value[0] != null && value[1] != null) {
+        router.get(
+            "/rotacion-stock/",
+            {
+                inicio: moment(value[0]).format('YYYY-MM-DD'),
+                fin: moment(value[1]).format('YYYY-MM-DD')
+            },
+            {
+                preserveState: true,
+                onSuccess: () => {
+                    tabla_vendidos.value = Array.from(usePage().props.productos, (x) => x);
+                    mes.value = usePage().props.meses;
+
+                }
+            }
+        );
+        date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
+    }
 }
 
-//descarga excel
-const descargaExcelProductoVentas = (id) => {
 
-    console.log(fechaVentaExport);
-    if (fechaVentaExport.value[0] != null && fechaVentaExport.value[1] != null) {
-        window.open(route('productos.exportproductoventas', [form.id, { 'inicio': fechaVentaExport.value[0], 'fin': fechaVentaExport.value[1] }]), '_blank');
+//descarga excel
+const descargaExcelProductoVentas = () => {
+
+
+    if (date.value[0] != null && date.value[1] != null) {
+        window.open(route('rotacion-stock.exportproductoventas', [{ 'inicio': date.value[0], 'fin': date.value[1] }]), '_blank');
     } else {
 
-        window.open(route('productos.exportproductoventas', [form.id]), '_blank');
+       return;
     }
 }
 
@@ -102,37 +127,13 @@ const shortcuts = [
 
 
 onMounted(() => {
-    //tabla_vendidos.value = usePage().props.producto.detalles_ventas;
-    tabla_vendidos.value = Array.from(usePage().props.producto.detalles_ventas, (x) => x);
-    //tabla_importaciones.value = usePage().props.producto.importacion_detalles;
-    cantidad_importacion.value = usePage().props.cantidad_importacion;
-    cantidad.value = usePage().props.cantidad;
-    tabla_importaciones.value = Array.from(usePage().props.productoImportacion, (x) => x);
-    var datos = usePage().props.producto;
-    form.id = datos.id
-    form.nombre = datos.nombre
-    form.origen = datos.origen
-    form.aduana = datos.aduana
-    form.codigo_barra = datos.codigo_barra
-    form.stock = datos.stock
-    form.stock_minimo = datos.stock_minimo
-    form.stock_futuro = datos.stock_futuro
-    previewImage.value = datos.imagen
-    form.imagen = datos.imagen
+    filtradoVenta(date.value)
+
 
 });
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
-
-const btnEditar = (id) => {
-    router.get(route(ruta + '.edit', id));
-
-};
-const clickDetalle = (e) => {
-
-    router.get(route('ventas.show', e.data.venta_id));
-}
 
 
 </script>
@@ -149,12 +150,15 @@ const clickDetalle = (e) => {
             <div class="bg-white mr-0 ml-0 mt-6  shadow rounded-lg border border-gray-300">
 
                 <div class="align-middle p-2">
+                  <b>
+                      MESES: {{ mes }}
 
-                    <DataTable sortField="venta.fecha" :sortOrder="-1" :filters="filters" :value="tabla_vendidos" :pt="{
+                  </b>
+                    <DataTable sortField="rotacion_stock" :sortOrder="1" :filters="filters" :value="tabla_vendidos" :pt="{
                         root: { class: 'w-auto' }
-                    }" scrollable scrollHeight="350px" :virtualScrollerOptions="{
-    numToleratedItems: 30, itemSize: 46
-}" tableStyle="min-width: 50rem" size="small">
+                    }" scrollable scrollHeight="350px"
+                        :virtualScrollerOptions="{ numToleratedItems: 30, itemSize: 46 }" tableStyle="min-width: 50rem"
+                        size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -166,7 +170,7 @@ const clickDetalle = (e) => {
                                 <div v-if="roles.includes('Super Administrador') || roles.includes('Administrador')"
                                     v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 text-xs text-white rounded' } }"
                                     class=" w-10 h-8  ml-5 rounded flex justify-center items-center text-base font-semibold text-white mr-1">
-                                    <Button @click="descargaExcelProductoVentas(form.id)" :pt="{
+                                    <Button @click="descargaExcelProductoVentas()" :pt="{
                                         root: { class: 'py-auto px-3 py-2.5 text-xl bg-green-600 border-none hover:bg-green-500' }
                                     }"><i class="fas fa-file-excel text-white text-xl"></i>
                                     </Button>
@@ -176,7 +180,7 @@ const clickDetalle = (e) => {
                         <template #empty> No existe Resultado </template>
                         <template #loading> Cargando... </template>
 
-                        <Column field="venta.fecha" sortable header="ORIGEN" :pt="{
+                        <Column field="origen" sortable header="ORIGEN" :pt="{
                             bodyCell: { class: 'text-center p-0 m-0 w-56' },
                             headerTitle: { class: 'text-center  w-56' },
                             headerContent: {
@@ -189,7 +193,7 @@ const clickDetalle = (e) => {
 
                         }"></Column>
 
-                        <Column field="venta.fecha" sortable header="NOMBRE" :pt="{
+                        <Column field="nombre" sortable header="NOMBRE" :pt="{
                             bodyCell: { class: 'text-center p-0 m-0 w-56' },
                             headerTitle: { class: 'text-center  w-56' },
                             headerContent: {
@@ -202,7 +206,7 @@ const clickDetalle = (e) => {
 
                         }"></Column>
 
-                        <Column field="venta.fecha" sortable header="FECHA ULTIMA COMPRA" :pt="{
+                        <Column field="ultima_compra" sortable header="FECHA ÚLTIMA COMPRA" :pt="{
                             bodyCell: { class: 'text-center p-0 m-0 w-56' },
                             headerTitle: { class: 'text-center  w-56' },
                             headerContent: {
@@ -215,7 +219,7 @@ const clickDetalle = (e) => {
 
                         }"></Column>
 
-                        <Column field="venta.fecha" sortable header="FECHA ULTIMA VENTA" :pt="{
+                        <Column field="ultima_venta" sortable header="FECHA ÚLTIMA VENTA" :pt="{
                             bodyCell: { class: 'text-center p-0 m-0 w-56' },
                             headerTitle: { class: 'text-center  w-56' },
                             headerContent: {
@@ -228,7 +232,7 @@ const clickDetalle = (e) => {
 
                         }"></Column>
 
-                        <Column field="venta.fecha" sortable header="VENTAS TOTALES" :pt="{
+                        <Column field="ventas_totales" sortable header="VENTAS TOTALES" :pt="{
                             bodyCell: { class: 'text-center p-0 m-0 w-56' },
                             headerTitle: { class: 'text-center  w-56' },
                             headerContent: {
@@ -241,7 +245,7 @@ const clickDetalle = (e) => {
 
                         }"></Column>
 
-                        <Column field="venta.fecha" sortable header="STOCK" :pt="{
+                        <Column field="stock" sortable header="STOCK" :pt="{
                             bodyCell: { class: 'text-center p-0 m-0 w-56' },
                             headerTitle: { class: 'text-center  w-56' },
                             headerContent: {
@@ -254,7 +258,7 @@ const clickDetalle = (e) => {
 
                         }"></Column>
 
-                        <Column field="venta.fecha" sortable header="STOCK FUTURO" :pt="{
+                        <Column field="stock_futuro" sortable header="STOCK FUTURO" :pt="{
                             bodyCell: { class: 'text-center p-0 m-0 w-56' },
                             headerTitle: { class: 'text-center  w-56' },
                             headerContent: {
@@ -267,7 +271,7 @@ const clickDetalle = (e) => {
 
                         }"></Column>
 
-                        <Column field="venta.fecha" sortable header="ROTACION DEL STOCK " :pt="{
+                        <Column field="rotacion_stock" sortable header="ROTACION DEL STOCK " :pt="{
                             bodyCell: { class: 'text-center p-0 m-0 w-56' },
                             headerTitle: { class: 'text-center  w-56' },
                             headerContent: {

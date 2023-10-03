@@ -2,20 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ProductosExport;
-use App\Exports\ProductoVentaExport;
-use App\Http\Requests\ProductoImportRequest;
-use App\Http\Requests\ProductoStoreRequest;
-use App\Http\Requests\ProductoUpdateRequest;
-use App\Http\Resources\ProductoCollection;
-use App\Imports\ProductoImport;
-use App\Models\ImportacionDetalle;
-use App\Models\Producto;
-use App\Models\TipoCambioYuan;
+
 use App\Models\VentaDetalle;
-use Maatwebsite\Excel\Facades\Excel;
+use Exception;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Request;
 use Carbon\Carbon;
 
@@ -26,227 +20,239 @@ class RotacionStockController extends Controller
     {
 
 
-       $primerDiaMes = Carbon::now()->startOfMonth()->toDateString();
-        $ultimoDiaMes = Carbon::now()->endOfMonth()->toDateString();
-
-      /*  $consulta_ventas = DB::table('ventas as ve')
-        ->select(DB::raw("ve.created_at, SUM(ve.total) AS total,DATE_FORMAT(ve.created_at,'%d/%m/%y') AS fecha"))
-        ->when(Request::input('inicio'), function ($query, $search) {
-            $query->whereDate('ve.created_at', '>=', $search);
-        })
-        ->when(Request::input('fin'), function ($query, $search) {
-            $query->whereDate('ve.created_at', '<=', $search);
-        })
-        ->whereDate('ve.created_at', '>=', $primerDiaMes)
-        ->whereDate('ve.created_at', '<=', $ultimoDiaMes)
-        ->where('ve.tipo', '=', 'VENTA')
-        ->where('ve.facturado', '=', '1')
-        ->orderBy('fecha', 'asc')
-        ->groupBy('fecha')
-        ->get();*/
-
-
-        /*$consulta_ventas= Producto::with(['detalles_ventas' => function ($query)  use ($primerDiaMes,$ultimoDiaMes){
-            $query->select('*',DB::raw("count('producto_id') as sku"))
-            ->with(['venta' => function ($query)  use ($primerDiaMes,$ultimoDiaMes){
-                $query
-                ->select('*',DB::raw("id,nro_compra,destino,created_at,
-                DATE_FORMAT(created_at ,'%d/%m/%Y') AS fecha"))->whereDate('created_at', '>=', $primerDiaMes)
-                ->whereDate('created_at', '<=', $ultimoDiaMes);
-            }]);
-        }])->select("*")
-        ->orderBy('id', 'ASC')->get();*/
-
-        /*$consulta_ventas = DB::table('ventas as ve')
-        ->join('venta_detalles as det', 've.id', '=', 'det.venta_id')
-        ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
-        ->select(
-            'prod.origen',
-            'prod.id',
-            've.created_at',
-            'det.precio',
-            'det.producto_validado',
-            'det.cantidad',
-            've.fecha_facturacion',
-            'prod.nombre'
-        )*/
-        //->whereDate('ve.fecha_facturacion', '>=', $primerDiaMes)
-        //->select('ve.*')
-        //->whereDate('ve.fecha_facturacion', '>=', '2023-09-10')
-
-        //->whereDate('ve.fecha_facturacion', '<=', $ultimoDiaMes)
-       // ->whereDate('ve.fecha_facturacion', '<=', '2023-09-11')
-
-        //->where('prod.id', '=', $id)
-        //->where('det.producto_validado', 1)
-        //->orderBy('ve.created_at', 'DESC')->get();
-
-      /*  $consulta_ventas= DB::table('ventas as ve')
-        ->join('venta_detalles as det', 've.id', '=', 'det.venta_id')
-        ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
-        ->select(
-            //'det.cantidad',
-        'prod.stock','prod.stock_futuro','prod.origen','prod.nombre','ve.fecha_facturacion',
-        've.id','ve.facturado','ve.validado',
-        //DB::raw("sum(det.cantidad) as total")
-        )
-        ->whereDate('ve.fecha_facturacion', '>=', '2023-09-12')
-         ->whereDate('ve.fecha_facturacion', '<=', '2023-09-22')
-         ->where('ve.facturado',1)
-        //DB::Raw('count(det.producto_id) as sumaTotal' )
-        ->where('det.producto_id','=','1519')
-    ->get();*/
-
-
-
-
-
-
-
-    $consulta_ventas=DB::table('venta_detalles as det')
-    ->join('ventas as ve', 'det.venta_id', '=', 've.id')
-    ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
-    ->whereDate('ve.fecha_facturacion', '>=', '2023-09-14')
-    ->whereDate('ve.fecha_facturacion', '<=', '2023-09-14')
-    ->select('prod.nombre','prod.origen','prod.stock','prod.stock_futuro','det.cantidad',
-    'prod.id','det.producto_id',DB::raw("DATE_FORMAT(ve.fecha_facturacion,'%d/%m/%y') AS fecha"))
-    //->where('det.producto_id','=','1513')
-    //->where('det.producto_id','=','prod.id')
-    ->groupBy('prod.id')
-    ->get()
-    ;
-    return $consulta_ventas;
-
-        return Inertia::render('RotacionStock/Index', [
-            'productos' => new ProductoCollection(
-                Producto::orderBy('id', 'DESC')
-                    ->get()
+        $consulta_ventas = DB::table('venta_detalles as det')
+            ->join('ventas as ve', 'det.venta_id', '=', 've.id')
+            ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
+            ->when(Request::input('inicio'), function ($query) {
+                $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
+            })
+            ->when(Request::input('fin'), function ($query) {
+                $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
+            })
+            ->where('det.producto_validado', '=', 1)
+            ->select(
+                'prod.nombre',
+                'prod.origen',
+                'prod.stock',
+                'prod.stock_futuro',
+                'det.cantidad',
+                //'prod.id','det.producto_id',DB::raw("DATE_FORMAT(ve.fecha_facturacion,'%d/%m/%y') AS fecha,sum(det.cantidad) as ventas_totales"))
+                'prod.id',
+                'det.producto_id',
+                DB::raw("sum(det.cantidad) as ventas_totales")
             )
-        ]);
-    }
+
+            ->groupBy('prod.id')
+            ->get();
+
+
+        $ultimas_ventas = [];
+
+        $toDate = Carbon::parse(Request::input('fin'));
+        $fromDate = Carbon::parse(Request::input('inicio'));
+
+        $days = $toDate->diffInDays($fromDate);
+        $meses = $toDate->diffInMonths($fromDate);
+        $years = $toDate->diffInYears($fromDate);
 
 
 
+        foreach ($consulta_ventas as $key => $venta) {
 
-    public function show($id)
-    {
-        $producto=Producto::with(['detalles_ventas' => function ($query) {
-            $query->select(DB::raw("*"))
-            ->with(['venta' => function ($query) {
-                $query->select(DB::raw("id,nro_compra,destino,
-                DATE_FORMAT(created_at ,'%d/%m/%Y') AS fecha"));
-            }]);
-        }])->with(['importacion_detalles' => function ($query) {
-            $query->select(DB::raw("*"))
-            ->with(['importacion' => function ($query) {
-                $query->select(DB::raw("id,nro_carpeta,nro_contenedor,
-                DATE_FORMAT(fecha_arribado ,'%d/%m/%Y') AS fecha"));
-            }]);
-        }])->select(DB::raw("productos.*"))
-        ->orderBy('id', 'ASC')->findOrFail($id);
 
-        //return $producto;
-        $productoImportacion=DB::table('importaciones as imp')
-        ->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
-        ->join('productos as prod', 'prod.origen', '=', 'det.sku')
-        ->select('imp.nro_carpeta','imp.nro_contenedor','imp.nro_contenedor',
-         'det.precio','det.pcs_bulto','det.bultos','det.pcs_bulto','det.cantidad_total','det.valor_total',
-         'det.cbm_bulto','det.cbm_total','det.importacion_id',DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado")
-         )->where('prod.id','=',$id)
-        ->get();
-        $cantidad=VentaDetalle::where('producto_id',$id)->sum('cantidad');
-        $cantidad_importacion=ImportacionDetalle::where('sku',$producto->origen)->sum('cantidad_total');
-        $tipo_cambio_yuan=TipoCambioYuan::latest()->first();
-        $ultimo_importacion=ImportacionDetalle::select('precio')->where('sku',$producto->origen)->latest()->first();
-        $ultimo_precio=0;
-        $ultimo_yang=0;
-        $costo_aprox=0.0;
-        if(!empty($ultimo_importacion)){
-            $ultimo_precio=$ultimo_importacion->precio;
-            if(!empty($tipo_cambio_yuan)){
-                $ultimo_yang=$tipo_cambio_yuan->valor;
-                $costo_aprox=$ultimo_precio*1.70/$ultimo_yang;
-
+            $ultima_venta = VentaDetalle::where('producto_id', $venta->id)
+                ->where('producto_validado', '=', 1)
+                ->select(DB::raw("DATE_FORMAT(created_at ,'%d/%m/%Y') AS fecha"))
+                ->latest()->first();
+            $ultima_compra = DB::table('importaciones as imp')
+                ->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
+                ->where('imp.estado', '=', 'Arribado')
+                ->select('imp.id', 'imp.estado', 'imp.created_at', 'det.sku', DB::raw("DATE_FORMAT(fecha_arribado ,'%d/%m/%Y') AS fecha"))
+                ->where('det.sku', '=', $venta->origen)->latest('fecha_arribado')->first();
+            if ($meses <= 0) {
+                $meses = 1;
+            } else {
+                $meses = $meses;
             }
-
+            $rotacion_stock = round($venta->stock_futuro / ($venta->ventas_totales / $meses));
+            array_push($ultimas_ventas, [
+                "origen" => $venta->origen,
+                "nombre" => $venta->nombre,
+                "ultima_compra" => $ultima_compra ? $ultima_compra->fecha : '',
+                "ultima_venta" => $ultima_venta ? $ultima_venta->fecha : '',
+                "ventas_totales" => $venta->ventas_totales,
+                "stock" => $venta->stock,
+                "stock_futuro" => $venta->stock_futuro,
+                "rotacion_stock" => $rotacion_stock,
+            ]);
         }
 
-
-        //return $tipo_cambio_yuan;
-        return Inertia::render('Producto/Show', [
-            'producto' => $producto,
-            'productoImportacion' => $productoImportacion,
-            'cantidad' => $cantidad,
-            'costo_aprox' =>number_format( $costo_aprox,2,','),
-            'ultimo_yang' => $ultimo_yang,
-            'cantidad_importacion' => $cantidad_importacion,
+        return Inertia::render('RotacionStock/Index', [
+            'meses' => $meses,
+            'productos' => $ultimas_ventas
         ]);
     }
 
 
-
-    public function productoVenta($id,$inicio,$fin){
-
-        $producto=Producto::with(['detalles_ventas' => function ($query) use ($inicio,$fin) {
-            $query->select(DB::raw("*"))
-            ->with(['venta' => function ($query) {
-                $query
-                ->select('*',DB::raw("id,nro_compra,destino,created_at,
-                DATE_FORMAT(created_at ,'%d/%m/%Y') AS fecha"));
-            }])->whereDate('created_at', '>=', $inicio)
-            ->whereDate('created_at', '<=', $fin);
-        }])->select(DB::raw("productos.*"))
-        ->orderBy('id', 'ASC')->findOrFail($id);
-        $cantidad=VentaDetalle::where('producto_id',$id)->whereDate('created_at', '>=', $inicio)
-        ->whereDate('created_at', '<=', $fin)->sum('cantidad');
-        return response()->json([
-            'producto' => $producto,
-            'cantidad' => $cantidad,
-        ]);
-    }
-
-    public function productoImportacion($id,$inicio,$fin){
-
-
-        $producto=DB::table('importaciones as imp')
-        ->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
-        ->join('productos as prod', 'prod.origen', '=', 'det.sku')
-        ->select('imp.nro_carpeta','imp.nro_contenedor','imp.nro_contenedor','imp.fecha_arribado',
-         'det.precio','det.sku','det.unidad','det.pcs_bulto','det.bultos','det.pcs_bulto','det.cantidad_total','det.valor_total',
-         'det.cbm_bulto','det.cbm_total','det.importacion_id',DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado"),
-         'prod.origen','prod.id'
-         )
-        ->whereDate('imp.fecha_arribado', '>=', $inicio)
-            ->whereDate('imp.fecha_arribado', '<=', $fin)
-            ->where('prod.id','=',$id)
-        ->orderBy('id', 'ASC')->get();
-        $origen=Producto::findOrFail($id);
-
-        $cantidad_importacion=$producto->where('sku',$origen->origen)->sum('cantidad_total');
-        return response()->json([
-            'producto' => $producto,
-            'cantidad_importacion' => $cantidad_importacion,
-        ]);
-    }
-
-    public function exportProductoVentas($id)
+    public function exportProductoVentas()
     {
-        $producto=DB::table('ventas as ve')
-        ->join('venta_detalles as det', 've.id', '=', 'det.venta_id')
-        ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
-        ->select(DB::raw("DATE_FORMAT(ve.created_at ,'%d/%m/%Y') AS fecha"),
-         'prod.origen','prod.id','det.precio','det.cantidad','ve.destino','ve.nro_compra','prod.nombre'
-         )
-         ->when(Request::input('inicio'), function ($query) {
-            $query->whereDate('ve.created_at', '>=', Request::input('inicio'));
-        })
-        ->when(Request::input('inicio'), function ($query) {
-            $query->whereDate('ve.created_at', '<=', Request::input('fin'));
-        })
-            ->where('prod.id','=',$id)
-        ->orderBy('ve.created_at', 'DESC')->get();
 
-        return Excel::download(new ProductoVentaExport($producto), 'ProductoVentas.xlsx');
+        $fecha_inicio = Carbon::parse(Request::input('inicio'));
+        $fecha_fin = Carbon::parse(Request::input('fin'));
+
+        $meses = $fecha_fin->diffInMonths($fecha_inicio);
+        //$fecha_inicio->format('d/m/Y')
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '00000000'],
+                ],
+            ]
+
+        ];
+        $filename = "ROTACION_STOCK_" . $fecha_inicio->format('d_m_Y') . "_AL_" . $fecha_fin->format('d_m_Y') . ".xlsx";
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('B1', $meses . " MESES");
+        $sheet->setCellValue('C1', "FECHA: ");
+        $sheet->setCellValue('D1', $fecha_inicio->format('d/m/Y') . " AL " . $fecha_fin->format('d/m/Y'));
+        $sheet->getStyle('B' . (string)1 . ':' . 'D' . (string)1)->getFont()->setBold(true);
+        $sheet->getStyle('B' . (string)1 . ':' . 'D' . (string)1)->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('B' . (string)1 . ':' . 'D' . (string)1)->getAlignment()->setVertical('center');
+        $f = 3;
+
+        $sheet->setCellValue('A' . (string)$f, "ORIGEN");
+        $sheet->setCellValue('B' . (string)$f, "NOMBRE");
+        $sheet->setCellValue('C' . (string)$f, "FECHA ULTIMA COMPRA");
+        $sheet->setCellValue('D' . (string)$f, "FECHA ULTIMA VENTA");
+        $sheet->setCellValue('E' . (string)$f, "VENTAS TOTALES");
+        $sheet->setCellValue('F' . (string)$f, "STOCK");
+        $sheet->setCellValue('G' . (string)$f, "STOCK FUTURO");
+        $sheet->setCellValue('H' . (string)$f, "ROTACION DEL STOCK ");
+
+
+        $sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->getFont()->setBold(true);
+        //$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->applyFromArray($styleArray);
+        $sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->getAlignment()->setVertical('center');
+        /*$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FFB8CCE4');*/
+
+
+        //datos
+
+        $consulta_ventas = DB::table('venta_detalles as det')
+            ->join('ventas as ve', 'det.venta_id', '=', 've.id')
+            ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
+            ->when(Request::input('inicio'), function ($query) {
+                $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
+            })
+            ->when(Request::input('fin'), function ($query) {
+                $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
+            })
+            ->where('det.producto_validado', '=', 1)
+            ->select(
+                'prod.nombre',
+                'prod.origen',
+                'prod.stock',
+                'prod.stock_futuro',
+                'det.cantidad',
+                'prod.id',
+                'det.producto_id',
+                DB::raw("sum(det.cantidad) as ventas_totales")
+            )
+
+            ->groupBy('prod.id')
+            ->get();
+
+
+        $ultimas_ventas = [];
+
+
+
+        foreach ($consulta_ventas as $key => $venta) {
+
+
+            $ultima_venta = VentaDetalle::where('producto_id', $venta->id)
+                ->where('producto_validado', '=', 1)
+                ->select(DB::raw("DATE_FORMAT(created_at ,'%d/%m/%Y') AS fecha"))
+                ->latest()->first();
+            $ultima_compra = DB::table('importaciones as imp')
+                ->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
+                ->where('imp.estado', '=', 'Arribado')
+                ->select('imp.id', 'imp.estado', 'imp.created_at', 'det.sku', DB::raw("DATE_FORMAT(fecha_arribado ,'%d/%m/%Y') AS fecha"))
+                ->where('det.sku', '=', $venta->origen)->latest('fecha_arribado')->first();
+            if ($meses <= 0) {
+                $meses = 1;
+            } else {
+                $meses = $meses;
+            }
+            $rotacion_stock = round($venta->stock_futuro / ($venta->ventas_totales / $meses));
+            array_push($ultimas_ventas, [
+                "origen" => $venta->origen,
+                "nombre" => $venta->nombre,
+                "ultima_compra" => $ultima_compra ? $ultima_compra->fecha : '',
+                "ultima_venta" => $ultima_venta ? $ultima_venta->fecha : '',
+                "ventas_totales" => $venta->ventas_totales,
+                "stock" => $venta->stock,
+                "stock_futuro" => $venta->stock_futuro,
+                "rotacion_stock" => $rotacion_stock,
+            ]);
+        }
+        $sorted = array_values(Arr::sort($ultimas_ventas, function (array $value) {
+            return $value['rotacion_stock'];
+        }));
+
+        foreach ($sorted as $key => $vent) {
+
+            $f++;
+            $sheet->setCellValueExplicit('A' . $f, $vent['origen'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('B' . $f, $vent['nombre']);
+            $sheet->setCellValue('C' . $f, $vent['ultima_compra']);
+            $sheet->setCellValue('D' . $f, $vent['ultima_venta']);
+            $sheet->setCellValue('E' . $f, $vent['ventas_totales']);
+            $sheet->setCellValue('F' . $f, $vent['stock']);
+            $sheet->setCellValue('G' . $f, $vent['stock_futuro']);
+            $sheet->setCellValue('H' . $f, $vent['rotacion_stock']);
+        }
+
+        //$sheet->getStyle('A4:H4' . $sheet->getHighestRow())->getAlignment()->setVertical('center');
+        //activando auto size
+        $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(0);
+        foreach ($sheet->getColumnIterator() as $column) {
+            $sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
+        }
+        //alto de celdas
+        foreach ($sheet->getRowIterator() as $row) {
+            $sheet->getRowDimension($row->getRowIndex())->setRowHeight(20);
+        }
+        //guardando excel
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('reportes/' . $filename);
+        sleep(2);
+        $url_save = public_path() . "/reportes/" . $filename;
+        $name_file_header = "filename=" . $filename . "";
+        $headers = [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => $name_file_header,
+        ];
+
+
+        //descargar excel
+        try {
+
+            $content = file_get_contents($url_save);
+        } catch (Exception $e) {
+            exit($e->getMessage());
+        }
+
+        header("Content-Disposition: attachment; filename=" . $filename);
+        unlink($url_save);
+        return $content;
+
     }
-
 }

@@ -182,11 +182,7 @@ const clickDetalle=(e)=>{
                                 class: 'text-center'
                             }
                         }"></Column>
-                        <Column field="codigo_barra" sortable header="Código de Barra" :pt="{
-                            bodyCell: {
-                                class: 'text-center'
-                            }
-                        }"></Column>
+
                           <Column :pt="{
                             bodyCell: {
                                 class: 'hidden'

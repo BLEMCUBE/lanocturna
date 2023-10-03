@@ -60,7 +60,7 @@ const filtradoVenta = (value) => {
 //descarga excel
 const descargaExcelProductoVentas = (id) => {
 
-    console.log(fechaVentaExport);
+
     if (fechaVentaExport.value[0] != null && fechaVentaExport.value[1] != null) {
         window.open(route('productos.exportproductoventas', [form.id, { 'inicio': fechaVentaExport.value[0], 'fin': fechaVentaExport.value[1] }]), '_blank');
     } else {

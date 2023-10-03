@@ -119,7 +119,7 @@ class ImportacionController extends Controller
         //return $importacion;
 
         $importacion_detalle = DB::table('importaciones_detalles as det')
-            ->join('productos as prod', 'prod.codigo_barra', '=', 'det.codigo_barra')
+            ->join('productos as prod', 'prod.origen', '=', 'det.sku')
             ->select(DB::raw("det.*,prod.nombre,prod.aduana,prod.imagen,prod.id as producto_id"))
             ->where('importacion_id', $id)->get();
 
@@ -283,7 +283,7 @@ class ImportacionController extends Controller
         //return $importacion;
 
         $importacion_detalle = DB::table('importaciones_detalles as det')
-            ->join('productos as prod', 'prod.codigo_barra', '=', 'det.codigo_barra')
+            ->join('productos as prod', 'prod.origen', '=', 'det.sku')
             ->select(DB::raw("det.*,prod.nombre,prod.aduana,prod.imagen,prod.id as producto_id"))
             ->where('importacion_id', $id)->get();
 

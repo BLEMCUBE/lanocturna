@@ -215,9 +215,8 @@ Route::controller(CompraController::class)->group(function () {
 
 //Rotacion
 Route::controller(RotacionStockController::class)->group(function () {
-    //Route::get('/rotacion-stock/{id}/exportproductoventas', 'exportProductoVentas')->name('rotacion-stock.exportproductoventas')->middleware('auth');
+    Route::get('/rotacion-stock/exportproductoventas', 'exportProductoVentas')->name('rotacion-stock.exportproductoventas')->middleware('auth');
     Route::get('/rotacion-stock', 'index')->name('rotacion-stock.index')->middleware('auth');
-//    Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productos.productoventa')->middleware('auth');
 });
 
 require __DIR__.'/auth.php';
