@@ -34,6 +34,9 @@
     },
     "dependencies": {
         "@fawmi/vue-google-maps": "^0.9.79",
+        "@headlessui/tailwindcss": "^0.2.0",
+        "@headlessui/vue": "^1.7.16",
+        "@heroicons/vue": "^2.0.18",
         "@vue/compiler-sfc": "^3.3.4",
         "@vueuse/core": "^10.3.0",
         "apexcharts": "^3.42.0",

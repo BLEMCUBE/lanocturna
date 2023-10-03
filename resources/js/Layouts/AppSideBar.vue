@@ -1,74 +1,68 @@
-<script>
-import { onMounted, computed, watch,ref } from "vue";
+<script setup>
+import { onMounted, computed, watch, ref } from "vue";
 import NavLinkSideBar from '@/Components/NavLinkSideBar.vue';
-import { usePage,router } from '@inertiajs/vue3';
+import NavLinkSideBarNotIcon from '@/Components/NavLinkSideBarNotIcon.vue';
+import { usePage, router } from '@inertiajs/vue3';
 import { useConfigStore } from '@/store/config.js'
 import Swal from 'sweetalert2';
-export default {
-    components: {
-        NavLinkSideBar,
+import {
+    Disclosure,
+    DisclosureButton,
+    DisclosurePanel,
+} from '@headlessui/vue'
+
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/vue/20/solid'
+const props = defineProps({
+    isOpen: {
+        type: Boolean,
+        default: true,
+
     },
-    props: {
-        isOpen: {
-            type: Boolean,
-            default: true,
+});
 
-        },
 
-    },
-    setup(props) {
 
-        const { permissions } = usePage().props.auth
-        const { hoy_tipo_cambio } = usePage().props.auth
-        const configStore = useConfigStore();
-        const classes = computed(() => props.isOpen ? 'sm:translate-x-0' : 'sm:hidden sm:translate-x-0');
-        const setMenu = (menu) => {
-            configStore.showMenu(menu);
-        }
-        const linkCrear=ref('');
+const { permissions } = usePage().props.auth
+const { hoy_tipo_cambio } = usePage().props.auth
+const configStore = useConfigStore();
+const classes = computed(() => props.isOpen ? 'sm:translate-x-0' : 'sm:hidden sm:translate-x-0');
+const setMenu = (menu) => {
+    configStore.showMenu(menu);
+}
+const linkCrear = ref('');
 
-        onMounted(() => {
+onMounted(() => {
 
-        });
+});
 
-        watch(
-            () => props.isOpen,
-            () => {
+watch(
+    () => props.isOpen,
+    () => {
 
-                if (props.isOpen) {
-                } else {
-                }
-            }
-        );
-        const btnCrear = () => {
-            if (hoy_tipo_cambio == true) {
-
-                router.get(route('ventas.create'));
-            } else {
-                ok('error', 'No se ha especificado el tipo de cambio para el día')
-            }
-        }
-
-        const ok = (icono, mensaje) => {
-
-            Swal.fire({
-                width: 350,
-                title: mensaje,
-                icon: icono
-            })
-        }
-
-        return {
-            classes,
-            configStore,
-            setMenu,
-            permissions,
-            btnCrear,
-            ok,
-            linkCrear
+        if (props.isOpen) {
+        } else {
         }
     }
+);
+const btnCrear = () => {
+    if (hoy_tipo_cambio == true) {
+
+        router.get(route('ventas.create'));
+    } else {
+        ok('error', 'No se ha especificado el tipo de cambio para el día')
+    }
 }
+
+const ok = (icono, mensaje) => {
+
+    Swal.fire({
+        width: 350,
+        title: mensaje,
+        icon: icono
+    })
+}
+
+const showDropdown = ref(false)
 
 </script>
 
@@ -77,207 +71,374 @@ export default {
 
 
         <!-- Productos Link -->
-        <!--
 
-
-        <div>
-
-
-            <NavLinkSideBar icon-class="fas fa-user-friends"
-                class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                :active="route().current('usuarios.index')" @click="setMenu('usuario')" href="#" preserve-state>
-                <span class="ml-3">Usuarios</span>
-                <i class="fas fa-chevron-down absolute right-5"></i>
-                <i class="fas fa-chevron-up absolute right-5"></i>
-            </NavLinkSideBar>
-            <div role="menu" class="mt-2 space-y-0.5 px-5" aria-label="Main Link"
-                :class="configStore.getCurrentMenu == 'usuario' ? '' : 'hidden'">
-
-                <li @click="setMenu('usuario')" v-show="permissions.includes('lista-usuarios')">
-                    <NavLinkSideBar
-                        class="mt-0 px-3 py-1.5 text-base font-medium block text-sm transition-colors duration-200 rounded-0"
-                        :href="route('usuarios.index')" :active="route().current('usuarios.index')">
-                        <span class="ml-5">Usuarios</span>
-                    </NavLinkSideBar>
-                </li>
-                <li class="pt-0" @click="setMenu('clientes')" v-show="permissions.includes('lista-clientes')">
-                    <NavLinkSideBar
-                        class="mt-0 px-5 py-1.5 text-base font-medium block text-sm transition-colors duration-200 rounded-0"
-                        :href="route('clientes.index')" :active="route().current('clientes.index')">
-                        <span class="ml-4">Clientes</span>
-                    </NavLinkSideBar>
-                </li>
-
-            </div>
-        </div>
--->
         <ul>
             <li @click="setMenu('inicio')">
 
                 <NavLinkSideBar icon-class="fas fa-home"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('inicio')"
+                    class="flex items-center justify-start px-3 py-2 text-base font-medium" :href="route('inicio')"
                     :active="route().current('inicio')">
-                    <span class="ml-3">Inicio</span>
+                    <span class="ml-2 uppercase">Inicio</span>
 
                 </NavLinkSideBar>
             </li>
-            <li @click="setMenu('usuario')" v-show="permissions.includes('lista-usuarios')">
-                <NavLinkSideBar icon-class="fas fa-user-friends"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('usuarios.index')" :active="route().current('usuarios.index')">
-                    <span class="ml-3">Usuarios</span>
-                </NavLinkSideBar>
-            </li>
-            <!--
-            <li @click="setMenu('clientes')" v-show="permissions.includes('lista-clientes')">
-                <NavLinkSideBar icon-class="fas fa-users"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('clientes.index')" :active="route().current('clientes.index')">
-                    <span class="ml-3">Clientes</span>
-                </NavLinkSideBar>
-            </li>
 
-            -->
             <li @click="setMenu('productos')" v-show="permissions.includes('lista-productos')">
                 <NavLinkSideBar icon-class="fas fa-boxes"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('productos.index')" :active="route().current('productos.index')">
-                    <span class="ml-3">Productos</span>
+                    class="flex items-center justify-start px-3 py-2 text-base font-medium" :href="route('productos.index')"
+                    :active="route().current('productos.index')">
+                    <span class="ml-2 uppercase">Productos</span>
                 </NavLinkSideBar>
             </li>
-            <li @click="setMenu('ventas')" v-show="permissions.includes('lista-ventas')">
-                <NavLinkSideBar icon-class="fa fa-shopping-cart"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('ventas.index')"
-                    :active="route().current('ventas.index')">
-                    <span class="ml-3">Historial de Ventas</span>
-                </NavLinkSideBar>
-            </li>
+            <!--Configuraciones-->
+            <Disclosure as="div" class="p-0" v-slot="{ open }"
+                :default-open="configStore.getCurrentMenu == 'configuraciones'"
+                v-show="permissions.includes('menu-configuraciones')">
+                <h3 class="flow-root text-white hover:text-primary-900">
+                    <DisclosureButton
+                        class="flex w-full items-center py-2 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
+                        <div
+                            class="font-medium static  flex justify-start items-center w-full py-2 text-white hover:bg-secondary-100 hover:text-primary-900">
+                            <div
+                                class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
+                                <i class="fas fa-cog mr-3 ml-1"></i>
+                                Configuraciones
+                                <div class="pr-2 py-4 absolute right-0 z-50 ">
+                                    <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
+                                    <ChevronUpIcon v-else class="h-8 w-8" aria-hidden="true" />
 
-            <li @click="setMenu('crear-ventas'); btnCrear()" v-show="permissions.includes('crear-ventas')">
-                <NavLinkSideBar icon-class="fa fa-shopping-cart" :href="linkCrear"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :active="route().current('ventas.create')">
-                    <span class="ml-3">Crear Venta</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('cajas')" v-show="permissions.includes('lista-cajas')">
-                <NavLinkSideBar icon-class="fa fa-cash-register"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('cajas.index')"
-                    :active="route().current('cajas.index')">
-                    <span class="ml-3">Caja</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('expediciones')" v-show="permissions.includes('lista-expediciones')">
-                <NavLinkSideBar icon-class="fas fa-warehouse"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('expediciones.index')"
-                    :active="route().current('expediciones.index')">
-                    <span class="ml-3">Expedición</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('envios')" v-show="permissions.includes('lista-envios')">
-                <NavLinkSideBar icon-class="fas fa-truck"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('envios.index')"
-                    :active="route().current('envios.index')">
-                    <span class="ml-3">Envios</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('subir-envio')" v-show="permissions.includes('subir-envios')">
-                <NavLinkSideBar icon-class="fas fa-store"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('envios.create')"
-                    :active="route().current('envios.create')">
-                    <span class="ml-3">Mercado Libre</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('historial-envios')" v-show="permissions.includes('historial-envios')">
-                <NavLinkSideBar icon-class="fas fa-truck"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('envios.historial')"
-                    :active="route().current('envios.historial')">
-                    <span class="ml-3">Historial de Envios</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('importaciones')" v-show="permissions.includes('lista-importaciones')">
-                <NavLinkSideBar icon-class="fa-solid fa-cart-plus"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('importaciones.index')" :active="route().current('importaciones.index')">
-                    <span class="ml-3">importaciones</span>
-                </NavLinkSideBar>
-            </li>
+                                </div>
+                            </div>
 
-            <li @click="setMenu('compras')" v-show="permissions.includes('lista-ventas')">
-                <NavLinkSideBar icon-class="fa fa-shopping-cart"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('compras.index')"
-                    :active="route().current('compras.index')">
-                    <span class="ml-3">Historial de Compras</span>
-                </NavLinkSideBar>
-            </li>
+                        </div>
 
-            <li @click="setMenu('crear-compras')" v-show="permissions.includes('crear-ventas')">
-                <NavLinkSideBar icon-class="fa fa-shopping-cart" :href="route('compras.create')"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :active="route().current('compras.create')">
-                    <span class="ml-3">Compra en plaza</span>
-                </NavLinkSideBar>
-            </li>
+                    </DisclosureButton>
+                </h3>
+                <DisclosurePanel class="pt-1" as="div">
 
-            <li @click="setMenu('depositos')" v-show="permissions.includes('lista-depositos')">
-                <NavLinkSideBar icon-class="fa-solid fa-warehouse"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('depositos.index')" :active="route().current('depositos.index')">
-                    <span class="ml-3">Depósitos</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('subir-depositos')" v-show="permissions.includes('historial-depositos')">
-                <NavLinkSideBar icon-class="fa-solid fa-warehouse"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('depositos.create')" :active="route().current('depositos.create')">
-                    <span class="ml-3">Subir Bultos a Depósitos</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('bultos-depositos')" v-show="permissions.includes('historial-depositos')">
-                <NavLinkSideBar icon-class="fa-solid fa-warehouse"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('depositos.bultos')" :active="route().current('depositos.bultos')">
-                    <span class="ml-3">Bultos Importados</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('historial-depositos')" v-show="permissions.includes('historial-depositos')">
-                <NavLinkSideBar icon-class="fa-solid fa-warehouse"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('depositos.historial')" :active="route().current('depositos.historial')">
-                    <span class="ml-3">Historial Depósitos</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('nombre-depositos')" v-show="permissions.includes('nombre-depositos')">
-                <NavLinkSideBar icon-class="fa-solid fa-warehouse"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('depositoslista.index')" :active="route().current('depositoslista.index')">
-                    <span class="ml-3">Nombre Depósitos</span>
-                </NavLinkSideBar>
-            </li>
+                    <div class="flex items-center">
+                        <li @click="setMenu('configuraciones')" class="w-full" v-show="permissions.includes('lista-usuarios')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('usuarios.index')" :active="route().current('usuarios.index')">
+                                <span class="ml-2 uppercase">Usuarios</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('configuraciones')" class="w-full" v-show="permissions.includes('ver-roles')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('roles.index')" :active="route().current('roles.index')">
+                                <span class="ml-2 uppercase">Roles y Permisos</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+
+                    </div>
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('configuraciones')" class="w-full"
+                            v-show="permissions.includes('lista-tipocambio')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('tipo_cambio.index')" :active="route().current('tipo_cambio.index')">
+                                <span class="ml-2 uppercase">Tipo de Cambio</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('configuraciones')" class="w-full"
+                            v-show="permissions.includes('lista-tipocambio')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('tipo_cambio_yuan.index')" :active="route().current('tipo_cambio_yuan.index')">
+                                <span class="ml-2 uppercase">Tipo de Cambio Yuanes</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
 
 
-            <li @click="setMenu('tipo_cambio')" v-show="permissions.includes('lista-tipocambio')">
-                <NavLinkSideBar icon-class="far fa-money-bill-alt"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('tipo_cambio.index')" :active="route().current('tipo_cambio.index')">
-                    <span class="ml-3">Tipo de Cambio</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('configuraciones')" v-show="permissions.includes('configuraciones')">
-                <NavLinkSideBar icon-class="fas fa-key"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium"
-                    :href="route('configuraciones.index')" :active="route().current('configuraciones.index')">
-                    <span class="ml-3">Código Maestro</span>
-                </NavLinkSideBar>
-            </li>
-            <li @click="setMenu('roles')" v-show="permissions.includes('ver-roles')">
-                <NavLinkSideBar icon-class="fas fa-user-tag"
-                    class="flex items-center justify-start px-4 py-1.5 text-base font-medium" :href="route('roles.index')"
-                    :active="route().current('roles.index')">
-                    <span class="ml-3">Roles y Permisos</span>
-                </NavLinkSideBar>
-            </li>
+                        <li @click="setMenu('configuraciones')" class="w-full"
+                            v-show="permissions.includes('configuraciones')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('configuraciones.index')" :active="route().current('configuraciones.index')">
+                                <span class="ml-2 uppercase">Código Maestro</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                </DisclosurePanel>
+            </Disclosure>
+            <!--Configuraciones-->
+
+            <!--Compras-->
+            <Disclosure as="div" class="py-1" v-slot="{ open }" :default-open="configStore.getCurrentMenu == 'compras'"
+                v-show="permissions.includes('menu-compras')">
+                <h3 class="flow-root text-white hover:text-primary-900">
+                    <DisclosureButton
+                        class="flex w-full items-center p-2 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
+                        <div
+                            class="font-medium static  flex justify-start items-center w-full py-2 text-white hover:bg-secondary-100 hover:text-primary-900">
+                            <div
+                                class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
+                                <i class="fa fa-shopping-cart mr-3 ml-1"></i>
+                                Compras
+                                <div class="pr-2 py-4 absolute right-0 z-50 ">
+                                    <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
+                                    <ChevronUpIcon v-else class="h-8 w-8" aria-hidden="true" />
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </DisclosureButton>
+                </h3>
+
+                <DisclosurePanel class="pt-1" as="div">
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('lista-importaciones')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('importaciones.index')" :active="route().current('importaciones.index')">
+                                <span class="ml-2 uppercase">importaciones</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+
+                    </div>
+
+                    <div class="flex items-center">
+
+                        <li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('crear-ventas')">
+                            <NavLinkSideBarNotIcon :href="route('compras.create')"
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :active="route().current('compras.create')">
+                                <span class="ml-2 uppercase">Compra en plaza</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+
+                    </div>
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('lista-ventas')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('compras.index')" :active="route().current('compras.index')">
+                                <span class="ml-2 uppercase">Historial de Compras</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('rotacion-stock')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('rotacion-stock.index')" :active="route().current('rotacion-stock.index')">
+                                <span class="ml-2 uppercase">Rotación de stock</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                </DisclosurePanel>
+            </Disclosure>
+            <!--Compras-->
+
+            <!--Ventas-->
+            <Disclosure as="div" class="py-1" v-slot="{ open }" :default-open="configStore.getCurrentMenu == 'ventas'"
+                v-show="permissions.includes('menu-ventas')">
+                <h3 class="flow-root text-white hover:text-primary-900">
+
+                    <DisclosureButton
+                        class="flex w-full items-center p-2 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
+                        <div
+                            class="font-medium static  flex justify-start items-center w-full py-2 text-white hover:bg-secondary-100 hover:text-primary-900">
+                            <div
+                                class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
+                                <i class="fas fa-cash-register mr-3 ml-1"></i>
+                                Ventas
+                                <div class="pr-2 my-4 absolute right-0 ">
+                                    <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
+                                    <ChevronUpIcon v-else class="h-8 w-8" aria-hidden="true" />
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </DisclosureButton>
+                </h3>
+                <DisclosurePanel class="pt-1" as="div">
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas'); btnCrear()" class="w-full"
+                            v-show="permissions.includes('crear-ventas')">
+                            <NavLinkSideBarNotIcon :href="linkCrear"
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :active="route().current('ventas.create')">
+                                <span class="ml-2 uppercase">Crear Venta</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+
+                    </div>
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-cajas')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('cajas.index')" :active="route().current('cajas.index')">
+                                <span class="ml-2 uppercase">Caja</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+
+                    </div>
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('subir-envios')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('envios.create')" :active="route().current('envios.create')">
+                                <span class="ml-2 uppercase">Mercado Libre</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-expediciones')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('expediciones.index')" :active="route().current('expediciones.index')">
+                                <span class="ml-2 uppercase">Expedición</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('envios.index')" :active="route().current('envios.index')">
+                                <span class="ml-2 uppercase ">Envios</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('historial-envios')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('envios.historial')" :active="route().current('envios.historial')">
+                                <span class="ml-2 uppercase">Historial de Envios</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-ventas')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('ventas.index')" :active="route().current('ventas.index')">
+                                <span class="ml-2 uppercase">Historial de Ventas</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                </DisclosurePanel>
+            </Disclosure>
+            <!--Ventas-->
+
+            <!--Deposito-->
+            <Disclosure as="div" class="py-1  hover:text-primary-900" v-slot="{ open }"
+                :default-open="configStore.getCurrentMenu == 'depositos'" v-show="permissions.includes('menu-depositos')">
+                <h3 class="text-white hover:text-primary-900">
+                    <DisclosureButton
+                        class="flex w-full items-center p-2 mx-1 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
+                        <div
+                            class="font-medium static  flex justify-start items-center w-full py-2 text-white hover:bg-secondary-100 hover:text-primary-900">
+                            <div
+                                class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
+                                <i class="fa-solid fa-warehouse mr-3 ml-1"></i>
+                                Depósito
+                                <div class="pr-2 py-4 absolute right-0 z-50 ">
+                                    <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
+                                    <ChevronUpIcon v-else class="h-8 w-8" aria-hidden="true" />
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </DisclosureButton>
+                </h3>
+                <DisclosurePanel class="pt-1" as="div">
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('lista-depositos')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('depositos.index')" :active="route().current('depositos.index')">
+                                <span class="ml-2 uppercase">Depósitos</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('subir-depositos')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('depositos.create')" :active="route().current('depositos.create')">
+                                <span class="ml-2 uppercase">SUBIR BULTOS DEPÓSITO</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('bultos-depositos')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('depositos.bultos')" :active="route().current('depositos.bultos')">
+                                <span class="ml-2 uppercase">Bultos Importados</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('historial-depositos')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('depositos.historial')" :active="route().current('depositos.historial')">
+                                <span class="ml-2 uppercase">Historial De Depósito</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('nombre-depositos')">
+                            <NavLinkSideBarNotIcon class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('depositoslista.index')" :active="route().current('depositoslista.index')">
+                                <span class="ml-2 uppercase">Nombre Depósito</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+
+                </DisclosurePanel>
+            </Disclosure>
+            <!--Deposito-->
+
+            <!--Servicios-->
+            <Disclosure as="div" class="py-1  hover:text-primary-900" v-slot="{ open }"
+                :default-open="configStore.getCurrentMenu == 'servicios'" v-show="permissions.includes('menu-servicios')">
+                <h3 class="text-white hover:text-primary-900">
+                    <DisclosureButton
+                        class="flex w-full items-center p-2 mx-1 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
+                        <div
+                            class="font-medium static  flex justify-start items-center w-full py-2 text-white hover:bg-secondary-100 hover:text-primary-900">
+                            <div
+                                class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
+                                <i class="fa-solid fa-warehouse mr-3 ml-1"></i>
+                                Servicio Ténico
+                                <div class="pr-2 py-4 absolute right-0 z-50 ">
+                                    <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
+                                    <ChevronUpIcon v-else class="h-8 w-8" aria-hidden="true" />
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </DisclosureButton>
+                </h3>
+                <DisclosurePanel class="pt-1" as="div">
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('servicios')" class="w-full" v-show="permissions.includes('lista-depositos')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('depositos.index')" :active="route().current('depositos.index')">
+                                <span class="ml-2 uppercase">Servicios</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+
+                    </div>
+
+                </DisclosurePanel>
+            </Disclosure>
+            <!--Servicios-->
+
         </ul>
 
     </div>

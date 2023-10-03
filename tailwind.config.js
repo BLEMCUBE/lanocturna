@@ -66,6 +66,9 @@ export default {
 
         },
     },
+    plugins:[
+        require('@headlessui/tailwindcss')({ prefix: 'ui' })
+    ],
     /*corePlugins: {
         preflight: true,
     },*/

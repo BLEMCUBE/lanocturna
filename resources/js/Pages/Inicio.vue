@@ -13,7 +13,9 @@ import VueApexCharts from "vue3-apexcharts";
 
 const datos_ventas = ref([]);
 const { datos_grafico_ventas } = usePage().props
-const date = ref([new Date(), new Date()]);
+//const date = ref([new Date(), new Date()]);
+//const date = ref([startOfMonth(new Date()), endOfMonth(new Date())]);
+const date = ref();
 
 //filtrado
 const filtrado = (value) => {
@@ -34,9 +36,12 @@ const filtrado = (value) => {
                 }
             }
         );
+        date.value =[ moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
     }
 }
 onMounted(() => {
+    date.value = [subDays(new Date(), 30), new Date()];
+    filtrado(date.value);
     grafVentas.value.series[0].data = [];
     grafVentas.value.chartOptions.labels = [];
     grafVentas.value.series[0].data = usePage().props.datos_grafico_ventas.datos;
@@ -314,7 +319,7 @@ const shortcuts = [
                 <div class="grid grid-cols-1 col-span-full gap-4 lg:grid-cols-12  mt-2 2lg:grid-cols-12">
                     <div class="col-span-1 md:col-span-3 lg:col-span-3">
                         <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
-                            v-model:value="date" :shortcuts="shortcuts" lang="es"
+                            v-model:value="date" :shortcuts="shortcuts" lang="es" :clearable="false"
                             placeholder="seleccione Fecha"></date-picker>
                     </div>
                 </div>

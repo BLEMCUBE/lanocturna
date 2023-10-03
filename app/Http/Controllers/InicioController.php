@@ -21,18 +21,18 @@ class InicioController extends Controller
 
         //datos grafico ventas
         $consulta_ventas = DB::table('ventas as ve')
-            ->select(DB::raw("ve.created_at, SUM(ve.total) AS total,DATE_FORMAT(ve.created_at,'%d/%m/%y') AS fecha"))
+            ->select(DB::raw("ve.*, SUM(ve.total) AS total,DATE_FORMAT(ve.created_at,'%d/%m/%y') AS fecha"))
             ->when(Request::input('inicio'), function ($query, $search) {
-                $query->whereDate('ve.created_at', '>=', $search);
+                $query->whereDate('ve.created_at', '>=', Request::input('inicio'));
             })
             ->when(Request::input('fin'), function ($query, $search) {
-                $query->whereDate('ve.created_at', '<=', $search);
+                $query->whereDate('ve.created_at', '<=', Request::input('fin'));
             })
-            ->whereDate('ve.created_at', '>=', $primerDiaMes)
-            ->whereDate('ve.created_at', '<=', $ultimoDiaMes)
+            //->whereDate('ve.created_at', '>=', $primerDiaMes)
+            //->whereDate('ve.created_at', '<=', $ultimoDiaMes)
             ->where('ve.tipo', '=', 'VENTA')
             ->where('ve.facturado', '=', '1')
-            ->orderBy('fecha', 'asc')
+            ->orderBy('ve.created_at', 'asc')
             ->groupBy('fecha')
             ->get();
 

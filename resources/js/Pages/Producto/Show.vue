@@ -9,10 +9,14 @@ import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import axios from 'axios';
+import InputError from '@/Components/InputError.vue';
 
 const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
 const { roles } = usePage().props.auth
+const { costo_aprox } = usePage().props
+const { ultimo_yang } = usePage().props
+const { productoventa } = usePage().props
 const titulo = "Detalle Producto"
 const ruta = 'productos'
 const cantidad = ref()
@@ -45,7 +49,7 @@ const filtradoVenta = (value) => {
             .then(res => {
                 var datos = res.data
                 cantidad.value = datos.cantidad
-                tabla_vendidos.value = Array.from(datos.producto.detalles_ventas, (x) => x);
+                tabla_vendidos.value = Array.from(datos.productoventa, (x) => x);
             })
     } else {
 
@@ -56,7 +60,7 @@ const filtradoVenta = (value) => {
 //descarga excel
 const descargaExcelProductoVentas = (id) => {
 
-    console.log(fechaVentaExport);
+
     if (fechaVentaExport.value[0] != null && fechaVentaExport.value[1] != null) {
         window.open(route('productos.exportproductoventas', [form.id, { 'inicio': fechaVentaExport.value[0], 'fin': fechaVentaExport.value[1] }]), '_blank');
     } else {
@@ -150,9 +154,7 @@ const shortcuts2 = [
 ]
 
 onMounted(() => {
-    //tabla_vendidos.value = usePage().props.producto.detalles_ventas;
-    tabla_vendidos.value = Array.from(usePage().props.producto.detalles_ventas, (x) => x);
-    //tabla_importaciones.value = usePage().props.producto.importacion_detalles;
+    tabla_vendidos.value = Array.from(usePage().props.productoventa, (x) => x);
     cantidad_importacion.value = usePage().props.cantidad_importacion;
     cantidad.value = usePage().props.cantidad;
     tabla_importaciones.value = Array.from(usePage().props.productoImportacion, (x) => x);
@@ -255,7 +257,21 @@ const clickDetImportacion = (e) => {
                             {{ form.stock_futuro }}
                         </p>
                     </div>
-
+                    <div class="col-span-4">
+                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Costo aprox. USD (iva inc):
+                            </b>
+                             {{ costo_aprox }}
+                            </p>
+                            <InputError v-if="ultimo_yang ==0" class="mt-1 text-xs" message="Debe de registrar tipo de cambio yuanes" />
+                    </div>
+                    <div class="col-span-4" v-if="ultimo_yang >0">
+                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Cotización Yuanes:
+                            </b>
+                             {{ ultimo_yang }}
+                        </p>
+                    </div>
                 </div>
 
             </div>
@@ -268,7 +284,7 @@ const clickDetImportacion = (e) => {
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable sortField="venta.fecha" :sortOrder="-1" :filters="filters" @row-click="clickDetalle"
+                    <DataTable sortField="fecha" :sortOrder="-1" :filters="filters" @row-click="clickDetalle"
                         :value="tabla_vendidos" :pt="{
                             bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                             root: { class: 'w-auto' }
@@ -296,7 +312,7 @@ const clickDetImportacion = (e) => {
                         <template #empty> No existe Resultado </template>
                         <template #loading> Cargando... </template>
 
-                        <Column field="venta.fecha" sortable header="Fecha" :pt="{
+                        <Column field="fecha" sortable header="Fecha" :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             }
@@ -311,7 +327,7 @@ const clickDetImportacion = (e) => {
                                 class: 'text-center'
                             }
                         }"></Column>
-                        <Column field="venta.destino" sortable header="Destino" :pt="{
+                        <Column field="destino" sortable header="Destino" :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             }

@@ -13,7 +13,9 @@ use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RotacionStockController;
 use App\Http\Controllers\TipoCambioController;
+use App\Http\Controllers\TipoCambioYuanController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VentaController;
 use Illuminate\Support\Facades\Route;
@@ -120,6 +122,15 @@ Route::controller(TipoCambioController::class)->group(function () {
     Route::delete('/tipo-cambio/{id}', 'destroy')->name('tipo_cambio.destroy')->middleware('auth');
 });
 
+//TipoCambioYuan
+Route::controller(TipoCambioYuanController::class)->group(function () {
+    Route::post('/tipo-cambio-yuan/update/{id}', 'update')->name('tipo_cambio_yuan.update')->middleware('auth');
+    Route::get('/tipo-cambio-yuan', 'index')->name('tipo_cambio_yuan.index')->middleware('auth');
+    Route::get('/tipo-cambio-yuan/{id}', 'show')->name('tipo_cambio_yuan.show')->middleware('auth');
+    Route::post('/tipo-cambio-yuan/store', 'store')->name('tipo_cambio_yuan.store')->middleware('auth');
+    Route::delete('/tipo-cambio-yuan/{id}', 'destroy')->name('tipo_cambio_yuan.destroy')->middleware('auth');
+});
+
 //Venta
 Route::controller(VentaController::class)->group(function () {
     Route::post('/ventas/update/{id}', 'update')->name('ventas.update')->middleware('auth');
@@ -202,5 +213,10 @@ Route::controller(CompraController::class)->group(function () {
 
 });
 
+//Rotacion
+Route::controller(RotacionStockController::class)->group(function () {
+    Route::get('/rotacion-stock/exportproductoventas', 'exportProductoVentas')->name('rotacion-stock.exportproductoventas')->middleware('auth');
+    Route::get('/rotacion-stock', 'index')->name('rotacion-stock.index')->middleware('auth');
+});
 
 require __DIR__.'/auth.php';
