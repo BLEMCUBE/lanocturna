@@ -12,6 +12,8 @@ use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ReporteProductoVendidoController;
+use App\Http\Controllers\ReporteVentaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RotacionStockController;
 use App\Http\Controllers\TipoCambioController;
@@ -218,5 +220,12 @@ Route::controller(RotacionStockController::class)->group(function () {
     Route::get('/rotacion-stock/exportproductoventas', 'exportProductoVentas')->name('rotacion-stock.exportproductoventas')->middleware('auth');
     Route::get('/rotacion-stock', 'index')->name('rotacion-stock.index')->middleware('auth');
 });
+
+//Reporte Ventas
+Route::get('/reportes-ventas', [ReporteVentaController::class, 'index'])->name('reportes.ventas')->middleware(['auth', 'verified']);
+
+//Reporte Listado  productos
+Route::get('/reportes-productos-vendidos', [ReporteProductoVendidoController::class, 'index'])->name('reportes.productosvendidos')->middleware(['auth', 'verified']);
+Route::get('/reportes-productos-vendidos/exportproductoventas',[ReporteProductoVendidoController::class, 'exportProductoVentas'])->name('reportes.exportproductoventas')->middleware('auth');
 
 require __DIR__.'/auth.php';

@@ -25,6 +25,14 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'editar-productos', 'description' => 'Editar Producto'],
             ['name' => 'eliminar-productos', 'description' => 'Eliminar Producto'],
 
+            //Grupo configuraciones
+            ['name' => 'menu-reportes', 'description' => 'Menú Reportes'],
+
+            //graficos
+            ['name' => 'reporte-grafico-ventas', 'description' => 'Gráfico Ventas'],
+
+            //lista productos mas vendidos
+            ['name' => 'reporte-productos-vendidos', 'description' => 'Listado productos más vendidos'],
 
             //Grupo configuraciones
             ['name' => 'menu-configuraciones', 'description' => 'Menú configuraciones'],
@@ -41,10 +49,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'lista-tipocambio', 'description' => 'Tipo de cambio'],
             //Tipo de cambio yuanes
             ['name' => 'lista-tipocambio-yuanes', 'description' => 'Tipo de cambio Yuanes'],
-            //graficos
-            ['name' => 'grafico-ventas', 'description' => 'Gráfico Ventas'],
-            //lista productos mas vendidos
-            ['name' => 'productos-vendidos', 'description' => 'Listado productos más vendidos'],
+
 
 
             //GRUPO COMPRAS
@@ -92,10 +97,11 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'nombre-depositos', 'description' => 'Nombre Depósito'],
 
 
-            //GRUPO SERVICIOS
-            ['name' => 'menu-servicios', 'description' => 'Menú Servicio Técnico'],
-            //Servicio Tecnico
-            ['name' => 'lista-servicios', 'description' => 'Lista Servicios Técnicos'],
+            //GRUPO RMA
+            ['name' => 'menu-rma', 'description' => 'RMA'],
+            ['name' => 'lista-rma', 'description' => 'LISTADO RMA'],
+            ['name' => 'historial-rma', 'description' => 'HISTORIAL RMA'],
+            ['name' => 'subir-rma', 'description' => 'SUBIR ENVIO RMA'],
 
 
         ];
