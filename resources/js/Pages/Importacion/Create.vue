@@ -16,8 +16,9 @@ import 'vue-datepicker-next/index.css';
 import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
-const fecha_arr = ref();
-const fecha_cam = ref();
+const inputArchivo=ref(null);
+const isShowModalProducto = ref(false);
+const errorsFilas=ref();
 const form = useForm({
     nro_carpeta: '',
     nro_contenedor: '',
@@ -61,14 +62,25 @@ const submit = () => {
         onFinish: () => {
 
         },
-        onError: () => {
-
-        }
+        onError: (er) => {
+            if(er.filas!=undefined){
+            if(er.filas.length>1){
+                errorsFilas.value=er.filas.slice(1);
+                isShowModalProducto.value = true;
+            }
+        }}
     });
 
 
 
 };
+
+const closeModalProducto = () => {
+    inputArchivo.value.value = null //reset input type file
+    form.reset('archivo');
+    isShowModalProducto.value = false;
+};
+
 const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
@@ -170,7 +182,7 @@ const check = (checked) => {
                         <div class="col-span-12 shadow-default lg:col-span-12">
                             <InputLabel for="file_input1" value="Archivo Excel"
                                 class="block text-base font-medium leading-6 text-gray-900" />
-                            <input @input="pickFile" type="file" class="block w-full text-xs text-gray-500
+                            <input  ref="inputArchivo" @input="pickFile" type="file" class="block w-full text-xs text-gray-500
                                 file:mr-4 file:py-2 file:px-4
                                 file:rounded file:border-0
                                 file:text-sm file:font-medium
@@ -194,7 +206,60 @@ const check = (checked) => {
 
             </div>
             <!--Contenido-->
+   <!--Modal productos-->
+   <Dialog v-model:visible="isShowModalProducto" modal :style="{ width: '30vw' }" :pt="{
+                header: {
+                    class: 'mt-5 pb-2 px-5'
+                },
+                content: {
+                    class: 'p-4'
+                },
+            }">
+                <p class="mb-2 font-bold text-md">
+                    Los siguientes productos no estan registrado , por favor registre y vuelva a intentar.
+                </p>
 
+                <table class="w-full border">
+                    <thead>
+                        <tr class="w-full border">
+                            <th class="w-26 text-center border">
+                                Fila
+                            </th>
+                            <th class="text-center border">
+                                Sku
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr  class="w-full text-center border" v-for="item in errorsFilas">
+                            <td class="text-center border">
+                                {{item.fila}}
+                            </td>
+                            <td class="text-center border">
+                                {{item.sku}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <template #header>
+                    <div class="flex flex-column align-items-center" style="flex: 1">
+                        <div class="text-center">
+                            <i class="pi pi-exclamation-triangle text-yellow-500" style="font-size: 3rem"></i>
+                        </div>
+                        <div class="font-bold text-2xl m-3">No se ha podido importar</div>
+                    </div>
+                </template>
+
+
+                <div class="flex justify-end py-3">
+                    <Button label="Aceptar" size="small" type="button" @click="closeModalProducto()" />
+
+                </div>
+
+            </Dialog>
+            <!--Modal productos-->
         </div>
 
     </AppLayout>

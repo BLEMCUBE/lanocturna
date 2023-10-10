@@ -147,7 +147,7 @@ class ProductoController extends Controller
                 'det.importacion_id',
                 DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado")
             )->where('prod.id', '=', $id)
-            ->get();
+            ->orderBy('imp.fecha_arribado', 'DESC')->get();
 
         $productoventa = DB::table('ventas as ve')
             ->join('venta_detalles as det', 've.id', '=', 'det.venta_id')

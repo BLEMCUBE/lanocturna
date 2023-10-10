@@ -346,7 +346,7 @@ const clickDetImportacion = (e) => {
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable sortField="fecha_arribado" :sortOrder="-1" :filters="filters_importacion"
+                    <DataTable  :filters="filters_importacion"
                         @row-click="clickDetImportacion" :value="tabla_importaciones" :pt="{
                             bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                             root: { class: 'w-auto' }

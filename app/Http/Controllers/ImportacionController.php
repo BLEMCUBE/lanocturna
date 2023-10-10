@@ -15,6 +15,7 @@ use Inertia\Inertia;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 
 class ImportacionController extends Controller
@@ -48,6 +49,25 @@ class ImportacionController extends Controller
     {
         $usuario = auth()->user();
         $file = $request->file('archivo');
+
+        $no_existe = [];
+        $filas = Excel::toArray([], $file);
+
+        foreach ($filas[0] as $key => $fila) {
+            $prod = Producto::where('origen', '=', $fila[0])->first();
+            if (empty($prod)) {
+                array_push($no_existe, [
+                    'fila' => $key + 1,
+                    'sku' => $fila[0],
+                ]);
+            }
+        }
+        if (count($no_existe) > 1) {
+
+            throw ValidationException::withMessages([
+                'filas' => [$no_existe]
+            ]);
+        } else {
         DB::beginTransaction();
         try {
 
@@ -83,6 +103,7 @@ class ImportacionController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
             ];
+        }
         }
     }
 
@@ -213,44 +234,44 @@ class ImportacionController extends Controller
         DB::beginTransaction();
         try {
             if ($estado != $importacion->estado) {
-            if ($estado == 'Arribado') {
-                //creando detalle importacion
-                foreach ($importacion->importaciones_detalles as $detalle) {
-                    $codigo = $detalle->sku;
-                    $producto = Producto::where('origen', '=', $codigo)
-                        ->first();
-                    $new_encamino = $producto->en_camino - $detalle->cantidad_total;
-                    $new_arribado = $producto->arribado + $detalle->cantidad_total;
-                    $new_stock = $producto->stock + $detalle->cantidad_total;
-                    $new_futuro = $new_stock + $new_encamino;
-                    $producto->update([
-                    "stock" => $new_stock,
-                    "arribado" => $new_arribado,
-                    "en_camino" => $new_encamino,
-                    "stock_futuro" => $new_futuro,
-                ]);
+                if ($estado == 'Arribado') {
+                    //creando detalle importacion
+                    foreach ($importacion->importaciones_detalles as $detalle) {
+                        $codigo = $detalle->sku;
+                        $producto = Producto::where('origen', '=', $codigo)
+                            ->first();
+                        $new_encamino = $producto->en_camino - $detalle->cantidad_total;
+                        $new_arribado = $producto->arribado + $detalle->cantidad_total;
+                        $new_stock = $producto->stock + $detalle->cantidad_total;
+                        $new_futuro = $new_stock + $new_encamino;
+                        $producto->update([
+                            "stock" => $new_stock,
+                            "arribado" => $new_arribado,
+                            "en_camino" => $new_encamino,
+                            "stock_futuro" => $new_futuro,
+                        ]);
+                    }
                 }
-            }
-            if ($estado == 'En camino') {
-                //actualizando stock productos
-                foreach ($importacion->importaciones_detalles as $detalle) {
-                    $codigo = $detalle->sku;
-                    $producto = Producto::where('origen', '=', $codigo)
-                        ->first();
+                if ($estado == 'En camino') {
+                    //actualizando stock productos
+                    foreach ($importacion->importaciones_detalles as $detalle) {
+                        $codigo = $detalle->sku;
+                        $producto = Producto::where('origen', '=', $codigo)
+                            ->first();
 
-                    $new_arribado = $producto->arribado - $detalle->cantidad_total;
-                    $new_encamino = $producto->en_camino + $detalle->cantidad_total;
-                    $new_stock = $producto->stock - $detalle->cantidad_total;
-                    $new_futuro = $new_stock + $new_encamino;
+                        $new_arribado = $producto->arribado - $detalle->cantidad_total;
+                        $new_encamino = $producto->en_camino + $detalle->cantidad_total;
+                        $new_stock = $producto->stock - $detalle->cantidad_total;
+                        $new_futuro = $new_stock + $new_encamino;
 
-                    $producto->update([
-                        "en_camino" => $new_encamino,
-                        "stock" => $new_stock,
-                        "arribado" => $new_arribado,
-                        "stock_futuro" => $new_futuro,
-                    ]);
+                        $producto->update([
+                            "en_camino" => $new_encamino,
+                            "stock" => $new_stock,
+                            "arribado" => $new_arribado,
+                            "stock_futuro" => $new_futuro,
+                        ]);
+                    }
                 }
-            }
             }
 
             $importacion->nro_carpeta = $request->input('nro_carpeta');
@@ -304,33 +325,39 @@ class ImportacionController extends Controller
                 $codigo = $detalle->sku;
                 $producto = Producto::where('origen', '=', $codigo)
                     ->first();
-                $new_stock = $producto->stock - $detalle->cantidad_total;
-                $new_arribado = $producto->arribado - $detalle->cantidad_total;
+                if (!is_null($producto)) {
+                    $new_stock = $producto->stock - $detalle->cantidad_total;
+                    $new_arribado = $producto->arribado - $detalle->cantidad_total;
 
-                $new_futuro = $new_stock + $producto->en_camino;
-                if ($producto->arribado >0) {
-                $producto->update([
-                    "stock" => $new_stock,
-                    "arribado" => $new_arribado,
-                    "stock_futuro" => $new_futuro,
-                ]);
-            }
+                    $new_futuro = $new_stock + $producto->en_camino;
+                    if ($producto->arribado > 0) {
+                        $producto->update([
+                            "stock" => $new_stock,
+                            "arribado" => $new_arribado,
+                            "stock_futuro" => $new_futuro,
+                        ]);
+                    }
+                }
             }
         }
+
         if ($estado == 'En camino') {
             //creando detalle venta
             foreach ($importacion->importaciones_detalles as $detalle) {
                 $codigo = $detalle->sku;
                 $producto = Producto::where('origen', '=', $codigo)
                     ->first();
-                $new_camino = $producto->en_camino - $detalle->cantidad_total;
-                $new_futuro =  $producto->stock + $new_camino;
-                if ($producto->en_camino >0) {
-                $producto->update([
-                    "en_camino" => $new_camino,
-                    "stock_futuro" => $new_futuro,
-                ]);
-            }
+                if (!is_null($producto)) {
+
+                    $new_camino = $producto->en_camino - $detalle->cantidad_total;
+                    $new_futuro =  $producto->stock + $new_camino;
+                    if ($producto->en_camino > 0) {
+                        $producto->update([
+                            "en_camino" => $new_camino,
+                            "stock_futuro" => $new_futuro,
+                        ]);
+                    }
+                }
             }
         }
 
