@@ -618,7 +618,7 @@
     background: #ffffff;
     border: 1px solid #d4d4d8;
     transition: none;
-    border-radius: 0.375rem;
+    border-radius: 4px;
   }
   .p-dropdown:not(.p-disabled):hover {
     border-color: #d4d4d8;
@@ -959,7 +959,7 @@
     border: 1px solid #d4d4d8;
     transition: none;
     appearance: none;
-    border-radius: 0.375rem;
+    border-radius: 4px;
   }
   .p-inputtext:enabled:hover {
     border-color: #d4d4d8;
