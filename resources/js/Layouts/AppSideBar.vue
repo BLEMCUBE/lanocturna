@@ -204,7 +204,7 @@ const showDropdown = ref(false)
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('configuraciones')" class="w-full"
-                            v-show="permissions.includes('lista-tipocambio')">
+                            v-show="permissions.includes('lista-tipocambio-yuanes')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('tipo_cambio_yuan.index')" :active="route().current('tipo_cambio_yuan.index')">
@@ -503,7 +503,7 @@ const showDropdown = ref(false)
                         <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('lista-rma')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                                :href="route('depositos.index')" :active="route().current('depositos.index')">
+                                :href="route('rmas.index')" :active="route().current('rmas.index')">
                                 <span class="ml-2 uppercase">LISTADO RMA</span>
                             </NavLinkSideBarNotIcon>
                         </li>

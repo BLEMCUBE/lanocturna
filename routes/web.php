@@ -14,6 +14,7 @@ use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteProductoVendidoController;
 use App\Http\Controllers\ReporteVentaController;
+use App\Http\Controllers\RmaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RotacionStockController;
 use App\Http\Controllers\TipoCambioController;
@@ -227,5 +228,20 @@ Route::get('/reportes-ventas', [ReporteVentaController::class, 'index'])->name('
 //Reporte Listado  productos
 Route::get('/reportes-productos-vendidos', [ReporteProductoVendidoController::class, 'index'])->name('reportes.productosvendidos')->middleware(['auth', 'verified']);
 Route::get('/reportes-productos-vendidos/exportproductoventas',[ReporteProductoVendidoController::class, 'exportProductoVentas'])->name('reportes.exportproductoventas')->middleware('auth');
+
+
+//Rma -Presupuesto
+Route::controller(RmaController::class)->group(function () {
+    /*Route::post('/ventas/update/{id}', 'update')->name('ventas.update')->middleware('auth');
+    Route::post('/ventas/updatemercado/{id}', 'updatemercado')->name('ventas.updatemercado')->middleware('auth');
+    Route::get('/ventas/edit/{id}', 'edit')->name('ventas.edit')->middleware('auth');
+    */
+    Route::post('/rmas/rma-store', 'rma_store')->name('rmas.rma-store')->middleware('auth');
+    Route::get('/rmas/rma-create', 'rma_create')->name('rmas.rma-create')->middleware('auth');
+    Route::get('/rmas', 'index')->name('rmas.index')->middleware('auth');
+    /*Route::get('/ventas/{id}', 'show')->name('ventas.show')->middleware('auth');
+    Route::delete('/ventas/{id}', 'destroy')->name('ventas.destroy')->middleware('auth');*/
+
+});
 
 require __DIR__.'/auth.php';

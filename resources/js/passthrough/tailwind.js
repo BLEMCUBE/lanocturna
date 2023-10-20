@@ -865,7 +865,7 @@ const Tailwind_PT = {
       var props = _ref35.props,
         context = _ref35.context;
       return {
-        "class": ['font-sans    font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md', {
+        "class": ['font-sans font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md', {
           ' ': !context.disabled,
           'opacity-60 select-none pointer-events-none cursor-default': context.disabled
         }, {

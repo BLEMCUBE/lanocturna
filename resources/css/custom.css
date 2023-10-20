@@ -8,13 +8,15 @@
 
 
 /*SweetAlert2*/
-.swal2-title{
+.swal2-title {
     font-size: 16px;
 }
-.swal2-question{
+
+.swal2-question {
     width: 50px;
     height: 50px;
 }
+
 .swal2-styled {
     padding: 6px;
 }
@@ -22,22 +24,29 @@
 /*transition*/
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease;
 }
 
 .v-enter-from,
 .v-leave-to {
-  opacity: 0;
+    opacity: 0;
 }
 
 
 /*Datapicker next*/
 .mx-datepicker {
     width: 100% !important;
-  }
+}
+
 .mx-datepicker-range {
     width: 100% !important;
-  }
-  .mx-input{
+}
+
+.mx-input {
     height: 36px !important;
-  }
+    font-size: 1rem !important;
+    color: #3f3f46 !important;
+}
+.mx-input:disabled {
+   background-color: white !important;
+}
