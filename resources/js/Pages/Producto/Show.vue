@@ -153,6 +153,7 @@ const shortcuts2 = [
     },
 ]
 
+const formatDate = (dat) => moment(dat).format("DD/MM/YYYY");
 onMounted(() => {
     tabla_vendidos.value = Array.from(usePage().props.productoventa, (x) => x);
     cantidad_importacion.value = usePage().props.cantidad_importacion;
@@ -259,17 +260,18 @@ const clickDetImportacion = (e) => {
                     </div>
                     <div class="col-span-4">
                         <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Costo aprox. USD (iva inc):
+                                Costo aprox. USD (iva inc):
                             </b>
-                             {{ costo_aprox }}
-                            </p>
-                            <InputError v-if="ultimo_yang ==0" class="mt-1 text-xs" message="Debe de registrar tipo de cambio yuanes" />
+                            {{ costo_aprox }}
+                        </p>
+                        <InputError v-if="ultimo_yang == 0" class="mt-1 text-xs"
+                            message="Debe de registrar tipo de cambio yuanes" />
                     </div>
-                    <div class="col-span-4" v-if="ultimo_yang >0">
+                    <div class="col-span-4" v-if="ultimo_yang > 0">
                         <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Cotización Yuanes:
+                                Cotización Yuanes:
                             </b>
-                             {{ ultimo_yang }}
+                            {{ ultimo_yang }}
                         </p>
                     </div>
                 </div>
@@ -284,11 +286,10 @@ const clickDetImportacion = (e) => {
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable sortField="fecha" :sortOrder="-1" :filters="filters" @row-click="clickDetalle"
-                        :value="tabla_vendidos" :pt="{
-                            bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
-                            root: { class: 'w-auto' }
-                        }" scrollable scrollHeight="350px" :virtualScrollerOptions="{
+                    <DataTable :filters="filters" @row-click="clickDetalle" :value="tabla_vendidos" :pt="{
+                        bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+                        root: { class: 'w-auto' }
+                    }" scrollable scrollHeight="350px" :virtualScrollerOptions="{
     numToleratedItems: 30, itemSize: 46
 }" tableStyle="min-width: 50rem" size="small">
                         <template #header>
@@ -312,11 +313,15 @@ const clickDetImportacion = (e) => {
                         <template #empty> No existe Resultado </template>
                         <template #loading> Cargando... </template>
 
-                        <Column field="fecha" sortable header="Fecha" :pt="{
+                        <Column field="created_at" sortable header="Fecha" :pt="{
                             bodyCell: {
                                 class: 'text-center'
                             }
-                        }"></Column>
+                        }">
+                            <template #body="{ data }" #sortable>
+                                {{ formatDate(data.created_at) }}
+                            </template>
+                        </Column>
                         <Column field="cantidad" sortable header="Cantidad" :pt="{
                             bodyCell: {
                                 class: 'text-center'
@@ -346,8 +351,8 @@ const clickDetImportacion = (e) => {
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable  :filters="filters_importacion"
-                        @row-click="clickDetImportacion" :value="tabla_importaciones" :pt="{
+                    <DataTable :filters="filters_importacion" @row-click="clickDetImportacion" :value="tabla_importaciones"
+                        :pt="{
                             bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                             root: { class: 'w-auto' }
                         }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"

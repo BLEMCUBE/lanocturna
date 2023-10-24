@@ -259,7 +259,7 @@ class ProductoController extends Controller
             ->join('venta_detalles as det', 've.id', '=', 'det.venta_id')
             ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
             ->select(
-                DB::raw("DATE_FORMAT(ve.created_at ,'%d/%m/%Y') AS fecha"),
+                //DB::raw("DATE_FORMAT(ve.created_at ,'%d/%m/%Y') AS fecha"),
                 'prod.origen',
                 'prod.id',
                 've.created_at',
