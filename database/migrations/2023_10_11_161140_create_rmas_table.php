@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('nro_servicio')->nullable();
             $table->date('fecha_ingreso')->nullable();
+            $table->date('fecha_limite')->nullable();
+            $table->date('fecha_entrega')->nullable();
             $table->date('fecha_compra')->nullable();
             $table->string('nro_factura')->nullable();
             $table->json('cliente')->nullable();
-            $table->string('estado')->default('INGRESADO');
+            $table->string('modo')->default('INGRESADO');
+            $table->string('estado')->nullable();
             $table->string('tipo')->nullable();
             $table->unsignedBigInteger('producto_id')->nullable();
             $table->float('prod_cantidad',8,2)->default(1);

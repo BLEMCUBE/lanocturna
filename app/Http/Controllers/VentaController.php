@@ -49,7 +49,8 @@ class VentaController extends Controller
             }
         }
 
-        $venta_query = Venta::select('*')->when(Request::input('inicio'), function ($query, $search) {
+        $venta_query = Venta::select('id','nro_compra','cliente','created_at',
+        'total','estado','observaciones')->when(Request::input('inicio'), function ($query, $search) {
             $query->whereDate('created_at', '>=', $search);
         })
             ->when(Request::input('fin'), function ($query, $search) {

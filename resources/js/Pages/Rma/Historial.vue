@@ -17,7 +17,7 @@ import 'vue-datepicker-next/locale/es.es.js';
 const toast = useToast();
 const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Listado de RMA"
+const titulo = "Historial de RMA"
 const ruta = 'rmas'
 
 const formDelete = useForm({
@@ -73,7 +73,7 @@ const date = ref([new Date(), new Date()]);
 const filtrado = (value) => {
     if (value[0] != null && value[1] != null) {
 
-        router.get('/rmas/',
+        router.get('/rmas/historial',
             {
                 inicio: moment(value[0]).format('YYYY-MM-DD'),
                 fin: moment(value[1]).format('YYYY-MM-DD')
@@ -126,7 +126,7 @@ const btnEliminar = (id) => {
         text: 'Se eliminará definitivamente',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Anular',
+        confirmButtonText: 'Eliminar',
         cancelButtonText: 'Cancelar',
         cancelButtonColor: 'red',
         confirmButtonColor: '#2563EB',

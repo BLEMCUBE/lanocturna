@@ -1,71 +1,39 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm,router } from '@inertiajs/vue3';
+import { Head, usePage, router } from '@inertiajs/vue3';
+import moment from 'moment';
 const { permissions } = usePage().props.auth
 
-const titulo = "Detalle Venta"
-const ruta = 'ventas'
+const titulo =ref("");
+const ruta = 'rmas'
 
-const form = useForm({
-    id: '',
-    vendedor: '',
-    destino: '',
-    codigo: '',
-    total: 0.0,
-    fecha: '',
-    total_sin_iva: 0.0,
-    moneda: '',
-    tipo_cambio: '',
-    estado: '',
-    observaciones: '',
-    productos: [],
-    cliente: '',
-    direccion: '',
-    localidad: '',
-    telefono: '',
-
-})
+const form = ref([]);
 const btnEditar = (id) => {
-    router.get(route(ruta + '.edit', id));
+    router.get(route(ruta + '.rma-edit', id));
 
 };
+
 onMounted(() => {
-    var datos = usePage().props.venta.data;
-    form.id = datos.id
-    form.fecha = datos.fecha
-    form.vendedor = datos.vendedor
-    form.validador = datos.validador
-    form.facturador = datos.facturador
-    form.observaciones = datos.observaciones
-    form.destino = datos.destino
-    form.cliente = datos.cliente
-    form.direccion = datos.direccion
-    form.localidad = datos.localidad
-    form.telefono = datos.telefono
-    form.moneda = datos.moneda
-    form.estado = datos.estado
-    form.productos = datos.productos
-    form.fecha_facturacion = datos.fecha_facturacion
-    form.fecha_validacion = datos.fecha_validacion
-    form.total_sin_iva = datos.total_sin_iva
-    form.total = datos.total
-    form.codigo = datos.codigo
+    form.value = usePage().props.venta.data;
+    titulo.value="DETALLE "+ form.value.tipo;
 
 });
 
-
+const formatDate = (dat) => {
+    return moment(dat).format("DD/MM/YYYY");
+}
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': 'Ventas', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
+    <AppLayout :pagina="[{ 'label': 'Rmas', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <div
             class="card px-4 py-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
 
 
             <div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
-                <Button label="Editar" v-if="permissions.includes('editar-ventas') && form.estado !== 'ANULADO'"
+                <Button label="Editar" v-if="permissions.includes('editar-rma') && form.modo !== 'ENTREGADO'"
                     @click="btnEditar(form.id)" :pt="{
                         root: {
                             class: 'flex items-center  bg-primary-900 justify-center font-medium w-10'
@@ -87,120 +55,88 @@ onMounted(() => {
                 class="mx-auto grid max-w-2xl grid-cols-1  gap-x-1 gap-y-1 px-4 py-2 sm:px-6 lg:max-w-7xl lg:grid-cols-3 lg:px-8">
 
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Fecha:
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
+                            Usuario:
                         </b>
-                        {{ form.fecha }}
+                        {{ form.vendedor }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            N° de Venta:
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
+                        Fecha Ingreso:
                         </b>
-                        {{ form.codigo }}
+                        {{formatDate( form.fecha_ingreso )}}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
+                            N° de Servicio:
+                        </b>
+                        {{ form.nro_servicio }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
                             Estado
                         </b>
                         {{ form.estado }}
                     </p>
                 </div>
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Total:
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
+                            Ingresado/Entregado
                         </b>
-                        {{ form.total.toFixed(2) }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Total sin IVA:
-                        </b>
-                        {{ form.total_sin_iva.toFixed(2) }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Moneda:
-                        </b>
-                        {{ form.moneda }}
+                        {{ form.modo }}
                     </p>
                 </div>
 
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Vendedor:
+                <div class="col-span-1" v-if="form.fecha_compra">
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
+                        Fecha Compra:
                         </b>
-                        {{ form.vendedor }}
+                        {{formatDate( form.fecha_compra )}}
                     </p>
                 </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Facturado por:
+
+                <div class="col-span-1" v-if="form.nro_factura">
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
+                            N° de Factura:
                         </b>
-                        {{ form.facturador }}
+                        {{ form.nro_factura }}
                     </p>
                 </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Fecha Facturado:
-                        </b>
-                        {{ form.fecha_facturacion }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Validado por:
-                        </b>
-                        {{ form.validador }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Fecha Validado:
-                        </b>
-                        {{ form.fecha_validacion }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Destino:
-                        </b>
-                        {{ form.destino }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+
+                 <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
                             Cliente:
                         </b>
                         {{ form.cliente }}
                     </p>
                 </div>
+
                 <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Localidad:
-                        </b>
-                        {{ form.localidad }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
-                            Dirección:
-                        </b>
-                        {{ form.direccion }}
-                    </p>
-                </div>
-                <div class="col-span-1">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
                             Télefono:
                         </b>
                         {{ form.telefono }}
                     </p>
                 </div>
+                <div class="col-span-1" v-if="form.costo_presupuestado">
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
+                        Costo Presupuestado:
+                        </b>
+                        {{ form.costo_presupuestado }}
+                    </p>
+                </div>
                 <div class="col-span-3">
-                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
+                            Defecto:
+                        </b>
+                        {{ form.defecto }}
+                    </p>
+                </div>
+                <div class="col-span-3">
+                    <p class="text-lg leading-6 mt-0 text-gray-700"><b>
                             Observaciones:
                         </b>
                         {{ form.observaciones }}
@@ -208,7 +144,7 @@ onMounted(() => {
                 </div>
             </div>
             <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
-                <h5 class="text-2xl font-medium">Productos</h5>
+                <h5 class="text-2xl font-medium uppercase">Producto</h5>
             </div>
             <div
                 class="mx-auto grid max-w-2xl grid-cols-1  overflow-auto gap-x-1 gap-y-1 px-2 py-2 sm:px-6 lg:max-w-7xl lg:grid-cols-3 lg:px-1">
@@ -217,34 +153,20 @@ onMounted(() => {
                         <tr class="p-2 bg-secondary-900 border">
                             <th class="border border-gray-300 w-24">Cantidad</th>
                             <th class="border border-gray-300 p-2 w-24">Origen</th>
-                            <th class="border border-gray-300 ">Producto</th>
-                            <th class="border border-gray-300">Código de Barras</th>
-                            <th class="border border-gray-300">Precio</th>
-                            <th class="border border-gray-300">Total</th>
-
+                            <th class="border border-gray-300 ">Nombre</th>
+                            <th v-if="form.prod_serie" class="border border-gray-300 ">Serie</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in form.productos" :key="index"
-                            class="font-sans  text-center font-normal text-gray-800 border border-gray-300">
-                            <td class="border border-gray-300 p-2">{{ item.cantidad }}</td>
-                            <td class="border border-gray-300 p-2">{{ item.producto.origen }}</td>
-                            <td class="border border-gray-300 p-2">{{ item.producto.nombre }}</td>
-                            <td class="border border-gray-300 p-2">{{ item.producto.codigo_barra }}</td>
-                            <td class="border border-gray-300 p-2">{{ item.precio.toFixed(2) }}</td>
-                            <td class="border border-gray-300 p-2">{{ item.total.toFixed(2) }}</td>
+                        <tr class="font-sans  text-center font-normal text-gray-800 border border-gray-300">
+                            <td class="border border-gray-300 p-2">{{ form.prod_cantidad }}</td>
+                            <td class="border border-gray-300 p-2">{{ form.prod_origen }}</td>
+                            <td class="border border-gray-300 p-2">{{ form.prod_nombre}}</td>
+                            <td v-if="form.prod_serie" class="border border-gray-300 p-2">{{ form.prod_serie}}</td>
 
                         </tr>
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="5" class="text-end"><b>Total: </b></td>
-                            <td class="text-center"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{
-                                form.total.toFixed(2) }}
-                                </b></td>
-                        </tr>
 
-                    </tfoot>
                 </table>
             </div>
 

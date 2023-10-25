@@ -32,7 +32,8 @@ class ExpedicionController extends Controller
                     ->orWhere('destino',"SALON");
                 })->where(function ($query) {
                     $query->where('estado',"PENDIENTE DE FACTURACIÓN")
-                    ->orWhere('estado',"FACTURADO");
+                    ->orWhere('estado',"FACTURADO")
+                    ->orWhere('estado',"RMA");
                 })->get()
 
                     //whereNot('estado',"COMPLETADO")

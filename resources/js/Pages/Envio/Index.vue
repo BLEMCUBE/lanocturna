@@ -35,7 +35,8 @@ const clickDetalle = (e) => {
 }
 onMounted(() => {
 
-    tabla_ventas.value = usePage().props.ventas.data;
+    //tabla_ventas.value = usePage().props.ventas.data;
+    tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
 
 });
 
@@ -56,6 +57,9 @@ const colorEstado = (estado) => {
             break;
         case 'ANULADO':
             return 'text-red-600'
+            break;
+        case 'RMA':
+            return 'text-green-600'
             break;
         default:
             return 'text-black'
@@ -82,7 +86,7 @@ const filters = ref({
 
                 <DataTable :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100'  }
-                }" scrollable scrollHeight="500px" :virtualScrollerOptions="{ itemSize: 46 }"
+                }" scrollable scrollHeight="500px" :virtualScrollerOptions="{ itemSize: 46 , numToleratedItems: 30}"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-start  text-md">

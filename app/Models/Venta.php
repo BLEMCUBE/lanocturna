@@ -31,6 +31,7 @@ class Venta extends Model
         'cliente',
         'tipo',
         'nro_compra',
+        'parametro',
         'vendedor_id',
         'facturador_id',
         'validador_id',
@@ -38,7 +39,8 @@ class Venta extends Model
     ];
 
     protected $casts = [
-        'cliente'=>Json::class
+        'cliente'=>Json::class,
+        'parametro'=>Json::class,
     ];
 
     public function vendedor()

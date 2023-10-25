@@ -8,14 +8,12 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
+const toast = useToast();
 const dateHoy = ref(null);
 const dateCompra = ref(null);
-const toast = useToast();
-const titulo = "Ingresar RMA"
+const titulo =ref("");
 const ruta = 'rmas'
-const { nro_servicio } = usePage().props
 const lista_productos = ref();
 const productoSelect = ref();
 
@@ -60,17 +58,20 @@ const filtrado = (value) => {
 }
 
 const form = useForm({
+    id:'',
     vendedor_id: '',
     fecha_ingreso: '',
     fecha_compra: '',
     nro_factura: '',
+    vendedor_id: '',
+    nro_servicio: '',
     costo_presupuestado: '',
-    modo: 'INGRESADO',
+    modo: '',
     estado: '',
-    tipo: 'RMA',
+    tipo: '',
     producto_id: '',
     prod_origen: '',
-    prod_cantidad: 1,
+    prod_cantidad: '',
     prod_nombre: '',
     prod_serie: '',
     observaciones: '',
@@ -83,17 +84,54 @@ const form = useForm({
 })
 
 onMounted(() => {
-    dateHoy.value = moment(new Date()).format('YYYY-MM-DD');
-    form.fecha_ingreso = dateHoy.value;
+    var datos=usePage().props.venta.data
     lista_productos.value = Array.from(usePage().props.productos.data, (x) => x);
+    titulo.value= "EDITAR "+ datos.tipo
+    form.id=datos.id
+    form.nro_servicio=datos.nro_servicio
+    form.cliente= {
+        nombre: datos.cliente,
+        telefono: datos.telefono,
+    }
+
+    form.costo_presupuestado = datos.costo_presupuestado
+    form.observaciones = datos.observaciones
+    form.defecto = datos.defecto
+    form.producto_id = datos.producto_id
+    form.prod_origen = datos.prod_origen
+    form.prod_nombre = datos.prod_nombre
+    form.prod_cantidad = datos.prod_cantidad
+    form.prod_serie = datos.prod_serie
+    form.vendedor_id = datos.vendedor_id
+    form.nro_factura = datos.nro_factura
+    form.fecha_ingreso=datos.fecha_ingreso
+    form.fecha_compra=datos.fecha_compra
+
+    dateHoy.value=datos.fecha_ingreso
+    dateCompra.value=datos.fecha_compra
+
+    productoSelect.value={'id':datos.producto_id,'origen':datos.prod_origen,'nombre':datos.prod_nombre,'imagen':datos.imagen}
+
+
+    form.tipo = datos.tipo
+    selectedTipo.value.code = datos.tipo
+    selectedTipo.value.name = datos.tipo
+
+    form.estado = datos.estado
+    selectedEstado.value.code = datos.estado
+    selectedEstado.value.name = datos.estado
+
+    form.modo = datos.modo
+    selectedModo.value.code = datos.modo
+    selectedModo.value.name = datos.modo
+
 })
 
 
 
-
-const selectedModo = ref({ name: 'INGRESADO', code: 'INGRESADO' });
+const selectedModo = ref({ name: '', code: '' });
 const selectedEstado = ref({ name: '', code: '' });
-
+const selectedTipo = ref({ name: '', code: '' });
 
 const estados = ref([
     { name: 'PRESUPUESTADO', code: 'PRESUPUESTADO' },
@@ -107,26 +145,23 @@ const modos = ref([
     { name: 'ENTREGADO', code: 'ENTREGADO' },
 ]);
 
-const selectedTipo = ref({ name: 'RMA', code: 'RMA' });
 const tipos = ref([
     { name: 'RMA', code: 'RMA' },
     { name: 'PRESUPUESTO', code: 'PRESUPUESTO' },
 ]);
 
 
-
-
 //envio de formulario
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta + '.rma-store'), {
+    form.post(route(ruta + '.rma-update', form.id), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
-            show('success', 'Mensaje', 'RMA creado')
+            show('success', 'Mensaje', 'Actualizado')
             setTimeout(() => {
-                router.get(route(ruta + '.rma-create'));
+                router.get(route('inicio'))
             }, 1000);
         },
         onFinish: () => {
@@ -136,7 +171,6 @@ const submit = () => {
 
         }
     });
-
 
 
 };
@@ -149,10 +183,11 @@ const cancelCrear = () => {
     router.get(route('inicio'))
 };
 
+
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': 'RMA', link: false, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
+    <AppLayout :pagina="[{ 'label': 'Rmas', link: false, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <!--Contenido-->
         <div
             class="grid grid-cols-12 p-0 m-0 gap-4 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 2xl:col-span-10">
@@ -166,7 +201,6 @@ const cancelCrear = () => {
                 <form>
 
                     <div class="grid grid-cols-12 gap-2 py-0">
-
                         <!--Datos-->
 
                         <!--Fecha ingreso-->
@@ -183,7 +217,7 @@ const cancelCrear = () => {
                         <div class="col-span-12 mx-2 py-1 shadow-default xl:col-span-4">
                             <InputLabel for="nro_servicio" value="Número servicio"
                                 class="text-base font-medium leading-1 text-gray-900" />
-                            <InputText type="text" id="nro_servicio" v-model="nro_servicio" readonly :pt="{
+                            <InputText type="text" id="nro_servicio" v-model="form.nro_servicio" readonly :pt="{
                                 root: { class: 'h-9 w-full' }
                             }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.nro_servicio" />
@@ -206,7 +240,7 @@ const cancelCrear = () => {
                         <div class="col-span-12 mx-2 py-1 shadow-default xl:col-span-4">
                             <InputLabel for="modo" value="Ingresado/Entregado" class="text-base font-medium leading-1 text-gray-900" />
 
-                            <Dropdown v-model="selectedModo" disabled id="modo" @change="setModo" filter
+                            <Dropdown v-model="selectedModo" id="modo" @change="setModo" filter
                                 :options="modos" optionLabel="name" :pt="{
                                     root: { class: 'w-full' },
                                     trigger: { class: 'fas fa-caret-down text-gray-400 my-auto' },
@@ -290,7 +324,7 @@ const cancelCrear = () => {
                         <div class="col-span-12 mx-2 py-1 shadow-default xl:col-span-8">
                             <InputLabel for="prod_origen" value="Producto"
                                 class="text-base font-medium leading-1 text-gray-900" />
-                            <Dropdown v-model="productoSelect" id="productos" @change="setProducto" filter
+                            <Dropdown v-model="productoSelect" :autoOptionFocus="true" id="productos" @change="setProducto" filter
                                 :options="lista_productos" optionLabel="nombre" :virtualScrollerOptions="{ itemSize: 46 }"
                                 class="w-full md:w-14rem" :pt="{
                                     root: { class: 'w-1/2' },

@@ -56,6 +56,9 @@ const colorEstado = (estado) => {
         case 'ANULADO':
             return 'text-red-600'
             break;
+        case 'RMA':
+            return 'text-green-600'
+            break;
         default:
             return 'text-black'
             break;
@@ -79,7 +82,7 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable  :filters="filters" :value="tabla_ventas" :pt="{
+                <DataTable :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer' }
                 }" scrollable scrollHeight="500px" :virtualScrollerOptions="{ itemSize: 46 }"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">

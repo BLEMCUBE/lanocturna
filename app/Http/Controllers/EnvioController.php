@@ -46,7 +46,8 @@ class EnvioController extends Controller
                     ->orWhere('destino', "DAC");
             })->where(function ($query) {
                 $query->where('estado', "PENDIENTE DE FACTURACIÓN")
-                    ->orWhere('estado', "FACTURADO");
+                    ->orWhere('estado', "FACTURADO")
+                    ->orWhere('estado', "RMA");
             })->select('*')->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Index', [
