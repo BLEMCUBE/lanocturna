@@ -234,9 +234,12 @@ Route::get('/reportes-productos-vendidos/exportproductoventas',[ReporteProductoV
 Route::controller(RmaController::class)->group(function () {
     /*
     Route::post('/ventas/updatemercado/{id}', 'updatemercado')->name('ventas.updatemercado')->middleware('auth');*/
+    Route::get('/rmas/subir/{id}', 'showsubir')->name('rmas.showsubir')->middleware('auth');
+    Route::get('/rmas/subir', 'rma_subir')->name('rmas.subir')->middleware('auth');
     Route::post('/rmas/rma-update/{id}', 'rma_update')->name('rmas.rma-update')->middleware('auth');
     Route::get('/rmas/rma-edit/{id}', 'rma_edit')->name('rmas.rma-edit')->middleware('auth');
     Route::post('/rmas/rma-store', 'rma_store')->name('rmas.rma-store')->middleware('auth');
+    Route::post('/rmas/rma-subir', 'subir_store')->name('rmas.subir-store')->middleware('auth');
     Route::get('/rmas/rma-create', 'rma_create')->name('rmas.rma-create')->middleware('auth');
     Route::get('/rmas', 'index')->name('rmas.index')->middleware('auth');
     Route::get('/rmas/historial', 'historial')->name('rmas.historial')->middleware('auth');

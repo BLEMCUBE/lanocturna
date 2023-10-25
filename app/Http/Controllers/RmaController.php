@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EnvioUpdateRequest;
 use App\Http\Requests\RmaStoreRequest;
+use App\Http\Requests\SubirRmaStoreRequest;
 use App\Http\Resources\ProductoRmaCollection;
+use App\Http\Resources\ProductoVentaCollection;
 use App\Http\Resources\RmaCollection;
 use App\Http\Resources\RmaResource;
+use App\Models\Destino;
 use Exception;
 use App\Models\Producto;
 use Carbon\Carbon;
@@ -37,7 +40,7 @@ class RmaController extends Controller
             ->when(Request::input('fin'), function ($query, $search) {
                 $query->whereDate('fecha_ingreso', '<=', $search);
             })->orderBy('fecha_ingreso', 'DESC')
-            ->whereNot('modo','ENTREGADO')
+            ->whereNot('modo', 'ENTREGADO')
             ->get();
         return Inertia::render('Rma/Index', [
             'ventas' => new RmaCollection(
@@ -183,7 +186,48 @@ class RmaController extends Controller
         }
     }
 
-      public function show($id)
+
+    public function rma_subir()
+    {
+        $lista_rma = Rma::select('id', 'nro_servicio')->get();
+
+        $rmas = [];
+        foreach ($lista_rma as $rm) {
+            array_push($rmas, [
+                'code' => $rm->id,
+                'name' => $rm->nro_servicio,
+            ]);
+        }
+
+        $last = Venta::latest()->first();
+        $vendedor = auth()->user();
+
+        if (empty($last) || is_null($last)) {
+            $codigo = zero_fill(1, 8);
+        } else {
+            $codigo = zero_fill($last->codigo + 1, 8);
+        }
+        //Lista destino
+        $lista_destin = Destino::get();
+
+        $lista_destinos = [];
+        foreach ($lista_destin as $destino) {
+            array_push($lista_destinos, [
+                'value' => $destino->nombre,
+                'label' =>  $destino->nombre,
+            ]);
+        }
+
+        return Inertia::render('Rma/RmaSubir', [
+            'codigo' => $codigo,
+            'vendedor_id' => $vendedor->id,
+            'vendedor' => $vendedor->name,
+            'lista_destinos' => $lista_destinos,
+            'lista_rmas' => $rmas,
+        ]);
+    }
+
+    public function show($id)
     {
         $venta_query = Rma::with(['vendedor' => function ($query) {
             $query->select('users.id', 'users.name');
@@ -193,6 +237,88 @@ class RmaController extends Controller
         return Inertia::render('Rma/Show', [
             'venta' => $venta
         ]);
+    }
+
+    public function showsubir($id)
+    {
+        $vendedor = auth()->user();
+        $venta_query = Rma::with(['vendedor' => function ($query) {
+            $query->select('users.id', 'users.name');
+        }])->with(['producto' => function ($query) {
+            $query->select('productos.id', 'productos.imagen', 'productos.stock');
+        }])->orderBy('id', 'DESC')->findOrFail($id);
+        $venta = new RmaResource($venta_query);
+        return response()->json([
+            'venta' => $venta,
+            'vendedor' => $vendedor->name,
+            'vendedor_id' => $vendedor->id,
+        ]);
+    }
+
+    public function subir_store(SubirRmaStoreRequest $request)
+    //public function subir_store(Req $request)
+    {
+        $vendedor = auth()->user();
+
+        DB::beginTransaction();
+        try {
+
+            //creando venta
+            $venta = Venta::create([
+                'total_sin_iva' => $request->total_sin_iva ?? 0,
+                'total' => $request->total ?? 0,
+                'estado' => $request->estado,
+                'moneda' => $request->moneda,
+                'tipo_cambio' => $request->tipo_cambio??'Pesos',
+                'destino' => $request->destino,
+                'tipo' => $request->tipo ?? 'ENVIO',
+                'vendedor_id' => $vendedor->id,
+                'facturador_id' => $vendedor->id,
+                'fecha_facturacion' => now(),
+                'cliente' => json_encode($request->cliente),
+                'parametro' => json_encode($request->parametro),
+                'observaciones' => $request->observaciones,
+
+            ]);
+            $venta->update([
+                "codigo" => zero_fill($venta->id, 8)
+            ]);
+
+            //creando detalle venta
+            foreach ($request->productos as $producto) {
+
+                $venta->detalles_ventas()->create(
+                    [
+                        "producto_id" => $producto['producto_id'],
+                        "cantidad" => $producto['cantidad'],
+
+                    ]
+                );
+            }
+
+            if ($request->parametro['opt']['mueve_stock'] == "SI") {
+                //actualizando stock producto
+                foreach ($request->productos as $produ) {
+                    $prod = Producto::find($produ['producto_id']);
+                    $old_stock = $prod->stock;
+                    $new_stock = $old_stock - $produ['cantidad'];
+                    $prod->update([
+                        "stock" => $new_stock,
+                        "stock_futuro" => $new_stock + $prod->en_camino
+                    ]);
+                }
+            }
+
+
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 
     public function destroy($id)

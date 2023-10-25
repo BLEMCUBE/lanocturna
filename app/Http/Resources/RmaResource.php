@@ -31,6 +31,7 @@ class RmaResource extends JsonResource
             'producto_id' => $this->producto_id ?? '',
             'prod_cantidad' => $this->prod_cantidad ?? '',
             'imagen' => $this->producto->imagen ?? '/images/productos/sin_foto.png',
+            'stock' => $this->producto->stock,
             'prod_origen' => $this->prod_origen ?? '',
             'prod_nombre' => $this->prod_nombre ?? '',
             'prod_serie' => $this->prod_serie ?? '',

@@ -523,7 +523,7 @@ const showDropdown = ref(false)
                     <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('subir-rma')">
                         <NavLinkSideBarNotIcon
                             class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                            :href="route('depositos.index')" :active="route().current('depositos.index')">
+                            :href="route('rmas.subir')" :active="route().current('rmas.subir')">
                             <span class="ml-2 uppercase">SUBIR ENVIO RMA</span>
                         </NavLinkSideBarNotIcon>
                     </li>

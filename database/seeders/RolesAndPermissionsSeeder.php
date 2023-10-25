@@ -98,10 +98,13 @@ class RolesAndPermissionsSeeder extends Seeder
 
 
             //GRUPO RMA
-            ['name' => 'menu-rma', 'description' => 'RMA'],
-            ['name' => 'lista-rma', 'description' => 'LISTADO RMA'],
-            ['name' => 'historial-rma', 'description' => 'HISTORIAL RMA'],
-            ['name' => 'subir-rma', 'description' => 'SUBIR ENVIO RMA'],
+            ['name' => 'menu-rma', 'description' => 'Menú Rma'],
+            ['name' => 'lista-rma', 'description' => 'Listado Rma'],
+            ['name' => 'crear-rma', 'description' => 'Crear Rma'],
+            ['name' => 'editar-rma', 'description' => 'Editar Rma'],
+            ['name' => 'eliminar-rma', 'description' => 'Eliminar Rma'],
+            ['name' => 'historial-rma', 'description' => 'Historial Rma'],
+            ['name' => 'subir-rma', 'description' => 'Subir Envio Rma'],
 
 
         ];
