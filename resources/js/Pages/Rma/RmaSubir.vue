@@ -119,7 +119,7 @@ const submit = () => {
         onSuccess: () => {
             show('success', 'Mensaje', 'Creado')
             setTimeout(() => {
-                router.get(route(ruta + '.subir-store'));
+                router.get(route(ruta + '.subir'));
             }, 1000);
         },
         onFinish: () => {
