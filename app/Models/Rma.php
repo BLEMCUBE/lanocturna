@@ -16,10 +16,13 @@ class Rma extends Model
         'id',
         'nro_servicio',
         'fecha_ingreso',
+        'fecha_limite',
+        'fecha_entrega',
         'fecha_compra',
         'nro_factura',
         'cliente',
         'estado',
+        'modo',
         'tipo',
         'observaciones',
         'defecto',
@@ -49,6 +52,12 @@ class Rma extends Model
     public function detalles_rmas()
     {
         return $this->hasMany(VentaDetalle::class);
+    }
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class);
+
     }
 
 

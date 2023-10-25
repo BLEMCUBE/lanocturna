@@ -513,7 +513,7 @@ const showDropdown = ref(false)
                         <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('historial-rma')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                                :href="route('depositos.index')" :active="route().current('depositos.index')">
+                                :href="route('rmas.historial')" :active="route().current('rmas.historial')">
                             <span class="ml-2 uppercase">HISTORIAL RMA</span>
                         </NavLinkSideBarNotIcon>
                     </li>

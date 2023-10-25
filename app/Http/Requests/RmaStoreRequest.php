@@ -21,6 +21,8 @@ class RmaStoreRequest extends FormRequest
             'tipo' => 'required',
             'defecto' => 'required',
             'producto_id' => 'required',
+            'estado' => 'required',
+            'modo' => 'required',
             'fecha_compra' => 'required_if:tipo,RMA',
             'nro_factura' => 'required_if:tipo,RMA',
             'costo_presupuestado' => 'required_if:tipo,PRESUPUESTO',
@@ -35,6 +37,8 @@ class RmaStoreRequest extends FormRequest
         return [
             'cliente.nombre.required' => 'Este campo es obligatorio.',
             'defecto.required' => 'Este campo es obligatorio.',
+            'estado.required' => 'Este campo es obligatorio.',
+            'modo.required' => 'Este campo es obligatorio.',
             'producto_id.required' => 'Debe seleccionar un producto.',
             'fecha_compra.required_if' => 'Este campo es obligatorio.',
             'costo_presupuestado.required_if' => 'Este campo es obligatorio.',

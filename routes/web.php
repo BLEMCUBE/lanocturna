@@ -232,15 +232,16 @@ Route::get('/reportes-productos-vendidos/exportproductoventas',[ReporteProductoV
 
 //Rma -Presupuesto
 Route::controller(RmaController::class)->group(function () {
-    /*Route::post('/ventas/update/{id}', 'update')->name('ventas.update')->middleware('auth');
-    Route::post('/ventas/updatemercado/{id}', 'updatemercado')->name('ventas.updatemercado')->middleware('auth');
-    Route::get('/ventas/edit/{id}', 'edit')->name('ventas.edit')->middleware('auth');
-    */
+    /*
+    Route::post('/ventas/updatemercado/{id}', 'updatemercado')->name('ventas.updatemercado')->middleware('auth');*/
+    Route::post('/rmas/rma-update/{id}', 'rma_update')->name('rmas.rma-update')->middleware('auth');
+    Route::get('/rmas/rma-edit/{id}', 'rma_edit')->name('rmas.rma-edit')->middleware('auth');
     Route::post('/rmas/rma-store', 'rma_store')->name('rmas.rma-store')->middleware('auth');
     Route::get('/rmas/rma-create', 'rma_create')->name('rmas.rma-create')->middleware('auth');
     Route::get('/rmas', 'index')->name('rmas.index')->middleware('auth');
-    /*Route::get('/ventas/{id}', 'show')->name('ventas.show')->middleware('auth');
-    Route::delete('/ventas/{id}', 'destroy')->name('ventas.destroy')->middleware('auth');*/
+    Route::get('/rmas/historial', 'historial')->name('rmas.historial')->middleware('auth');
+    Route::get('/rmas/{id}', 'show')->name('rmas.show')->middleware('auth');
+    Route::delete('/rmas/{id}', 'destroy')->name('rmas.destroy')->middleware('auth');
 
 });
 
