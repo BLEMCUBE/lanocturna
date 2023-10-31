@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\VentaResource;
 use App\Models\Configuracion;
+use App\Models\Rma;
 use App\Models\VentaDetalle;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -101,6 +102,13 @@ class ExpedicionController extends Controller
                 $prod->update([
                     "producto_validado" =>  $producto['producto_validado']
                 ]);
+            }
+
+            if($venta->tipo=="RMA"){
+                $rma_json=json_decode($venta->parametro);
+                $rma=Rma::findOrFail($rma_json->rma->id);
+                $rma->modo="ENTREGADO";
+                $rma->save();
             }
 
             DB::commit();

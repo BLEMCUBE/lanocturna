@@ -105,7 +105,7 @@ class PermissionsSeeder extends Seeder
             ['name' => 'eliminar-rma', 'description' => 'Eliminar Rma'],
             ['name' => 'historial-rma', 'description' => 'Historial Rma'],
             ['name' => 'subir-rma', 'description' => 'Subir Envio Rma'],
-
+            ['name' => 'historial-rma-envio', 'description' => 'Historial Envios RMA'],
 
         ];
     }

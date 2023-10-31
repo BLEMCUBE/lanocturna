@@ -161,7 +161,7 @@ const submit = () => {
         onSuccess: () => {
             show('success', 'Mensaje', 'Actualizado')
             setTimeout(() => {
-                router.get(route('inicio'))
+                router.get(route('rma'))
             }, 1000);
         },
         onFinish: () => {
@@ -180,7 +180,7 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-    router.get(route('inicio'))
+    router.get(route('rmas.index'))
 };
 
 

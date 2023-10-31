@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Configuracion;
 use App\Models\Destino;
 use App\Models\Producto;
+use App\Models\Rma;
 use App\Models\TipoCambio;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\VentaDetalle;
@@ -178,8 +179,6 @@ class EnvioController extends Controller
             }
         }
 
-        $venta_query = Venta::orderBy('created_at', 'DESC')
-            ->get();
         $venta_query = new VentaCollection(
             Venta::where(function ($query) {
                 $query->where('destino', "CADETERIA")
@@ -191,7 +190,10 @@ class EnvioController extends Controller
             })
             ->when(Req::input('fin'), function ($query, $search) {
                 $query->whereDate('created_at', '<=', $search);
-            })->where('estado','COMPLETADO')->orderBy('id', 'DESC')->get()
+            })
+            ->where("tipo",'=', "VENTA")
+            ->orWhere("tipo",'=', "ENVIO")
+            ->where('estado','COMPLETADO')->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Historial', [
             'tipo_cambio' => $hoy_tipo_cambio,
@@ -280,6 +282,12 @@ class EnvioController extends Controller
                 $prod->update([
                     "producto_validado" =>  $producto['producto_validado']
                 ]);
+            }
+            if($venta->tipo=="RMA"){
+                $rma_json=json_decode($venta->parametro);
+                $rma=Rma::findOrFail($rma_json->rma->id);
+                $rma->modo="ENTREGADO";
+                $rma->save();
             }
 
             DB::commit();

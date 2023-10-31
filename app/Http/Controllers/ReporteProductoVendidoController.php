@@ -20,10 +20,10 @@ class ReporteProductoVendidoController extends Controller
         ->join('ventas as ve', 'det.venta_id', '=', 've.id')
         ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
         ->when(Request::input('inicio'), function ($query) {
-            $query->where('ve.fecha_facturacion', '>=', Request::input('inicio'));
+            $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
         })
         ->when(Request::input('fin'), function ($query) {
-            $query->where('ve.fecha_facturacion', '<=', Request::input('fin'));
+            $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
         })
         ->where('det.producto_validado', '=', 1)
         ->select(

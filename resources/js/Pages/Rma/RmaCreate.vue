@@ -66,7 +66,7 @@ const form = useForm({
     nro_factura: '',
     costo_presupuestado: '',
     modo: 'INGRESADO',
-    estado: '',
+    estado: 'RECIBIDO',
     tipo: 'RMA',
     producto_id: '',
     prod_origen: '',
@@ -92,10 +92,11 @@ onMounted(() => {
 
 
 const selectedModo = ref({ name: 'INGRESADO', code: 'INGRESADO' });
-const selectedEstado = ref({ name: '', code: '' });
+const selectedEstado = ref({ name: 'RECIBIDO', code: 'RECIBIDO' });
 
 
 const estados = ref([
+    { name: 'RECIBIDO', code: 'RECIBIDO' },
     { name: 'PRESUPUESTADO', code: 'PRESUPUESTADO' },
     { name: 'REPARADO', code: 'REPARADO' },
     { name: 'CAMBIO PRODUCTO', code: 'CAMBIO PRODUCTO' },
@@ -146,7 +147,7 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-    router.get(route('inicio'))
+    router.get(route('rmas.index'))
 };
 
 </script>
@@ -220,7 +221,7 @@ const cancelCrear = () => {
                         <div class="col-span-12 mx-2 py-1 shadow-default xl:col-span-4">
                             <InputLabel for="estado" value="Estado" class="text-base font-medium leading-1 text-gray-900" />
 
-                            <Dropdown v-model="selectedEstado" id="estado" @change="setEstado" filter
+                            <Dropdown v-model="selectedEstado" disabled id="estado" @change="setEstado" filter
                                 :options="estados" optionLabel="name" :pt="{
                                     root: { class: 'w-full' },
                                     trigger: { class: 'fas fa-caret-down text-gray-400 my-auto' },

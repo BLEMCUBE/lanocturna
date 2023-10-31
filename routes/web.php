@@ -243,7 +243,10 @@ Route::controller(RmaController::class)->group(function () {
     Route::get('/rmas/rma-create', 'rma_create')->name('rmas.rma-create')->middleware('auth');
     Route::get('/rmas', 'index')->name('rmas.index')->middleware('auth');
     Route::get('/rmas/historial', 'historial')->name('rmas.historial')->middleware('auth');
+    Route::get('/rmas/historial-envios', 'historialEnvios')->name('rmas.historial-envios')->middleware('auth');
+    Route::get('/rmas/{id}/historial', 'showHistorial')->name('rmas.show-historial')->middleware('auth');
     Route::get('/rmas/{id}', 'show')->name('rmas.show')->middleware('auth');
+    Route::get('/rmas/{id}/ticket', 'generarTicket')->name('rmas.generar_ticket')->middleware('auth');
     Route::delete('/rmas/{id}', 'destroy')->name('rmas.destroy')->middleware('auth');
 
 });

@@ -50,12 +50,15 @@ class VentaController extends Controller
         }
 
         $venta_query = Venta::select('id','nro_compra','cliente','created_at',
-        'total','estado','observaciones')->when(Request::input('inicio'), function ($query, $search) {
+        'total','estado','observaciones','tipo')->when(Request::input('inicio'), function ($query, $search) {
             $query->whereDate('created_at', '>=', $search);
         })
             ->when(Request::input('fin'), function ($query, $search) {
                 $query->whereDate('created_at', '<=', $search);
-            })->orderBy('created_at', 'DESC')
+            })
+            ->where("tipo",'=', "VENTA")
+            ->orWhere("tipo",'=', "ENVIO")
+            ->orderBy('created_at', 'DESC')
             ->get();
         return Inertia::render('Venta/Index', [
             'tipo_cambio' => $hoy_tipo_cambio,

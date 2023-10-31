@@ -30,7 +30,7 @@ const form = useForm({
     destino: '',
     total: 0.0,
     total_sin_iva: 0.0,
-    tipo: 'ENVIO',
+    tipo: 'RMA',
     nro_compra: '',
     estado: 'RMA',
     observaciones: '',
@@ -39,6 +39,7 @@ const form = useForm({
         rma: {},
         opt: {
             mueve_stock:"NO",
+            producto_completo:"SI"
         }
     },
     productos: [],
@@ -52,14 +53,25 @@ const form = useForm({
 })
 
 const setMueveStock = (e) => {
-    if (e.value.code == form.parametro.rma.id)
+    if (e.value.code == form.parametro.opt.mueve_stock)
         return;
     form.parametro.opt.mueve_stock=e.value.code
 
 }
+const setProductoCompleto = (e) => {
+    if (e.value.code == form.parametro.opt.producto_completo)
+        return;
+    form.parametro.opt.producto_completo=e.value.code
+
+}
 const selectedMueveStock = ref({ name: 'NO', code: 'NO' });
+const selectProductoCompleto = ref({ name: 'SI', code: 'SI' });
 
 const mueveStock = ref([
+    { name: 'SI', code: 'SI' },
+    { name: 'NO', code: 'NO' },
+]);
+const productoCompleto = ref([
     { name: 'SI', code: 'SI' },
     { name: 'NO', code: 'NO' },
 ]);
@@ -139,7 +151,7 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-    router.get(route('inicio'))
+    router.get(route('rmas.index'))
 };
 
 
@@ -174,6 +186,20 @@ const cancelCrear = () => {
 
                         </div>
 
+                        <div class="col-span-12 mx-2 py-1 shadow-default xl:col-span-4">
+                            <InputLabel for="productoCompleto" value="Producto Completo?" class="text-base font-medium leading-1 text-gray-900" />
+
+                            <Dropdown v-model="selectProductoCompleto" id="productoCompleto"  @change="setProductoCompleto" filter :options="productoCompleto"
+                                optionLabel="name" :pt="{
+                                    root: { class: 'w-full' },
+                                    trigger: { class: 'fas fa-caret-down text-gray-400 my-auto' },
+                                    item: ({ props, state, context }) => ({
+                                        class: context.selected ? 'text-white bg-primary-900 p-2' : context.focused ? 'bg-blue-100 p-2' : undefined
+                                    })
+                                }" placeholder="Seleccione" />
+
+
+                        </div>
                         <div class="col-span-12 mx-2 py-1 shadow-default xl:col-span-4">
                             <InputLabel for="stock" value="Mueve Stock?" class="text-base font-medium leading-1 text-gray-900" />
 
@@ -277,6 +303,18 @@ const cancelCrear = () => {
                             <InputError class="mt-1 text-xs" :message="form.errors['cliente.direccion']" />
                         </div>
 
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-12">
+                            <InputLabel for="rut" value="Observaciones:"
+                                class="text-base font-medium leading-6 text-gray-900" />
+
+                            <Textarea v-model="form.observaciones" :pt="{
+                                root: {
+                                    rows: '1',
+                                    class: 'w-full'
+                                }
+                            }" />
+
+                        </div>
                         <!--Datos-->
 
                     </div>

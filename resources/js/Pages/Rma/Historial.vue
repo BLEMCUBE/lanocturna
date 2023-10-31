@@ -92,26 +92,6 @@ const filtrado = (value) => {
 
 }
 
-const colorEstado = (estado) => {
-    switch (estado) {
-        case 'PENDIENTE DE FACTURACIÓN':
-            return 'text-orange-600'
-            break;
-        case 'FACTURADO':
-            return 'text-blue-600'
-            break;
-        case 'COMPLETADO':
-            return 'text-green-600'
-            break;
-        case 'ANULADO':
-            return 'text-red-600'
-            break;
-        default:
-            return 'text-black'
-            break;
-    }
-}
-
 const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
 
@@ -415,13 +395,15 @@ const filters = ref({
                         <template #loading>
                         </template>
                         <template #body="slotProps">
-
-                            <Button v-if="permissions.includes('eliminar-ventas') && slotProps.data.modo !== 'ENTREGADO'"
+                            <div class="flex items-center py-1">
+                                <a class="w-8 h-8 rounded bg-sky-300 px-2 py-1 text-base font-normal text-white mr-2 hover:bg-sky-400" :href="route('rmas.generar_ticket', slotProps.data.id)" target="_blank"><i
+                                        class="fas fa-print"></i></a>
+                            <Button v-if="slotProps.data.modo !== 'ENTREGADO'"
                                 @click="btnEliminar(slotProps.data.id)"
                                 class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-0 hover:bg-red-600 hover:bg-red-600 "
                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
                                     class="fas fa-trash"></i></Button>
-
+                            </div>
 
                         </template>
                     </Column>
