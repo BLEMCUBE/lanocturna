@@ -190,7 +190,10 @@ class RmaController extends Controller
 
     public function rma_subir()
     {
-        $lista_rma = Rma::select('id', 'nro_servicio')->get();
+        $lista_rma = Rma::select('id','estado' ,'nro_servicio')
+        ->where('estado','=','CAMBIO PRODUCTO')
+        ->orWhere('estado','=','REPARADO')
+        ->get();
 
         $rmas = [];
         foreach ($lista_rma as $rm) {

@@ -12,6 +12,7 @@ use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ReporteProductoRmaController;
 use App\Http\Controllers\ReporteProductoVendidoController;
 use App\Http\Controllers\ReporteVentaController;
 use App\Http\Controllers\RmaController;
@@ -250,5 +251,9 @@ Route::controller(RmaController::class)->group(function () {
     Route::delete('/rmas/{id}', 'destroy')->name('rmas.destroy')->middleware('auth');
 
 });
+
+//Reporte Listado  productos Rma
+Route::get('/reportes-productos-rma', [ReporteProductoRmaController::class, 'index'])->name('reportes.productosrma')->middleware(['auth', 'verified']);
+Route::get('/reportes-productos-rma/exportproductoventas',[ReporteProductoRmaController::class, 'exportProductoRma'])->name('reportes.exportproductorma')->middleware('auth');
 
 require __DIR__.'/auth.php';

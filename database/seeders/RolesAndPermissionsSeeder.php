@@ -33,6 +33,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
             //lista productos mas vendidos
             ['name' => 'reporte-productos-vendidos', 'description' => 'Listado productos más vendidos'],
+             //lista productos rma
+            ['name' => 'reporte-productos-rma', 'description' => 'Listado productos Rma'],
 
             //Grupo configuraciones
             ['name' => 'menu-configuraciones', 'description' => 'Menú configuraciones'],
