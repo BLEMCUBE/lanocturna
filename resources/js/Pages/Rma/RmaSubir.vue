@@ -131,7 +131,7 @@ const submit = () => {
         onSuccess: () => {
             show('success', 'Mensaje', 'Creado')
             setTimeout(() => {
-                router.get(route(ruta + '.subir'));
+                router.get(route(ruta + '.index'));
             }, 1000);
         },
         onFinish: () => {

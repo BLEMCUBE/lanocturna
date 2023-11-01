@@ -9,6 +9,7 @@ use App\Http\Resources\RmaCollection;
 use App\Http\Resources\RmaResource;
 use App\Http\Resources\VentaCollection;
 use App\Http\Resources\VentaResource;
+use App\Models\DepositoLista;
 use App\Models\Destino;
 use Exception;
 use App\Models\Producto;
@@ -17,6 +18,7 @@ use App\Models\Venta;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use App\Models\Rma;
+use App\Models\RmaStock;
 use App\Models\VentaDetalle;
 use Illuminate\Support\Facades\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -40,8 +42,9 @@ class RmaController extends Controller
         })
             ->when(Request::input('fin'), function ($query, $search) {
                 $query->whereDate('fecha_ingreso', '<=', $search);
-            })->orderBy('fecha_ingreso', 'DESC')
+            })
             ->whereNot('modo', 'ENTREGADO')
+            ->orderBy('nro_servicio', 'DESC')
             ->get();
         return Inertia::render('Rma/Index', [
             'ventas' => new RmaCollection(
@@ -56,7 +59,8 @@ class RmaController extends Controller
         })
             ->when(Request::input('fin'), function ($query, $search) {
                 $query->whereDate('fecha_ingreso', '<=', $search);
-            })->orderBy('fecha_ingreso', 'DESC')
+            })
+            ->orderBy('nro_servicio', 'DESC')
             ->get();
         return Inertia::render('Rma/Historial', [
             'ventas' => new RmaCollection(
@@ -395,6 +399,63 @@ class RmaController extends Controller
         } else {
             return Redirect::route('rmas.index');
         }
+    }
+
+    public function rma_stock()
+    {
+        $query_depositos = RmaStock::
+                with(['producto' => function ($query) {
+                    $query->select('id', 'origen', 'nombre', 'imagen', 'codigo_barra');
+
+        }])->with(['rma' => function ($query) {
+                    $query->select('id','defecto','observaciones');
+
+        }])->select('*')->orderBy('producto_completo', 'DESC')->get();
+
+        $grouped = $query_depositos->groupBy('producto_completo');
+
+        $depositos = [];
+        $det_producto = [];
+        $id_stock=0;
+        $prod_completo="SI";
+
+        foreach ($grouped as $deposito) {
+
+            foreach ($deposito as $prod) {
+
+                array_push($det_producto, [
+                    "producto_id" => $prod->producto->id,
+                    "sku" => $prod->producto->origen,
+                    "cantidad_total" => $prod->cantidad_total,
+                    "nombre" => $prod->producto->nombre,
+                    "imagen" => $prod->producto->imagen,
+                    "defecto" => $prod->rma->defecto,
+                    "observaciones" => $prod->rma->observaciones,
+                    'rma_id'=>$prod->rma_id,
+                    'stock_id'=>$prod->id
+                ]);
+                $id_stock=$prod->id;
+                $prod_completo=$prod->producto_completo;
+            }
+
+            array_push($depositos, [
+                "id" => $id_stock,
+                "nombre" =>  $prod_completo=="SI"?"PRODUCTOS COMPLETO":"PRODUCTOS PARCIALES",
+                "productos" => $det_producto,
+
+            ]);
+            $det_producto = [];
+        }
+
+        return Inertia::render('Rma/StockRma', [
+            'depositos' => $depositos
+        ]);
+    }
+
+    public function destroyStock($id)
+    {
+        $rma = RmaStock::find($id);
+        $rma->delete();
     }
     public function destroy($id)
     {

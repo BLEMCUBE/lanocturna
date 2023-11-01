@@ -242,6 +242,7 @@ Route::controller(RmaController::class)->group(function () {
     Route::post('/rmas/rma-store', 'rma_store')->name('rmas.rma-store')->middleware('auth');
     Route::post('/rmas/rma-subir', 'subir_store')->name('rmas.subir-store')->middleware('auth');
     Route::get('/rmas/rma-create', 'rma_create')->name('rmas.rma-create')->middleware('auth');
+    Route::get('/rmas/stock-rma', 'rma_stock')->name('rmas.rma-stock')->middleware('auth');
     Route::get('/rmas', 'index')->name('rmas.index')->middleware('auth');
     Route::get('/rmas/historial', 'historial')->name('rmas.historial')->middleware('auth');
     Route::get('/rmas/historial-envios', 'historialEnvios')->name('rmas.historial-envios')->middleware('auth');
@@ -249,6 +250,7 @@ Route::controller(RmaController::class)->group(function () {
     Route::get('/rmas/{id}', 'show')->name('rmas.show')->middleware('auth');
     Route::get('/rmas/{id}/ticket', 'generarTicket')->name('rmas.generar_ticket')->middleware('auth');
     Route::delete('/rmas/{id}', 'destroy')->name('rmas.destroy')->middleware('auth');
+    Route::delete('/rmas/{id}/stock', 'destroyStock')->name('rmas.destroy-stock')->middleware('auth');
 
 });
 

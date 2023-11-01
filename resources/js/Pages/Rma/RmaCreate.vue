@@ -127,7 +127,7 @@ const submit = () => {
         onSuccess: () => {
             show('success', 'Mensaje', 'RMA creado')
             setTimeout(() => {
-                router.get(route(ruta + '.rma-create'));
+                router.get(route(ruta + '.index'));
             }, 1000);
         },
         onFinish: () => {

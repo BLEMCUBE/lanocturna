@@ -123,8 +123,7 @@ const showDropdown = ref(false)
                                 :href="route('reportes.ventas')" :active="route().current('reportes.ventas')">
                                 <span class="ml-2 uppercase">Gráfico Ventas</span>
                             </NavLinkSideBarNotIcon>
-                        </li>
-
+                            </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('reportes')" class="w-full"
@@ -135,12 +134,11 @@ const showDropdown = ref(false)
                                 :active="route().current('reportes.productosvendidos')">
                                 <span class="ml-2 uppercase">PRODUCTOS VENDIDOS</span>
                             </NavLinkSideBarNotIcon>
-                        </li>
-
+                            </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('reportes')" class="w-full"
-                            v-show="permissions.includes('reporte-productos-vendidos')">
+                            v-show="permissions.includes('reporte-productos-rma')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('reportes.productosrma')"
@@ -148,7 +146,6 @@ const showDropdown = ref(false)
                                 <span class="ml-2 uppercase">PRODUCTOS RMA</span>
                             </NavLinkSideBarNotIcon>
                         </li>
-
                     </div>
 
                 </DisclosurePanel>
@@ -189,8 +186,7 @@ const showDropdown = ref(false)
                                 :href="route('usuarios.index')" :active="route().current('usuarios.index')">
                                 <span class="ml-2 uppercase">Usuarios</span>
                             </NavLinkSideBarNotIcon>
-                        </li>
-
+                            </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('configuraciones')" class="w-full" v-show="permissions.includes('ver-roles')">
@@ -199,8 +195,7 @@ const showDropdown = ref(false)
                                 :href="route('roles.index')" :active="route().current('roles.index')">
                                 <span class="ml-2 uppercase">Roles y Permisos</span>
                             </NavLinkSideBarNotIcon>
-                        </li>
-
+                            </li>
                     </div>
 
                     <div class="flex items-center">
@@ -272,8 +267,7 @@ const showDropdown = ref(false)
                                 :href="route('importaciones.index')" :active="route().current('importaciones.index')">
                                 <span class="ml-2 uppercase">importaciones</span>
                             </NavLinkSideBarNotIcon>
-                        </li>
-
+                            </li>
                     </div>
 
                     <div class="flex items-center">
@@ -284,8 +278,7 @@ const showDropdown = ref(false)
                                 :active="route().current('compras.create')">
                                 <span class="ml-2 uppercase">Compra en plaza</span>
                             </NavLinkSideBarNotIcon>
-                        </li>
-
+                            </li>
                     </div>
 
                     <div class="flex items-center">
@@ -344,8 +337,7 @@ const showDropdown = ref(false)
                                 :active="route().current('ventas.create')">
                                 <span class="ml-2 uppercase">Crear Venta</span>
                             </NavLinkSideBarNotIcon>
-                        </li>
-
+                            </li>
                     </div>
 
                     <div class="flex items-center">
@@ -355,8 +347,7 @@ const showDropdown = ref(false)
                                 :href="route('cajas.index')" :active="route().current('cajas.index')">
                                 <span class="ml-2 uppercase">Caja</span>
                             </NavLinkSideBarNotIcon>
-                        </li>
-
+                            </li>
                     </div>
 
                     <div class="flex items-center">
@@ -517,8 +508,7 @@ const showDropdown = ref(false)
                                 :href="route('rmas.index')" :active="route().current('rmas.index')">
                                 <span class="ml-2 uppercase">LISTADO RMA</span>
                             </NavLinkSideBarNotIcon>
-                        </li>
-
+                            </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('historial-rma')">
@@ -528,7 +518,6 @@ const showDropdown = ref(false)
                             <span class="ml-2 uppercase">HISTORIAL RMA</span>
                         </NavLinkSideBarNotIcon>
                     </li>
-
                 </div>
                 <div class="flex items-center">
                     <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('subir-rma')">
@@ -538,17 +527,25 @@ const showDropdown = ref(false)
                             <span class="ml-2 uppercase">SUBIR ENVIO RMA</span>
                         </NavLinkSideBarNotIcon>
                     </li>
-
                 </div>
                 <div class="flex items-center">
-                    <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('subir-rma')">
+                    <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('historial-rma-envio')">
                         <NavLinkSideBarNotIcon
                             class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                             :href="route('rmas.historial-envios')" :active="route().current('rmas.historial-envios')">
                             <span class="ml-2 uppercase">HISTORIAL ENVIOS RMA</span>
                         </NavLinkSideBarNotIcon>
                     </li>
+                </div>
 
+                <div class="flex items-center">
+                    <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('stock-rma')">
+                        <NavLinkSideBarNotIcon
+                            class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            :href="route('rmas.rma-stock')" :active="route().current('rmas.rma-stock')">
+                            <span class="ml-2 uppercase">STOCK RMA</span>
+                        </NavLinkSideBarNotIcon>
+                    </li>
                 </div>
             </DisclosurePanel>
         </Disclosure>
