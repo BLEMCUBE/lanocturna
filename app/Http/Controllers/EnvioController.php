@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Configuracion;
 use App\Models\Destino;
 use App\Models\Producto;
+use App\Models\Rma;
+use App\Models\RmaStock;
 use App\Models\TipoCambio;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\VentaDetalle;
@@ -178,8 +180,6 @@ class EnvioController extends Controller
             }
         }
 
-        $venta_query = Venta::orderBy('created_at', 'DESC')
-            ->get();
         $venta_query = new VentaCollection(
             Venta::where(function ($query) {
                 $query->where('destino', "CADETERIA")
@@ -191,7 +191,10 @@ class EnvioController extends Controller
             })
             ->when(Req::input('fin'), function ($query, $search) {
                 $query->whereDate('created_at', '<=', $search);
-            })->where('estado','COMPLETADO')->orderBy('id', 'DESC')->get()
+            })
+            ->where("tipo",'=', "VENTA")
+            ->orWhere("tipo",'=', "ENVIO")
+            ->where('estado','COMPLETADO')->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Historial', [
             'tipo_cambio' => $hoy_tipo_cambio,
@@ -279,6 +282,22 @@ class EnvioController extends Controller
                 $prod = VentaDetalle::find($producto['detalle_id']);
                 $prod->update([
                     "producto_validado" =>  $producto['producto_validado']
+                ]);
+            }
+            //actualizar rma a entregado
+            $rma_json=json_decode($venta->parametro);
+            if($venta->tipo=="RMA"){
+                $rma=Rma::findOrFail($rma_json->rma->id);
+                $rma->modo="ENTREGADO";
+                $rma->save();
+            }
+
+            if($rma_json->rma->estado="CAMBIO PRODUCTO"){
+                 RmaStock::create([
+                    'sku' => $rma_json->rma->prod_origen,
+                    'cantidad_total' => $rma_json->rma->prod_cantidad,
+                    'producto_completo' => $rma_json->opt->producto_completo,
+                    'rma_id' => $rma_json->rma->id,
                 ]);
             }
 

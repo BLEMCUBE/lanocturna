@@ -16,6 +16,7 @@ class VentaResource extends JsonResource
     public function toArray($request)
     {
         $dat = json_decode($this->cliente);
+        $parametro=json_decode($this->parametro);
         return [
             'id' => $this->id,
             'cliente' => $dat->nombre ?? '',
@@ -34,6 +35,7 @@ class VentaResource extends JsonResource
             'tipo_cambio' => $this->tipo_cambio ?? '',
             'total_sin_iva' => $this->total_sin_iva ?? '',
             'total' => $this->total ?? '',
+            'parametro' => $parametro??[],
             'productos' => $this->detalles_ventas ?? [],
             'estado' => $this->estado ?? '',
             'destino' => $this->destino ?? '',

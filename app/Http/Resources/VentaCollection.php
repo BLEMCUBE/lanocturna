@@ -17,13 +17,14 @@ class VentaCollection extends ResourceCollection
         return [
             'data' => $this->collection->transform(function($row, $key) {
                 $dat=json_decode($row->cliente);
+                $parametro=json_decode($row->parametro);
                 return [
                     'id' => $row->id,
                     //'codigo' => $row->codigo??'',
                     'cliente'=>$dat->nombre??'',
                     //'empresa'=>$dat->empresa??'',
                     //'rut'=>$dat->rut??'',
-                    //'destino' => $row->destino??'',
+                    'destino' => $row->destino??'',
                     //'localidad' => $dat->localidad??'',
                     //'direccion' => $dat->direccion??'',
                     //'telefono' => $dat->telefono??'',
@@ -36,7 +37,7 @@ class VentaCollection extends ResourceCollection
                     'nro_compra' => $row->nro_compra??'',
                     'observaciones' => $row->observaciones??'',
                     'total' => number_format($row->total,2)??'',
-                    //'moneda' => $row->moneda??'',
+                    'parametro' => $parametro??[],
                     //'fecha_facturacion'=>!is_null($row->fecha_facturacion)?Carbon::createFromFormat('Y-m-d H:i:s', $row->fecha_facturacion)->format('d/m/Y H:i:s'):'',
                     //'fecha_validacion'=>!is_null($row->fecha_validacion)?Carbon::createFromFormat('Y-m-d H:i:s', $row->fecha_validacion)->format('d/m/Y H:i:s'):'',
                     'fecha'=>Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at)->format('d/m/Y H:i:s'),

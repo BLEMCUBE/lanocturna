@@ -134,6 +134,7 @@ const selectedEstado = ref({ name: '', code: '' });
 const selectedTipo = ref({ name: '', code: '' });
 
 const estados = ref([
+    { name: 'RECIBIDO', code: 'RECIBIDO' },
     { name: 'PRESUPUESTADO', code: 'PRESUPUESTADO' },
     { name: 'REPARADO', code: 'REPARADO' },
     { name: 'CAMBIO PRODUCTO', code: 'CAMBIO PRODUCTO' },
@@ -161,7 +162,7 @@ const submit = () => {
         onSuccess: () => {
             show('success', 'Mensaje', 'Actualizado')
             setTimeout(() => {
-                router.get(route('inicio'))
+                router.get(route(ruta + '.index'));
             }, 1000);
         },
         onFinish: () => {
@@ -180,7 +181,7 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-    router.get(route('inicio'))
+    router.get(route('rmas.index'))
 };
 
 

@@ -51,4 +51,8 @@ class Producto extends Model
     {
         return $this->hasMany(DepositoDetalle::class,'sku','origen');
     }
+    public function stock_rma()
+    {
+        return $this->hasMany(RmaStock::class,'sku','origen');
+    }
 }

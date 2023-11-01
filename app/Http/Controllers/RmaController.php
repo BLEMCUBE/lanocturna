@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EnvioUpdateRequest;
 use App\Http\Requests\RmaStoreRequest;
 use App\Http\Requests\SubirRmaStoreRequest;
 use App\Http\Resources\ProductoRmaCollection;
-use App\Http\Resources\ProductoVentaCollection;
 use App\Http\Resources\RmaCollection;
 use App\Http\Resources\RmaResource;
+use App\Http\Resources\VentaCollection;
+use App\Http\Resources\VentaResource;
+use App\Models\DepositoLista;
 use App\Models\Destino;
 use Exception;
 use App\Models\Producto;
@@ -17,9 +18,11 @@ use App\Models\Venta;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use App\Models\Rma;
+use App\Models\RmaStock;
+use App\Models\VentaDetalle;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Http\Request as Req;
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Redirect;
 
 class RmaController extends Controller
 {
@@ -39,8 +42,9 @@ class RmaController extends Controller
         })
             ->when(Request::input('fin'), function ($query, $search) {
                 $query->whereDate('fecha_ingreso', '<=', $search);
-            })->orderBy('fecha_ingreso', 'DESC')
+            })
             ->whereNot('modo', 'ENTREGADO')
+            ->orderBy('nro_servicio', 'DESC')
             ->get();
         return Inertia::render('Rma/Index', [
             'ventas' => new RmaCollection(
@@ -55,7 +59,8 @@ class RmaController extends Controller
         })
             ->when(Request::input('fin'), function ($query, $search) {
                 $query->whereDate('fecha_ingreso', '<=', $search);
-            })->orderBy('fecha_ingreso', 'DESC')
+            })
+            ->orderBy('nro_servicio', 'DESC')
             ->get();
         return Inertia::render('Rma/Historial', [
             'ventas' => new RmaCollection(
@@ -189,7 +194,10 @@ class RmaController extends Controller
 
     public function rma_subir()
     {
-        $lista_rma = Rma::select('id', 'nro_servicio')->get();
+        $lista_rma = Rma::select('id','estado' ,'nro_servicio')
+        ->where('estado','=','CAMBIO PRODUCTO')
+        ->orWhere('estado','=','REPARADO')
+        ->get();
 
         $rmas = [];
         foreach ($lista_rma as $rm) {
@@ -254,9 +262,31 @@ class RmaController extends Controller
             'vendedor_id' => $vendedor->id,
         ]);
     }
+    public function showHistorial($id)
+    {
+        $venta_query = Venta::with(['detalles_ventas' => function ($query) {
+            $query->select('venta_detalles.*')->with(['producto' => function ($query) {
+                $query->select('id', 'nombre', 'codigo_barra', 'origen');
+            }]);
+        }])
+            ->with(['vendedor' => function ($query) {
+                $query->select('users.id', 'users.name');
+            }])
+            ->with(['facturador' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->with(['validador' => function ($query) {
+                $query->select('id', 'name');
+            }])
+            ->orderBy('id', 'DESC')->findOrFail($id);
+        $venta = new VentaResource($venta_query);
+        return Inertia::render('Rma/ShowHistorial', [
+            'venta' => $venta
+        ]);
+    }
+
 
     public function subir_store(SubirRmaStoreRequest $request)
-    //public function subir_store(Req $request)
     {
         $vendedor = auth()->user();
 
@@ -321,6 +351,112 @@ class RmaController extends Controller
         }
     }
 
+    public function historialEnvios()
+    {
+        $venta_query = new VentaCollection(
+            Venta::where(function ($query) {
+                $query->where('destino', "CADETERIA")
+                    ->orWhere('destino', "FLEX")
+                    ->orWhere('destino', "UES")
+                    ->orWhere('destino', "DAC");
+            })->select('*')->when(Request::input('inicio'), function ($query, $search) {
+                $query->whereDate('created_at', '>=', $search);
+            })
+            ->when(Request::input('fin'), function ($query, $search) {
+                $query->whereDate('created_at', '<=', $search);
+            })
+            ->where("tipo",'=', "RMA")
+            ->where('estado','COMPLETADO')->orderBy('id', 'DESC')->get()
+        );
+        return Inertia::render('Rma/HistorialEnvio', [
+            'ventas' => new VentaCollection(
+                $venta_query
+            )
+        ]);
+    }
+    public function generarTicket($id)
+    {
+        $rma_query = Rma::with(['vendedor' => function ($query) {
+            $query->select('users.id', 'users.name');
+        }])->findOrFail($id);
+        $rma = new RmaResource($rma_query);
+
+
+        if (!empty($rma)) {
+            $customPaper = array(0, 0, 226.77, 283.46);
+            $rma_cliente=json_decode($rma->cliente);
+            $data = [
+                'nro_servicio' =>$rma->nro_servicio,
+                'cliente' => $rma_cliente->nombre ?? '',
+                'producto' => $rma->prod_origen." / ".$rma->prod_nombre ?? '',
+                'defecto' => $rma->defecto ?? '',
+                'observaciones' => $rma->observaciones ?? '',
+                'fecha' => (now())->format('d/m/Y H:i:s')
+            ];
+            $pdf = Pdf::loadView('pdfs.ticketEnvioRma', ['data' => $data]);
+            $pdf->setPaper($customPaper);
+            return $pdf->stream('ticket_' . $data['nro_servicio'] . '.pdf');
+        } else {
+            return Redirect::route('rmas.index');
+        }
+    }
+
+    public function rma_stock()
+    {
+        $query_depositos = RmaStock::
+                with(['producto' => function ($query) {
+                    $query->select('id', 'origen', 'nombre', 'imagen', 'codigo_barra');
+
+        }])->with(['rma' => function ($query) {
+                    $query->select('id','defecto','observaciones');
+
+        }])->select('*')->orderBy('producto_completo', 'DESC')->get();
+
+        $grouped = $query_depositos->groupBy('producto_completo');
+
+        $depositos = [];
+        $det_producto = [];
+        $id_stock=0;
+        $prod_completo="SI";
+
+        foreach ($grouped as $deposito) {
+
+            foreach ($deposito as $prod) {
+
+                array_push($det_producto, [
+                    "producto_id" => $prod->producto->id,
+                    "sku" => $prod->producto->origen,
+                    "cantidad_total" => $prod->cantidad_total,
+                    "nombre" => $prod->producto->nombre,
+                    "imagen" => $prod->producto->imagen,
+                    "defecto" => $prod->rma->defecto,
+                    "observaciones" => $prod->rma->observaciones,
+                    'rma_id'=>$prod->rma_id,
+                    'stock_id'=>$prod->id
+                ]);
+                $id_stock=$prod->id;
+                $prod_completo=$prod->producto_completo;
+            }
+
+            array_push($depositos, [
+                "id" => $id_stock,
+                "nombre" =>  $prod_completo=="SI"?"PRODUCTOS COMPLETO":"PRODUCTOS PARCIALES",
+                "productos" => $det_producto,
+
+            ]);
+            $det_producto = [];
+        }
+
+        return Inertia::render('Rma/StockRma', [
+            'depositos' => $depositos
+        ]);
+    }
+
+    public function destroyStock($id)
+    {
+        $rma = RmaStock::find($id);
+        $rma->delete();
+    }
     public function destroy($id)
     {
         $rma = Rma::find($id);

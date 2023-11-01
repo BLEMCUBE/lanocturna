@@ -34,6 +34,7 @@ class RolesAndPermissionsSeeder extends Seeder
             //lista productos mas vendidos
             ['name' => 'reporte-productos-vendidos', 'description' => 'Listado productos más vendidos'],
 
+            ['name' => 'reporte-productos-rma', 'description' => 'Listado productos RMA'],
             //Grupo configuraciones
             ['name' => 'menu-configuraciones', 'description' => 'Menú configuraciones'],
             //Usuarios
@@ -105,7 +106,8 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'eliminar-rma', 'description' => 'Eliminar Rma'],
             ['name' => 'historial-rma', 'description' => 'Historial Rma'],
             ['name' => 'subir-rma', 'description' => 'Subir Envio Rma'],
-
+            ['name' => 'historial-rma-envio', 'description' => 'Historial Envios RMA'],
+            ['name' => 'stock-rma', 'description' => 'Stock RMA'],
 
         ];
     }

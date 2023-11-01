@@ -11,7 +11,7 @@ use Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class ReporteProductoVendidoController extends Controller
+class ReporteProductoRmaController extends Controller
 {
     public function index()
     {
@@ -26,6 +26,7 @@ class ReporteProductoVendidoController extends Controller
             $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
         })
         ->where('det.producto_validado', '=', 1)
+        ->where('ve.tipo', '=', "RMA")
         ->select(
             'prod.nombre',
             'prod.origen',
@@ -37,8 +38,6 @@ class ReporteProductoVendidoController extends Controller
         ->groupBy('prod.id')
         ->get();
 
-
-        //$sum_tol=[]
         $total_cantidad=0;
         foreach ($query_total_productos as $key => $value) {
           $total_cantidad=$total_cantidad+$value->ventas_totales;
@@ -60,14 +59,14 @@ class ReporteProductoVendidoController extends Controller
             return $value['porcentaje'];
         }));
 
-        return Inertia::render('Reporte/ProductosVendidos', [
+        return Inertia::render('Reporte/ProductosRma', [
             'total_cantidad' =>$total_cantidad,
             'total_productos' =>$total_productos,
 
         ]);
     }
 
-    public function exportProductoVentas()
+    public function exportProductoRma()
     {
 
         $fecha_inicio = Carbon::parse(Request::input('inicio'));
@@ -83,7 +82,7 @@ class ReporteProductoVendidoController extends Controller
             ]
 
         ];
-        $filename = "PRODUCTOS_VENDIDOS_" . $fecha_inicio->format('d_m_Y') . "_AL_" . $fecha_fin->format('d_m_Y') . ".xlsx";
+        $filename = "PRODUCTOS_RMA_" . $fecha_inicio->format('d_m_Y') . "_AL_" . $fecha_fin->format('d_m_Y') . ".xlsx";
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -97,7 +96,7 @@ class ReporteProductoVendidoController extends Controller
 
         $sheet->setCellValue('A' . (string)$f, "SKU");
         $sheet->setCellValue('B' . (string)$f, "NOMBRE");
-        $sheet->setCellValue('C' . (string)$f, "VENTAS TOTALES");
+        $sheet->setCellValue('C' . (string)$f, "CANTIDAD");
         $sheet->setCellValue('D' . (string)$f, "PORCENTAJE");
 
 
@@ -106,10 +105,6 @@ class ReporteProductoVendidoController extends Controller
         //$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->applyFromArray($styleArray);
         $sheet->getStyle('A' . (string)3 . ':' . 'D' . (string)3)->getAlignment()->setHorizontal('center');
         $sheet->getStyle('A' . (string)3 . ':' . 'D' . (string)3)->getAlignment()->setVertical('center');
-        /*$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->getFill()
-            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            ->getStartColor()->setARGB('FFB8CCE4');*/
-
 
         //datos
         $query_total_productos = DB::table('venta_detalles as det')
@@ -122,6 +117,7 @@ class ReporteProductoVendidoController extends Controller
             $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
         })
         ->where('det.producto_validado', '=', 1)
+        ->where('ve.tipo', '=', "RMA")
         ->select(
             'prod.nombre',
             'prod.origen',

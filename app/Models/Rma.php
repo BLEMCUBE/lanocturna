@@ -53,6 +53,10 @@ class Rma extends Model
     {
         return $this->hasMany(VentaDetalle::class);
     }
+    public function rma_stock()
+    {
+        return $this->hasOne(RmaStock::class);
+    }
 
     public function producto()
     {

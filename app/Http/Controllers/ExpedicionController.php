@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\VentaResource;
 use App\Models\Configuracion;
+use App\Models\Rma;
+use App\Models\RmaStock;
 use App\Models\VentaDetalle;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -102,6 +104,22 @@ class ExpedicionController extends Controller
                     "producto_validado" =>  $producto['producto_validado']
                 ]);
             }
+
+            if($venta->tipo=="RMA"){
+                $rma_json=json_decode($venta->parametro);
+                $rma=Rma::findOrFail($rma_json->rma->id);
+                $rma->modo="ENTREGADO";
+                $rma->save();
+            }
+
+            if($rma_json->rma->estado="CAMBIO PRODUCTO"){
+                RmaStock::create([
+                   'sku' => $rma_json->rma->prod_origen,
+                   'cantidad_total' => $rma_json->rma->prod_cantidad,
+                   'producto_completo' => $rma_json->opt->producto_completo,
+                   'rma_id' => $rma_json->rma->id,
+               ]);
+           }
 
             DB::commit();
         } catch (Exception $e) {

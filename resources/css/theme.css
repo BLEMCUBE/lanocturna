@@ -78,7 +78,7 @@
   .p-link:focus {
     outline: 0 none;
     outline-offset: 0;
-    box-shadow: 0 0 0 1px #6366F1;
+    /*box-shadow: 0 0 0 1px #6366F1;*/
   }
 
   .p-component-overlay-enter {
@@ -1657,7 +1657,7 @@
   .p-button:focus {
     outline: 0 none;
     outline-offset: 0;
-    box-shadow: 0 0 0 1px #6366F1;
+    /*box-shadow: 0 0 0 1px #6366F1;*/
   }
   .p-button .p-button-label {
     transition-duration: 0.2s;
@@ -5612,9 +5612,9 @@
     border: 0 none;
   }
 
-  .p-button:focus {
+  /*.p-button:focus {
     box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #6366F1, 0 1px 2px 0 rgba(0, 0, 0, 0);
-  }
+  }*/
   .p-button.p-button-secondary:enabled:focus {
     box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #64748B, 0 1px 2px 0 rgba(0, 0, 0, 0);
   }

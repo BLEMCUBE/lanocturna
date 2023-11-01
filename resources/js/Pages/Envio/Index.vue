@@ -114,7 +114,12 @@ const filters = ref({
                         headerContent: {
 
                             class: 'text-center w-52'
-                        }
+                        },
+                        bodyCell: {
+
+                            class: 'text-center w-52'
+                        },
+
                     }"></Column>
                     <Column field="nro_compra" header="N° Compra" sortable :pt="{
                         bodyCellContent: {
