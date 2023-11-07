@@ -105,20 +105,23 @@ class ExpedicionController extends Controller
                 ]);
             }
 
+            $rma_json=json_decode($venta->parametro);
             if($venta->tipo=="RMA"){
-                $rma_json=json_decode($venta->parametro);
                 $rma=Rma::findOrFail($rma_json->rma->id);
                 $rma->modo="ENTREGADO";
                 $rma->save();
             }
 
-            if($rma_json->rma->estado="CAMBIO PRODUCTO"){
-                RmaStock::create([
-                   'sku' => $rma_json->rma->prod_origen,
-                   'cantidad_total' => $rma_json->rma->prod_cantidad,
-                   'producto_completo' => $rma_json->opt->producto_completo,
-                   'rma_id' => $rma_json->rma->id,
-               ]);
+            if($rma_json!=null){
+
+                if($rma_json->rma->estado="CAMBIO PRODUCTO"){
+                    RmaStock::create([
+                        'sku' => $rma_json->rma->prod_origen,
+                        'cantidad_total' => $rma_json->rma->prod_cantidad,
+                        'producto_completo' => $rma_json->opt->producto_completo,
+                        'rma_id' => $rma_json->rma->id,
+                    ]);
+                }
            }
 
             DB::commit();
