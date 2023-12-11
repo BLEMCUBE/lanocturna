@@ -49,6 +49,7 @@ class ReporteProductoVendidoController extends Controller
         foreach ($query_total_productos as $vent) {
 
             array_push($ultimas_ventas,[
+                "id"=>$vent->id,
                 "sku"=>$vent->origen,
                 "nombre"=>$vent->nombre,
                 "imagen"=>$vent->imagen,

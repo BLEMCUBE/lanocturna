@@ -292,14 +292,17 @@ class EnvioController extends Controller
                 $rma->save();
             }
 
-            if($rma_json->rma->estado="CAMBIO PRODUCTO"){
-                 RmaStock::create([
-                    'sku' => $rma_json->rma->prod_origen,
-                    'cantidad_total' => $rma_json->rma->prod_cantidad,
-                    'producto_completo' => $rma_json->opt->producto_completo,
-                    'rma_id' => $rma_json->rma->id,
-                ]);
-            }
+            if($rma_json!=null){
+
+                if($rma_json->rma->estado="CAMBIO PRODUCTO"){
+                    RmaStock::create([
+                        'sku' => $rma_json->rma->prod_origen,
+                        'cantidad_total' => $rma_json->rma->prod_cantidad,
+                        'producto_completo' => $rma_json->opt->producto_completo,
+                        'rma_id' => $rma_json->rma->id,
+                    ]);
+                }
+           }
 
             DB::commit();
         } catch (Exception $e) {
