@@ -16,6 +16,7 @@ import 'vue-datepicker-next/locale/es.es.js';
 
 const toast = useToast();
 const tabla_ventas = ref()
+const cargando = ref(false)
 const { permissions } = usePage().props.auth
 const titulo = "Historial de Ventas"
 const ruta = 'ventas'
@@ -65,7 +66,8 @@ const date = ref([new Date(), new Date()]);
 //filtrado
 const filtrado = (value) => {
     if (value[0] != null && value[1] != null) {
-
+        tabla_ventas.value = [];
+        cargando.value = true;
         router.get('/ventas/',
             {
                 inicio: moment(value[0]).format('YYYY-MM-DD'),
@@ -74,7 +76,11 @@ const filtrado = (value) => {
             {
                 preserveState: true,
                 onSuccess: () => {
-                    tabla_ventas.value = usePage().props.ventas.data;
+                    //tabla_ventas.value = usePage().props.ventas.data;
+
+                    //tabla_ventas.value = usePage().props.ventas.data;
+                    tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
+                    cargando.value = false;
                 }
 
             }
@@ -147,9 +153,11 @@ const clickDetalle = (e) => {
     btnVer(e.data.id)
 }
 onMounted(() => {
-
+    cargando.value = true;
     //tabla_ventas.value = usePage().props.ventas.data;
-    tabla_ventas.value =Array.from( usePage().props.ventas.data, (x) => x);
+
+    tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
+    cargando.value = false;
 
 
 });
@@ -183,8 +191,7 @@ const filters = ref({
 <template>
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
-        <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12">
+        <div class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12">
 
             <!--Contenido-->
             <Toast />
@@ -196,10 +203,9 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable  :filters="filters" :value="tabla_ventas"  :pt="{
+                <DataTable :filters="filters" :value="tabla_ventas" :loading="cargando" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100' }
-                }" scrollable scrollHeight="400px"
-                :virtualScrollerOptions="{itemSize: 46,numToleratedItems:20 }" @row-click="clickDetalle"
+                }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46 ,lazy:'true',numToleratedItems:20 }" @row-click="clickDetalle"
                     size="small">
 
                     <template #header>
@@ -220,29 +226,29 @@ const filters = ref({
                     <template #loading> Cargando... </template>
                     <Column field="fecha" header="Fecha y Hora" sortable :pt="{
                         bodyCellContent: {
-                            class: 'text-center w-40'
+                            class: 'text-center w-44'
                         },
                         headerContent: {
 
-                            class: 'text-center w-40'
+                            class: 'text-center w-44'
                         },
                         headerCell: {
 
-                            class: 'text-center w-40'
+                            class: 'text-center w-44'
                         },
                         bodyCell: {
 
                             class: 'text-center'
                         }
-                    }">   <template #loading>
+                    }"> <template #loading>
                         </template></Column>
-                    <Column field="nro_compra" header="Nº Compra"  context="small" sortable :pt="{
+                    <Column field="nro_compra" header="Nº Compra" context="small" sortable :pt="{
 
                         bodyCellContent: {
-                            class: ' w-40'
+                            class: ' w-44'
                         },
                         headerCell: {
-                            class: 'w-40'
+                            class: 'w-44'
                         },
                         bodyCell: {
 
@@ -250,12 +256,13 @@ const filters = ref({
                         },
                         headerContent: {
 
-                            class: 'text-center w-40'
+                            class: 'text-center w-44'
                         },
 
                     }">
-                       <template #loading>
-                        </template></Column>
+                        <template #loading>
+                        </template>
+                    </Column>
 
                     <Column field="cliente" header="Cliente" sortable :pt="{
                         bodyCellContent: {
@@ -274,10 +281,11 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }">
-                       <template #loading>
-                        <div class="flex align-items-center" :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
+                        <template #loading>
+                            <div class="flex align-items-center"
+                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-</div>
+                            </div>
                         </template>
                     </Column>
 
@@ -298,7 +306,7 @@ const filters = ref({
                             class: 'text-center'
                         },
                     }">
-                       <template #loading>
+                        <template #loading>
                         </template>
                         <template #body="slotProps">
                             <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
@@ -331,8 +339,8 @@ const filters = ref({
                         },
                         bodyCell: {
 
-class: 'text-center'
-},
+                            class: 'text-center'
+                        },
                     }"></Column>
 
                     <Column header="Acciones" style="width:100px" :pt="{
@@ -340,7 +348,7 @@ class: 'text-center'
                             class: 'text-center p-0'
                         }
                     }">
-                       <template #loading>
+                        <template #loading>
                         </template>
                         <template #body="slotProps">
 

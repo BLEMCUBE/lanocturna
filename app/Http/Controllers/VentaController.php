@@ -49,15 +49,17 @@ class VentaController extends Controller
             }
         }
 
-        $venta_query = Venta::select('id','nro_compra','cliente','created_at',
-        'total','estado','observaciones','tipo')->when(Request::input('inicio'), function ($query, $search) {
-            $query->whereDate('created_at', '>=', $search);
+        $venta_query = Venta::select('*')
+        ->where(function ($query) {
+            $query->where("tipo", "=", "VENTA")
+                ->orWhere("tipo", "=", "ENVIO");
         })
-            ->when(Request::input('fin'), function ($query, $search) {
-                $query->whereDate('created_at', '<=', $search);
+            ->when(Request::input('inicio'), function ($query) {
+                $query->whereDate('created_at', '>=', Request::input('inicio') . ' 00:00:00');
             })
-            ->where("tipo",'=', "VENTA")
-            ->orWhere("tipo",'=', "ENVIO")
+            ->when(Request::input('fin'), function ($query) {
+                $query->whereDate('created_at', '<=', Request::input('fin') . ' 23:59:00');
+            })
             ->orderBy('created_at', 'DESC')
             ->get();
         return Inertia::render('Venta/Index', [
@@ -268,7 +270,7 @@ class VentaController extends Controller
                     $new_stock = $old_stock + $producto['cantidad'];
                     $prod->update([
                         "stock" => $new_stock,
-                        "stock_futuro"=>$new_stock+$prod->en_camino
+                        "stock_futuro" => $new_stock + $prod->en_camino
                     ]);
                 }
             }
@@ -299,7 +301,7 @@ class VentaController extends Controller
                     $new_stock = $old_stock - $proo['cantidad'];
                     $prod->update([
                         "stock" => $new_stock,
-                        "stock_futuro"=>$new_stock+$prod->en_camino
+                        "stock_futuro" => $new_stock + $prod->en_camino
                     ]);
                 }
             }
@@ -325,7 +327,7 @@ class VentaController extends Controller
             $venta->moneda = $request->moneda;
             $venta->tipo_cambio = $request->tipo_cambio;
             $venta->destino = $request->destino;
-            $venta->nro_compra=$request->nro_compra;
+            $venta->nro_compra = $request->nro_compra;
             $venta->cliente = json_encode($request->cliente);
             $venta->observaciones = $request->observaciones;
             $venta->vendedor_id = $request->vendedor_id;
@@ -340,7 +342,7 @@ class VentaController extends Controller
                     $new_stock = $old_stock + $producto['cantidad'];
                     $prod->update([
                         "stock" => $new_stock,
-                        "stock_futuro"=>$new_stock+$prod->en_camino
+                        "stock_futuro" => $new_stock + $prod->en_camino
                     ]);
                 }
             }
@@ -371,7 +373,7 @@ class VentaController extends Controller
                     $new_stock = $old_stock - $proo['cantidad'];
                     $prod->update([
                         "stock" => $new_stock,
-                        "stock_futuro"=>$new_stock+$prod->en_camino
+                        "stock_futuro" => $new_stock + $prod->en_camino
                     ]);
                 }
             }
@@ -432,7 +434,7 @@ class VentaController extends Controller
                     $new_stock = $old_stock + $producto['cantidad'];
                     $prod->update([
                         "stock" => $new_stock,
-                        "stock_futuro"=>$new_stock+$prod->en_camino
+                        "stock_futuro" => $new_stock + $prod->en_camino
                     ]);
                 }
             }
