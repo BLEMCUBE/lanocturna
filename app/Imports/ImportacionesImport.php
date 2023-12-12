@@ -4,30 +4,30 @@ namespace App\Imports;
 
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
+use App\Models\ProductoYuan;
 //use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
-//class ImportacionesImport implements ToModel ,WithHeadingRow,WithCalculatedFormulas
 class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
 {
     private $importacion_id;
     private $estado;
     private $mueve_stock;
-    public function  __construct($importacion_id, $estado,$mueve_stock)
+    private $yuan_id;
+    public function  __construct($importacion_id, $estado, $mueve_stock, $yuan_id)
     {
         $this->importacion_id = $importacion_id;
         $this->estado = $estado;
         $this->mueve_stock = $mueve_stock;
+        $this->yuan_id = $yuan_id;
     }
 
     //public function model(array $row)
     public function collection(Collection $rows)
     {
-
-
 
         foreach ($rows as $row) {
 
@@ -49,32 +49,39 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
                 ]);
 
                 $producto = Producto::where('origen', '=', $row['sku'])->first();
-                if(!empty($producto)){
+                if (!empty($producto)) {
 
-                if ($this->mueve_stock ==1) {
-                if ($this->estado == "Arribado") {
-                    $old_arribado=$producto->arribado;
-                    $stock_old=$producto->stock;
-                    $producto->update([
+                    if ($this->mueve_stock == 1) {
+                        if ($this->estado == "Arribado") {
+                            $old_arribado = $producto->arribado;
+                            $stock_old = $producto->stock;
+                            $producto->update([
 
-                        "stock" => $producto->stock + floatval($row['cantidad_total']),
-                        "arribado" => $old_arribado + floatval($row['cantidad_total']),
-                        "stock_futuro" => $stock_old + $producto->en_camino+floatval($row['cantidad_total']),
+                                "stock" => $producto->stock + floatval($row['cantidad_total']),
+                                "arribado" => $old_arribado + floatval($row['cantidad_total']),
+                                "stock_futuro" => $stock_old + $producto->en_camino + floatval($row['cantidad_total']),
+                            ]);
+                        }
+
+                        if ($this->estado == "En camino") {
+                            $old_en_camino = $producto->en_camino;
+                            $stock_old = $producto->stock;
+                            $producto->update([
+                                "en_camino" => $old_en_camino +  floatval($row['cantidad_total']),
+                                "stock_futuro" => $stock_old + $producto->en_camino + floatval($row['cantidad_total']),
+                            ]);
+                        }
+                    }
+                    //registrando yuang
+                    //$producto->yuanes()->attach([$this->yuan_id]);
+                    ProductoYuan::create([
+                        "producto_id" => $producto->id,
+                        "tipo_cambio_yuan_id" => $this->yuan_id,
+                        "importacion_id" => $this->importacion_id
                     ]);
-                }
 
-                if ($this->estado == "En camino") {
-                    $old_en_camino=$producto->en_camino;
-                    $stock_old=$producto->stock;
-                    $producto->update([
-                        "en_camino" => $old_en_camino +  floatval($row['cantidad_total']),
-                        "stock_futuro" => $stock_old + $producto->en_camino+floatval($row['cantidad_total']),
-                    ]);
                 }
             }
-        }
-            }
-
         }
     }
 }
