@@ -181,19 +181,22 @@ class EnvioController extends Controller
         }
 
         $venta_query = new VentaCollection(
-            Venta::where(function ($query) {
+            Venta::select('*')->where(function ($query) {
                 $query->where('destino', "CADETERIA")
                     ->orWhere('destino', "FLEX")
                     ->orWhere('destino', "UES")
                     ->orWhere('destino', "DAC");
-            })->select('*')->when(Req::input('inicio'), function ($query, $search) {
-                $query->whereDate('created_at', '>=', $search);
             })
-            ->when(Req::input('fin'), function ($query, $search) {
-                $query->whereDate('created_at', '<=', $search);
+            ->when(Req::input('inicio'), function ($query) {
+                $query->whereDate('created_at', '>=', Req::input('inicio') . ' 00:00:00');
             })
-            ->where("tipo",'=', "VENTA")
-            ->orWhere("tipo",'=', "ENVIO")
+            ->when(Req::input('fin'), function ($query) {
+                $query->whereDate('created_at', '<=', Req::input('fin') . ' 23:59:00');
+            })
+            ->where(function ($query) {
+                $query->where("tipo", "=", "VENTA")
+                    ->orWhere("tipo", "=", "ENVIO");
+            })
             ->where('estado','COMPLETADO')->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Historial', [
