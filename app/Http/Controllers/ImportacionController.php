@@ -11,6 +11,9 @@ use App\Imports\ImportacionesImport;
 use App\Models\Importacion;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
+use App\Models\ProductoYuan;
+use App\Models\TipoCambioYuan;
+use Carbon\Carbon;
 use Inertia\Inertia;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
@@ -31,8 +34,22 @@ class ImportacionController extends Controller
 
     public function index()
     {
+        $ultimo_tipo_cambio = TipoCambioYuan::all()->last();
 
+        $hoy_tipo_cambio = false;
+
+        $actual = Carbon::now()->format('Y-m-d');
+        if (!empty($ultimo_tipo_cambio)) {
+            $fecha = Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
+            if ($fecha->eq($actual)) {
+                $hoy_tipo_cambio = true;
+                $tipo_cambio = $ultimo_tipo_cambio;
+            } else {
+                $hoy_tipo_cambio = false;
+            }
+        }
         return Inertia::render('Importacion/Index', [
+            'tipo_cambio' => $hoy_tipo_cambio,
             'productos' => new ImportacionCollection(
                 Importacion::orderBy('fecha_arribado', 'DESC')
                     ->get()
@@ -84,8 +101,12 @@ class ImportacionController extends Controller
 
             ]);
 
+            //ultimo tipo cambio yuanes
+            $ultimo_tipo_cambio = TipoCambioYuan::all()->last();
+            $yuan_id=$ultimo_tipo_cambio->id;
+
             //importando excel
-            Excel::import(new ImportacionesImport($importacion->id, $importacion->estado, $importacion->mueve_stock), $file);
+            Excel::import(new ImportacionesImport($importacion->id, $importacion->estado, $importacion->mueve_stock,$yuan_id), $file);
 
             //actualizando total
             $importaci = ImportacionDetalle::where('importacion_id', $importacion->id)->get();
@@ -363,6 +384,7 @@ class ImportacionController extends Controller
 
         $importacion->importaciones_detalles()->delete();
         $importacion->delete();
+        ProductoYuan::where('importacion_id','=', $id)->delete();
     }
 
     public function exportExcel($id)

@@ -16,12 +16,10 @@ const previewImage = ref('/images/productos/sin_foto.png');
 const { roles } = usePage().props.auth
 const { costo_aprox } = usePage().props
 const { ultimo_yang } = usePage().props
-const { productoventa } = usePage().props
 const titulo = "Detalle Producto"
 const ruta = 'productos'
 const cantidad = ref()
 const cantidad_importacion = ref()
-//const { cantidad_importacion } = usePage().props
 const tabla_vendidos = ref()
 const tabla_importaciones = ref()
 const form = useForm({
@@ -264,14 +262,17 @@ const clickDetImportacion = (e) => {
                             </b>
                             {{ costo_aprox }}
                         </p>
-                        <InputError v-if="ultimo_yang == 0" class="mt-1 text-xs"
+                        <!--
+
+                            <InputError v-if="ultimo_yang == 0" class="mt-1 text-xs"
                             message="Debe de registrar tipo de cambio yuanes" />
+                        -->
                     </div>
-                    <div class="col-span-4" v-if="ultimo_yang > 0">
+                    <div class="col-span-4">
                         <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
                                 Cotización Yuanes:
                             </b>
-                            {{ ultimo_yang }}
+                            {{ (ultimo_yang>0)?ultimo_yang:'-' }}
                         </p>
                     </div>
                 </div>

@@ -14,4 +14,10 @@ class TipoCambioYuan extends Model
         'valor',
         'created_at'
     ];
+
+    public function productos()
+    {
+        return $this->belongsToMany(Producto::class, 'productos_yuanes', 'tipo_cambio_yuan_id', 'producto_id');
+    }
+
 }

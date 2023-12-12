@@ -13,7 +13,7 @@ const tabla_productos = ref([])
 const { permissions } = usePage().props.auth
 const titulo = "Importaciones"
 const ruta = 'importaciones'
-
+const { tipo_cambio } = usePage().props
 
 const formDelete = useForm({
     id: '',
@@ -22,15 +22,9 @@ const cars = ref();
 const virtualCars = ref();
 onMounted(() => {
 
-tabla_productos.value = usePage().props.productos.data;
-//cars.value = usePage().props.productos.data;
-//tabla_productos.value=Array.from(usePage().props.productos.data);
-cars.value =Array.from( tabla_productos.value, (x) => x);
-//cars.value = [tabla_productos.value];
-//cars.value =  tabla_productos.value.map((prd, i) => prd.id );
-
-//Array.from({ length: 27 })
-virtualCars.value =Array.from({length:tabla_productos.value.length});
+    tabla_productos.value = usePage().props.productos.data;
+    cars.value = Array.from(tabla_productos.value, (x) => x);
+    virtualCars.value = Array.from({ length: tabla_productos.value.length });
 });
 
 //const virtualCars = ref([{}]);
@@ -115,10 +109,24 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const BtnCrear = () => {
-    router.get(route(ruta + '.create'));
+    if (tipo_cambio == true) {
+
+        router.get(route(ruta + '.create'));
+    } else {
+        ok('error', 'No se ha especificado el tipo de cambio Yuanes para el día')
+    }
 }
 
 
+
+const ok = (icono, mensaje) => {
+
+    Swal.fire({
+        width: 350,
+        title: mensaje,
+        icon: icono
+    })
+}
 
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -140,24 +148,19 @@ const filters = ref({
             </div>
 
             <div class="align-middle  p-3">
-<DataTable :filters="filters"  :value="virtualCars"
-      scrollable
-      scrollHeight="400px"
-      tableStyle="min-width: 50rem"
-      :virtualScrollerOptions="{
-        lazy: true,
-        onLazyLoad: loadCarsLazy,
-        itemSize: 46,
-        delay: 100,
-        showLoader: true,
-        loading: lazyLoading,
-        numToleratedItems: 15,
-      }"
-        :pt="{
-                    bodyRow:{class:'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+                <DataTable :filters="filters" :value="virtualCars" scrollable scrollHeight="400px"
+                    tableStyle="min-width: 50rem" :virtualScrollerOptions="{
+                        lazy: true,
+                        onLazyLoad: loadCarsLazy,
+                        itemSize: 46,
+                        delay: 100,
+                        showLoader: true,
+                        loading: lazyLoading,
+                        numToleratedItems: 15,
+                    }" :pt="{
+    bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
 
-                }"
-      @row-click="clickDetalle" size="small">
+}" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -166,123 +169,129 @@ const filters = ref({
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
 
-            <Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
-                            bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                            headerCell: { class: 'p-0 m-0 w-56' },
-                            headerContent: {
-                                class: 'text-center w-56'
-                            },
-                            bodyCellContent: {
+                    <Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
+                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
+                        headerCell: { class: 'p-0 m-0 w-56' },
+                        headerContent: {
+                            class: 'text-center w-56'
+                        },
+                        bodyCellContent: {
 
-                                class: 'text-center w-56'
-                            },
+                            class: 'text-center w-56'
+                        },
 
-                        }">
-                <template #loading>
-                    <div class="flex items-center" :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
+                    }">
+                        <template #loading>
+                            <div class="flex items-center"
+                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                    </div>
-                </template>
-            </Column>
-            <Column field="fecha_arribado" sortable header="Fecha Arribado" :pt="{
-                            bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                            headerTitle: { class: 'text-center  w-56' },
-                            headerContent: {
-                                class: 'text-center w-56'
-                            },
-                            bodyCellContent: {
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="fecha_arribado" sortable header="Fecha Arribado" :pt="{
+                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
+                        headerTitle: { class: 'text-center  w-56' },
+                        headerContent: {
+                            class: 'text-center w-56'
+                        },
+                        bodyCellContent: {
 
-                                class: 'flex align-items-center text-center w-56'
-                            },
+                            class: 'flex align-items-center text-center w-56'
+                        },
 
-                        }">
-                <template #loading>
-                    <div class="flex align-items-center" :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
+                    }">
+                        <template #loading>
+                            <div class="flex align-items-center"
+                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                    </div>
-                </template>
-            </Column>
-            <Column field="estado" header="Estado de pedido" sortable :pt="{
-                            bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                            headerCell: { class: 'p-0 m-0 w-56' },
-                            headerContent: {
-                                class: 'text-center w-56'
-                            },
-                            bodyCellContent: {
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="estado" header="Estado de pedido" sortable :pt="{
+                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
+                        headerCell: { class: 'p-0 m-0 w-56' },
+                        headerContent: {
+                            class: 'text-center w-56'
+                        },
+                        bodyCellContent: {
 
-                                class: 'text-center w-56'
-                            },
+                            class: 'text-center w-56'
+                        },
 
-                        }">
-                <template #loading>
-                    <div class="flex align-items-center" :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
+                    }">
+                        <template #loading>
+                            <div class="flex align-items-center"
+                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                    </div>
-                </template>
-            </Column>
-            <Column field="total" sortable header="Total" :pt="{
-                            bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                            headerCell: { class: 'p-0 m-0 w-56' },
-                            headerContent: {
-                                class: 'text-center w-56'
-                            },
-                            bodyCellContent: {
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="total" sortable header="Total" :pt="{
+                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
+                        headerCell: { class: 'p-0 m-0 w-56' },
+                        headerContent: {
+                            class: 'text-center w-56'
+                        },
+                        bodyCellContent: {
 
-                                class: 'text-center w-56'
-                            },
+                            class: 'text-center w-56'
+                        },
 
-                        }">
-                <template #loading>
-                    <div class="flex align-items-center" :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
+                    }">
+                        <template #loading>
+                            <div class="flex align-items-center"
+                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                    </div>
-                </template>
-            </Column>
-            <Column field="cbm_total" sortable header="Total CBM" :pt="{
-                            bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                            headerCell: { class: 'p-0 m-0 w-56' },
-                            headerContent: {
-                                class: 'text-center w-56'
-                            },
-                            bodyCellContent: {
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="cbm_total" sortable header="Total CBM" :pt="{
+                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
+                        headerCell: { class: 'p-0 m-0 w-56' },
+                        headerContent: {
+                            class: 'text-center w-56'
+                        },
+                        bodyCellContent: {
 
-                                class: 'text-center w-56'
-                            },
+                            class: 'text-center w-56'
+                        },
 
-                        }">
-                <template #loading>
-                    <div class="flex align-items-center" :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
+                    }">
+                        <template #loading>
+                            <div class="flex align-items-center"
+                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                    </div>
-                </template>
-            </Column>
-            <Column field="cantidad_productos" sortable header="Cantidad productos" :pt="{
-                            bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                            headerCell: { class: 'p-0 m-0 w-56' },
-                            headerContent: {
-                                class: 'text-center w-56'
-                            },
-                            bodyCellContent: {
+                            </div>
+                        </template>
+                    </Column>
+                    <Column field="cantidad_productos" sortable header="Cantidad productos" :pt="{
+                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
+                        headerCell: { class: 'p-0 m-0 w-56' },
+                        headerContent: {
+                            class: 'text-center w-56'
+                        },
+                        bodyCellContent: {
 
-                                class: 'text-center w-56'
-                            },
+                            class: 'text-center w-56'
+                        },
 
-                        }">
-                <template #loading>
-                    <div class="flex align-items-center" :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
+                    }">
+                        <template #loading>
+                            <div class="flex align-items-center"
+                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                    </div>
-                </template>
-            </Column>
+                            </div>
+                        </template>
+                    </Column>
 
-        <Column header="Acciones" style="width:130px" :pt="{
+                    <Column header="Acciones" style="width:130px" :pt="{
                         bodycell: { class: 'px-auto text-center' }
                     }">
 
                         <template #loading>
                         </template>
                         <template #body="slotProps">
-                            <div class="p-0 text-white flex justify-center items-center" v-if="slotProps.data!=undefined">
+                            <div class="p-0 text-white flex justify-center items-center" v-if="slotProps.data != undefined">
                                 <span
                                     v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                     class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
@@ -299,11 +308,11 @@ const filters = ref({
                             </div>
 
 
-                </template>
-            </Column>
+                        </template>
+                    </Column>
 
 
-        </DataTable>
+                </DataTable>
 
             </div>
             <!--Contenido-->
