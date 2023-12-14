@@ -19,11 +19,9 @@ import 'vue-datepicker-next/locale/es.es.js';
 
 const toast = useToast();
 const tabla_ventas = ref()
-const { permissions } = usePage().props.auth
 const titulo = "Historial de Envios"
 const ruta = 'envios'
-const { tipo_cambio } = usePage().props
-
+const cargando = ref(false)
 const formDelete = useForm({
     id: '',
 });
@@ -69,7 +67,8 @@ const date = ref([new Date(), new Date()]);
 //filtrado
 const filtrado = (value) => {
 if(value[0]!=null && value[1]!=null){
-
+    tabla_ventas.value = [];
+    cargando.value = true;
     router.get('/envios/historial/',
     {
         inicio: moment(value[0]).format('YYYY-MM-DD'),
@@ -78,7 +77,8 @@ if(value[0]!=null && value[1]!=null){
     {
             preserveState: true,
             onSuccess: () => {
-                tabla_ventas.value = usePage().props.ventas.data;
+                tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
+                    cargando.value = false;
             }
 
         }
@@ -153,8 +153,10 @@ const clickDetalle = (e) => {
     btnVer(e.data.id)
 }
 onMounted(() => {
+    cargando.value = true;
+     tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
+     cargando.value = false;
 
-    tabla_ventas.value = usePage().props.ventas.data;
 
 });
 
@@ -192,9 +194,9 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable :filters="filters" :value="tabla_ventas" :pt="{
+                <DataTable :filters="filters" :value="tabla_ventas"  :loading="cargando"  :pt="{
                     bodyRow: { class: 'hover:cursor-pointer p-1 hover:bg-gray-100 hover:text-black' }
-                }" scrollable scrollHeight="500px"   :virtualScrollerOptions="{  itemSize: 46 }"
+                }" scrollable scrollHeight="500px"   :virtualScrollerOptions="{  itemSize: 46,lazy:'true' }"
                     @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="grid grid-cols-6 gap-4 m-1.5">
@@ -215,15 +217,15 @@ const filters = ref({
                     <template #loading> Cargando... </template>
                     <Column field="fecha" header="Fecha y Hora" sortable :pt="{
                         bodyCellContent: {
-                            class: 'text-center w-40'
+                            class: 'text-center w-44'
                         },
                         headerContent: {
 
-                            class: 'text-center w-40'
+                            class: 'text-center w-44'
                         },
                         headerCell: {
 
-                            class: 'text-center w-40'
+                            class: 'text-center w-44'
                         },
                         bodyCell: {
 

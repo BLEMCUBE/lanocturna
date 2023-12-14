@@ -55,4 +55,9 @@ class Producto extends Model
     {
         return $this->hasMany(RmaStock::class,'sku','origen');
     }
+
+    public function yuanes()
+    {
+        return $this->belongsToMany(TipoCambioYuan::class, 'productos_yuanes', 'producto_id', 'tipo_cambio_yuan_id');
+    }
 }

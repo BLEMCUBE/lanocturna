@@ -91,7 +91,15 @@ class EnvioController extends Controller
                 'label' =>  $destino->nombre,
             ]);
         }
+        $productoLista = Producto::with(['importacion_detalles' => function ($query) {
+            $query->select('id','sku', 'cantidad_total', 'importacion_id','estado');
+        }, 'importacion_detalles.importacion' => function ($query1) {
+            $query1->select('id', 'estado','nro_carpeta');
+        }])->select('*')
+        ->orderBy('nombre', 'ASC')
 
+        ->get();
+        $resultadoProductoLista=new ProductoVentaCollection($productoLista);
         return Inertia::render('Envio/Create', [
             'codigo' => $codigo,
             'user_id' => $vendedor->id,
@@ -99,10 +107,7 @@ class EnvioController extends Controller
             'clientes' => $clientes,
             'lista_clientes' => $lista_cliente,
             'lista_destinos' => $lista_destinos,
-            'productos' => new ProductoVentaCollection(
-                Producto::orderBy('created_at', 'DESC')
-                    ->get()
-            )
+            'productos' => $resultadoProductoLista
         ]);
     }
 
@@ -181,19 +186,22 @@ class EnvioController extends Controller
         }
 
         $venta_query = new VentaCollection(
-            Venta::where(function ($query) {
+            Venta::select('*')->where(function ($query) {
                 $query->where('destino', "CADETERIA")
                     ->orWhere('destino', "FLEX")
                     ->orWhere('destino', "UES")
                     ->orWhere('destino', "DAC");
-            })->select('*')->when(Req::input('inicio'), function ($query, $search) {
-                $query->whereDate('created_at', '>=', $search);
             })
-            ->when(Req::input('fin'), function ($query, $search) {
-                $query->whereDate('created_at', '<=', $search);
+            ->when(Req::input('inicio'), function ($query) {
+                $query->whereDate('created_at', '>=', Req::input('inicio') . ' 00:00:00');
             })
-            ->where("tipo",'=', "VENTA")
-            ->orWhere("tipo",'=', "ENVIO")
+            ->when(Req::input('fin'), function ($query) {
+                $query->whereDate('created_at', '<=', Req::input('fin') . ' 23:59:00');
+            })
+            ->where(function ($query) {
+                $query->where("tipo", "=", "VENTA")
+                    ->orWhere("tipo", "=", "ENVIO");
+            })
             ->where('estado','COMPLETADO')->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Historial', [

@@ -21,7 +21,8 @@ class ProductoVentaCollection extends ResourceCollection
                     'origen' => $row->origen,
                     'nombre' => $row->nombre,
                     'imagen'=>$row->imagen??'',
-                    'stock' => $row->stock??''
+                    'stock' => $row->stock??'',
+                    'importacion_detalles' => count($row->importacion_detalles)>0? $row->importacion_detalles:[],
                 ];
             }),
             'links' => [

@@ -18,6 +18,7 @@ const total_cantidad = ref();
 const date = ref();
 const titulo = "Productos Vendidos"
 const ruta = 'reportes'
+const rutaprod = 'productos'
 //filtrado
 const filtrado = (value) => {
     if (value[0] != null && value[1] != null) {
@@ -97,7 +98,14 @@ const shortcuts = [
     },
 ]
 
+const clickDetalle = (e) => {
+    console.log('e ',e)
+    btnVer(e.data.id)
+}
+const btnVer = (id) => {
+    router.get(route(rutaprod + '.show', id));
 
+};
 
 </script>
 
@@ -131,6 +139,11 @@ const shortcuts = [
                     </b>
                     <DataTable size="small" v-model:filters="filters" :value="total_productos" :paginator="true" :rows="20"
                         :rowsPerPageOptions="[20, 40, 100, 200]"
+                        :pt="{
+                    bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+                    root: { class: 'w-auto' }
+                }"
+                 @row-click="clickDetalle"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
                         >
                         <template #header size="small" class="bg-secondary-900">
