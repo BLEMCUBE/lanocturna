@@ -42,7 +42,7 @@ const setMoneda = (e) => {
         form.productos.forEach((item, index) => {
             item['precio'] = roundNumber(parseFloat(item['precio'] * tipo_cambio).toFixed(2), 0.5, 'round')
             item['total'] = item['cantidad'] * item['precio']
-            item['precio_sin_iva'] = (parseFloat(item['precio'] ) / 1.22).toFixed(2)
+            item['precio_sin_iva'] = (parseFloat(item['precio']) / 1.22).toFixed(2)
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
         form.moneda = selectedMoneda.value.code;
@@ -50,7 +50,7 @@ const setMoneda = (e) => {
         form.productos.forEach((item, index) => {
             item['precio'] = parseFloat(item['precio'] / tipo_cambio).toFixed(2)
             item['total'] = item['cantidad'] * item['precio']
-            item['precio_sin_iva'] = (parseFloat(item['precio'] ) / 1.22).toFixed(2)
+            item['precio_sin_iva'] = (parseFloat(item['precio']) / 1.22).toFixed(2)
             item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
         })
         form.moneda = selectedMoneda.value.code;
@@ -276,7 +276,8 @@ const cancelCrear = () => {
                             <tfoot>
                                 <tr>
                                     <td colspan="4" class="text-end"><b>Total: </b></td>
-                                    <td class="text-end"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{ form.total }} </b>
+                                    <td class="text-end"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{ form.total }}
+                                        </b>
                                     </td>
                                 </tr>
 
@@ -284,7 +285,8 @@ const cancelCrear = () => {
                         </table>
                         <div class="col-span-12  p-2 xl:col-span-12">
                             <InputError class="mt-1 text-lg w-full " :message="form.errors.productos" />
-                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg" :message="error" />
+                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg"
+                                :message="error" />
                         </div>
                         <!--Tabla-->
                         <!--Datos Ventas-->
@@ -403,8 +405,8 @@ const cancelCrear = () => {
 
                     </div>
                     <div class="flex justify-end py-3">
-                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="cancelCrear"
-                            type="button" />
+                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small"
+                            @click="cancelCrear" type="button" />
 
                         <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
                             :disabled="form.processing" @click.prevent="submit" />
@@ -418,9 +420,8 @@ const cancelCrear = () => {
 
             <!--Productos-->
             <div class="p-0 mb-0 col-span-12  lg:col-span-4 ">
-                <DataTable  :filters="filters" scrollable scrollHeight="550px"
-                    :globalFilterFields="['origen', 'nombre']" :value="productos.data"
-                    :virtualScrollerOptions="{ itemSize: 46 }" size="small">
+                <DataTable :filters="filters" scrollable scrollHeight="550px" :globalFilterFields="['origen', 'nombre']"
+                    :value="productos.data" :virtualScrollerOptions="{ itemSize: 46,lazy:'true',numToleratedItems:20 }">
                     <template #header>
                         <div class="flex justify-content-end text-sm">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -449,6 +450,26 @@ const cancelCrear = () => {
                                                     }}</span></div>
                                             <div class="font-bold leading-none text-xs text-gray-800">Stock :<span
                                                     class="px-1 py-0 font-normal">{{ slotProps.data.stock }}</span>
+                                            </div>
+
+                                            <div class="leading-none text-xs text-gray-800"  >
+                                                <b class="text-xs leading-2 mt-0 text-gray-700 dark:text-gray-300">
+                                                    En camino:
+                                                </b>
+                                                <ul class="list-disc list-outside">
+                                                    <template v-for="item in slotProps.data.importacion_detalles">
+                                                        <li class="ml-3" v-if="item.importacion.estado == 'En camino'">
+                                                            <p>
+                                                                <b>
+                                                                    {{ item.importacion.nro_carpeta }}
+
+                                                                </b> :
+                                                                {{ item.cantidad_total }}
+                                                            </p>
+
+                                                        </li>
+                                                    </template>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>

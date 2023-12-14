@@ -118,6 +118,19 @@ class VentaController extends Controller
             ]);
         }
 
+
+$productoLista = Producto::with(['importacion_detalles' => function ($query) {
+    $query->select('id','sku', 'cantidad_total', 'importacion_id','estado');
+}, 'importacion_detalles.importacion' => function ($query1) {
+    $query1->select('id', 'estado','nro_carpeta');
+}])->select('*')
+->orderBy('nombre', 'ASC')
+
+->get();
+
+
+$resultadoProductoLista=new ProductoVentaCollection($productoLista);
+
         return Inertia::render('Venta/Create', [
             'hoy_tipo_cambio' => $hoy_tipo_cambio,
             'tipo_cambio' => $tipo_cambio,
@@ -127,10 +140,7 @@ class VentaController extends Controller
             'clientes' => $clientes,
             'lista_clientes' => $lista_cliente,
             'lista_destinos' => $lista_destinos,
-            'productos' => new ProductoVentaCollection(
-                Producto::orderBy('created_at', 'DESC')
-                    ->get()
-            )
+            'productos' => $resultadoProductoLista
         ]);
     }
     public function edit($id)
@@ -173,24 +183,28 @@ class VentaController extends Controller
             }])
             ->orderBy('id', 'DESC')->findOrFail($id);
         //return $venta;
+        $productoLista = Producto::with(['importacion_detalles' => function ($query) {
+            $query->select('id','sku', 'cantidad_total', 'importacion_id','estado');
+        }, 'importacion_detalles.importacion' => function ($query1) {
+            $query1->select('id', 'estado','nro_carpeta');
+        }])->select('*')
+        ->orderBy('nombre', 'ASC')
+
+        ->get();
+        $resultadoProductoLista=new ProductoVentaCollection($productoLista);
+
         if ($venta->tipo == "VENTA") {
             return Inertia::render('Venta/Edit', [
                 'lista_destinos' => $lista_destinos,
                 'venta' => $venta,
-                'productos' => new ProductoVentaCollection(
-                    Producto::orderBy('created_at', 'DESC')
-                        ->get()
-                )
+                'productos' => $resultadoProductoLista
             ]);
         } else {
 
             return Inertia::render('Venta/EditMercado', [
                 'lista_destinos' => $lista_destinos,
                 'venta' => $venta,
-                'productos' => new ProductoVentaCollection(
-                    Producto::orderBy('created_at', 'DESC')
-                        ->get()
-                )
+                'productos' => $resultadoProductoLista
             ]);
         }
     }

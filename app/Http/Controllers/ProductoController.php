@@ -130,7 +130,7 @@ class ProductoController extends Controller
         }])->select(DB::raw("productos.*"))
             ->orderBy('id', 'ASC')->findOrFail($id);
 
-        //return $producto;
+
         $productoImportacion = DB::table('importaciones as imp')
             ->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
             ->join('productos as prod', 'prod.origen', '=', 'det.sku')
@@ -149,6 +149,19 @@ class ProductoController extends Controller
                 DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado")
             )->where('prod.id', '=', $id)
             ->orderBy('imp.fecha_arribado', 'DESC')->get();
+
+            $productoEnCamino = DB::table('importaciones as imp')
+            ->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
+            ->join('productos as prod', 'prod.origen', '=', 'det.sku')
+            ->select(
+                'imp.nro_carpeta',
+                'imp.estado',
+                'det.cantidad_total',
+                'det.importacion_id'
+            )
+            ->where('prod.id', '=', $id)
+            ->where('imp.estado', '=', 'En camino')
+            ->orderBy('imp.nro_carpeta', 'DESC')->get();
 
         $productoventa = DB::table('ventas as ve')
             ->join('venta_detalles as det', 've.id', '=', 'det.venta_id')
@@ -172,7 +185,7 @@ class ProductoController extends Controller
         $cantidad = VentaDetalle::where('producto_id', $id)->sum('cantidad');
         $cantidad_importacion = ImportacionDetalle::where('sku', $producto->origen)->sum('cantidad_total');
 
-        $tipo_yuan = ProductoYuan::where('producto_id','=',$producto->id)->latest()->first();
+        $tipo_yuan = ProductoYuan::where('producto_id', '=', $producto->id)->latest()->first();
         if (!is_null($tipo_yuan)) {
             $tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
         }
@@ -200,6 +213,7 @@ class ProductoController extends Controller
         return Inertia::render('Producto/Show', [
             'producto' => $producto,
             'productoImportacion' => $productoImportacion,
+            'productoEnCamino' => $productoEnCamino,
             'cantidad' => $cantidad,
             'costo_aprox' => number_format($costo_aprox, 2, ','),
             'ultimo_yang' => $ultimo_yang,
@@ -358,5 +372,23 @@ class ProductoController extends Controller
             ->orderBy('ve.created_at', 'DESC')->get();
 
         return Excel::download(new ProductoVentaExport($producto), 'ProductoVentas.xlsx');
+    }
+
+    // actualiza yuanes en productos a valor 7
+    public function actualizarYuanes()
+    {
+
+        $productos = Producto::all();
+
+        foreach ($productos as $producto) {
+
+
+            ProductoYuan::create([
+                "producto_id" => $producto->id,
+                "tipo_cambio_yuan_id" => 1,
+            ]);
+
+        }
+        return 'Yuanes Actualizado';
     }
 }

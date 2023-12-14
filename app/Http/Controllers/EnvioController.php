@@ -91,7 +91,15 @@ class EnvioController extends Controller
                 'label' =>  $destino->nombre,
             ]);
         }
+        $productoLista = Producto::with(['importacion_detalles' => function ($query) {
+            $query->select('id','sku', 'cantidad_total', 'importacion_id','estado');
+        }, 'importacion_detalles.importacion' => function ($query1) {
+            $query1->select('id', 'estado','nro_carpeta');
+        }])->select('*')
+        ->orderBy('nombre', 'ASC')
 
+        ->get();
+        $resultadoProductoLista=new ProductoVentaCollection($productoLista);
         return Inertia::render('Envio/Create', [
             'codigo' => $codigo,
             'user_id' => $vendedor->id,
@@ -99,10 +107,7 @@ class EnvioController extends Controller
             'clientes' => $clientes,
             'lista_clientes' => $lista_cliente,
             'lista_destinos' => $lista_destinos,
-            'productos' => new ProductoVentaCollection(
-                Producto::orderBy('created_at', 'DESC')
-                    ->get()
-            )
+            'productos' => $resultadoProductoLista
         ]);
     }
 
