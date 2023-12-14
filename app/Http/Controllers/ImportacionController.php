@@ -271,6 +271,13 @@ class ImportacionController extends Controller
                             "en_camino" => $new_encamino,
                             "stock_futuro" => $new_futuro,
                         ]);
+
+                        //actualizando importacion detall
+                        $impor_detall = ImportacionDetalle::where('importacion_id', '=', $importacion->id);
+                        $impor_detall->update([
+                            "estado" => $estado,
+                        ]);
+
                     }
                 }
                 if ($estado == 'En camino') {
@@ -291,6 +298,13 @@ class ImportacionController extends Controller
                             "arribado" => $new_arribado,
                             "stock_futuro" => $new_futuro,
                         ]);
+
+                        //actualizando importacion detall
+                        $impor_detall = ImportacionDetalle::where('importacion_id', '=', $importacion->id);
+                        $impor_detall->update([
+                            "estado" => $estado,
+                        ]);
+
                     }
                 }
             }
@@ -303,9 +317,9 @@ class ImportacionController extends Controller
             $importacion->save();
 
             DB::commit();
-            return Redirect::route('importaciones.index')->with([
+            /*return Redirect::route('importaciones.index')->with([
                 // 'success' =>  $venta->codigo
-            ]);
+            ]);*/
         } catch (Exception $e) {
             DB::rollBack();
             return [

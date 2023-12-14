@@ -15,6 +15,7 @@ const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
 const { roles } = usePage().props.auth
 const { costo_aprox } = usePage().props
+const { productoEnCamino } = usePage().props
 const { ultimo_yang } = usePage().props
 const titulo = "Detalle Producto"
 const ruta = 'productos'
@@ -249,14 +250,34 @@ const clickDetImportacion = (e) => {
                             {{ form.stock }}
                         </p>
                     </div>
-                    <div class="col-span-2">
-                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                    <!--
+
+                        <div class="col-span-2">
+                            <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
                                 Stock Futuro:
                             </b>
                             {{ form.stock_futuro }}
                         </p>
                     </div>
-                    <div class="col-span-4">
+                -->
+                <div class="col-span-2 row-span-3" v-if="productoEnCamino.length>0">
+                    <b class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300">
+                        En camino:
+                    </b>
+                    <ul class="list-disc list-outside">
+                        <li class="ml-3" v-for="item in productoEnCamino">
+                            <p class="text-xl leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                                {{item.nro_carpeta}}
+                            </b>:
+                            {{item.cantidad_total}}
+                        </p>
+                        </li>
+
+
+                    </ul>
+
+                    </div>
+                    <div class="col-span-2">
                         <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
                                 Costo aprox. USD (iva inc):
                             </b>
@@ -268,7 +289,8 @@ const clickDetImportacion = (e) => {
                             message="Debe de registrar tipo de cambio yuanes" />
                         -->
                     </div>
-                    <div class="col-span-4">
+
+                    <div class="col-span-2">
                         <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
                                 Cotización Yuanes:
                             </b>

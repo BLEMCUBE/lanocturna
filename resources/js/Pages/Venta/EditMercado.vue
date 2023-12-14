@@ -413,8 +413,28 @@ const cancelCrear = () => {
                                             <div class="font-bold leading-none text-xs text-gray-800">Stock :<span
                                                     class="px-1 py-0 font-normal">{{ slotProps.data.stock }}</span>
                                             </div>
+                                            <div class="leading-none text-xs text-gray-800">
+                                                <b class="text-xs leading-2 mt-0 text-gray-700 dark:text-gray-300">
+                                                    En camino:
+                                                </b>
+                                                <ul class="list-disc list-outside">
+                                                    <template v-for="item in slotProps.data.importacion_detalles">
+                                                        <li class="ml-3" v-show="item.importacion.estado == 'En camino'">
+                                                            <p>
+                                                                <b>
+                                                                    {{ item.importacion.nro_carpeta }}
+
+                                                                </b> :
+                                                                {{ item.cantidad_total }}
+                                                            </p>
+
+                                                        </li>
+                                                    </template>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
+
                                     <div class="px-auto">
                                         <Button severity="success" aria-label="Add" @click="addToCart(slotProps.data.id)"
                                             icon="fas fa-cart-plus" :pt="{
@@ -427,6 +447,7 @@ const cancelCrear = () => {
                                             }"
                                             :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
                                     </div>
+
                                 </div>
                             </div>
                         </template>
