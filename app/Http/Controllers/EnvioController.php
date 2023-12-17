@@ -48,9 +48,14 @@ class EnvioController extends Controller
                     ->orWhere('destino', "DAC");
             })->where(function ($query) {
                 $query->where('estado', "PENDIENTE DE FACTURACIÓN")
-                    ->orWhere('estado', "FACTURADO")
-                    ->orWhere('estado', "RMA");
-            })->select('*')->orderBy('id', 'DESC')->get()
+                    ->orWhere('estado', "FACTURADO");
+
+            })
+            ->orWhere(function ($query) {
+                    $query->orWhere('facturado', "1")
+                    ->where('estado', "RMA");
+            })
+                    ->select('*')->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Index', [
             'ventas' => $expedidiones
@@ -237,9 +242,7 @@ class EnvioController extends Controller
         ]);
 
         if (Hash::check($request->codigo, $codigo->value)) {
-            //dd( "Password matching");
         } else {
-            //dd( "Password is not matching");
             throw ValidationException::withMessages([
                 'codigo' => __('Código maestro inválido'),
             ]);

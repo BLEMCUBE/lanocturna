@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Producto;
 use App\Models\VentaDetalle;
 use Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -36,7 +36,6 @@ class RotacionStockController extends Controller
                 'prod.stock',
                 'prod.stock_futuro',
                 'det.cantidad',
-                //'prod.id','det.producto_id',DB::raw("DATE_FORMAT(ve.fecha_facturacion,'%d/%m/%y') AS fecha,sum(det.cantidad) as ventas_totales"))
                 'prod.id',
                 'det.producto_id',
                 DB::raw("sum(det.cantidad) as ventas_totales")
@@ -87,9 +86,52 @@ class RotacionStockController extends Controller
             ]);
         }
 
+        $consulta_productos = Producto::select(
+            'id',
+            'origen',
+            'nombre',
+            'stock',
+            'stock_futuro',
+
+        )
+        ->get();
+
+        $listado_final=[];
+
+        foreach ($consulta_productos as $product) {
+            $stck=0;
+            $ulti_venta='';
+            $ulti_compra='';
+            $ventas_totales=0;
+            foreach ($ultimas_ventas as $key =>$ult_venta) {
+
+                if($ult_venta['origen']==$product->origen){
+
+                    $stck=$ult_venta['rotacion_stock'];
+                    $ulti_venta=$ult_venta['ultima_venta'];
+                    $ulti_compra=$ult_venta['ultima_compra'];
+                    $ventas_totales=$ult_venta['ventas_totales'];
+                    continue;
+                }
+
+            }
+            array_push($listado_final, [
+                "origen" => $product->origen,
+                "nombre" => $product->nombre,
+                "stock" => $product->stock,
+                "stock_futuro" => $product->stock_futuro,
+                "ultima_compra" => $ulti_compra,
+                "ultima_venta" => $ulti_venta,
+                "ventas_totales" => $ventas_totales,
+                "rotacion_stock" =>  $stck
+            ]);
+
+        }
+
+
         return Inertia::render('RotacionStock/Index', [
             'meses' => $meses,
-            'productos' => $ultimas_ventas
+            'productos' => $listado_final
         ]);
     }
 
@@ -203,7 +245,53 @@ class RotacionStockController extends Controller
                 "rotacion_stock" => $rotacion_stock,
             ]);
         }
-        $sorted = array_values(Arr::sort($ultimas_ventas, function (array $value) {
+        $consulta_productos = Producto::select(
+            'id',
+            'origen',
+            'nombre',
+            'stock',
+            'stock_futuro',
+
+        )
+        ->get();
+
+        $listado_final=[];
+
+        foreach ($consulta_productos as $product) {
+            $stck=0;
+            $ulti_venta='';
+            $ulti_compra='';
+            $ventas_totales=0;
+            foreach ($ultimas_ventas as $key =>$ult_venta) {
+
+                if($ult_venta['origen']==$product->origen){
+
+                    $stck=$ult_venta['rotacion_stock'];
+                    $ulti_venta=$ult_venta['ultima_venta'];
+                    $ulti_compra=$ult_venta['ultima_compra'];
+                    $ventas_totales=$ult_venta['ventas_totales'];
+                    continue;
+                }
+
+            }
+            array_push($listado_final, [
+                "origen" => $product->origen,
+                "nombre" => $product->nombre,
+                "stock" => $product->stock,
+                "stock_futuro" => $product->stock_futuro,
+                "ultima_compra" => $ulti_compra,
+                "ultima_venta" => $ulti_venta,
+                "ventas_totales" => $ventas_totales,
+                "rotacion_stock" =>  $stck
+            ]);
+
+        }
+
+        /*$sorted = array_values(Arr::sort($ultimas_ventas, function (array $value) {
+            return $value['rotacion_stock'];
+        }));*/
+
+        $sorted = array_values(Arr::sort($listado_final, function (array $value) {
             return $value['rotacion_stock'];
         }));
 
@@ -253,6 +341,5 @@ class RotacionStockController extends Controller
         header("Content-Disposition: attachment; filename=" . $filename);
         unlink($url_save);
         return $content;
-
     }
 }
