@@ -547,6 +547,16 @@ const showDropdown = ref(false)
                         </NavLinkSideBarNotIcon>
                     </li>
                 </div>
+
+                <div class="flex items-center">
+                    <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('stock-rma')">
+                        <NavLinkSideBarNotIcon
+                            class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                            :href="route('rmas.validacion')" :active="route().current('rmas.validacion')">
+                            <span class="ml-2 uppercase">VALIDACIÓN RMA</span>
+                        </NavLinkSideBarNotIcon>
+                    </li>
+                </div>
             </DisclosurePanel>
         </Disclosure>
         <!--RMA-->
