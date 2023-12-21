@@ -165,7 +165,6 @@ class RmaController extends Controller
         DB::beginTransaction();
         try {
             $rma->update([
-                //                'fecha_ingreso' => $request->fecha_ingreso,
                 'fecha_compra' => $request->fecha_compra ?? null,
                 'nro_factura' => $request->nro_factura ?? '',
                 'cliente' => json_encode($request->cliente),
@@ -217,6 +216,7 @@ class RmaController extends Controller
         } else {
             $codigo = zero_fill($last->codigo + 1, 8);
         }
+
         //Lista destino
         $lista_destin = Destino::get();
 
@@ -243,9 +243,33 @@ class RmaController extends Controller
             $query->select('users.id', 'users.name');
         }])
             ->orderBy('id', 'DESC')->findOrFail($id);
-        $venta = new RmaResource($venta_query);
+
+
+        $rma = new RmaResource($venta_query);
+        $ventas = Venta::all();
+        foreach ($ventas as $key => $vent) {
+
+            if (!is_null($vent->parametro)) {
+                $json_text = json_decode($vent->parametro);
+
+                if ($json_text->rma->nro_servicio == $rma->nro_servicio) {
+
+                    //actualizando stock producto
+                    foreach ($vent->detalles_ventas as $producto) {
+                        if ($json_text->opt->mueve_stock == 'SI') {
+                            $editable = false;
+                        } else {
+                            $editable = true;
+                        }
+                    }
+                }
+            } else {
+                $editable = true;
+            }
+        }
         return Inertia::render('Rma/Show', [
-            'venta' => $venta
+            'venta' => $rma,
+            'editable' => $editable
         ]);
     }
 
@@ -305,8 +329,6 @@ class RmaController extends Controller
                 'destino' => $request->destino,
                 'tipo' => $request->tipo ?? 'ENVIO',
                 'vendedor_id' => $vendedor->id,
-                //'facturador_id' => $vendedor->id,
-                //'fecha_facturacion' => now(),
                 'cliente' => json_encode($request->cliente),
                 'parametro' => json_encode($request->parametro),
                 'observaciones' => $request->observaciones,
@@ -340,8 +362,6 @@ class RmaController extends Controller
                     ]);
                 }
             }
-
-
 
             DB::commit();
         } catch (Exception $e) {
@@ -464,19 +484,30 @@ class RmaController extends Controller
         $ventas = Venta::all();
         foreach ($ventas as $key => $venta) {
 
-            //var_dump ($venta->parametro);
             if (!is_null($venta->parametro)) {
                 $json_text = json_decode($venta->parametro);
 
                 if ($json_text->rma->nro_servicio == $rma->nro_servicio) {
-                    $venta_del = Venta::find($venta->id);
-                    //eliminando  detalle
-                    $venta_del->detalles_ventas()->delete();
+
+                    //actualizando stock producto
+                    foreach ($venta->detalles_ventas as $producto) {
+                        if ($json_text->opt->mueve_stock == 'SI') {
+                            $prod = Producto::find($producto->producto_id);
+                            $old_stock = $prod->stock;
+                            $new_stock = $old_stock + $producto->cantidad;
+                            $prod->update([
+                                "stock" => $new_stock,
+                                "stock_futuro" => $new_stock + $prod->en_camino
+                            ]);
+                        }
+                    }
+                    $venta->detalles_ventas()->delete();
+                    $venta->delete();
                 }
             }
         }
-        $rma->delete();
 
+        $rma->delete();
     }
 
 
@@ -539,7 +570,7 @@ class RmaController extends Controller
 
             $venta = Venta::with('detalles_ventas')->orderBy('id', 'DESC')->findOrFail($request->index);
             $facturador = auth()->user();
-            $parametro_rma=json_decode($venta->parametro);
+            $parametro_rma = json_decode($venta->parametro);
             DB::beginTransaction();
             try {
                 //$venta->estado = "FACTURADO";
@@ -549,16 +580,16 @@ class RmaController extends Controller
                 $venta->save();
 
                 //actualizando stock producto
-                if($parametro_rma->opt->mueve_stock=='SI'){
-                foreach ($venta->detalles_ventas as $producto) {
-                    $prod = Producto::find($producto['producto_id']);
-                    $old_stock = $prod->stock;
-                    $new_stock = $old_stock - $producto['cantidad'];
-                    $prod->update([
-                        "stock" => $new_stock,
-                        "stock_futuro" => $new_stock + $prod->en_camino
-                    ]);
-                }
+                if ($parametro_rma->opt->mueve_stock == 'SI') {
+                    foreach ($venta->detalles_ventas as $producto) {
+                        $prod = Producto::find($producto['producto_id']);
+                        $old_stock = $prod->stock;
+                        $new_stock = $old_stock - $producto['cantidad'];
+                        $prod->update([
+                            "stock" => $new_stock,
+                            "stock_futuro" => $new_stock + $prod->en_camino
+                        ]);
+                    }
                 }
 
                 DB::commit();

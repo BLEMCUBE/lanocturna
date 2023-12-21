@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EnvioStoreRequest;
+use App\Http\Requests\ImportacionEnvioStoreRequest;
 use App\Http\Resources\ProductoVentaCollection;
 use App\Http\Resources\VentaCollection;
 use Exception;
@@ -11,6 +12,7 @@ use App\Models\Venta;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\VentaResource;
+use App\Imports\MercadoLibreImport;
 use App\Models\Cliente;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Configuracion;
@@ -25,6 +27,12 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Request as Req;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Exception as PhpException;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 
 class EnvioController extends Controller
 {
@@ -350,6 +358,111 @@ class EnvioController extends Controller
             return $pdf->stream('ticket_' . $data['codigo'] . '.pdf');
         } else {
             return Redirect::route('envios.index');
+        }
+    }
+
+    public function uploadExcel2(ImportacionEnvioStoreRequest $request)
+    {
+        $usuario = auth()->user();
+        $the_file = $request->file('archivo');
+
+
+        try{
+            $spreadsheet = IOFactory::load($the_file->getRealPath());
+            $sheet        = $spreadsheet->getActiveSheet();
+            $row_limit    = $sheet->getHighestDataRow();
+            $column_limit = $sheet->getHighestDataColumn();
+            $row_range    = range( 2, $row_limit );
+            $column_range = range( 'F', $column_limit );
+            $startcount = 2;
+            $data = array();
+            foreach ( $row_range as $row ) {
+                $data[] = [
+                    'CustomerName' =>$sheet->getCell( 'A' . $row )->getValue(),
+                    'Gender' => $sheet->getCell( 'B' . $row )->getValue(),
+                    'Address' => $sheet->getCell( 'C' . $row )->getValue(),
+                    'City' => $sheet->getCell( 'D' . $row )->getValue(),
+                    'PostalCode' => $sheet->getCell( 'E' . $row )->getValue(),
+                    'Country' =>$sheet->getCell( 'F' . $row )->getValue(),
+                ];
+                $startcount++;
+            }
+            dd($data);
+            //DB::table('tbl_customer')->insert($data);
+        } catch (PhpException $e) {
+            //$error_code = $e->errorInfo[1];
+            return back()->withErrors('There was a problem uploading the data!');
+        }
+        return back()->withSuccess('Great! Data has been successfully uploaded.');
+    }
+
+
+    public function uploadExcel(ImportacionEnvioStoreRequest $request)
+    {
+        $usuario = auth()->user();
+        $file = $request->file('archivo');
+
+        $no_existe = [];
+        $existe_compra = [];
+        $existe_stock = [];
+        $filas = Excel::toArray([], $file);
+        $filas_a = array_slice($filas[0], 1);
+
+        $n_fila=1;
+        foreach ($filas[0] as $key => $fila) {
+            $prod = Producto::where('origen', '=', $fila[14])->first();
+            $compra = Venta::where('nro_compra', '=', $fila[0])
+            ->whereNull('fecha_anulacion')->first();
+            $n_fila=$n_fila+1;
+            if (empty($prod)) {
+                array_push($no_existe, [
+                    'fila' => $n_fila,
+                    'sku' => $fila[14],
+                ]);
+            }
+
+            if (!empty($prod)) {
+            if ($prod->stock<$fila[5]) {
+                array_push($existe_stock, [
+                    'fila' => $n_fila,
+                    'sku' => $fila[14],
+                    'stock'=>$prod->stock
+                ]);
+            }
+            }
+
+            //if (!empty($fila[0])) {
+            if (!empty($compra)) {
+                array_push($existe_compra, [
+                    'fila' => $n_fila,
+                    'nro_compra' => $fila[0],
+                ]);
+            }
+            //}
+        }
+
+        if (count($no_existe) > 1  || count($existe_compra) >0 || count($existe_stock) > 1) {
+            throw ValidationException::withMessages([
+                'filas' => [$no_existe],
+                'compras' => [$existe_compra],
+                'stock' => [$existe_stock],
+            ]);
+        } else {
+        DB::beginTransaction();
+        try {
+
+            //importando excel
+            Excel::import(new MercadoLibreImport($usuario,$request->destino), $file);
+
+            DB::commit();
+            //return Redirect::route('envios.index')->with([]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
         }
     }
 }
