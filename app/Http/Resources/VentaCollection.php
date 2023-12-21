@@ -32,6 +32,7 @@ class VentaCollection extends ResourceCollection
                     //'vendedor' => $row->vendedor->name??'',
                     //'facturador' => $row->facturador->name??'',
                     //'validador' => $row->validador->name??'',
+                    'facturado' => $row->facturado??'',
                     'estado' => $row->estado??'',
                     'tipo' => $row->tipo??'',
                     'nro_compra' => $row->nro_compra??'',

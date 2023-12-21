@@ -6,6 +6,7 @@ import moment from 'moment';
 const { permissions } = usePage().props.auth
 
 const titulo =ref("");
+const editable =ref(false);
 const ruta = 'rmas'
 
 const form = ref([]);
@@ -16,6 +17,7 @@ const btnEditar = (id) => {
 
 onMounted(() => {
     form.value = usePage().props.venta.data;
+    editable.value=usePage().props.editable;
     titulo.value="DETALLE "+ form.value.tipo;
 
 });
@@ -31,13 +33,14 @@ const formatDate = (dat) => {
             class="card px-4 py-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
 
-
             <div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
                 <span v-if="form.id"
                     class="w-10 h-10 p-0 flex justify-center items-center rounded bg-sky-300 text-base font-semibold text-white mr-2 hover:bg-sky-400">
                     <a  :href="route('rmas.generar_ticket', form.id)" target="_blank"><i class="fas fa-print"></i></a>
                 </span>
-                <Button label="Editar" v-if="permissions.includes('editar-rma') && form.modo !== 'ENTREGADO'"
+
+
+                    <Button label="Editar" v-if="permissions.includes('editar-rma') && editable ==true"
                     @click="btnEditar(form.id)" :pt="{
                         root: {
                             class: 'flex items-center  bg-primary-900 justify-center font-medium w-10'
@@ -47,7 +50,8 @@ const formatDate = (dat) => {
                         }
                     }"
                     v-tooltip.top="{ value: `Editar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
-                        class="fas fa-edit"></i></Button>
+                    class="fas fa-edit"></i></Button>
+
 
             </div>
             <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">

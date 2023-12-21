@@ -63,7 +63,7 @@ const rowClass = (data) => {
     }
 
     if (data.dias >= 10) {
-        return ["bg-red-700 text-white"]
+        return ["bg-red-700/90 text-white"]
     }
 };
 

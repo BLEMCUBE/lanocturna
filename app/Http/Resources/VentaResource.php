@@ -29,6 +29,7 @@ class VentaResource extends JsonResource
             'vendedor' => $this->vendedor->name ?? '',
             'facturador' => $this->facturador->name ?? '',
             'validador' => $this->validador->name ?? '',
+            'facturado' => $this->facturado ?? '',
             'moneda' => $this->moneda ?? '',
             'nro_compra' => $this->nro_compra ?? '',
             'tipo' => $this->tipo ?? '',

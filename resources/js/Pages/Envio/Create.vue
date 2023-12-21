@@ -12,19 +12,17 @@ import { FilterMatchMode } from 'primevue/api';
 const toast = useToast();
 const titulo = "Mercado Libre"
 const ruta = 'envios'
-
+const isShowModalProducto = ref(false);
+const isLoad = ref(false);
+const errorsFilas = ref();
+const errorsCompras = ref();
+const errorsStock = ref();
+const inputArchivo = ref(null);
 const { tipo_cambio } = usePage().props
 const { lista_destinos } = usePage().props
-const prod = useForm({
-    producto_id: '',
-    nombre: '',
-    origen: '',
-    imagen: '',
-    cantidad: '',
-    precio_sin_iva: '',
-    precio: '',
-    total_sin_iva: '',
-    total: '',
+const uploadMercado = useForm({
+    destino: '',
+    archivo: ''
 })
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -34,36 +32,19 @@ const setDestino = (e) => {
     form.destino = e;
 
 }
-const setMoneda = (e) => {
 
-    if (e == 'Pesos') {
-        form.productos.forEach((item, index) => {
-            item['precio'] = roundNumber(parseFloat(item['precio'] * tipo_cambio).toFixed(2), 0.5, 'round')
-            item['total'] = item['cantidad'] * item['precio']
-            item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
-        })
-    } else {
-        form.productos.forEach((item, index) => {
-            item['precio'] = parseFloat(item['precio'] / tipo_cambio).toFixed(2)
-            item['total'] = item['cantidad'] * item['precio']
-            item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
-        })
-    }
-    form.moneda = e;
-    sumaTotal()
-    calculoSinIva()
+const setDestinoUpload = (e) => {
+    uploadMercado.destino = e;
+
 }
-
-
-
 const form = useForm({
     vendedor_id: '',
     destino: '',
     total: 0.0,
     total_sin_iva: 0.0,
     moneda: 'Pesos',
-    tipo:'ENVIO',
-    nro_compra:'',
+    tipo: 'ENVIO',
+    nro_compra: '',
     tipo_cambio: '',
     estado: 'FACTURADO',
     observaciones: '',
@@ -74,7 +55,7 @@ const form = useForm({
     },
 
 })
-const isShowModal = ref(false);
+
 const { productos } = usePage().props
 const lista_destino = ref({
     value: '',
@@ -149,7 +130,7 @@ const removerProducto = (index) => {
 
 const calculoSinIva = () => {
 
-    form.total_sin_iva = (form.total /1.22).toFixed(2)
+    form.total_sin_iva = (form.total / 1.22).toFixed(2)
 }
 
 const sumaTotalProducto = ($event, id) => {
@@ -158,13 +139,13 @@ const sumaTotalProducto = ($event, id) => {
 
         if (form.productos[id].stock >= form.productos[id].cantidad) {
             form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
-            form.productos[id].total_sin_iva = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp/1.22).toFixed(2))
-            form.productos[id].precio_sin_iva=(form.productos[id].precio/1.22).toFixed(2)
+            form.productos[id].total_sin_iva = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp / 1.22).toFixed(2))
+            form.productos[id].precio_sin_iva = (form.productos[id].precio / 1.22).toFixed(2)
             sumaTotal()
             calculoSinIva()
         } else {
             form.productos[id].cantidad = 1
-            form.productos[id].precio_sin_iva=form.productos[id].precio/1.22
+            form.productos[id].precio_sin_iva = form.productos[id].precio / 1.22
             form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
             alerta('La cantidad supera el Stock', 'error')
         }
@@ -194,9 +175,9 @@ const submit = () => {
         }
     });
 
-
-
 };
+
+
 //modal advertencia
 const alerta = (mensaje, icono) => {
     Swal.fire({
@@ -213,12 +194,96 @@ const cancelCrear = () => {
     router.get(route('inicio'))
 };
 
+//subir excel mercado
+const pickFile = (e) => {
+    e.preventDefault();
+    uploadMercado.archivo = e.target.files[0]
+
+}
+
+
+
+//envio de excel
+const submitExcel = () => {
+
+    isLoad.value=true;
+    uploadMercado.clearErrors()
+    uploadMercado.post(route(ruta + '.uploadexcel'), {
+        preserveScroll: true,
+        forceFormData: true,
+        onSuccess: () => {
+            isLoad.value=false;
+            show('success', 'Mensaje', 'Excel Importado')
+            setTimeout(() => {
+                router.get(route(ruta + '.create'));
+            }, 1000);
+        },
+        onFinish: () => {
+
+        },
+        onError: (er) => {
+            isLoad.value=false;
+            inputArchivo.value.value = null
+            uploadMercado.reset('archivo');
+            if (er.filas != undefined || er.compras != undefined || er.stock != undefined ) {
+                if (er.filas.length > 1 || er.compras.length > 1 || er.stock.length > 1) {
+                    errorsFilas.value = er.filas.slice(1);
+                    //errorsFilas.value = er.filas;
+                    errorsCompras.value = er.compras.slice(1);
+                    //errorsCompras.value = er.compras;
+                   // errorsStock.value = er.stock;
+                    errorsStock.value = er.stock.slice(1);
+                    isShowModalProducto.value = true;
+
+                }
+            }
+        }
+    }
+    );
+};
+
+const closeModalProducto = () => {
+    inputArchivo.value.value = null //reset input type file
+    uploadMercado.reset('archivo');
+    isShowModalProducto.value = false;
+};
+//subir excel mercado
+
 
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout :pagina="[ { 'label': titulo, link: false }]">
+    <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <!--Contenido-->
+
+        <div class="col-span-6 shadow-default lg:col-span-62 m-2">
+
+            <InputLabel for="file_input1" value="Importar Excel"
+                class="block text-base font-medium leading-6 text-gray-900" />
+            <input ref="inputArchivo" @input="pickFile" type="file" @change="submitExcel" class="block w-full text-xs text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded file:border-0
+                                file:text-sm file:font-medium
+                                file:bg-primary-900 file:text-white
+                                hover:file:bg-primary-900/80
+                                hover:file:cursor-pointer
+                                file:disabled::opacity-75
+                                file:disabled:cursor-no-drop
+                                disabled:opacity-75
+                                disabled:cursor-no-drop
+                                "
+                                :disabled="uploadMercado.processing"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+            <InputError class="mt-1 text-xs" :message="uploadMercado.errors.archivo" />
+
+
+        </div>
+        <div class="col-span-3 mx-2 py-0 shadow-default xl:col-span-3">
+            <InputLabel for="destino1" value="Destino" class="text-base font-medium leading-1 text-gray-900" />
+            <Multiselect id="destino1" :disabled="uploadMercado.processing" v-model="uploadMercado.destino" v-bind="lista_destino" @select="setDestinoUpload">
+            </Multiselect>
+            <InputError class="mt-1 text-xs" :message="uploadMercado.errors.destino" />
+        </div>
         <div
             class="grid grid-cols-12 p-0 m-0 gap-2 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
@@ -240,11 +305,6 @@ const cancelCrear = () => {
                                     <th class="border border-gray-300 p-2 w-24">Origen</th>
                                     <th class="border border-gray-300 ">Producto</th>
                                     <th class="border border-gray-300 w-24">Cantidad</th>
-                                    <!--
-
-                                        <th class="border border-gray-300 w-24">Precio</th>
-                                        <th class="border border-gray-300 w-24">Total</th>
-                                    -->
                                     <th class="border border-gray-300 w-8"></th>
 
                                 </tr>
@@ -261,15 +321,6 @@ const cancelCrear = () => {
 
                                     </td>
 
-                                    <!--
-                                    <td class="border border-gray-300"><input type="number" required v-model="producto.precio"
-                                            min="1" step="1" @input="sumaTotalProducto($event, index)"
-                                            class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
-
-                                    </td>
-                                    <td class="border border-gray-300 p-2">{{ producto.total }}  </td>
-
-                                    -->
                                     <td class="border-none  border-gray-300 p-1 ">
                                         <div
                                             class="rounded-md p-1 flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
@@ -280,20 +331,12 @@ const cancelCrear = () => {
                                     </td>
                                 </tr>
                             </tbody>
-                            <!--
 
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="4" class="text-end"><b>Total: </b></td>
-                                        <td class="text-end"><b> {{ form.moneda=='Pesos'?'$ ':'USD ' }} {{ form.total }} </b></td>
-                                    </tr>
-
-                                </tfoot>
-                            -->
                         </table>
                         <div class="col-span-12  p-2 xl:col-span-12">
                             <InputError class="mt-1 text-lg w-full " :message="form.errors.productos" />
-                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg" :message="error" />
+                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg"
+                                :message="error" />
                         </div>
                         <!--Tabla-->
                         <!--Datos Ventas-->
@@ -321,14 +364,12 @@ const cancelCrear = () => {
                             <InputError class="mt-1 text-xs" :message="form.errors.destino" />
                         </div>
 
-
-
                         <!--Datos Ventas-->
 
                     </div>
                     <div class="flex justify-end py-3">
-                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="cancelCrear"
-                            type="button" />
+                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small"
+                            @click="cancelCrear" type="button" />
 
                         <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
                             :disabled="form.processing" @click.prevent="submit" />
@@ -342,9 +383,8 @@ const cancelCrear = () => {
 
             <!--Productos-->
             <div class="p-0 mb-0 col-span-12  lg:col-span-4 ">
-                <DataTable  :filters="filters" scrollable scrollHeight="550px"
-                    :globalFilterFields="['origen', 'nombre']" :value="productos.data"
-                    :virtualScrollerOptions="{ itemSize: 46 }" size="small">
+                <DataTable :filters="filters" scrollable scrollHeight="550px" :globalFilterFields="['origen', 'nombre']"
+                    :value="productos.data" :virtualScrollerOptions="{ itemSize: 46 }" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-sm">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -420,6 +460,130 @@ const cancelCrear = () => {
 
         <!--Contenido-->
 
+        <!--Modal productos-->
+        <Dialog v-model:visible="isShowModalProducto" modal :style="{ width: '30vw' }" :pt="{
+            header: {
+                class: 'mt-5 pb-2 px-5'
+            },
+            content: {
+                class: 'p-4'
+            },
+        }">
+
+            <div v-if="errorsFilas.length > 1">
+
+                <p class="mb-2 font-bold text-md">
+                    Los siguientes productos no estan registrado , por favor registre y vuelva a intentar.
+                </p>
+
+                <table class="w-full border">
+                    <thead>
+                        <tr class="w-full border">
+                            <th class="w-26 text-center border">
+                                Fila
+                            </th>
+                            <th class="text-center border">
+                                Sku
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="w-full text-center border" v-for="item in errorsFilas">
+                            <td class="text-center border">
+                                {{ item.fila }}
+                            </td>
+                            <td class="text-center border">
+                                {{ item.sku }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div v-if="errorsCompras.length > 1">
+                <p class="mb-2 mt-4 font-bold text-md">
+                    Las siguientes compras ya existen en el sistema, por favor corriga e intente nuevamente.
+                </p>
+
+                <table class="w-full border">
+                    <thead>
+                        <tr class="w-full border">
+                            <th class="w-26 text-center border">
+                                Fila
+                            </th>
+                            <th class="text-center border">
+                                Número Compra
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="w-full text-center border" v-for="item in errorsCompras">
+                            <td class="text-center border">
+                                {{ item.fila }}
+                            </td>
+                            <td class="text-center border">
+                                {{ item.nro_compra }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+            <div v-if="errorsStock.length > 1">
+                <p class="mb-2 mt-4 font-bold text-md">
+                    Los siguientes productos no disponen de stock.
+                </p>
+
+                <table class="w-full border">
+                    <thead>
+                        <tr class="w-full border">
+                            <th class="w-26 text-center border">
+                                Fila
+                            </th>
+                            <th class="text-center border">
+                              SKU
+                            </th>
+                            <th class="text-center border">
+                                Stock
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="w-full text-center border" v-for="item in errorsStock">
+                            <td class="text-center border">
+                                {{ item.fila }}
+                            </td>
+                            <td class="text-center border">
+                                {{ item.sku }}
+                            </td>
+                            <td class="text-center border">
+                                {{ item.stock }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <template #header>
+                <div class="flex flex-column align-items-center" style="flex: 1">
+                    <div class="text-center">
+                        <i class="pi pi-exclamation-triangle text-yellow-500" style="font-size: 3rem"></i>
+                    </div>
+                    <div class="font-bold text-2xl m-3">No se ha podido importar</div>
+                </div>
+            </template>
+
+
+            <div class="flex justify-end py-3">
+                <Button label="Aceptar" size="small" type="button" @click="closeModalProducto()" />
+
+            </div>
+
+        </Dialog>
+        <!--Modal productos-->
     </AppLayout>
 </template>
 

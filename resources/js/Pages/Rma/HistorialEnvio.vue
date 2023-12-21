@@ -61,23 +61,23 @@ const date = ref([new Date(), new Date()]);
 //const date = ref([]);
 //filtrado
 const filtrado = (value) => {
-if(value[0]!=null && value[1]!=null){
+    if (value[0] != null && value[1] != null) {
 
-    router.get('/rmas/historial-envios/',
-    {
-        inicio: moment(value[0]).format('YYYY-MM-DD'),
-        fin: moment(value[1]).format('YYYY-MM-DD')
-    },
-    {
-            preserveState: true,
-            onSuccess: () => {
-                tabla_ventas.value = usePage().props.ventas.data;
+        router.get('/rmas/historial-envios/',
+            {
+                inicio: moment(value[0]).format('YYYY-MM-DD'),
+                fin: moment(value[1]).format('YYYY-MM-DD')
+            },
+            {
+                preserveState: true,
+                onSuccess: () => {
+                    tabla_ventas.value = usePage().props.ventas.data;
+                }
+
             }
-
-        }
         );
-    }else{
-        router.get(route(ruta+'.historial'))
+    } else {
+        router.get(route(ruta + '.historial'))
     }
 
 }
@@ -138,20 +138,18 @@ const filters = ref({
 
                 <DataTable :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer p-1 hover:bg-gray-100 hover:text-black' }
-                }" scrollable scrollHeight="500px"   :virtualScrollerOptions="{  itemSize: 46 }"
+                }" scrollable scrollHeight="500px" :virtualScrollerOptions="{ itemSize: 46 }"
                     @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="grid grid-cols-6 gap-4 m-1.5">
-                            <InputText v-model="filters['global'].value" placeholder="Buscar"
-                            :pt="{
-                                root:{class:'col-span-6 lg:col-span-2 m-1.5'}
-                            }"/>
+                            <InputText v-model="filters['global'].value" placeholder="Buscar" :pt="{
+                                root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
+                            }" />
 
-                                <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
-                                    format="DD/MM/YYYY"
-                                    class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
-                                     v-model:value="date" :shortcuts="shortcuts" lang="es"
-                                    placeholder="Seleccione Fecha"></date-picker>
+                            <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
+                                class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
+                                v-model:value="date" :shortcuts="shortcuts" lang="es"
+                                placeholder="Seleccione Fecha"></date-picker>
 
                         </div>
                     </template>
@@ -175,7 +173,7 @@ const filters = ref({
                         }
                     }"></Column>
                     <Column field="destino" header="Destino" sortable :pt="{
-                         bodyCellContent: {
+                        bodyCellContent: {
                             class: 'text-center w-40'
                         },
                         headerContent: {
@@ -191,9 +189,29 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
+                    <Column field="parametro.rma.nro_servicio" header="Nº de Servicio" context="small" sortable :pt="{
 
-                    <Column field="nro_compra" header="N° Compra" sortable :pt="{
-                         bodyCellContent: {
+                        bodyCellContent: {
+                            class: ' w-36'
+                        },
+                        headerCell: {
+                            class: 'w-36'
+                        },
+                        bodyCell: {
+
+                            class: 'text-center'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-36'
+                        },
+
+                    }">
+                        <template #loading>
+                        </template>
+                    </Column>
+                    <Column field="parametro.rma.nro_compra" header="N° Compra" sortable :pt="{
+                        bodyCellContent: {
                             class: 'text-center w-52'
                         },
                         headerContent: {
@@ -210,7 +228,7 @@ const filters = ref({
                         }
                     }"></Column>
                     <Column field="cliente" header="Cliente" sortable :pt="{
-                         bodyCellContent: {
+                        bodyCellContent: {
                             class: 'text-center w-52'
                         },
                         headerContent: {
@@ -234,7 +252,7 @@ const filters = ref({
                         }
                     }"></Column>
 
-<!--
+                    <!--
                     <Column header="Acciones" style="width:100px" :pt="{
                         bodyCell: {
                             class: 'text-center'
