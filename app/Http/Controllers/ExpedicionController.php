@@ -33,10 +33,13 @@ class ExpedicionController extends Controller
                     ->orWhere('destino',"MERCADOLIBRE")
                     ->orWhere('destino',"SALON");
                 })->where(function ($query) {
-                    $query->where('estado',"PENDIENTE DE FACTURACIÓN")
-                    ->orWhere('estado',"FACTURADO")
-                    ->orWhere('estado',"RMA");
-                })->get()
+                    $query->where('estado', "PENDIENTE DE FACTURACIÓN")
+                        ->orWhere('estado', "FACTURADO");
+                    })
+                ->orWhere(function ($query) {
+                    $query->orWhere('facturado', "1")
+                    ->where('estado', "RMA");
+            })->get()
 
                     //whereNot('estado',"COMPLETADO")
                 );

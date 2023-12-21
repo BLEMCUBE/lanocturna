@@ -169,6 +169,7 @@ Route::controller(ExpedicionController::class)->group(function () {
 //Envio
 Route::controller(EnvioController::class)->group(function () {
     Route::post('/envios/maestro', 'verificarCodigoMaestro')->name('envios.maestro')->middleware('auth');
+    Route::post('/envios/uploadexcel', 'uploadExcel')->name('envios.uploadexcel')->middleware('auth');
     Route::get('/envios/create', 'create')->name('envios.create')->middleware('auth');
     Route::get('/envios/historial', 'historialEnvios')->name('envios.historial')->middleware('auth');
     Route::post('/envios/store', 'store')->name('envios.store')->middleware('auth');

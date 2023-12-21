@@ -37,11 +37,9 @@ const validarCodigoMaestro = () => {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
-            //form.productos[cod_maestro.index].producto_validado = true;
             show('success', 'Mensaje', 'Se ha Validado')
-            //BotonConfirmar()
              setTimeout(() => {
-                 router.get(route(ruta + '.index'));
+                 router.get(route(ruta + '.validacion'));
              }, 1000);
             closeModal()
 
