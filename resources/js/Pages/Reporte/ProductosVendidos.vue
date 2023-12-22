@@ -99,7 +99,6 @@ const shortcuts = [
 ]
 
 const clickDetalle = (e) => {
-    console.log('e ',e)
     btnVer(e.data.id)
 }
 const btnVer = (id) => {

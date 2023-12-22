@@ -98,6 +98,7 @@ const form = useForm({
     direccion: '',
     parametro: [],
     rma: [],
+    opt: [],
     localidad: '',
     telefono: '',
 
@@ -153,6 +154,7 @@ onMounted(() => {
     form.productos = datos.productos
     form.parametro = datos.parametro
     form.rma = datos.parametro.rma
+    form.opt = datos.parametro.opt
     form.total_sin_iva = datos.total_sin_iva
     form.total = datos.total
     form.codigo = datos.codigo
@@ -284,6 +286,14 @@ onMounted(() => {
                             Télefono:
                         </b>
                         {{ form.telefono }}
+                    </p>
+                </div>
+                <div class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-red-600 font-bold">
+                        <b class="text-lg leading-6 mt-0 text-gray-700 font-bold">
+                            MUEVE STOCK:
+                        </b>
+                        {{ form.opt.mueve_stock }}
                     </p>
                 </div>
                 <div class="col-span-3">

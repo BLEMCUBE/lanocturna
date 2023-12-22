@@ -6,11 +6,10 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useToast } from "primevue/usetoast";
 
+//Variables
 const toast = useToast();
 const titulo = "Bultos"
 const ruta = "depositos"
-const maxBultos = ref();
-//Variables
 const isShowModal = ref(false);
 
 const form = useForm({
@@ -22,7 +21,7 @@ const form = useForm({
 
 
 })
-
+const emit = defineEmits(['update:valor']);
 const props = defineProps({
     origenId: {
         type: Number,
@@ -48,15 +47,16 @@ const props = defineProps({
 //Funciones
 
 const addCliente = () => {
-    dataEdit(props.origenId);
+    dataEdit();
 
 };
 
-const dataEdit = (id) => {
+const dataEdit = () => {
 
     axios.post(route(ruta + '.showproductos'),{
     productos: props.productos,
-    origen_id:props.origenId
+    origen_id:props.origenId,
+    destino_id:form.destino_id
   })
         .then(res => {
             form.productos = res.data.detalle_productos
@@ -92,15 +92,16 @@ const closeModal = () => {
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta + '.updatedeposito', form.id), {
+    form.post(route(ruta + '.updateproductosdeposito'), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
             isShowModal.value = false
             show('success', 'Mensaje', 'Se ha editado')
+            emit('update:valor', true);
             setTimeout(() => {
                 router.get(route(ruta + '.index'));
-            }, 1000);
+            }, 700);
         },
         onFinish: () => {
         },
@@ -190,11 +191,10 @@ const show = (tipo, titulo, mensaje) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.destino_id" />
 
                     </div>
-{{ form }}
                     <div class="col-span-6 shadow-default" v-if="props.productos.length==1">
                         <InputLabel for="bultos" value="Bultos" v-if="form.productos.length>0"
                             class="block text-base font-medium leading-6 text-gray-900" />
-                        <input type="number" v-if="form.productos.length>0" v-model="form.productos[0].bultos" step="1" min="0" :max="form.productos[0].maxBultos"
+                        <input type="number" v-if="form.productos.length>0" v-model="form.productos[0].bultos" step="1" min="1" :max="form.productos[0].maxBultos"
                             class="p-inputtext p-component h-9 w-full text-end
                             font-normal text-gray-700  border border-gray-300 transition-colors
                              duration-200 appearance-none rounded-md text-sm px-3 py-1">

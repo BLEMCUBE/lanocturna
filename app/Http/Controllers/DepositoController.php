@@ -262,7 +262,7 @@ class DepositoController extends Controller
             if (!empty($deposito_detalle)) {
                 array_push($detalle_productos, [
                     'id' => $deposito_detalle->id,
-                    'sku' => $deposito_detalle->id,
+                    'sku' => $deposito_detalle->sku,
                     'bultos' => $deposito_detalle->bultos,
                     'maxBultos' => $deposito_detalle->bultos,
                     'pcs_bulto' => $deposito_detalle->pcs_bulto,
@@ -270,7 +270,6 @@ class DepositoController extends Controller
                 ]);
             }
         }
-        //dd($detalle_productos);
 
         //Lista deposito_detalle
         $lista_depo = DepositoLista::whereNot('id', $origen_id)->get();
@@ -493,6 +492,85 @@ class DepositoController extends Controller
                 'message' => $e->getMessage(),
             ];
         }
+    }
+
+    //actualizar multiples productos deposito
+    public function updateProductosDeposito(CambiarDepositoRequest $request)
+    {
+
+        $productos = $request->input('productos');
+        $origen_id = $request->input('origen_id');
+        $destino_id = $request->input('destino_id');
+        foreach ($productos as $key => $producto) {
+        //buscando producto en deposito
+        $datosOrigen = DepositoProducto::where('sku', $producto['sku'])
+            ->where('pcs_bulto', '=', $producto['pcs_bulto'])
+            ->where('deposito_lista_id', $origen_id)->first();
+        $datosDestino = DepositoProducto::where('sku', $producto['sku'])
+            ->where('pcs_bulto', '=', $producto['pcs_bulto'])
+            ->where('deposito_lista_id', $destino_id)->first();
+
+        DB::beginTransaction();
+        try {
+
+            $ne_pcs_bulto = $datosOrigen->pcs_bulto;
+            $ne_bultos = $datosOrigen->bultos - $producto['bultos'];
+            $da_producto = Producto::where('origen', '=', $producto['sku'])->first();
+            $da_origen = DepositoLista::where('id', '=', $origen_id)->first();
+            $da_destino = DepositoLista::where('id', '=', $destino_id)->first();
+            $usuario = auth()->user();
+            $datos_historial = [
+                "sku" => $producto['sku'],
+                "producto" => $da_producto->nombre,
+                "bultos" => $producto['bultos'],
+                "pcs_bulto" => $producto['pcs_bulto'],
+                "origen" => $da_origen->nombre,
+                "destino" => $da_destino->nombre,
+                "usuario" => $usuario->name,
+            ];
+
+
+            if (empty($datosDestino) || is_null($datosDestino)) {
+
+                //quitando bultos del deposito de origen.
+                $datosOrigen->update([
+                    "bultos" => $ne_bultos,
+                    "cantidad_total" => $ne_bultos * $ne_pcs_bulto,
+                ]);
+                //creando registro deposito
+                $nuevo = [
+                    "sku" => $datosOrigen->sku,
+                    "pcs_bulto" => $datosOrigen->pcs_bulto,
+                    "bultos" =>  $producto['bultos'],
+                    "cantidad_total" =>  $producto['bultos']* $datosOrigen->pcs_bulto,
+                    "deposito_lista_id" => $destino_id
+                ];
+                DepositoProducto::create($nuevo);
+            } else {
+                $datosOrigen->update([
+                    "bultos" => $ne_bultos,
+                    "cantidad_total" => $ne_bultos * $ne_pcs_bulto,
+                ]);
+                $nuevo_bulto = $datosDestino->bultos + $producto['bultos'];
+                $datosDestino->update([
+                    "bultos" => $nuevo_bulto,
+                    "cantidad_total" => $nuevo_bulto * $datosOrigen->pcs_bulto,
+                ]);
+            }
+            DepositoHistorial::create([
+                "datos" => json_encode($datos_historial),
+            ]);
+            //guardando en tabla deposito historial
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
     }
 
     //eliminar importacion

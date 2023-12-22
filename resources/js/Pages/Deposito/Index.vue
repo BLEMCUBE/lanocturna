@@ -56,7 +56,7 @@ const btnEliminar = () => {
                         show('success', 'Eliminado', 'Se ha eliminado')
                         setTimeout(() => {
                             router.get(route(ruta + '.index'));
-                        }, 1000);
+                        }, 700);
 
                     }
                 });
@@ -95,13 +95,32 @@ const rowClass = (data) => {
 
 
 };
+const eventoEnvio = (checked) => {
 
+    if (checked) {
+        formDelete.reset();
+    } else {
+
+    }
+};
 const collapseAll = () => {
     expandedRows.value = null;
 };
 
+const expandEvent = (event) => {
+    expandedRows.value = lista_depositos.value.filter((p) => p.id==event.data.id);
+    formDelete.reset();
+
+};
+const collapseEvent = (event) => {
+    expandedRows.value = null;
+    formDelete.reset();
+
+};
+
 const expandAll = () => {
     expandedRows.value = lista_depositos.value.filter((p) => p.id);
+
 };
 const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
@@ -128,7 +147,8 @@ const filters = ref({
             <div class="align-middle">
 
                 <DataTable v-model:expandedRows="expandedRows" size="small" v-bind:rowClass="rowClass"
-                    :value="lista_depositos" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
+                v-on:row-collapse="collapseEvent" v-on:row-expand="expandEvent"
+                                    :value="lista_depositos" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
                     tableStyle="min-width: 50rem" :pt="{
 
                     }">
@@ -207,6 +227,7 @@ const filters = ref({
                                                 <CambiarProductosDepositoModal :origen-id="slotProps.data.id"
                                                 :origen-nombre="slotProps.data.nombre"
                                                 :productos="formDelete.productos"
+                                                @update:valor=eventoEnvio($event)
                                                 :disabled-status="!formDelete.productos || !formDelete.productos.length">
                                                 </CambiarProductosDepositoModal>
 
@@ -319,17 +340,6 @@ const filters = ref({
 
                                 }">
                                 </Column>
-
-                                <Column header="Acciones" :pt="{
-                                    bodyCell: { class: 'text-center' },
-                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-10' }
-
-                                }">
-                                    <template #body="slotProps">
-
-
-                                    </template>
-                                </Column>
                             </DataTable>
                         </div>
                     </template>
@@ -338,7 +348,6 @@ const filters = ref({
                 </DataTable>
 
             </div>
-            {{ formDelete.productos }}
             <!--Contenido-->
         </div>
 

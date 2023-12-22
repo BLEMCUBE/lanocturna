@@ -197,6 +197,7 @@ Route::controller(DepositoController::class)->group(function () {
     Route::get('/depositos/{id}/showcambiarproducto', 'showCambiarProducto')->name('depositos.showcambiarproducto')->middleware('auth');
     Route::get('/depositos/{id}/showmodal', 'showModal')->name('depositos.showmodal')->middleware('auth');
     Route::post('/depositos/update-deposito/{id}', 'updateDeposito')->name('depositos.updatedeposito')->middleware('auth');
+    Route::post('/depositos/update-productos-deposito', 'updateProductosDeposito')->name('depositos.updateproductosdeposito')->middleware('auth');
     Route::post('/depositos/{id}/updateproducto', 'updateProducto')->name('depositos.updateproducto')->middleware('auth');
     Route::get('/depositos/historial', 'historial')->name('depositos.historial')->middleware('auth');
     Route::get('/depositos', 'index')->name('depositos.index')->middleware('auth');
