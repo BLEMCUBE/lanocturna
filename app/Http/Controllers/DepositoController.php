@@ -22,6 +22,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request as Req;
 
 class DepositoController extends Controller
 {
@@ -466,6 +468,18 @@ class DepositoController extends Controller
     {
         $deposito = DepositoProducto::find($id);
         $deposito->delete();
+    }
+    //retirando multiples productos definitamente del deposito
+    public function destroyProductos(Request $request)
+    {
+        $productos=$request->input('productos');
+        foreach ($productos as $key => $producto) {
+            $deposito = DepositoProducto::find($producto['id']);
+            if(!empty($deposito)){
+                $deposito->delete();
+            }
+        }
+
     }
 
     public function exportExcel($id)

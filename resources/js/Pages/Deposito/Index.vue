@@ -15,8 +15,11 @@ const toast = useToast();
 const titulo = "Depósitos"
 const ruta = 'depositos'
 const lista_depositos = ref();
+const isSend = ref(false);
+
 const formDelete = useForm({
     id: '',
+    productos: []
 });
 
 onMounted(() => {
@@ -25,7 +28,7 @@ onMounted(() => {
     expandedRows.value = null;
 
 });
-const btnEliminar = (id) => {
+const btnEliminar = () => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
     alerta.fire({
@@ -41,11 +44,14 @@ const btnEliminar = (id) => {
 
     }).then((result) => {
         if (result.isConfirmed) {
-            formDelete.delete(route(ruta + '.destroydeposito', id),
+            isSend.value=true;
+            formDelete.post(route(ruta + '.destroyproductos'),
                 {
                     preserveScroll: true,
                     forceFormData: true,
                     onSuccess: () => {
+                        isSend.value=false;
+                        formDelete.reset();
                         show('success', 'Eliminado', 'Se ha eliminado')
                         setTimeout(() => {
                             router.get(route(ruta + '.index'));
@@ -120,7 +126,7 @@ const filters = ref({
             </div>
             <div class="align-middle">
 
-                <DataTable v-model:expandedRows="expandedRows"  size="small" v-bind:rowClass="rowClass"
+                <DataTable v-model:expandedRows="expandedRows" size="small" v-bind:rowClass="rowClass"
                     :value="lista_depositos" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
                     tableStyle="min-width: 50rem" :pt="{
 
@@ -145,7 +151,7 @@ const filters = ref({
                     }" />
 
                     <Column sortable field="nombre" header="Depósito" :pt="{
-                        bodyCell: { class: 'bg-secondary-900/30 font-bold text-center'  },
+                        bodyCell: { class: 'bg-secondary-900/30 font-bold text-center' },
                         headerCell: { class: 'uppercase bg-secondary-100 text-md' },
 
 
@@ -164,28 +170,51 @@ const filters = ref({
                         </template>
                     </Column>
                     <Column header="" :pt="{
-                        bodyCell: { class: 'bg-secondary-900/30 font-bold w-14  text-center' },
-                        headerContent: { class: 'mx-2 text-cente' },
-                        headerCell: { class: 'uppercase bg-secondary-900 text-md' },
+                            bodyCell: { class: 'bg-secondary-900/30 font-bold w-14  text-center' },
+                            headerContent: { class: 'mx-2 text-center' },
+                            headerCell: { class: 'uppercase bg-secondary-900 text-md' },
 
-                    }">
+                        }">
                         <template #body="slotProps">
-                                <div v-if="roles.includes('Super Administrador')||roles.includes('Administrador')"
-                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
-                                    <a :href="route('depositos.exportar', slotProps.data.id)" target="_blank"
-                                    class="py-auto p-2 text-xl"><i
-                                            class="fas fa-file-excel text-white"></i>
-                                    </a>
-                                </div>
+                            <div v-if="roles.includes('Super Administrador') || roles.includes('Administrador')"
+                                v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
+                                <a :href="route('depositos.exportar', slotProps.data.id)" target="_blank"
+                                    class="py-auto p-2 text-xl"><i class="fas fa-file-excel text-white"></i>
+                                </a>
+                            </div>
 
                         </template>
                     </Column>
                     <template #expansion="slotProps">
                         <div class="px-1">
                             <DataTable :value="slotProps.data.productos" scrollable scrollHeight="300px"
-                                :virtualScrollerOptions="{ itemSize: 46 }" v-model:filters="filters">
+                                :virtualScrollerOptions="{ itemSize: 46 }" v-model:filters="filters"
+                                v-model:selection="formDelete.productos"
+                                :pt="{
 
+                                    header: { class: 'text-center pb-0 mb-0' },
+                                    headerContent: { class: 'bg-sky-300 pb-0 mb-0' },
+
+                                }"
+                                >
+                                <template #header size="small">
+                                    <div class="flex justify-content-end text-base bg-sky-300 px-5 py-2">
+                                                <div v-if=" isSend==false">
+                                                    <Button :disabled="!formDelete.productos || !formDelete.productos.length"
+                                                    v-if="slotProps.data.id == 2"
+                                                    class="w-auto rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
+                                                    v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                                    @click.prevent="btnEliminar()"><i class="fas fa-trash-alt w-6 h-4"></i></Button>
+                                                </div>
+                                    </div>
+                                </template>
+                                <Column selectionMode="multiple" headerStyle="width: 3rem"
+                                :pt="{
+                                          headerCell: { class: 'text-center bg-sky-300' },
+                                          bodyCell: { class: 'text-center' },
+                                    }"></Column
+                                    >
                                 <Column field="sku" filterField="sku" header="Sku" sortable :pt="{
                                     bodyCell: { class: 'text-center p-0 m-0 w-36' },
                                     headerCell: { class: 'bg-sky-300 p-0 m-0 w-36 ' },
@@ -200,7 +229,7 @@ const filters = ref({
                                 }">
                                 </Column>
 
-                                <Column header="Imagen" :pt="{
+                                <Column header="Imagen" select :pt="{
                                     bodyCell: {
                                         class: 'flex justify-center text-center w-12'
                                     },
@@ -292,12 +321,6 @@ const filters = ref({
                                                 </CambiarDepositoModal>
                                             </span>
 
-                                            <Button v-if="slotProps.data.deposito_lista_id == '2'"
-                                                class="w-8 h-8 rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
-                                                v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                                @click.prevent="btnEliminar(slotProps.data.id)"><i
-                                                    class="fas fa-trash-alt"></i></Button>
-
                                         </div>
 
                                     </template>
@@ -310,7 +333,7 @@ const filters = ref({
                 </DataTable>
 
             </div>
-
+            {{ formDelete.productos }}
             <!--Contenido-->
         </div>
 

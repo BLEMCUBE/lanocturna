@@ -700,7 +700,7 @@ const Tailwind_PT = {
           var props = _ref25.props,
             context = _ref25.context;
           return {
-            "class": ['items-center cursor-pointer inline-flex overflow-hidden relative select-none text-center align-bottom h-full', 'transition duration-200 ease-in-out', 'focus:outline-none focus:outline-offset-0 focus:shadow-[0_0_0_2px_rgba(255,255,255,1),0_0_0_4px_rgba(157,193,251,1),0_1px_2px_0_rgba(0,0,0,1)] dark:focus:shadow-[0_0_0_2px_rgba(28,33,39,1),0_0_0_4px_rgba(147,197,253,0.7),0_1px_2px_0_rgba(0,0,0,0)]',
+            "class": ['items-center cursor-pointer inline-flex overflow-hidden relative select-none text-center align-bottom h-full', 'transition duration-200 ease-in-out',
             // Primary button focus
             {
               'text-white bg-primary-900 border border-blue-500 hover:bg-blue-600 hover:border-blue-600': !props.link && props.severity === null && !props.text && !props.outlined && !props.plain,

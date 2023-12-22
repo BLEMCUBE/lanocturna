@@ -203,6 +203,7 @@ Route::controller(DepositoController::class)->group(function () {
     Route::get('/depositos/{id}', 'show')->name('depositos.show')->middleware('auth');
     Route::get('/depositos/{id}/export', 'exportExcel')->name('depositos.exportar')->middleware('auth');
     Route::post('/depositos/store', 'store')->name('depositos.store')->middleware('auth');
+    Route::post('/depositos/destroyproductos', 'destroyProductos')->name('depositos.destroyproductos')->middleware('auth');
     Route::delete('/depositos/{id}', 'destroy')->name('depositos.destroy')->middleware('auth');
     Route::delete('/depositos/{id}/deposito', 'destroyDeposito')->name('depositos.destroydeposito')->middleware('auth');
 });

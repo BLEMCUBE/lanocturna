@@ -1654,11 +1654,11 @@
     background: #e5e7eb;
     color: #71717A;
   }
-  .p-button:focus {
+  /*.p-button:focus {
     outline: 0 none;
     outline-offset: 0;
-    /*box-shadow: 0 0 0 1px #6366F1;*/
-  }
+    box-shadow: 0 0 0 1px #6366F1;
+  }*/
   .p-button .p-button-label {
     transition-duration: 0.2s;
   }
