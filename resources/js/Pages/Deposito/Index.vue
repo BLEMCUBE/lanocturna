@@ -6,6 +6,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import CambiarDepositoModal from '@/Pages/Deposito/Partials/CambiarDepositoModal.vue';
+import CambiarProductosDepositoModal from '@/Pages/Deposito/Partials/CambiarProductosDepositoModal.vue';
 
 import { FilterMatchMode } from 'primevue/api';
 const { roles } = usePage().props.auth
@@ -200,10 +201,21 @@ const filters = ref({
                                 >
                                 <template #header size="small">
                                     <div class="flex justify-content-end text-base bg-sky-300 px-5 py-2">
+
+                                        <div>
+
+                                                <CambiarProductosDepositoModal :origen-id="slotProps.data.id"
+                                                :origen-nombre="slotProps.data.nombre"
+                                                :productos="formDelete.productos"
+                                                :disabled-status="!formDelete.productos || !formDelete.productos.length">
+                                                </CambiarProductosDepositoModal>
+
+                                        </div>
+
                                                 <div v-if=" isSend==false">
                                                     <Button :disabled="!formDelete.productos || !formDelete.productos.length"
                                                     v-if="slotProps.data.id == 2"
-                                                    class="w-auto rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
+                                                    class="w-auto rounded bg-red-700 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
                                                     v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                                     @click.prevent="btnEliminar()"><i class="fas fa-trash-alt w-6 h-4"></i></Button>
                                                 </div>
@@ -314,14 +326,7 @@ const filters = ref({
 
                                 }">
                                     <template #body="slotProps">
-                                        <div>
-                                            <span
-                                                class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
-                                                <CambiarDepositoModal :detalle-id="slotProps.data.id">
-                                                </CambiarDepositoModal>
-                                            </span>
 
-                                        </div>
 
                                     </template>
                                 </Column>
