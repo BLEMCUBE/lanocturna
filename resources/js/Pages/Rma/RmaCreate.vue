@@ -305,7 +305,7 @@ const cancelCrear = () => {
                                     <div v-if="slotProps.value" class="flex align-items-center">
                                         <img :alt="slotProps.value.nombre" :src="slotProps.value.imagen"
                                             style="width: 20px; margin-right: 5px;" />
-                                        <div> {{ slotProps.value.origen }} - {{ slotProps.value.nombre }}</div>
+                                        <div> {{ slotProps.value.origen }} - {{ slotProps.value.nombre }} - stock:{{ slotProps.value.stock }}</div>
                                     </div>
                                     <span v-else>
                                         {{ slotProps.placeholder }}
@@ -315,7 +315,7 @@ const cancelCrear = () => {
                                     <div class="flex align-items-center">
                                         <img :alt="slotProps.option.nombre" :src="slotProps.option.imagen"
                                             style="width: 20px; margin-right: 5px;" />
-                                        <div> {{ slotProps.option.origen }} - {{ slotProps.option.nombre }}</div>
+                                        <div> {{ slotProps.option.origen }} - {{ slotProps.option.nombre }} - stock:{{ slotProps.option.stock }}</div>
                                     </div>
                                 </template>
                             </Dropdown>

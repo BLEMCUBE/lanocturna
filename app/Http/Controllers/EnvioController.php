@@ -56,14 +56,19 @@ class EnvioController extends Controller
                     ->orWhere('destino', "DAC");
             })->where(function ($query) {
                 $query->where('estado', "PENDIENTE DE FACTURACIÓN")
-                    ->orWhere('estado', "FACTURADO");
+                ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
+                ->orWhere('estado', "VALIDADO")
+                ->orWhere('estado', "FACTURADO");
 
             })
-            ->orWhere(function ($query) {
+            /*->orWhere(function ($query) {
                     $query->orWhere('facturado', "1")
                     ->where('estado', "RMA");
-            })
-                    ->select('*')->orderBy('id', 'DESC')->get()
+            })*/
+
+                    ->select('*')
+                    ->orderBy('created_at', 'DESC')->get()
+                    //->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Index', [
             'ventas' => $expedidiones

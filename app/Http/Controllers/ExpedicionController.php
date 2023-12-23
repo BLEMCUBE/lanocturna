@@ -27,24 +27,27 @@ class ExpedicionController extends Controller
     public function index()
     {
 
-            $expedidiones= new VentaCollection(
-                Venta::where(function ($query) {
-                    $query->where('destino',"WEB")
-                    ->orWhere('destino',"MERCADOLIBRE")
-                    ->orWhere('destino',"SALON");
-                })->where(function ($query) {
-                    $query->where('estado', "PENDIENTE DE FACTURACIÓN")
-                        ->orWhere('estado', "FACTURADO");
-                    })
-                ->orWhere(function ($query) {
+        $expedidiones = new VentaCollection(
+            Venta::where(function ($query) {
+                $query->where('destino', "WEB")
+                    ->orWhere('destino', "MERCADOLIBRE")
+                    ->orWhere('destino', "SALON");
+            })->where(function ($query) {
+                $query->where('estado', "PENDIENTE DE FACTURACIÓN")
+                    ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
+                    ->orWhere('estado', "VALIDADO")
+                    ->orWhere('estado', "FACTURADO");
+            })
+                /*->orWhere(function ($query) {
                     $query->orWhere('facturado', "1")
-                    ->where('estado', "RMA");
-            })->get()
+                        ->where('estado', "RMA");
+                })*/
+                ->orderBy('created_at', 'DESC')->get()
 
-                    //whereNot('estado',"COMPLETADO")
-                );
+            //whereNot('estado',"COMPLETADO")
+        );
         return Inertia::render('Expedicion/Index', [
-            'ventas' =>$expedidiones
+            'ventas' => $expedidiones
         ]);
     }
 
@@ -66,21 +69,22 @@ class ExpedicionController extends Controller
         ]);
     }
 
-    public function verificarCodigoMaestro(Request $request){
-        $codigo=Configuracion::where('slug','codigo-maestro')->first();
+    public function verificarCodigoMaestro(Request $request)
+    {
+        $codigo = Configuracion::where('slug', 'codigo-maestro')->first();
         $validated = $request->validate([
             'codigo' => 'required',
         ]);
 
-         if (Hash::check( $request->codigo, $codigo->value)) {
+        if (Hash::check($request->codigo, $codigo->value)) {
             //dd( "Password matching");
-         } else {
+        } else {
             //dd( "Password is not matching");
             throw ValidationException::withMessages([
                 'codigo' => __('Código maestro inválido'),
             ]);
-         }
-      }
+        }
+    }
 
 
     public function validarProductos(Request $request, $id)
@@ -94,10 +98,10 @@ class ExpedicionController extends Controller
 
         DB::beginTransaction();
         try {
-            $venta->validado =true;
-            $venta->estado="COMPLETADO";
+            $venta->validado = true;
+            $venta->estado = "COMPLETADO";
             $venta->validador_id =  $validador->id;
-            $venta->fecha_validacion=now();
+            $venta->fecha_validacion = now();
             $venta->save();
 
 
@@ -108,16 +112,16 @@ class ExpedicionController extends Controller
                 ]);
             }
 
-            $rma_json=json_decode($venta->parametro);
-            if($venta->tipo=="RMA"){
-                $rma=Rma::findOrFail($rma_json->rma->id);
-                $rma->modo="ENTREGADO";
+            $rma_json = json_decode($venta->parametro);
+            if ($venta->tipo == "RMA") {
+                $rma = Rma::findOrFail($rma_json->rma->id);
+                $rma->modo = "ENTREGADO";
                 $rma->save();
             }
 
-            if($rma_json!=null){
+            if ($rma_json != null) {
 
-                if($rma_json->rma->estado="CAMBIO PRODUCTO"){
+                if ($rma_json->rma->estado = "CAMBIO PRODUCTO") {
                     RmaStock::create([
                         'sku' => $rma_json->rma->prod_origen,
                         'cantidad_total' => $rma_json->rma->prod_cantidad,
@@ -125,7 +129,7 @@ class ExpedicionController extends Controller
                         'rma_id' => $rma_json->rma->id,
                     ]);
                 }
-           }
+            }
 
             DB::commit();
         } catch (Exception $e) {

@@ -148,16 +148,17 @@ const filters = ref({
             </div>
 
             <div class="align-middle  p-3">
-                <DataTable :filters="filters" :value="virtualCars" scrollable scrollHeight="400px"
-                    tableStyle="min-width: 50rem" :virtualScrollerOptions="{
+                <DataTable :filters="filters" :value="cars" scrollable scrollHeight="400px"
+                     :virtualScrollerOptions="{
                         lazy: true,
-                        onLazyLoad: loadCarsLazy,
+                        //onLazyLoad: loadCarsLazy,
                         itemSize: 46,
                         delay: 100,
-                        showLoader: true,
+                        //showLoader: true,
                         loading: lazyLoading,
-                        numToleratedItems: 15,
-                    }" :pt="{
+                        numToleratedItems: 5,
+
+                    }" resizableColumns columnResizeMode="expand" :pt="{
     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
 
 }" @row-click="clickDetalle" size="small">
@@ -170,128 +171,97 @@ const filters = ref({
                     <template #loading> Cargando... </template>
 
                     <Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
-                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                        headerCell: { class: 'p-0 m-0 w-56' },
+                        bodyCell: { class: 'text-center' },
+
                         headerContent: {
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
                         bodyCellContent: {
 
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
 
                     }">
-                        <template #loading>
-                            <div class="flex items-center"
-                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                            </div>
-                        </template>
                     </Column>
                     <Column field="fecha_arribado" sortable header="Fecha Arribado" :pt="{
-                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                        headerTitle: { class: 'text-center  w-56' },
+                        bodyCell: { class: 'text-center' },
+                        headerTitle: { class: 'text-center' },
                         headerContent: {
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
                         bodyCellContent: {
 
-                            class: 'flex align-items-center text-center w-56'
+                            class: 'flex align-items-center text-center'
                         },
 
                     }">
-                        <template #loading>
-                            <div class="flex align-items-center"
-                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                            </div>
-                        </template>
                     </Column>
                     <Column field="estado" header="Estado de pedido" sortable :pt="{
-                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                        headerCell: { class: 'p-0 m-0 w-56' },
+                        bodyCell: { class: 'text-center' },
+
                         headerContent: {
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
                         bodyCellContent: {
 
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
 
                     }">
-                        <template #loading>
-                            <div class="flex align-items-center"
-                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                            </div>
-                        </template>
                     </Column>
                     <Column field="total" sortable header="Total" :pt="{
-                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                        headerCell: { class: 'p-0 m-0 w-56' },
+                        bodyCell: { class: 'text-center' },
+
                         headerContent: {
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
                         bodyCellContent: {
 
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
 
                     }">
-                        <template #loading>
-                            <div class="flex align-items-center"
-                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                            </div>
-                        </template>
                     </Column>
                     <Column field="cbm_total" sortable header="Total CBM" :pt="{
-                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                        headerCell: { class: 'p-0 m-0 w-56' },
+                        bodyCell: { class: 'text-center' },
+
                         headerContent: {
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
                         bodyCellContent: {
 
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
 
                     }">
-                        <template #loading>
-                            <div class="flex align-items-center"
-                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                            </div>
-                        </template>
                     </Column>
                     <Column field="cantidad_productos" sortable header="Cantidad productos" :pt="{
-                        bodyCell: { class: 'text-center p-0 m-0 w-56' },
-                        headerCell: { class: 'p-0 m-0 w-56' },
+                        bodyCell: { class: 'text-center' },
+
                         headerContent: {
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
                         bodyCellContent: {
 
-                            class: 'text-center w-56'
+                            class: 'text-center'
                         },
 
                     }">
-                        <template #loading>
-                            <div class="flex align-items-center"
-                                :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
-                            </div>
-                        </template>
                     </Column>
 
                     <Column header="Acciones" style="width:130px" :pt="{
                         bodycell: { class: 'px-auto text-center' }
                     }">
 
-                        <template #loading>
-                        </template>
+
                         <template #body="slotProps">
-                            <div class="p-0 text-white flex justify-center items-center" v-if="slotProps.data != undefined">
+                            <div class="text-white flex justify-center items-center" v-if="slotProps.data != undefined">
                                 <span
                                     v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                     class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">

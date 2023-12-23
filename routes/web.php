@@ -197,12 +197,15 @@ Route::controller(DepositoController::class)->group(function () {
     Route::get('/depositos/{id}/showcambiarproducto', 'showCambiarProducto')->name('depositos.showcambiarproducto')->middleware('auth');
     Route::get('/depositos/{id}/showmodal', 'showModal')->name('depositos.showmodal')->middleware('auth');
     Route::post('/depositos/update-deposito/{id}', 'updateDeposito')->name('depositos.updatedeposito')->middleware('auth');
+    Route::post('/depositos/update-productos-deposito', 'updateProductosDeposito')->name('depositos.updateproductosdeposito')->middleware('auth');
     Route::post('/depositos/{id}/updateproducto', 'updateProducto')->name('depositos.updateproducto')->middleware('auth');
     Route::get('/depositos/historial', 'historial')->name('depositos.historial')->middleware('auth');
     Route::get('/depositos', 'index')->name('depositos.index')->middleware('auth');
     Route::get('/depositos/{id}', 'show')->name('depositos.show')->middleware('auth');
     Route::get('/depositos/{id}/export', 'exportExcel')->name('depositos.exportar')->middleware('auth');
     Route::post('/depositos/store', 'store')->name('depositos.store')->middleware('auth');
+    Route::post('/depositos/showproductos', 'showProductos')->name('depositos.showproductos')->middleware('auth');
+    Route::post('/depositos/destroyproductos', 'destroyProductos')->name('depositos.destroyproductos')->middleware('auth');
     Route::delete('/depositos/{id}', 'destroy')->name('depositos.destroy')->middleware('auth');
     Route::delete('/depositos/{id}/deposito', 'destroyDeposito')->name('depositos.destroydeposito')->middleware('auth');
 });
