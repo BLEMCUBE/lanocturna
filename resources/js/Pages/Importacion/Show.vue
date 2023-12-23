@@ -93,6 +93,7 @@ const clickDetalle=(e)=>{
 
                     <DataTable sortField="id" :sortOrder="1" :filters="filters"
                        :value="import_detalle" scrollable scrollHeight="500px"
+                       resizableColumns columnResizeMode="expand"
                        @row-click="clickDetalle"
                        :pt="{
                     bodyRow:{class:'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
@@ -125,10 +126,12 @@ const clickDetalle=(e)=>{
                             <template #body="slotProps">
 
                                 <div class="flex  items-center">
-                                    <img class="rounded  bg-white shadow-2xl text-center w-10 h-10 object-contain"
+                                <div class="w-20">
+                                    <img class="rounded  bg-white shadow-2xl text-center w-20 h-14 object-contain mr-2"
                                         :src="slotProps.data.imagen" alt="image">
+                                    </div>
                                     <p class="text-xs text-center flex-wrap">{{ slotProps.data.nombre }}</p>
-                                </div>
+                                    </div>
                             </template>
                         </Column>
 
@@ -147,7 +150,7 @@ const clickDetalle=(e)=>{
                                 class: 'text-center'
                             },
                             headerContent: {
-                                class: 'text-center break-all w-16'
+                                class: 'text-center break-all'
                             }
 
                         }"></Column>
@@ -174,7 +177,7 @@ const clickDetalle=(e)=>{
                                 class: 'text-center'
                             },
                             headerContent: {
-                                class: 'text-center break-all w-16'
+                                class: 'text-center break-all'
                             }
                         }"></Column>
                         <Column field="cbm_total" sortable header="Total CBM" :pt="{

@@ -518,7 +518,10 @@ class RmaController extends Controller
                 $query->where('destino', "CADETERIA")
                     ->orWhere('destino', "FLEX")
                     ->orWhere('destino', "UES")
-                    ->orWhere('destino', "DAC");
+                    ->orWhere('destino', "DAC")
+                    ->where('destino', "WEB")
+                    ->orWhere('destino', "MERCADOLIBRE")
+                    ->orWhere('destino', "SALON");
             })->select('*')->when(Request::input('inicio'), function ($query, $search) {
                 $query->whereDate('created_at', '>=', $search);
             })
@@ -573,7 +576,7 @@ class RmaController extends Controller
             $parametro_rma = json_decode($venta->parametro);
             DB::beginTransaction();
             try {
-                //$venta->estado = "FACTURADO";
+                $venta->estado = "VALIDADO";
                 $venta->facturado = true;
                 $venta->facturador_id =  $facturador->id;
                 $venta->fecha_facturacion = now();

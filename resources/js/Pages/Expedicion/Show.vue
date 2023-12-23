@@ -238,7 +238,7 @@ onMounted(() => {
                             <td class="border border-gray-300 p-2">{{ item.origen }}</td>
                             <td class="border border-gray-300 p-2">{{ item.nombre }}</td>
                             <td class="border border-gray-300 p-2">
-                                <input type="password" v-if="form.estado == 'FACTURADO'|| form.estado == 'RMA' && !item.producto_validado"
+                                <input type="password" v-if="form.estado == 'FACTURADO'|| form.estado == 'VALIDADO' && !item.producto_validado"
                                     v-on:keyup.enter="validarCodigo($event, index)"
                                     class="p-inputtext text-end p-component h-8 w-full font-sans
                                     font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1" />
@@ -249,7 +249,7 @@ onMounted(() => {
 
                             </td>
                             <td>
-                                <Button v-if="form.estado == 'FACTURADO' || form.estado == 'RMA' && !item.producto_validado"
+                                <Button v-if="form.estado == 'FACTURADO' || form.estado == 'VALIDADO' && !item.producto_validado"
                                     class="w-8 h-8 rounded bg-primary-700   px-2 py-1 text-xs font-normal text-white m-1 hover:bg-primary-600"
                                     @click.prevent="openModal(index)"><i class="fas fa-key"></i></Button>
                             </td>

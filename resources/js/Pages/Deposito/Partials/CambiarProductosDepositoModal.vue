@@ -6,28 +6,38 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useToast } from "primevue/usetoast";
 
-const toast = useToast();
-const titulo = "Mover Bultos"
-const ruta = "depositos"
-const maxBultos = ref();
 //Variables
+const toast = useToast();
+const titulo = "Bultos"
+const ruta = "depositos"
 const isShowModal = ref(false);
 
 const form = useForm({
-    id: '',
-    bultos:'',
     origen_id:'',
+    origen_nombre:'',
     destino_id:'',
-    pcs_bulto:'',
-    sku:'',
+    productos:[
+    ]
 
 
 })
-
+const emit = defineEmits(['update:valor']);
 const props = defineProps({
-    detalleId: {
+    origenId: {
         type: Number,
         default: null,
+    },
+    origenNombre: {
+        type: String,
+        default: '',
+    },
+    disabledStatus: {
+        type: Boolean,
+        default: false,
+    },
+    productos: {
+        type: Array,
+        default: [],
     },
 
 
@@ -37,36 +47,39 @@ const props = defineProps({
 //Funciones
 
 const addCliente = () => {
-    dataEdit(props.detalleId);
+    dataEdit();
 
 };
 
-const dataEdit = (id) => {
+const dataEdit = () => {
 
-    axios.get(route(ruta + '.showcambiarproducto', id))
+    axios.post(route(ruta + '.showproductos'),{
+    productos: props.productos,
+    origen_id:props.origenId,
+    destino_id:form.destino_id
+  })
         .then(res => {
-            var datos = res.data.deposito_detalle
-            form.id = datos.id
-            form.sku = datos.sku
-            form.bultos = datos.bultos
-            form.pcs_bulto = datos.pcs_bulto
-            form.nombre_deposito = datos.deposito_lista.nombre
-            form.nombre_producto = datos.producto.nombre
-            form.origen_id = datos.deposito_lista.id
-            monedas.value=res.data.lista_depositos
-            maxBultos.value=datos.bultos
+            form.productos = res.data.detalle_productos
+
+
+            form.origen_nombre =props.origenNombre
+            form.origen_id = props.origenId
+            depositos.value=res.data.lista_depositos
+
+
+
             isShowModal.value = true;
 
         })
 
 };
-const setMoneda = (e) => {
+const setDeposito = (e) => {
 
-    form.destino_id = selectedMoneda.value.code;
+    form.destino_id = selectedDeposito.value.code;
 }
 
-const selectedMoneda = ref();
-const monedas = ref();
+const selectedDeposito = ref();
+const depositos = ref();
 
 const closeModal = () => {
     form.reset();
@@ -79,15 +92,16 @@ const closeModal = () => {
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta + '.updatedeposito', form.id), {
+    form.post(route(ruta + '.updateproductosdeposito'), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
             isShowModal.value = false
             show('success', 'Mensaje', 'Se ha editado')
+            emit('update:valor', true);
             setTimeout(() => {
                 router.get(route(ruta + '.index'));
-            }, 1000);
+            }, 700);
         },
         onFinish: () => {
         },
@@ -105,11 +119,13 @@ const show = (tipo, titulo, mensaje) => {
 
 <template>
 
-        <Button  class="w-auto rounded bg-primary-900 px-2  text-base font-normal text-white m-1 hover:bg-primary-100" type="button" @click="addCliente">
+        <Button  :disabled="props.disabledStatus" class="w-auto rounded bg-primary-900 px-2  text-base font-normal text-white m-1 hover:bg-primary-100" type="button" @click="addCliente">
             <i class="fas fa-exchange-alt w-6 h-4"></i></Button>
 
+
+
         <Dialog v-model:visible="isShowModal" modal :header="'Mover ' + titulo"
-        :style="{ width: '25vw' }" :breakpoints="{ '960px': '30vw', '641px': '30vw' }"
+        :style="{ width: '30vw' }" :breakpoints="{ '960px': '30vw', '641px': '30vw' }"
          position="top"
             :pt="{
                 header: {
@@ -121,26 +137,50 @@ const show = (tipo, titulo, mensaje) => {
             }">
             <form @submit.prevent="submit">
                 <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 lg:gap-4 mb-2">
-                    <div class="col-span-6 shadow-default">
-                        <InputLabel  :value="'SKU: '+ form.sku"
-                            class="block text-base font-medium leading-6 text-gray-900" />
-                        <InputLabel  :value="'PRODUCTO: '+ form.nombre_producto"
-                            class="block text-base font-medium leading-6 text-gray-900" />
 
-                    </div>
-                    <div class="col-span-6 shadow-default">
-                        <InputLabel for="origen" value="Origen"
+
+                    <table class="col-span-6 border">
+                    <thead>
+                        <tr class="w-full border">
+                            <th class="w-26 text-center border">
+                                SKU
+                            </th>
+                            <th class="text-center border">
+                                PRODUCTO
+                            </th>
+                            <th class="text-center border" v-if="props.productos.length>1">
+                                BULTOS
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr  class="w-full text-center border" v-for="item in form.productos">
+                            <td class="text-center border">
+                                {{item.sku}}
+                            </td>
+                            <td class="text-center border">
+                                {{item.nombre_producto}}
+                            </td>
+                            <td class="text-center border" v-if="props.productos.length>1">
+                                {{item.bultos}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                        <div class="col-span-6 shadow-default">
+                            <InputLabel for="origen" value="Origen"
                             class="block text-base font-medium leading-6 text-gray-900" />
-                        <input type="text" v-model="form.nombre_deposito" disabled
+                            <input type="text" v-model="form.origen_nombre" disabled
                             class="p-inputtext p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1">
 
-
-                    </div>
+                        </div>
 
                     <div class="col-span-6 shadow-default">
                         <InputLabel for="destino" value="Destino"
                             class="block text-base font-medium leading-6 text-gray-900" />
-                            <Dropdown v-model="selectedMoneda" @change="setMoneda" :options="monedas" optionLabel="name"
+                            <Dropdown v-model="selectedDeposito" @change="setDeposito" :options="depositos" optionLabel="name"
                                 :pt="{
                                     root: { class: 'w-full' },
                                     trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
@@ -151,15 +191,18 @@ const show = (tipo, titulo, mensaje) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.destino_id" />
 
                     </div>
-                    <div class="col-span-6 shadow-default">
-                        <InputLabel for="bultos" value="Bultos"
+                    <div class="col-span-6 shadow-default" v-if="props.productos.length==1">
+                        <InputLabel for="bultos" value="Bultos" v-if="form.productos.length>0"
                             class="block text-base font-medium leading-6 text-gray-900" />
-                        <input type="number" v-model="form.bultos" step="1" :max="maxBultos"
+                        <input type="number" v-if="form.productos.length>0" v-model="form.productos[0].bultos" step="1" min="1" :max="form.productos[0].maxBultos"
                             class="p-inputtext p-component h-9 w-full text-end
                             font-normal text-gray-700  border border-gray-300 transition-colors
                              duration-200 appearance-none rounded-md text-sm px-3 py-1">
 
-                        <InputError class="mt-1 text-xs" :message="form.errors.bultos" />
+                        <!--
+                            <InputError v-if="form.productos.length>0" class="mt-1 text-xs" :message="form.errors.productos[0].bultos" />
+
+                        -->
                     </div>
                 </div>
                 <div class="flex justify-end py-3">

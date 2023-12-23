@@ -56,7 +56,7 @@ const colorEstado = (estado) => {
         case 'ANULADO':
             return 'text-red-600'
             break;
-        case 'RMA':
+        case 'VALIDADO':
             return 'text-green-600'
             break;
         default:
@@ -124,7 +124,7 @@ const filters = ref({
                     }">
                         <template #body="slotProps">
                             <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
-                                {{ slotProps.data.estado }}
+                                {{ slotProps.data.estado }}  {{ (slotProps.data.tipo=='RMA'?'- '+slotProps.data.tipo:'') }}
                             </span>
                         </template>
                     </Column>

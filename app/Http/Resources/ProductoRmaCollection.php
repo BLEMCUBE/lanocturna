@@ -26,6 +26,7 @@ class ProductoRmaCollection extends ResourceCollection
                     'id' => $row->id,
                     'origen' => $row->origen,
                     'nombre' => $row->nombre,
+                    'stock' => $row->stock,
                     'imagen'=>$image,
                 ];
             }),

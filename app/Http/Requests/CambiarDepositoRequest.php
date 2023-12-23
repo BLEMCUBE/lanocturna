@@ -15,7 +15,8 @@ class CambiarDepositoRequest extends FormRequest
 
         return [
 
-            'bultos' => 'required',
+            //'bultos' => 'required',
+            'productos.*.bultos' => 'required',
             'origen_id' => 'required',
             'destino_id' => 'required',
 
@@ -28,7 +29,8 @@ class CambiarDepositoRequest extends FormRequest
     public function messages()
     {
         return [
-            'bultos.required' => 'Este campo es obligatorio.',
+            //'bultos.required' => 'Este campo es obligatorio.',
+            'productos.*.cantidad.required' => 'Cantidad fila  # :position es obligatorio.',
             'destino_id.required' => 'Este campo es obligatorio.',
             'destino_id.required' => 'Este campo es obligatorio.',
         ];

@@ -32,7 +32,7 @@ const form = useForm({
     total_sin_iva: 0.0,
     tipo: 'RMA',
     nro_compra: '',
-    estado: 'RMA',
+    estado: 'PENDIENTE DE VALIDACIÓN',
     observaciones: '',
     parametro:
     {
