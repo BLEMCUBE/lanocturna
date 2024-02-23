@@ -84,7 +84,7 @@ const filters = ref({
 
                 <DataTable :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer' }
-                }" scrollable scrollHeight="500px" :virtualScrollerOptions="{ itemSize: 46 }"
+                }" scrollable scrollHeight="700px" paginator :rows="100"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-start  text-md">

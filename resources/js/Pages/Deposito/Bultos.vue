@@ -105,8 +105,8 @@ const filters = ref({
                     :pt="{
                         bodyRow: { class: 'hover:cursor-pointer h-auto py-2' },
                         root:{class:'h-auto'},
-                        virtualScroller:{class:'h-auto'}
-                    }" scrollable scrollHeight="500px" :virtualScrollerOptions="{ itemSize: 46 }"
+
+                    }" scrollable scrollHeight="700px"  paginator :rows="100"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">

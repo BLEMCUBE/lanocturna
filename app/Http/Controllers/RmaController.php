@@ -140,8 +140,8 @@ class RmaController extends Controller
                 'prod_origen' => $request->prod_origen ?? '',
                 'prod_serie' => $request->prod_serie ?? '',
                 'prod_nombre' => $request->prod_nombre ?? '',
-                'observaciones' => $request->observaciones,
-                'defecto' => $request->defecto,
+                'observaciones' => $request->observaciones??'',
+                'defecto' => $request->defecto??'',
                 'vendedor_id' => $vendedor->id,
 
             ]);
@@ -177,8 +177,8 @@ class RmaController extends Controller
                 'prod_origen' => $request->prod_origen ?? '',
                 'prod_serie' => $request->prod_serie ?? '',
                 'prod_nombre' => $request->prod_nombre ?? '',
-                'observaciones' => $request->observaciones,
-                'defecto' => $request->defecto,
+                'observaciones' => $request->observaciones??'',
+                'defecto' => $request->defecto??'',
                 'vendedor_id' => $request->vendedor_id,
             ]);
 
@@ -331,7 +331,7 @@ class RmaController extends Controller
                 'vendedor_id' => $vendedor->id,
                 'cliente' => json_encode($request->cliente),
                 'parametro' => json_encode($request->parametro),
-                'observaciones' => $request->observaciones,
+                'observaciones' => $request->observaciones??'',
 
             ]);
             $venta->update([
@@ -448,8 +448,8 @@ class RmaController extends Controller
                     "cantidad_total" => $prod->cantidad_total,
                     "nombre" => $prod->producto->nombre,
                     "imagen" => $prod->producto->imagen,
-                    "defecto" => $prod->rma->defecto,
-                    "observaciones" => $prod->rma->observaciones,
+                    "defecto" => $prod->rma->defecto??'',
+                    "observaciones" => $prod->rma->observaciones??'',
                     'rma_id' => $prod->rma_id,
                     'stock_id' => $prod->id
                 ]);
@@ -519,7 +519,7 @@ class RmaController extends Controller
                     ->orWhere('destino', "FLEX")
                     ->orWhere('destino', "UES")
                     ->orWhere('destino', "DAC")
-                    ->where('destino', "WEB")
+                    ->orWhere('destino', "WEB")
                     ->orWhere('destino', "MERCADOLIBRE")
                     ->orWhere('destino', "SALON");
             })->select('*')->when(Request::input('inicio'), function ($query, $search) {

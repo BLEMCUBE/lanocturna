@@ -38,8 +38,9 @@ const filters = ref({
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
             <div class="align-middle">
-                <DataTable size="small"  :filters="filters" :value="lista_depositos" :paginator="true"
-                    :rows="20" :rowsPerPageOptions="[5, 10, 20, 50]"
+                <DataTable size="small"  :filters="filters" :value="lista_depositos"
+                scrollable scrollHeight="800px"
+                paginator :rows="100"
                 :pt="{
                     root:{class:'text-xs'}
                 }"

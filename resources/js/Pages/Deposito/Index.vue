@@ -210,7 +210,7 @@ const filters = ref({
                     <template #expansion="slotProps">
                         <div class="px-1">
                             <DataTable :value="slotProps.data.productos" scrollable scrollHeight="300px"
-                                :virtualScrollerOptions="{ itemSize: 46 }" v-model:filters="filters"
+                            paginator :rows="100" v-model:filters="filters"
                                 v-model:selection="formDelete.productos"
                                 :pt="{
 

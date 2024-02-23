@@ -117,10 +117,10 @@ const clickDetalle = (e) => {
 
 
                     <DataTable sortField="sku" :sortOrder="0" :filters="filters" :value="deposito.depositos_detalles"
-                        scrollable scrollHeight="500px" @row-click="clickDetalle" :pt="{
+                        scrollable scrollHeight="700px" @row-click="clickDetalle" :pt="{
                             bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                             root: { class: 'w-auto' }
-                        }" :virtualScrollerOptions="{ itemSize: 46 }" tableStyle="min-width: 50rem" size="small">
+                        }" :paginator="true" :rows="100" tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />
