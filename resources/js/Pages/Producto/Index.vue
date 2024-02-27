@@ -127,8 +127,8 @@ const filters = ref({
                 <DataTable :rowClass="rowClass" :filters="filters" :value="tabla_productos" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                     root: { class: 'w-auto' }
-                }" :globalFilterFields="['codigo_barra', 'origen', 'nombre']" scrollable scrollHeight="500px"
-                    :virtualScrollerOptions="{ itemSize: 46 }" @row-click="clickDetalle" size="small">
+                }" :globalFilterFields="['codigo_barra', 'origen', 'nombre']" scrollable scrollHeight="700px"
+                    paginator :rows="100" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />

@@ -157,7 +157,7 @@ const filters = ref({
                     <DataTable sortField="rotacion_stock" :sortOrder="1" :filters="filters" :value="tabla_vendidos" :pt="{
                         root: { class: 'w-auto' }
                     }" scrollable scrollHeight="350px"
-                        :virtualScrollerOptions="{ numToleratedItems: 30, itemSize: 46 }" tableStyle="min-width: 50rem"
+                        paginator :rows="100" tableStyle="min-width: 50rem"
                         size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">

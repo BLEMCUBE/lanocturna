@@ -148,17 +148,8 @@ const filters = ref({
             </div>
 
             <div class="align-middle  p-3">
-                <DataTable :filters="filters" :value="cars" scrollable scrollHeight="400px"
-                     :virtualScrollerOptions="{
-                        lazy: true,
-                        //onLazyLoad: loadCarsLazy,
-                        itemSize: 46,
-                        delay: 100,
-                        //showLoader: true,
-                        loading: lazyLoading,
-                        numToleratedItems: 5,
-
-                    }" resizableColumns columnResizeMode="expand" :pt="{
+                <DataTable :filters="filters" :value="cars" scrollable scrollHeight="700px"
+                paginator :rows="100" resizableColumns columnResizeMode="expand" :pt="{
     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
 
 }" @row-click="clickDetalle" size="small">

@@ -92,7 +92,7 @@ const clickDetalle=(e)=>{
 
 
                     <DataTable sortField="id" :sortOrder="1" :filters="filters"
-                       :value="import_detalle" scrollable scrollHeight="500px"
+                       :value="import_detalle" scrollable scrollHeight="700px"
                        resizableColumns columnResizeMode="expand"
                        @row-click="clickDetalle"
                        :pt="{
