@@ -24,6 +24,7 @@ const props = defineProps({
 
 const { permissions } = usePage().props.auth
 const { hoy_tipo_cambio } = usePage().props.auth
+const { total_rmas } = usePage().props.auth
 const configStore = useConfigStore();
 const classes = computed(() => props.isOpen ? 'sm:translate-x-0' : 'sm:hidden sm:translate-x-0');
 const setMenu = (menu) => {
@@ -123,7 +124,7 @@ const showDropdown = ref(false)
                                 :href="route('reportes.ventas')" :active="route().current('reportes.ventas')">
                                 <span class="ml-2 uppercase">Gráfico Ventas</span>
                             </NavLinkSideBarNotIcon>
-                            </li>
+                        </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('reportes')" class="w-full"
@@ -134,15 +135,14 @@ const showDropdown = ref(false)
                                 :active="route().current('reportes.productosvendidos')">
                                 <span class="ml-2 uppercase">PRODUCTOS VENDIDOS</span>
                             </NavLinkSideBarNotIcon>
-                            </li>
+                        </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('reportes')" class="w-full"
                             v-show="permissions.includes('reporte-productos-rma')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                                :href="route('reportes.productosrma')"
-                                :active="route().current('reportes.productosrma')">
+                                :href="route('reportes.productosrma')" :active="route().current('reportes.productosrma')">
                                 <span class="ml-2 uppercase">PRODUCTOS RMA</span>
                             </NavLinkSideBarNotIcon>
                         </li>
@@ -186,7 +186,7 @@ const showDropdown = ref(false)
                                 :href="route('usuarios.index')" :active="route().current('usuarios.index')">
                                 <span class="ml-2 uppercase">Usuarios</span>
                             </NavLinkSideBarNotIcon>
-                            </li>
+                        </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('configuraciones')" class="w-full" v-show="permissions.includes('ver-roles')">
@@ -195,7 +195,7 @@ const showDropdown = ref(false)
                                 :href="route('roles.index')" :active="route().current('roles.index')">
                                 <span class="ml-2 uppercase">Roles y Permisos</span>
                             </NavLinkSideBarNotIcon>
-                            </li>
+                        </li>
                     </div>
 
                     <div class="flex items-center">
@@ -267,7 +267,7 @@ const showDropdown = ref(false)
                                 :href="route('importaciones.index')" :active="route().current('importaciones.index')">
                                 <span class="ml-2 uppercase">importaciones</span>
                             </NavLinkSideBarNotIcon>
-                            </li>
+                        </li>
                     </div>
 
                     <div class="flex items-center">
@@ -278,7 +278,7 @@ const showDropdown = ref(false)
                                 :active="route().current('compras.create')">
                                 <span class="ml-2 uppercase">Compra en plaza</span>
                             </NavLinkSideBarNotIcon>
-                            </li>
+                        </li>
                     </div>
 
                     <div class="flex items-center">
@@ -337,7 +337,7 @@ const showDropdown = ref(false)
                                 :active="route().current('ventas.create')">
                                 <span class="ml-2 uppercase">Crear Venta</span>
                             </NavLinkSideBarNotIcon>
-                            </li>
+                        </li>
                     </div>
 
                     <div class="flex items-center">
@@ -347,7 +347,7 @@ const showDropdown = ref(false)
                                 :href="route('cajas.index')" :active="route().current('cajas.index')">
                                 <span class="ml-2 uppercase">Caja</span>
                             </NavLinkSideBarNotIcon>
-                            </li>
+                        </li>
                     </div>
 
                     <div class="flex items-center">
@@ -488,6 +488,8 @@ const showDropdown = ref(false)
                                 class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
                                 <i class="fa-solid fa-warehouse mr-3 ml-1"></i>
                                 RMA
+                                <Badge v-show="total_rmas.length > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+                                    severity="danger" :value="total_rmas" />
                                 <div class="pr-2 py-4 absolute right-0 z-50 ">
                                     <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
                                     <ChevronUpIcon v-else class="h-8 w-8" aria-hidden="true" />
@@ -508,59 +510,63 @@ const showDropdown = ref(false)
                                 :href="route('rmas.index')" :active="route().current('rmas.index')">
                                 <span class="ml-2 uppercase">LISTADO RMA</span>
                             </NavLinkSideBarNotIcon>
-                            </li>
+                        </li>
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('historial-rma')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('rmas.historial')" :active="route().current('rmas.historial')">
-                            <span class="ml-2 uppercase">HISTORIAL RMA</span>
-                        </NavLinkSideBarNotIcon>
-                    </li>
-                </div>
-                <div class="flex items-center">
-                    <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('subir-rma')">
-                        <NavLinkSideBarNotIcon
-                            class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                            :href="route('rmas.subir')" :active="route().current('rmas.subir')">
-                            <span class="ml-2 uppercase">SUBIR ENVIO RMA</span>
-                        </NavLinkSideBarNotIcon>
-                    </li>
-                </div>
-                <div class="flex items-center">
-                    <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('historial-rma-envio')">
-                        <NavLinkSideBarNotIcon
-                            class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                            :href="route('rmas.historial-envios')" :active="route().current('rmas.historial-envios')">
-                            <span class="ml-2 uppercase">HISTORIAL ENVIOS RMA</span>
-                        </NavLinkSideBarNotIcon>
-                    </li>
-                </div>
+                                <span class="ml-2 uppercase">HISTORIAL RMA</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('subir-rma')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('rmas.subir')" :active="route().current('rmas.subir')">
+                                <span class="ml-2 uppercase">SUBIR ENVIO RMA</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('historial-rma-envio')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('rmas.historial-envios')" :active="route().current('rmas.historial-envios')">
+                                <span class="ml-2 uppercase">HISTORIAL ENVIOS RMA</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
 
-                <div class="flex items-center">
-                    <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('stock-rma')">
-                        <NavLinkSideBarNotIcon
-                            class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                            :href="route('rmas.rma-stock')" :active="route().current('rmas.rma-stock')">
-                            <span class="ml-2 uppercase">STOCK RMA</span>
-                        </NavLinkSideBarNotIcon>
-                    </li>
-                </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('stock-rma')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('rmas.rma-stock')" :active="route().current('rmas.rma-stock')">
+                                <span class="ml-2 uppercase">STOCK RMA</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
 
-                <div class="flex items-center">
-                    <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('stock-rma')">
-                        <NavLinkSideBarNotIcon
-                            class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                            :href="route('rmas.validacion')" :active="route().current('rmas.validacion')">
-                            <span class="ml-2 uppercase">VALIDACIÓN RMA</span>
-                        </NavLinkSideBarNotIcon>
-                    </li>
-                </div>
-            </DisclosurePanel>
-        </Disclosure>
-        <!--RMA-->
+                    <div class="flex items-center">
+                        <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('stock-rma')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('rmas.validacion')" :active="route().current('rmas.validacion')">
+                                <span class="ml-2 uppercase">VALIDACIÓN RMA
+                                    <Badge v-show="total_rmas.length > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+                                        severity="danger" :value="total_rmas" />
+                                </span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                </DisclosurePanel>
+            </Disclosure>
+            <!--RMA-->
 
-    </ul>
+        </ul>
 
-</div></template>
+    </div>
+</template>

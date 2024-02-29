@@ -532,10 +532,13 @@ class RmaController extends Controller
                 ->where("facturado", '=', "0")
                 ->orderBy('created_at', 'DESC')->get()
         );
+
+        //dd($venta_query->count());
         return Inertia::render('Rma/Validacion', [
-            'ventas' => new VentaCollection(
+            'ventas' =>  $venta_query
+            /*new VentaCollection(
                 $venta_query
-            )
+            )*/
         ]);
     }
 
@@ -583,7 +586,7 @@ class RmaController extends Controller
                 $venta->save();
 
                 //actualizando stock producto
-                if ($parametro_rma->opt->mueve_stock == 'SI') {
+                /*if ($parametro_rma->opt->mueve_stock == 'SI') {
                     foreach ($venta->detalles_ventas as $producto) {
                         $prod = Producto::find($producto['producto_id']);
                         $old_stock = $prod->stock;
@@ -593,7 +596,7 @@ class RmaController extends Controller
                             "stock_futuro" => $new_stock + $prod->en_camino
                         ]);
                     }
-                }
+                }*/
 
                 DB::commit();
             } catch (Exception $e) {
