@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
+use App\Http\Resources\VentaCollection;
+use App\Models\Venta;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -46,12 +48,34 @@ class HandleInertiaRequests extends Middleware
                 $hoy_tipo_cambio=false;
             }
         }
+
+        // cantidad de rmas
+        $total_rmas = new VentaCollection(
+            Venta::where(function ($query) {
+                $query->where('destino', "CADETERIA")
+                    ->orWhere('destino', "FLEX")
+                    ->orWhere('destino', "UES")
+                    ->orWhere('destino', "DAC")
+                    ->orWhere('destino', "WEB")
+                    ->orWhere('destino', "MERCADOLIBRE")
+                    ->orWhere('destino', "SALON");
+            })->select('*')->when($request->input('inicio'), function ($query, $search) {
+                $query->whereDate('created_at', '>=', $search);
+            })
+                ->when($request->input('fin'), function ($query, $search) {
+                    $query->whereDate('created_at', '<=', $search);
+                })
+                ->where("tipo", '=', "RMA")
+                ->where("facturado", '=', "0")
+                ->orderBy('created_at', 'DESC')->get()
+        );
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
                 'roles' => $request->user() ? $request->user()->roles->pluck('name') : [],
                 'permissions' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : [],
                 'hoy_tipo_cambio' => $hoy_tipo_cambio,
+                'total_rmas'=>$total_rmas->count()
                 //'notificaciones' => !empty(auth()->user()->unreadNotifications) ?auth()->user()->unreadNotifications: [],
             ],
             //'csrf_token' => csrf_token(),
