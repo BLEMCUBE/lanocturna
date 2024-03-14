@@ -140,8 +140,8 @@ class RmaController extends Controller
                 'prod_origen' => $request->prod_origen ?? '',
                 'prod_serie' => $request->prod_serie ?? '',
                 'prod_nombre' => $request->prod_nombre ?? '',
-                'observaciones' => $request->observaciones,
-                'defecto' => $request->defecto,
+                'observaciones' => $request->observaciones??'',
+                'defecto' => $request->defecto??'',
                 'vendedor_id' => $vendedor->id,
 
             ]);
@@ -177,8 +177,8 @@ class RmaController extends Controller
                 'prod_origen' => $request->prod_origen ?? '',
                 'prod_serie' => $request->prod_serie ?? '',
                 'prod_nombre' => $request->prod_nombre ?? '',
-                'observaciones' => $request->observaciones,
-                'defecto' => $request->defecto,
+                'observaciones' => $request->observaciones??'',
+                'defecto' => $request->defecto??'',
                 'vendedor_id' => $request->vendedor_id,
             ]);
 
@@ -331,7 +331,7 @@ class RmaController extends Controller
                 'vendedor_id' => $vendedor->id,
                 'cliente' => json_encode($request->cliente),
                 'parametro' => json_encode($request->parametro),
-                'observaciones' => $request->observaciones,
+                'observaciones' => $request->observaciones??'',
 
             ]);
             $venta->update([
@@ -448,8 +448,8 @@ class RmaController extends Controller
                     "cantidad_total" => $prod->cantidad_total,
                     "nombre" => $prod->producto->nombre,
                     "imagen" => $prod->producto->imagen,
-                    "defecto" => $prod->rma->defecto,
-                    "observaciones" => $prod->rma->observaciones,
+                    "defecto" => $prod->rma->defecto??'',
+                    "observaciones" => $prod->rma->observaciones??'',
                     'rma_id' => $prod->rma_id,
                     'stock_id' => $prod->id
                 ]);
@@ -519,7 +519,7 @@ class RmaController extends Controller
                     ->orWhere('destino', "FLEX")
                     ->orWhere('destino', "UES")
                     ->orWhere('destino', "DAC")
-                    ->where('destino', "WEB")
+                    ->orWhere('destino', "WEB")
                     ->orWhere('destino', "MERCADOLIBRE")
                     ->orWhere('destino', "SALON");
             })->select('*')->when(Request::input('inicio'), function ($query, $search) {
@@ -532,10 +532,13 @@ class RmaController extends Controller
                 ->where("facturado", '=', "0")
                 ->orderBy('created_at', 'DESC')->get()
         );
+
+        //dd($venta_query->count());
         return Inertia::render('Rma/Validacion', [
-            'ventas' => new VentaCollection(
+            'ventas' =>  $venta_query
+            /*new VentaCollection(
                 $venta_query
-            )
+            )*/
         ]);
     }
 
@@ -583,7 +586,7 @@ class RmaController extends Controller
                 $venta->save();
 
                 //actualizando stock producto
-                if ($parametro_rma->opt->mueve_stock == 'SI') {
+                /*if ($parametro_rma->opt->mueve_stock == 'SI') {
                     foreach ($venta->detalles_ventas as $producto) {
                         $prod = Producto::find($producto['producto_id']);
                         $old_stock = $prod->stock;
@@ -593,7 +596,7 @@ class RmaController extends Controller
                             "stock_futuro" => $new_stock + $prod->en_camino
                         ]);
                     }
-                }
+                }*/
 
                 DB::commit();
             } catch (Exception $e) {

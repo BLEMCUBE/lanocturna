@@ -196,7 +196,7 @@ const filters = ref({
 
                 <DataTable :filters="filters" :value="tabla_ventas"  :loading="cargando"  :pt="{
                     bodyRow: { class: 'hover:cursor-pointer p-1 hover:bg-gray-100 hover:text-black' }
-                }" scrollable scrollHeight="500px"   :virtualScrollerOptions="{  itemSize: 46,lazy:'true' }"
+                }" scrollable scrollHeight="700px"   paginator :rows="100"
                     @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="grid grid-cols-6 gap-4 m-1.5">

@@ -86,7 +86,7 @@ const filters = ref({
 
                 <DataTable :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100'  }
-                }" scrollable scrollHeight="500px" :virtualScrollerOptions="{ itemSize: 46 , numToleratedItems: 30}"
+                }" scrollable scrollHeight="700px" paginator :rows="100"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-start  text-md">
@@ -130,6 +130,21 @@ const filters = ref({
                             class: 'text-center w-52'
                         }
                     }"></Column>
+                          <Column field="estado" header="Estado del pedido" sortable :pt="{
+                       bodyCellContent: {
+                            class: 'text-center w-52'
+                        },
+                        headerContent: {
+
+                            class: 'text-center w-52'
+                        }
+                    }">
+                        <template #body="slotProps">
+                            <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
+                                {{ slotProps.data.estado }}  {{ (slotProps.data.tipo=='RMA'?'- '+slotProps.data.tipo:'') }}
+                            </span>
+                        </template>
+                    </Column>
                     <Column field="cliente" header="Cliente" sortable :pt="{
                          bodyCellContent: {
                             class: 'text-center w-52'
@@ -149,21 +164,7 @@ const filters = ref({
                         }
                     }"></Column>
 
-                    <Column field="estado" header="Estado del pedido" sortable :pt="{
-                       bodyCellContent: {
-                            class: 'text-center w-52'
-                        },
-                        headerContent: {
 
-                            class: 'text-center w-52'
-                        }
-                    }">
-                        <template #body="slotProps">
-                            <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
-                                {{ slotProps.data.estado }}  {{ (slotProps.data.tipo=='RMA'?'- '+slotProps.data.tipo:'') }}
-                            </span>
-                        </template>
-                    </Column>
                 </DataTable>
 
             </div>

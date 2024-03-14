@@ -181,7 +181,7 @@ const filters = ref({
                 <DataTable :filters="filters" :rowClass="rowClass" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                     root: { class: 'w-auto' }
-                }" scrollable scrollHeight="400px" :virtualScrollerOptions="{ itemSize: 46, numToleratedItems: 20 }"
+                }" scrollable scrollHeight="700px" :paginator="true" :rows="100"
                     @row-click="clickDetalle" size="small">
 
                     <template #header>
