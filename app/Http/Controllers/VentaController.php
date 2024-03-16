@@ -261,7 +261,7 @@ $resultadoProductoLista=new ProductoVentaCollection($productoLista);
     public function update(VentaUpdateRequest $request, $id)
     {
         $venta = Venta::find($id);
-
+        $old_estado = $venta->estado;
         DB::beginTransaction();
         try {
             $venta->codigo = $request->codigo;
@@ -275,7 +275,7 @@ $resultadoProductoLista=new ProductoVentaCollection($productoLista);
             $venta->vendedor_id = $request->vendedor_id;
             $venta->save();
 
-            if ($venta->old_estado != 'PENDIENTE DE FACTURACIÓN') {
+            if ($old_estado != 'PENDIENTE DE FACTURACIÓN') {
 
                 //actualizando stock producto
                 foreach ($venta->detalles_ventas as $producto) {
@@ -306,7 +306,7 @@ $resultadoProductoLista=new ProductoVentaCollection($productoLista);
                 );
             }
 
-            if ($venta->old_estado != 'PENDIENTE DE FACTURACIÓN') {
+            if ($old_estado != 'PENDIENTE DE FACTURACIÓN') {
 
                 //actualizando stock producto
                 foreach ($request->productos  as $proo) {
@@ -332,7 +332,7 @@ $resultadoProductoLista=new ProductoVentaCollection($productoLista);
     public function updatemercado(EnvioUpdateRequest $request, $id)
     {
         $venta = Venta::find($id);
-
+        $old_estado = $venta->estado;
         DB::beginTransaction();
         try {
             $venta->codigo = $request->codigo;
@@ -347,7 +347,7 @@ $resultadoProductoLista=new ProductoVentaCollection($productoLista);
             $venta->vendedor_id = $request->vendedor_id;
             $venta->save();
 
-            if ($venta->old_estado != 'PENDIENTE DE FACTURACIÓN') {
+            if ($old_estado != 'PENDIENTE DE FACTURACIÓN') {
 
                 //actualizando stock producto
                 foreach ($venta->detalles_ventas as $producto) {
@@ -378,7 +378,7 @@ $resultadoProductoLista=new ProductoVentaCollection($productoLista);
                 );
             }
 
-            if ($venta->old_estado != 'PENDIENTE DE FACTURACIÓN') {
+            if ($old_estado != 'PENDIENTE DE FACTURACIÓN') {
 
                 //actualizando stock producto
                 foreach ($request->productos  as $proo) {

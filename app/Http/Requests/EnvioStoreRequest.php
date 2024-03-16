@@ -17,7 +17,7 @@ class EnvioStoreRequest extends FormRequest
         return [
 
             'destino' => 'required',
-            'nro_compra'=> 'required',
+            'nro_compra'=> 'required|unique:ventas',
              'productos' => 'required',
              'productos.*.cantidad' => 'required',
 
@@ -29,6 +29,7 @@ class EnvioStoreRequest extends FormRequest
     {
         return [
              'nro_compra.required' => 'Este campo es obligatorio.',
+             'nro_compra.unique' => 'Nro compra ya existe',
              'destino.required' => 'Este campo es obligatorio.',
              'productos.*.cantidad.required' => 'Cantidad fila  # :position es obligatorio.',
              'productos.required' => 'Debe Seleccionar un producto',
