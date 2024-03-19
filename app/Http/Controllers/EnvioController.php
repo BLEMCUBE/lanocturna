@@ -366,7 +366,7 @@ class EnvioController extends Controller
         }
     }
 
-    public function uploadExcel2(ImportacionEnvioStoreRequest $request)
+   /* public function uploadExcel2(ImportacionEnvioStoreRequest $request)
     {
         $usuario = auth()->user();
         $the_file = $request->file('archivo');
@@ -399,7 +399,7 @@ class EnvioController extends Controller
             return back()->withErrors('There was a problem uploading the data!');
         }
         return back()->withSuccess('Great! Data has been successfully uploaded.');
-    }
+    }*/
 
 
     public function uploadExcel(ImportacionEnvioStoreRequest $request)
@@ -414,11 +414,13 @@ class EnvioController extends Controller
         $filas_a = array_slice($filas[0], 1);
 
         $n_fila=1;
-        foreach ($filas[0] as $key => $fila) {
+        foreach ($filas_a as $key => $fila) {
+
             $prod = Producto::where('origen', '=', $fila[14])->first();
             $compra = Venta::where('nro_compra', '=', $fila[0])
             ->whereNull('fecha_anulacion')->first();
             $n_fila=$n_fila+1;
+
             if (empty($prod)) {
                 array_push($no_existe, [
                     'fila' => $n_fila,
