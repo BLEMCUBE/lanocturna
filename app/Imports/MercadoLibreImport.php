@@ -28,40 +28,76 @@ class MercadoLibreImport implements ToCollection, WithHeadingRow, WithCalculated
 
             if (!empty($row['SKU'])) {
 
-                //creando venta
-                $venta = Venta::create([
-                    'nro_compra' => $row['# de venta'],
-                    'estado' => 'FACTURADO',
-                    'destino' => $this->destino,
-                    'moneda' => 'Pesos',
-                    'tipo' => 'ENVIO',
-                    'vendedor_id' => $this->usuario->id,
-                    'facturador_id' => $this->usuario->id,
-                    'fecha_facturacion' => now()
-                ]);
-                $venta->update([
-                    "codigo" => zero_fill($venta->id, 8)
-                ]);
+                //comprobando si existe
+                $existe_nro_venta = Venta::where('nro_compra', '=', $row['# de venta'])->first();
+
+                if (is_null($existe_nro_venta)) {
+                    
+                    //creando venta
+                    $venta = Venta::create([
+                        'nro_compra' => $row['# de venta'],
+                        'estado' => 'FACTURADO',
+                        'destino' => $this->destino,
+                        'moneda' => 'Pesos',
+                        'tipo' => 'ENVIO',
+                        'vendedor_id' => $this->usuario->id,
+                        'facturador_id' => $this->usuario->id,
+                        'fecha_facturacion' => now()
+                    ]);
+                    $venta->update([
+                        "codigo" => zero_fill($venta->id, 8)
+                    ]);
 
 
-                $prod = Producto::where('origen', '=', $row['SKU'])->first();
-              //  if (!empty($producto)) {
+                    $prod = Producto::where('origen', '=', $row['SKU'])->first();
+                    $venta->detalles_ventas()->create(
+                        [
 
-                $venta->detalles_ventas()->create(
-                    [
-                        "producto_id" => $prod->id,
-                        "cantidad" =>  $row['Unidades'],
+                            "producto_id" => $prod->id,
+                            "cantidad" =>  $row['Unidades'],
 
-                    ]
-                );
-            //}
-                //actualizando stock producto
-                $old_stock = $prod->stock;
-                $new_stock = $old_stock -  $row['Unidades'];
-                $prod->update([
-                    "stock" => $new_stock,
-                    "stock_futuro" => $new_stock + $prod->en_camino
-                ]);
+                        ]
+                    );
+                    //actualizando stock producto
+                    $old_stock = $prod->stock;
+                    $new_stock = $old_stock -  $row['Unidades'];
+                    $prod->update([
+                        "stock" => $new_stock,
+                        "stock_futuro" => $new_stock + $prod->en_camino
+                    ]);
+                } else {
+
+                    //reponiendo el producto a stock
+                    foreach ($existe_nro_venta->detalles_ventas as $producto) {
+                        $prod = Producto::find($producto->producto_id);
+                        $n_stock = $prod->stock + $producto->cantidad;
+                        $prod->update([
+                            "stock" => $n_stock,
+                            "stock_futuro" => $n_stock + $prod->en_camino
+                        ]);
+                    }
+
+                    //eliminado detalle venta
+                    $existe_nro_venta->detalles_ventas()->delete();
+
+                    //creando nueva venta
+                    $prod_n = Producto::where('origen', '=', $row['SKU'])->first();
+                    $existe_nro_venta->detalles_ventas()->create(
+                        [
+
+                            "producto_id" => $prod_n->id,
+                            "cantidad" =>  $row['Unidades'],
+
+                        ]
+                    );
+                    //actualizando stock producto
+                    $ne_stock = $prod_n->stock;
+                    $new_stock = $ne_stock -  $row['Unidades'];
+                    $prod_n->update([
+                        "stock" => $new_stock,
+                        "stock_futuro" => $new_stock + $prod_n->en_camino
+                    ]);
+                }
             }
         }
     }

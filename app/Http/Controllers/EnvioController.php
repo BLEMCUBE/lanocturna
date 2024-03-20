@@ -56,19 +56,18 @@ class EnvioController extends Controller
                     ->orWhere('destino', "DAC");
             })->where(function ($query) {
                 $query->where('estado', "PENDIENTE DE FACTURACIÓN")
-                ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
-                ->orWhere('estado', "VALIDADO")
-                ->orWhere('estado', "FACTURADO");
-
+                    ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
+                    ->orWhere('estado', "VALIDADO")
+                    ->orWhere('estado', "FACTURADO");
             })
-            /*->orWhere(function ($query) {
+                /*->orWhere(function ($query) {
                     $query->orWhere('facturado', "1")
                     ->where('estado', "RMA");
             })*/
 
-                    ->select('*')
-                    ->orderBy('created_at', 'DESC')->get()
-                    //->orderBy('id', 'DESC')->get()
+                ->select('*')
+                ->orderBy('created_at', 'DESC')->get()
+            //->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Index', [
             'ventas' => $expedidiones
@@ -110,14 +109,14 @@ class EnvioController extends Controller
             ]);
         }
         $productoLista = Producto::with(['importacion_detalles' => function ($query) {
-            $query->select('id','sku', 'cantidad_total', 'importacion_id','estado');
+            $query->select('id', 'sku', 'cantidad_total', 'importacion_id', 'estado');
         }, 'importacion_detalles.importacion' => function ($query1) {
-            $query1->select('id', 'estado','nro_carpeta');
+            $query1->select('id', 'estado', 'nro_carpeta');
         }])->select('*')
-        ->orderBy('nombre', 'ASC')
+            ->orderBy('nombre', 'ASC')
 
-        ->get();
-        $resultadoProductoLista=new ProductoVentaCollection($productoLista);
+            ->get();
+        $resultadoProductoLista = new ProductoVentaCollection($productoLista);
         return Inertia::render('Envio/Create', [
             'codigo' => $codigo,
             'user_id' => $vendedor->id,
@@ -138,14 +137,14 @@ class EnvioController extends Controller
 
             //creando venta
             $venta = Venta::create([
-                'nro_compra' => $request->nro_compra??'',
+                'nro_compra' => $request->nro_compra ?? '',
                 'estado' => $request->estado,
                 'destino' => $request->destino,
                 'moneda' => $request->moneda,
-                'tipo' => $request->tipo??'ENVIO',
+                'tipo' => $request->tipo ?? 'ENVIO',
                 'vendedor_id' => $vendedor->id,
                 'facturador_id' => $vendedor->id,
-                'fecha_facturacion' =>now()
+                'fecha_facturacion' => now()
             ]);
             $venta->update([
                 "codigo" => zero_fill($venta->id, 8)
@@ -170,7 +169,7 @@ class EnvioController extends Controller
                 $new_stock = $old_stock - $produ['cantidad'];
                 $prod->update([
                     "stock" => $new_stock,
-                    "stock_futuro"=>$new_stock+$prod->en_camino
+                    "stock_futuro" => $new_stock + $prod->en_camino
                 ]);
             }
 
@@ -210,17 +209,17 @@ class EnvioController extends Controller
                     ->orWhere('destino', "UES")
                     ->orWhere('destino', "DAC");
             })
-            ->when(Req::input('inicio'), function ($query) {
-                $query->whereDate('created_at', '>=', Req::input('inicio') . ' 00:00:00');
-            })
-            ->when(Req::input('fin'), function ($query) {
-                $query->whereDate('created_at', '<=', Req::input('fin') . ' 23:59:00');
-            })
-            ->where(function ($query) {
-                $query->where("tipo", "=", "VENTA")
-                    ->orWhere("tipo", "=", "ENVIO");
-            })
-            ->where('estado','COMPLETADO')->orderBy('id', 'DESC')->get()
+                ->when(Req::input('inicio'), function ($query) {
+                    $query->whereDate('created_at', '>=', Req::input('inicio') . ' 00:00:00');
+                })
+                ->when(Req::input('fin'), function ($query) {
+                    $query->whereDate('created_at', '<=', Req::input('fin') . ' 23:59:00');
+                })
+                ->where(function ($query) {
+                    $query->where("tipo", "=", "VENTA")
+                        ->orWhere("tipo", "=", "ENVIO");
+                })
+                ->where('estado', 'COMPLETADO')->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Historial', [
             'tipo_cambio' => $hoy_tipo_cambio,
@@ -299,7 +298,7 @@ class EnvioController extends Controller
             $venta->validado = true;
             $venta->estado = "COMPLETADO";
             $venta->validador_id =  $validador->id;
-            $venta->fecha_validacion=now();
+            $venta->fecha_validacion = now();
             $venta->save();
 
             foreach ($request->productos as $producto) {
@@ -309,16 +308,16 @@ class EnvioController extends Controller
                 ]);
             }
             //actualizar rma a entregado
-            $rma_json=json_decode($venta->parametro);
-            if($venta->tipo=="RMA"){
-                $rma=Rma::findOrFail($rma_json->rma->id);
-                $rma->modo="ENTREGADO";
+            $rma_json = json_decode($venta->parametro);
+            if ($venta->tipo == "RMA") {
+                $rma = Rma::findOrFail($rma_json->rma->id);
+                $rma->modo = "ENTREGADO";
                 $rma->save();
             }
 
-            if($rma_json!=null){
+            if ($rma_json != null) {
 
-                if($rma_json->rma->estado="CAMBIO PRODUCTO"){
+                if ($rma_json->rma->estado = "CAMBIO PRODUCTO") {
                     RmaStock::create([
                         'sku' => $rma_json->rma->prod_origen,
                         'cantidad_total' => $rma_json->rma->prod_cantidad,
@@ -326,7 +325,7 @@ class EnvioController extends Controller
                         'rma_id' => $rma_json->rma->id,
                     ]);
                 }
-           }
+            }
 
             DB::commit();
         } catch (Exception $e) {
@@ -366,42 +365,6 @@ class EnvioController extends Controller
         }
     }
 
-    public function uploadExcel2(ImportacionEnvioStoreRequest $request)
-    {
-        $usuario = auth()->user();
-        $the_file = $request->file('archivo');
-
-
-        try{
-            $spreadsheet = IOFactory::load($the_file->getRealPath());
-            $sheet        = $spreadsheet->getActiveSheet();
-            $row_limit    = $sheet->getHighestDataRow();
-            $column_limit = $sheet->getHighestDataColumn();
-            $row_range    = range( 2, $row_limit );
-            $column_range = range( 'F', $column_limit );
-            $startcount = 2;
-            $data = array();
-            foreach ( $row_range as $row ) {
-                $data[] = [
-                    'CustomerName' =>$sheet->getCell( 'A' . $row )->getValue(),
-                    'Gender' => $sheet->getCell( 'B' . $row )->getValue(),
-                    'Address' => $sheet->getCell( 'C' . $row )->getValue(),
-                    'City' => $sheet->getCell( 'D' . $row )->getValue(),
-                    'PostalCode' => $sheet->getCell( 'E' . $row )->getValue(),
-                    'Country' =>$sheet->getCell( 'F' . $row )->getValue(),
-                ];
-                $startcount++;
-            }
-            dd($data);
-            //DB::table('tbl_customer')->insert($data);
-        } catch (PhpException $e) {
-            //$error_code = $e->errorInfo[1];
-            return back()->withErrors('There was a problem uploading the data!');
-        }
-        return back()->withSuccess('Great! Data has been successfully uploaded.');
-    }
-
-
     public function uploadExcel(ImportacionEnvioStoreRequest $request)
     {
         $usuario = auth()->user();
@@ -413,61 +376,68 @@ class EnvioController extends Controller
         $filas = Excel::toArray([], $file);
         $filas_a = array_slice($filas[0], 1);
 
-        $n_fila=1;
-        foreach ($filas[0] as $key => $fila) {
-            $prod = Producto::where('origen', '=', $fila[14])->first();
-            $compra = Venta::where('nro_compra', '=', $fila[0])
-            ->whereNull('fecha_anulacion')->first();
-            $n_fila=$n_fila+1;
-            if (empty($prod)) {
-                array_push($no_existe, [
-                    'fila' => $n_fila,
-                    'sku' => $fila[14],
-                ]);
-            }
+        $n_fila = 1;
+        foreach ($filas_a as $fila) {
+            if (!empty($fila[0])) {
+                
+                $prod = Producto::where('origen', '=', $fila[14])->first();
+                $compra = Venta::where('nro_compra', '=', $fila[0])
+                ->whereNull('fecha_anulacion')->first();
+                $n_fila = $n_fila + 1;
 
-            if (!empty($prod)) {
-            if ($prod->stock<$fila[5]) {
-                array_push($existe_stock, [
-                    'fila' => $n_fila,
-                    'sku' => $fila[14],
-                    'stock'=>$prod->stock
-                ]);
-            }
-            }
+                if (is_null($prod)) {
+                    array_push($no_existe, [
+                        'fila' => $n_fila,
+                        'sku' => $fila[14],
+                    ]);
+                }
+               
+                
+                if (!empty($prod)) {
+                    if ($prod->stock < $fila[5]) {
+                        array_push($existe_stock, [
+                            'fila' => $n_fila,
+                            'sku' => $fila[14],
+                            'stock' => $prod->stock
+                        ]);
+                    }
+                }
 
-            //if (!empty($fila[0])) {
-            if (!empty($compra)) {
-                array_push($existe_compra, [
-                    'fila' => $n_fila,
-                    'nro_compra' => $fila[0],
-                ]);
+                //if (!empty($fila[0])) {
+                if (!empty($compra)) {
+                    array_push($existe_compra, [
+                        'fila' => $n_fila,
+                        'nro_compra' => $fila[0],
+                    ]);
+                }
+                //}
             }
-            //}
         }
 
-        if (count($no_existe) > 1  || count($existe_compra) >0 || count($existe_stock) > 1) {
+        //if (count($no_existe) > 1  || count($existe_compra) > 0 || count($existe_stock) > 1) {
+        if (count($no_existe) > 0  || count($existe_stock) > 1) {
             throw ValidationException::withMessages([
                 'filas' => [$no_existe],
                 'compras' => [$existe_compra],
                 'stock' => [$existe_stock],
             ]);
         } else {
-        DB::beginTransaction();
-        try {
 
-            //importando excel
-            Excel::import(new MercadoLibreImport($usuario,$request->destino), $file);
+            DB::beginTransaction();
+            try {
 
-            DB::commit();
-            //return Redirect::route('envios.index')->with([]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
+                //importando excel
+                Excel::import(new MercadoLibreImport($usuario, $request->destino), $file);
+
+                DB::commit();
+                //return Redirect::route('envios.index')->with([]);
+            } catch (Exception $e) {
+                DB::rollBack();
+                return [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ];
+            }
         }
     }
 }

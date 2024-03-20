@@ -67,7 +67,7 @@ class NumberLetter
         if(count($div_decimales) > 1){
             $base_number = $div_decimales[0];
             $decNumberStr = str_pad($div_decimales[1], 2, '0', STR_PAD_RIGHT) ;
-//            dd($decNumberStr);
+
             if(strlen($decNumberStr) == 2){
                 $decNumberStrFill = str_pad($decNumberStr, 9, '0', STR_PAD_LEFT);
                 $decCientos = substr($decNumberStrFill, 6);
