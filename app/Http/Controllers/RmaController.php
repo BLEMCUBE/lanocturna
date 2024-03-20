@@ -533,7 +533,6 @@ class RmaController extends Controller
                 ->orderBy('created_at', 'DESC')->get()
         );
 
-        //dd($venta_query->count());
         return Inertia::render('Rma/Validacion', [
             'ventas' =>  $venta_query
             /*new VentaCollection(
