@@ -77,9 +77,9 @@ class ExpedicionController extends Controller
         ]);
 
         if (Hash::check($request->codigo, $codigo->value)) {
-            //dd( "Password matching");
+            
         } else {
-            //dd( "Password is not matching");
+            
             throw ValidationException::withMessages([
                 'codigo' => __('Código maestro inválido'),
             ]);

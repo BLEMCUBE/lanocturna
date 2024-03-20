@@ -226,13 +226,13 @@ const submitExcel = () => {
             inputArchivo.value.value = null
             uploadMercado.reset('archivo');
             if (er.filas != undefined || er.compras != undefined || er.stock != undefined) {
-                if (er.filas.length > 1 || er.compras.length > 1 || er.stock.length > 1) {
-                    errorsFilas.value = er.filas.slice(1);
-                    //errorsFilas.value = er.filas;
-                    errorsCompras.value = er.compras.slice(1);
-                    //errorsCompras.value = er.compras;
-                    // errorsStock.value = er.stock;
-                    errorsStock.value = er.stock.slice(1);
+                if (er.filas.length > 0 || er.compras.length > 0 || er.stock.length > 0) {
+                    //errorsFilas.value = er.filas.slice(1);
+                    errorsFilas.value = er.filas;
+                    //errorsCompras.value = er.compras.slice(1);
+                    errorsCompras.value = er.compras;
+                     errorsStock.value = er.stock;
+                    //errorsStock.value = er.stock.slice(1);
                     isShowModalProducto.value = true;
 
                 }
@@ -484,7 +484,7 @@ const closeModalProducto = () => {
         },
     }">
 
-            <div v-if="errorsFilas.length > 1">
+            <div v-if="errorsFilas.length > 0">
 
                 <p class="mb-2 font-bold text-md">
                     Los siguientes productos no estan registrado , por favor registre y vuelva a intentar.
@@ -514,7 +514,7 @@ const closeModalProducto = () => {
                 </table>
             </div>
 
-            <div v-if="errorsCompras.length > 1">
+            <div v-if="errorsCompras.length > 0">
                 <p class="mb-2 mt-4 font-bold text-md">
                     Las siguientes compras ya existen en el sistema, por favor corriga e intente nuevamente.
                 </p>
@@ -545,7 +545,7 @@ const closeModalProducto = () => {
 
 
 
-            <div v-if="errorsStock.length > 1">
+            <div v-if="errorsStock.length > 0">
                 <p class="mb-2 mt-4 font-bold text-md">
                     Los siguientes productos no disponen de stock.
                 </p>
