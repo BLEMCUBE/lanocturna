@@ -12,12 +12,12 @@ import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Envios UES"
+const titulo = "Envios Cadeteria"
 const ruta = 'envios'
 
 //actualizar pagina
 setTimeout(() => {
-    if (route().current('envios.index')) {
+    if (route().current('envios.cadeteria')) {
         window.open(self.location, '_self');
     }
 }, 60000);

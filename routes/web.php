@@ -175,7 +175,10 @@ Route::controller(EnvioController::class)->group(function () {
     Route::post('/envios/store', 'store')->name('envios.store')->middleware('auth');
     Route::post('/envios/update/{id}', 'validarProductos')->name('envios.update')->middleware('auth');
     Route::get('/envios/detalle/{id}', 'detalle')->name('envios.detalle')->middleware('auth');
-    Route::get('/envios', 'index')->name('envios.index')->middleware('auth');
+    Route::get('/envios/ues', 'index')->name('envios.index')->middleware('auth');
+    Route::get('/envios/flex', 'indexFlex')->name('envios.flex')->middleware('auth');
+    Route::get('/envios/dac', 'indexDac')->name('envios.dac')->middleware('auth');
+    Route::get('/envios/cadeteria', 'indexCadeteria')->name('envios.cadeteria')->middleware('auth');
     Route::get('/envios/ticket/{id}', 'generarTicket')->name('envios.generar_ticket')->middleware('auth');
     Route::get('/envios/{id}', 'show')->name('envios.show')->middleware('auth');
 
