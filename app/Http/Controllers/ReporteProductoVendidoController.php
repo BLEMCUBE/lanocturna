@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ImportacionDetalle;
+use App\Models\ProductoYuan;
+use App\Models\TipoCambioYuan;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -17,44 +20,62 @@ class ReporteProductoVendidoController extends Controller
     {
 
         $query_total_productos = DB::table('venta_detalles as det')
-        ->join('ventas as ve', 'det.venta_id', '=', 've.id')
-        ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
-        ->when(Request::input('inicio'), function ($query) {
-            $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
-        })
-        ->when(Request::input('fin'), function ($query) {
-            $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
-        })
-        ->where('det.producto_validado', '=', 1)
-        ->select(
-            'prod.nombre',
-            'prod.origen',
-            'prod.imagen',
-            'prod.id',
-            'det.producto_id',
-            DB::raw("sum(det.cantidad) as ventas_totales")
-        )
-        ->groupBy('prod.id')
-        ->get();
+            ->join('ventas as ve', 'det.venta_id', '=', 've.id')
+            ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
+            ->when(Request::input('inicio'), function ($query) {
+                $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
+            })
+            ->when(Request::input('fin'), function ($query) {
+                $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
+            })
+            ->where('det.producto_validado', '=', 1)
+            ->select(
+                'prod.nombre',
+                'prod.origen',
+                'prod.imagen',
+                'prod.stock',
+                'prod.id',
+                'det.producto_id',
+                DB::raw("sum(det.cantidad) as ventas_totales")
+            )
+            ->groupBy('prod.id')
+            ->get();
 
-
-        //$sum_tol=[]
-        $total_cantidad=0;
-        foreach ($query_total_productos as $key => $value) {
-          $total_cantidad=$total_cantidad+$value->ventas_totales;
-        }
-
-        $ultimas_ventas=[];
+        $total_cantidad = 0;
+        $total_cantidad = array_sum(array_column($query_total_productos->toArray(), 'ventas_totales'));
+        $ultimas_ventas = [];
 
         foreach ($query_total_productos as $vent) {
+            //calculo
+            $costo_aprox = 0;
+            $ultimo_yang = 0;
+            $ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $vent->origen)->latest()->first();
+            if (!is_null($ultimo_importacion)) {
 
-            array_push($ultimas_ventas,[
-                "id"=>$vent->id,
-                "sku"=>$vent->origen,
-                "nombre"=>$vent->nombre,
-                "imagen"=>$vent->imagen,
-                "ventas_totales"=>$vent->ventas_totales,
-                "porcentaje"=>round(($vent->ventas_totales/$total_cantidad)*100,2),
+                $ultimo_precio = $ultimo_importacion->precio;
+            } else {
+                $ultimo_precio = 0;
+            }
+            $tipo_yuan = ProductoYuan::where('producto_id', '=', $vent->id)->latest()->first();
+            if (!is_null($tipo_yuan)) {
+                $tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
+            }
+            if (!is_null($tipo_yuan)) {
+
+                $ultimo_yang = $tipo_cambio_yuan->valor;
+                $costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
+            } else {
+                $ultimo_yang = 0;
+            }
+            array_push($ultimas_ventas, [
+                "id" => $vent->id,
+                "sku" => $vent->origen,
+                "nombre" => $vent->nombre,
+                "stock" => $vent->stock,
+                "imagen" => $vent->imagen,
+                'costo_aprox' => number_format($costo_aprox, 2, ','),
+                "ventas_totales" => $vent->ventas_totales,
+                "porcentaje" => round(($vent->ventas_totales / $total_cantidad) * 100, 2),
             ]);
         }
         $total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
@@ -62,8 +83,8 @@ class ReporteProductoVendidoController extends Controller
         }));
 
         return Inertia::render('Reporte/ProductosVendidos', [
-            'total_cantidad' =>$total_cantidad,
-            'total_productos' =>$total_productos,
+            'total_cantidad' => $total_cantidad,
+            'total_productos' => $total_productos,
 
         ]);
     }
@@ -98,57 +119,72 @@ class ReporteProductoVendidoController extends Controller
 
         $sheet->setCellValue('A' . (string)$f, "SKU");
         $sheet->setCellValue('B' . (string)$f, "NOMBRE");
-        $sheet->setCellValue('C' . (string)$f, "VENTAS TOTALES");
-        $sheet->setCellValue('D' . (string)$f, "PORCENTAJE");
+        $sheet->setCellValue('C' . (string)$f, "STOCK");
+        $sheet->setCellValue('D' . (string)$f, "COSTO APROXIMADO");
+        $sheet->setCellValue('E' . (string)$f, "VENTAS TOTALES");
+        $sheet->setCellValue('F' . (string)$f, "PORCENTAJE");
 
-
-
-        $sheet->getStyle('A' . (string)3 . ':' . 'D' . (string)3)->getFont()->setBold(true);
-        //$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->applyFromArray($styleArray);
-        $sheet->getStyle('A' . (string)3 . ':' . 'D' . (string)3)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A' . (string)3 . ':' . 'D' . (string)3)->getAlignment()->setVertical('center');
-        /*$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->getFill()
-            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            ->getStartColor()->setARGB('FFB8CCE4');*/
-
+        $sheet->getStyle('A' . (string)3 . ':' . 'F' . (string)3)->getFont()->setBold(true);
+        $sheet->getStyle('A' . (string)3 . ':' . 'F' . (string)3)->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A' . (string)3 . ':' . 'F' . (string)3)->getAlignment()->setVertical('center');
 
         //datos
         $query_total_productos = DB::table('venta_detalles as det')
-        ->join('ventas as ve', 'det.venta_id', '=', 've.id')
-        ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
-        ->when(Request::input('inicio'), function ($query) {
-            $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
-        })
-        ->when(Request::input('fin'), function ($query) {
-            $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
-        })
-        ->where('det.producto_validado', '=', 1)
-        ->select(
-            'prod.nombre',
-            'prod.origen',
-            'prod.id',
-            'det.producto_id',
-            DB::raw("sum(det.cantidad) as ventas_totales")
-        )
-        ->groupBy('prod.id')
-        ->get();
+            ->join('ventas as ve', 'det.venta_id', '=', 've.id')
+            ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
+            ->when(Request::input('inicio'), function ($query) {
+                $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
+            })
+            ->when(Request::input('fin'), function ($query) {
+                $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
+            })
+            ->where('det.producto_validado', '=', 1)
+            ->select(
+                'prod.nombre',
+                'prod.origen',
+                'prod.stock',
+                'prod.id',
+                'det.producto_id',
+                DB::raw("sum(det.cantidad) as ventas_totales")
+            )
+            ->groupBy('prod.id')
+            ->get();
 
-
-        //$sum_tol=[]
-        $total_cantidad=0;
-        foreach ($query_total_productos as $key => $value) {
-          $total_cantidad=$total_cantidad+$value->ventas_totales;
-        }
-
-        $ultimas_ventas=[];
+        $total_cantidad = 0;
+        $total_cantidad = array_sum(array_column($query_total_productos->toArray(), 'ventas_totales'));
+        $ultimas_ventas = [];
 
         foreach ($query_total_productos as $vent) {
+            //calculo
+            $costo_aprox = 0;
+            $ultimo_yang = 0;
+            $ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $vent->origen)->latest()->first();
+            if (!is_null($ultimo_importacion)) {
 
-            array_push($ultimas_ventas,[
-                "sku"=>$vent->origen,
-                "nombre"=>$vent->nombre,
-                "ventas_totales"=>$vent->ventas_totales,
-                "porcentaje"=>round(($vent->ventas_totales/$total_cantidad)*100,2),
+                $ultimo_precio = $ultimo_importacion->precio;
+            } else {
+                $ultimo_precio = 0;
+            }
+            $tipo_yuan = ProductoYuan::where('producto_id', '=', $vent->id)->latest()->first();
+            if (!is_null($tipo_yuan)) {
+                $tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
+            }
+            if (!is_null($tipo_yuan)) {
+
+                $ultimo_yang = $tipo_cambio_yuan->valor;
+                $costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
+            } else {
+                $ultimo_yang = 0;
+            }
+            array_push($ultimas_ventas, [
+                "id" => $vent->id,
+                "sku" => $vent->origen,
+                "nombre" => $vent->nombre,
+                "stock" => $vent->stock,
+                //'costo_aprox' => $costo_aprox,
+                'costo_aprox' => round(($costo_aprox), 2),
+                "ventas_totales" => $vent->ventas_totales,
+                "porcentaje" => round(($vent->ventas_totales / $total_cantidad) * 100, 2),
             ]);
         }
         $total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
@@ -156,12 +192,15 @@ class ReporteProductoVendidoController extends Controller
         }));
 
         foreach ($total_productos as $key => $vent) {
-
             $f++;
             $sheet->setCellValueExplicit('A' . $f, $vent['sku'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('B' . $f, $vent['nombre']);
-            $sheet->setCellValue('C' . $f, $vent['ventas_totales']);
-            $sheet->setCellValue('D' . $f, $vent['porcentaje']);
+            $sheet->setCellValue('C' . $f, $vent['stock']);
+            //$sheet->setCellValue('D' . $f,number_format($vent['costo_aprox'], 2, ','));
+            $sheet->setCellValue('D' . $f,$vent['costo_aprox']);
+            //$sheet->getStyle('D' . $f)->getAlignment()->setHorizontal('right');
+            $sheet->setCellValue('E' . $f, $vent['ventas_totales']);
+            $sheet->setCellValue('F' . $f, $vent['porcentaje']);
         }
 
         //$sheet->getStyle('A4:H4' . $sheet->getHighestRow())->getAlignment()->setVertical('center');
@@ -197,7 +236,5 @@ class ReporteProductoVendidoController extends Controller
         header("Content-Disposition: attachment; filename=" . $filename);
         unlink($url_save);
         return $content;
-
     }
-
 }

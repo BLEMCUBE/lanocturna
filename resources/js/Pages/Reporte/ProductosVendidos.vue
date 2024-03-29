@@ -178,6 +178,8 @@ const btnVer = (id) => {
                             </template>
                         </Column>
                         <Column field="nombre" header="Nombre" sortable></Column>
+                        <Column field="stock" header="Stock" sortable></Column>
+                        <Column field="costo_aprox" header="Costo aprox" sortable></Column>
                         <Column field="ventas_totales" header="Ventas Totales" sortable
                         :pt="{
                             bodyCell: {
