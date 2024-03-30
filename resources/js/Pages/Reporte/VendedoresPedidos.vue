@@ -12,18 +12,16 @@ import 'vue-datepicker-next/locale/es.es.js';
 import { FilterMatchMode } from 'primevue/api';
 
 const { roles } = usePage().props.auth
-const total_productos = ref([]);
-const total_cantidad = ref();
-
+const total_ventas = ref([]);
 const date = ref();
-const titulo = "Productos Vendidos"
+const titulo = "Vendedores con más pedidos"
 const ruta = 'reportes'
 const rutaprod = 'productos'
 //filtrado
 const filtrado = (value) => {
     if (value[0] != null && value[1] != null) {
         router.get(
-            "/reportes-productos-vendidos/",
+            "/reportes-vendedores-pedidos/",
             {
                 inicio: moment(value[0]).format('YYYY-MM-DD'),
                 fin: moment(value[1]).format('YYYY-MM-DD')
@@ -31,8 +29,7 @@ const filtrado = (value) => {
             {
                 preserveState: true,
                 onSuccess: () => {
-                    total_cantidad.value = usePage().props.total_cantidad;
-                    total_productos.value = usePage().props.total_productos;
+                    total_ventas.value = usePage().props.total_ventas;
                 }
             }
         );
@@ -45,7 +42,7 @@ const descargaExcelProductoVentas = () => {
 
 
 if (date.value[0] != null && date.value[1] != null) {
-    window.open(route('reportes.exportproductoventas', [{ 'inicio': date.value[0], 'fin': date.value[1] }]), '_blank');
+    window.open(route('reportes.exportvendedorespedidos', [{ 'inicio': date.value[0], 'fin': date.value[1] }]), '_blank');
 } else {
 
    return;
@@ -75,8 +72,6 @@ const shortcuts = [
         text: 'Ayer',
         onClick() {
             const date = [subDays(new Date(), 1), subDays(new Date(), 1)];
-            //date.setTime(date.getTime() - 3600 * 1000 * 24);
-
             return date;
         },
     },
@@ -114,7 +109,7 @@ const btnVer = (id) => {
 
         <div class="card px-4 mb-4 col-span-12 rounded-lg">
             <div class="col-span-full flex justify-between items-center">
-                <h5 class="text-2xl font-medium">Listado Productos más vendidos</h5>
+                <h5 class="text-2xl font-medium">{{titulo}}</h5>
             </div>
             <div class="grid grid-cols-12 gap-4 mt-4 mb-2">
                 <!--Contenido-->
@@ -130,16 +125,12 @@ const btnVer = (id) => {
 
                 <div
                     class="card px-4 py-3 mb-4 bg-white col-span-12 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
-                    <b>
-                        TOTAL CANTIDADES : {{ total_cantidad }}
-                        <!--
-                            {{ (total_productos.reduce((acc, cur) => acc + parseFloat(cur['porcentaje']), 0)).toFixed(2) }}
-                        -->
-                    </b>
-                    <DataTable size="small" v-model:filters="filters" :value="total_productos" :paginator="true" :rows="20"
+
+                    <DataTable size="small" v-model:filters="filters" :value="total_ventas" :paginator="true" :rows="20"
                         :rowsPerPageOptions="[20, 40, 100, 200]"
+                        sortField="pedidos"
                         :pt="{
-                    bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+                    bodyRow: { class: 'text-end hover:bg-gray-100 hover:text-black' },
                     root: { class: 'w-auto' }
                 }"
                  @row-click="clickDetalle"
@@ -161,47 +152,21 @@ const btnVer = (id) => {
                         </template>
                         <template #empty> No existe Resultado </template>
                         <template #loading> Cargando... </template>
-                        <Column field="sku" header="SKU"></Column>
-                        <Column field="imagen" header="Imagen" :pt="{
-                            bodyCell: {
-                                class: 'flex justify-center text-center w-12'
-                            },
-                            headerCell: {
-                                class: 'w-10'
-                            }
-                        }">
-                            <template #loading>
-                            </template>
-                            <template #body="slotProps">
-                                <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
-                                    :src="slotProps.data.imagen" alt="image">
-                            </template>
-                        </Column>
-                        <Column field="nombre" header="Nombre" sortable></Column>
-                        <Column field="stock" header="Stock" sortable></Column>
-                        <Column field="costo_aprox" header="Costo aprox" sortable></Column>
-                        <Column field="ventas_totales" header="Ventas Totales" sortable
+                        <Column field="nombre" header="VENDEDOR" sortable></Column>
+                        <Column field="pedidos" :pt="{
+                        bodyCell: {
+                            class: 'text-end'
+                        } }" 
+                        header="CANTIDAD PEDIDOS" 
+                         sortable></Column>
+                         
+                        <Column field="total" 
                         :pt="{
-                            bodyCell: {
-                                class: 'flex justify-center text-center w-14'
-                            },
-                            headerCell: {
-                                class: 'w-14'
-                            }
-                        }"></Column>
-                        <Column field="porcentaje" header="Porcentaje" sortable
-                         :pt="{
-                            bodyCell: {
-                                class: 'text-center w-20'
-                            },
-                            headerCell: {
-                                class: 'w-20'
-                            }
-                        }">
-                            <template #body="slotProps">
-                            {{ (slotProps.data.porcentaje) }} %
-                        </template>
-                        </Column>
+                        bodyCell: {
+                            class: 'text-end'
+                        } }" 
+                        header="TOTAL" sortable></Column>
+
                     </DataTable>
                 </div>
 

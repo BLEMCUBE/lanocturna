@@ -109,6 +109,8 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'historial-rma-envio', 'description' => 'Historial Envios RMA'],
             ['name' => 'stock-rma', 'description' => 'Stock RMA'],
 
+             //lista vendedores - pedidos
+             ['name' => 'reporte-vendedor-pedidos', 'description' => 'Reporte Vendedores con mas pedidos'],
         ];
     }
 

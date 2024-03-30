@@ -14,6 +14,7 @@ use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteProductoRmaController;
 use App\Http\Controllers\ReporteProductoVendidoController;
+use App\Http\Controllers\ReporteVendedoresPedidosController;
 use App\Http\Controllers\ReporteVentaController;
 use App\Http\Controllers\RmaController;
 use App\Http\Controllers\RoleController;
@@ -237,6 +238,10 @@ Route::get('/reportes-ventas', [ReporteVentaController::class, 'index'])->name('
 //Reporte Listado  productos
 Route::get('/reportes-productos-vendidos', [ReporteProductoVendidoController::class, 'index'])->name('reportes.productosvendidos')->middleware(['auth', 'verified']);
 Route::get('/reportes-productos-vendidos/exportproductoventas',[ReporteProductoVendidoController::class, 'exportProductoVentas'])->name('reportes.exportproductoventas')->middleware('auth');
+
+//Reporte Listado  vendedores con mas pedidos
+Route::get('/reportes-vendedores-pedidos', [ReporteVendedoresPedidosController::class, 'index'])->name('reportes.vendedorespedidos')->middleware(['auth', 'verified']);
+Route::get('/reportes-vendedores-pedidos/exportvendedorespedidos',[ReporteVendedoresPedidosController::class, 'exportVendedoresPedidos'])->name('reportes.exportvendedorespedidos')->middleware('auth');
 
 
 //Rma -Presupuesto

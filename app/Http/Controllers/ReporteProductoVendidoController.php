@@ -181,7 +181,6 @@ class ReporteProductoVendidoController extends Controller
                 "sku" => $vent->origen,
                 "nombre" => $vent->nombre,
                 "stock" => $vent->stock,
-                //'costo_aprox' => $costo_aprox,
                 'costo_aprox' => round(($costo_aprox), 2),
                 "ventas_totales" => $vent->ventas_totales,
                 "porcentaje" => round(($vent->ventas_totales / $total_cantidad) * 100, 2),
@@ -196,9 +195,7 @@ class ReporteProductoVendidoController extends Controller
             $sheet->setCellValueExplicit('A' . $f, $vent['sku'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('B' . $f, $vent['nombre']);
             $sheet->setCellValue('C' . $f, $vent['stock']);
-            //$sheet->setCellValue('D' . $f,number_format($vent['costo_aprox'], 2, ','));
             $sheet->setCellValue('D' . $f,$vent['costo_aprox']);
-            //$sheet->getStyle('D' . $f)->getAlignment()->setHorizontal('right');
             $sheet->setCellValue('E' . $f, $vent['ventas_totales']);
             $sheet->setCellValue('F' . $f, $vent['porcentaje']);
         }

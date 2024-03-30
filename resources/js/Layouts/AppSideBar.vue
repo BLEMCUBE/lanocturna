@@ -143,6 +143,17 @@ const showDropdown = ref(false)
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('reportes')" class="w-full"
+                            v-show="permissions.includes('reporte-productos-vendidos')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('reportes.vendedorespedidos')"
+                                :active="route().current('reportes.vendedorespedidos')">
+                                <span class="ml-2 uppercase">VENDEDORES CON PEDIDOS</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('reportes')" class="w-full"
                             v-show="permissions.includes('reporte-productos-rma')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
