@@ -34,18 +34,18 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $ultimo_tipo_cambio=TipoCambio::all()->last();
+        $ultimo_tipo_cambio = TipoCambio::all()->last();
 
-        $hoy_tipo_cambio=false;
+        $hoy_tipo_cambio = false;
 
-        $actual=Carbon::now()->format('Y-m-d');
-        if(!empty($ultimo_tipo_cambio)){
-            $fecha=Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
-        if($fecha->eq($actual)){
-            $hoy_tipo_cambio=true;
-            $tipo_cambio=$ultimo_tipo_cambio;
-            }else{
-                $hoy_tipo_cambio=false;
+        $actual = Carbon::now()->format('Y-m-d');
+        if (!empty($ultimo_tipo_cambio)) {
+            $fecha = Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
+            if ($fecha->eq($actual)) {
+                $hoy_tipo_cambio = true;
+                $tipo_cambio = $ultimo_tipo_cambio;
+            } else {
+                $hoy_tipo_cambio = false;
             }
         }
 
@@ -69,30 +69,81 @@ class HandleInertiaRequests extends Middleware
                 ->where("facturado", '=', "0")
                 ->orderBy('created_at', 'DESC')->get()
         );
+
+        //total envios
+        $envios =  Venta::where(function ($query) {
+            $query->where('destino', "CADETERIA")
+                ->orWhere('destino', "FLEX")
+                ->orWhere('destino', "UES")
+                ->orWhere('destino', "DAC");
+        })->where(function ($query) {
+            $query->where('estado', "PENDIENTE DE FACTURACIÓN")
+                ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
+                ->orWhere('estado', "VALIDADO")
+                ->orWhere('estado', "FACTURADO");
+        })
+            ->select('*')
+            ->orderBy('created_at', 'DESC')->get();
+
+        $total_ues = 0;
+        $total_flex = 0;
+        $total_dac = 0;
+        $total_cadeteria = 0;
+
+        foreach ($envios as $key => $envio) {
+            //var_dump($envio->destino);
+
+            switch ($envio->destino) {
+                case 'UES':
+                    $total_ues += 1;
+                    break;
+                case 'FLEX':
+                    $total_flex += 1;
+                    break;
+                case 'DAC':
+                    $total_dac += 1;
+                    break;
+                case 'CADETERIA':
+                    $total_cadeteria += 1;
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        //    dd('f');
+
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
                 'roles' => $request->user() ? $request->user()->roles->pluck('name') : [],
                 'permissions' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : [],
                 'hoy_tipo_cambio' => $hoy_tipo_cambio,
-                'total_rmas'=>$total_rmas->count()
+                'total_rmas' => $total_rmas->count(),
+                'total_ues' => $total_ues,
+                'total_flex' => $total_flex,
+                'total_dac' => $total_dac,
+                'total_cadeteria' => $total_cadeteria,
                 //'notificaciones' => !empty(auth()->user()->unreadNotifications) ?auth()->user()->unreadNotifications: [],
             ],
             //'csrf_token' => csrf_token(),
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [
                     'location' => $request->url(),
-                    'query'=>$request->query()
+                    'query' => $request->query()
                 ]);
             },
             'flash' => [
                 'error' => session('error'),
                 'success' => session('success')
             ],
-            'configuracion'=> [
+            'configuracion' => [
                 //'nombre'=>$configuracion->nombre_app,
-              ],
-                  'base_url'=>url('/').'/'
+            ],
+            'base_url' => url('/') . '/'
         ]);
     }
 }

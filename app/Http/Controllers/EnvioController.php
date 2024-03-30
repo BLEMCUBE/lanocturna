@@ -45,35 +45,88 @@ class EnvioController extends Controller
         //$this->middleware(['auth', 'permission:eliminar-envios'])->only(['destroy']);
     }
 
+    //lista UES
     public function index()
     {
 
         $expedidiones = new VentaCollection(
             Venta::where(function ($query) {
-                $query->where('destino', "CADETERIA")
-                    ->orWhere('destino', "FLEX")
-                    ->orWhere('destino', "UES")
-                    ->orWhere('destino', "DAC");
+                $query->where('destino', "UES");
             })->where(function ($query) {
                 $query->where('estado', "PENDIENTE DE FACTURACIÓN")
                     ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
                     ->orWhere('estado', "VALIDADO")
                     ->orWhere('estado', "FACTURADO");
             })
-                /*->orWhere(function ($query) {
-                    $query->orWhere('facturado', "1")
-                    ->where('estado', "RMA");
-            })*/
-
                 ->select('*')
                 ->orderBy('created_at', 'DESC')->get()
-            //->orderBy('id', 'DESC')->get()
         );
         return Inertia::render('Envio/Index', [
             'ventas' => $expedidiones
         ]);
     }
 
+    //FLEX
+    public function indexFlex()
+    {
+        $expedidiones = new VentaCollection(
+            Venta::where(function ($query) {
+                $query->where('destino', "FLEX");
+            })->where(function ($query) {
+                $query->where('estado', "PENDIENTE DE FACTURACIÓN")
+                    ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
+                    ->orWhere('estado', "VALIDADO")
+                    ->orWhere('estado', "FACTURADO");
+            })
+                ->select('*')
+                ->orderBy('created_at', 'DESC')->get()
+        );
+        return Inertia::render('Envio/IndexFlex', [
+            'ventas' => $expedidiones
+        ]);
+    }
+
+    //DAC
+
+    public function indexDac()
+    {
+        $expedidiones = new VentaCollection(
+            Venta::where(function ($query) {
+                $query->where('destino', "DAC");
+            })->where(function ($query) {
+                $query->where('estado', "PENDIENTE DE FACTURACIÓN")
+                    ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
+                    ->orWhere('estado', "VALIDADO")
+                    ->orWhere('estado', "FACTURADO");
+            })
+                ->select('*')
+                ->orderBy('created_at', 'DESC')->get()
+        );
+        return Inertia::render('Envio/IndexDac', [
+            'ventas' => $expedidiones
+        ]);
+    }
+
+    //CADETERIA 
+    public function indexCadeteria()
+    {
+        $expedidiones = new VentaCollection(
+            Venta::where(function ($query) {
+                $query->where('destino', "CADETERIA");
+            })->where(function ($query) {
+                $query->where('estado', "PENDIENTE DE FACTURACIÓN")
+                    ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
+                    ->orWhere('estado', "VALIDADO")
+                    ->orWhere('estado', "FACTURADO");
+            })
+                ->select('*')
+                ->orderBy('created_at', 'DESC')->get()
+
+        );
+        return Inertia::render('Envio/IndexCadeteria', [
+            'ventas' => $expedidiones
+        ]);
+    }
     public function create()
     {
 
@@ -379,10 +432,10 @@ class EnvioController extends Controller
         $n_fila = 1;
         foreach ($filas_a as $fila) {
             if (!empty($fila[0])) {
-                
+
                 $prod = Producto::where('origen', '=', $fila[14])->first();
                 $compra = Venta::where('nro_compra', '=', $fila[0])
-                ->whereNull('fecha_anulacion')->first();
+                    ->whereNull('fecha_anulacion')->first();
                 $n_fila = $n_fila + 1;
 
                 if (is_null($prod)) {
@@ -391,8 +444,8 @@ class EnvioController extends Controller
                         'sku' => $fila[14],
                     ]);
                 }
-               
-                
+
+
                 if (!empty($prod)) {
                     if ($prod->stock < $fila[5]) {
                         array_push($existe_stock, [
