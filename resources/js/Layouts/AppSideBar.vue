@@ -25,6 +25,10 @@ const props = defineProps({
 const { permissions } = usePage().props.auth
 const { hoy_tipo_cambio } = usePage().props.auth
 const { total_rmas } = usePage().props.auth
+const { total_ues } = usePage().props.auth
+const { total_flex } = usePage().props.auth
+const { total_dac } = usePage().props.auth
+const { total_cadeteria } = usePage().props.auth
 const configStore = useConfigStore();
 const classes = computed(() => props.isOpen ? 'sm:translate-x-0' : 'sm:hidden sm:translate-x-0');
 const setMenu = (menu) => {
@@ -86,8 +90,8 @@ const showDropdown = ref(false)
 
             <li @click="setMenu('productos')" v-show="permissions.includes('lista-productos')">
                 <NavLinkSideBar icon-class="fas fa-boxes"
-                    class="flex items-center justify-start px-3 py-2 text-base font-medium" :href="route('productos.index')"
-                    :active="route().current('productos.index')">
+                    class="flex items-center justify-start px-3 py-2 text-base font-medium"
+                    :href="route('productos.index')" :active="route().current('productos.index')">
                     <span class="ml-2 uppercase">Productos</span>
                 </NavLinkSideBar>
             </li>
@@ -139,10 +143,22 @@ const showDropdown = ref(false)
                     </div>
                     <div class="flex items-center">
                         <li @click="setMenu('reportes')" class="w-full"
+                            v-show="permissions.includes('reporte-productos-vendidos')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('reportes.vendedorespedidos')"
+                                :active="route().current('reportes.vendedorespedidos')">
+                                <span class="ml-2 uppercase">VENDEDORES CON PEDIDOS</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('reportes')" class="w-full"
                             v-show="permissions.includes('reporte-productos-rma')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                                :href="route('reportes.productosrma')" :active="route().current('reportes.productosrma')">
+                                :href="route('reportes.productosrma')"
+                                :active="route().current('reportes.productosrma')">
                                 <span class="ml-2 uppercase">PRODUCTOS RMA</span>
                             </NavLinkSideBarNotIcon>
                         </li>
@@ -189,7 +205,8 @@ const showDropdown = ref(false)
                         </li>
                     </div>
                     <div class="flex items-center">
-                        <li @click="setMenu('configuraciones')" class="w-full" v-show="permissions.includes('ver-roles')">
+                        <li @click="setMenu('configuraciones')" class="w-full"
+                            v-show="permissions.includes('ver-roles')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('roles.index')" :active="route().current('roles.index')">
@@ -213,7 +230,8 @@ const showDropdown = ref(false)
                             v-show="permissions.includes('lista-tipocambio-yuanes')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                                :href="route('tipo_cambio_yuan.index')" :active="route().current('tipo_cambio_yuan.index')">
+                                :href="route('tipo_cambio_yuan.index')"
+                                :active="route().current('tipo_cambio_yuan.index')">
                                 <span class="ml-2 uppercase">Tipo de Cambio Yuanes</span>
                             </NavLinkSideBarNotIcon>
                         </li>
@@ -225,7 +243,8 @@ const showDropdown = ref(false)
                             v-show="permissions.includes('configuraciones')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                                :href="route('configuraciones.index')" :active="route().current('configuraciones.index')">
+                                :href="route('configuraciones.index')"
+                                :active="route().current('configuraciones.index')">
                                 <span class="ml-2 uppercase">Código Maestro</span>
                             </NavLinkSideBarNotIcon>
                         </li>
@@ -261,7 +280,8 @@ const showDropdown = ref(false)
                 <DisclosurePanel class="pt-1" as="div">
 
                     <div class="flex items-center">
-                        <li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('lista-importaciones')">
+                        <li @click="setMenu('compras')" class="w-full"
+                            v-show="permissions.includes('lista-importaciones')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('importaciones.index')" :active="route().current('importaciones.index')">
@@ -360,7 +380,8 @@ const showDropdown = ref(false)
                         </li>
                     </div>
                     <div class="flex items-center">
-                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-expediciones')">
+                        <li @click="setMenu('ventas')" class="w-full"
+                            v-show="permissions.includes('lista-expediciones')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('expediciones.index')" :active="route().current('expediciones.index')">
@@ -368,15 +389,64 @@ const showDropdown = ref(false)
                             </NavLinkSideBarNotIcon>
                         </li>
                     </div>
+
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('envios.index')" :active="route().current('envios.index')">
-                                <span class="ml-2 uppercase ">Envios</span>
+                                <span class="ml-2 uppercase ">Envios Ues
+                                    <Badge v-show="total_ues.length > 0"
+                                        class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
+                                        :value="total_ues" />
+                                </span>
+                             
                             </NavLinkSideBarNotIcon>
                         </li>
                     </div>
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('envios.flex')" :active="route().current('envios.flex')">
+                                <span class="ml-2 uppercase ">Envios Flex
+                                    <Badge v-show="total_flex.length > 0"
+                                        class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
+                                        :value="total_flex" />
+                                </span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('envios.dac')" :active="route().current('envios.dac')">
+                                <span class="ml-2 uppercase ">Envios dac
+                                    <Badge v-show="total_dac.length > 0"
+                                        class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
+                                        :value="total_dac" />
+                                </span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('envios.cadeteria')" :active="route().current('envios.cadeteria')">
+                                <span class="ml-2 uppercase ">Envios cadeteria
+                                    <Badge v-show="total_cadeteria.length > 0"
+                                        class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
+                                        :value="total_cadeteria" />
+                                </span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('historial-envios')">
                             <NavLinkSideBarNotIcon
@@ -401,7 +471,8 @@ const showDropdown = ref(false)
 
             <!--Deposito-->
             <Disclosure as="div" class="py-1  hover:text-primary-900" v-slot="{ open }"
-                :default-open="configStore.getCurrentMenu == 'depositos'" v-show="permissions.includes('menu-depositos')">
+                :default-open="configStore.getCurrentMenu == 'depositos'"
+                v-show="permissions.includes('menu-depositos')">
                 <h3 class="text-white hover:text-primary-900">
                     <DisclosureButton
                         class="flex w-full items-center p-2 mx-1 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
@@ -425,7 +496,8 @@ const showDropdown = ref(false)
                 <DisclosurePanel class="pt-1" as="div">
 
                     <div class="flex items-center">
-                        <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('lista-depositos')">
+                        <li @click="setMenu('depositos')" class="w-full"
+                            v-show="permissions.includes('lista-depositos')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('depositos.index')" :active="route().current('depositos.index')">
@@ -435,7 +507,8 @@ const showDropdown = ref(false)
                     </div>
 
                     <div class="flex items-center">
-                        <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('subir-depositos')">
+                        <li @click="setMenu('depositos')" class="w-full"
+                            v-show="permissions.includes('subir-depositos')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('depositos.create')" :active="route().current('depositos.create')">
@@ -444,7 +517,8 @@ const showDropdown = ref(false)
                         </li>
                     </div>
                     <div class="flex items-center">
-                        <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('bultos-depositos')">
+                        <li @click="setMenu('depositos')" class="w-full"
+                            v-show="permissions.includes('bultos-depositos')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('depositos.bultos')" :active="route().current('depositos.bultos')">
@@ -463,7 +537,8 @@ const showDropdown = ref(false)
                         </li>
                     </div>
                     <div class="flex items-center">
-                        <li @click="setMenu('depositos')" class="w-full" v-show="permissions.includes('nombre-depositos')">
+                        <li @click="setMenu('depositos')" class="w-full"
+                            v-show="permissions.includes('nombre-depositos')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('depositoslista.index')" :active="route().current('depositoslista.index')">
@@ -488,8 +563,9 @@ const showDropdown = ref(false)
                                 class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
                                 <i class="fa-solid fa-warehouse mr-3 ml-1"></i>
                                 RMA
-                                <Badge v-show="total_rmas.length > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
-                                    severity="danger" :value="total_rmas" />
+                                <Badge v-show="total_rmas.length > 0"
+                                    class="ml-4 px-0.5 mr-auto text-[12px] font-normal" severity="danger"
+                                    :value="total_rmas" />
                                 <div class="pr-2 py-4 absolute right-0 z-50 ">
                                     <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
                                     <ChevronUpIcon v-else class="h-8 w-8" aria-hidden="true" />
@@ -534,7 +610,8 @@ const showDropdown = ref(false)
                         <li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('historial-rma-envio')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-                                :href="route('rmas.historial-envios')" :active="route().current('rmas.historial-envios')">
+                                :href="route('rmas.historial-envios')"
+                                :active="route().current('rmas.historial-envios')">
                                 <span class="ml-2 uppercase">HISTORIAL ENVIOS RMA</span>
                             </NavLinkSideBarNotIcon>
                         </li>
@@ -556,8 +633,9 @@ const showDropdown = ref(false)
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('rmas.validacion')" :active="route().current('rmas.validacion')">
                                 <span class="ml-2 uppercase">VALIDACIÓN RMA
-                                    <Badge v-show="total_rmas.length > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
-                                        severity="danger" :value="total_rmas" />
+                                    <Badge v-show="total_rmas.length > 0"
+                                        class="ml-4 px-0.5 mr-auto text-[12px] font-normal" severity="danger"
+                                        :value="total_rmas" />
                                 </span>
                             </NavLinkSideBarNotIcon>
                         </li>
