@@ -201,7 +201,15 @@ const pickFile = (e) => {
 
 }
 
+//descarga formato Excel
+const descargarFormatoExcel = (nombre) => {
+if (nombre.length>0) {
+    window.open(route('plantillas.importar', nombre), '_blank');
+} else {
 
+   return;
+}
+}
 
 //envio de excel
 const submitExcel = () => {
@@ -231,7 +239,7 @@ const submitExcel = () => {
                     errorsFilas.value = er.filas;
                     //errorsCompras.value = er.compras.slice(1);
                     errorsCompras.value = er.compras;
-                     errorsStock.value = er.stock;
+                    errorsStock.value = er.stock;
                     //errorsStock.value = er.stock.slice(1);
                     isShowModalProducto.value = true;
 
@@ -257,13 +265,13 @@ const closeModalProducto = () => {
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <!--Contenido-->
 
-        <div class="col-span-12  md:col-span-6 shadow-default lg:col-span-6 m-2">
+        <div class="col-span-12  md:col-span-6 shadow-default lg:col-span-6 mx-2">
 
             <InputLabel for="file_input1" value="Importar Excel"
                 class="block text-base font-medium leading-6 text-gray-900" />
             <input ref="inputArchivo" @input="pickFile" type="file" class="block w-full text-xs
              text-gray-500
-                                file:mr-4 file:py-1 file:px-3
+                                file:mr-4 file:py-1.5 file:px-3
                                 file:rounded file:border-0
                                 file:text-sm file:font-medium
                                 file:bg-primary-900 file:text-white
@@ -287,11 +295,18 @@ const closeModalProducto = () => {
             <InputError class="mt-1 text-xs" :message="uploadMercado.errors.destino" />
         </div>
 
-        <div class="col-span-12 shadow-default xl:col-span-3 flex h-auto items-end justify-center pb-3">
+        <div class="col-span-12 shadow-default xl:col-span-3 flex h-auto items-end justify-center pb-1">
             <div class="h-10">
                 <Button label="Importar" type="button" class="text-normal"
                 :class="{ 'opacity-50': form.processing }" :disabled="uploadMercado.processing"
                 @click.prevent="submitExcel" />
+            </div>
+        </div>
+
+        <div class="col-span-12 xl:col-span-3 flex h-auto items-end justify-start px-1">
+            <div class="h-8">
+                <Button label="Descargar formato"  size="md" severity="success" type="button" 
+                class="p-1 text-xs font-light ring-0" @click="descargarFormatoExcel('formato_importar_mercadolibre.xlsx')" />
             </div>
         </div>
 
@@ -374,6 +389,17 @@ const closeModalProducto = () => {
                             <Multiselect id="rol" v-model="form.destino" v-bind="lista_destino" @select="setDestino">
                             </Multiselect>
                             <InputError class="mt-1 text-xs" :message="form.errors.destino" />
+                        </div>
+
+                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+                            <InputLabel for="cliente" value="Cliente"
+                                class="text-base font-medium leading-6 text-gray-900" />
+                            <InputText type="text" id="cliente" v-model="form.cliente.nombre"
+                                placeholder="ingrese nombre cliente" :pt="{
+                                    root: { class: 'h-9 w-full' }
+                                }" />
+                            <InputError class="mt-1 text-xs" :message="form.errors['cliente.nombre']" />
+
                         </div>
 
                         <!--Datos Ventas-->
@@ -459,8 +485,7 @@ const closeModalProducto = () => {
         label: {
             class: 'hidden'
         }
-    }"
-                                            :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
+    }" :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
                                     </div>
 
                                 </div>
@@ -542,8 +567,6 @@ const closeModalProducto = () => {
                     </tbody>
                 </table>
             </div>
-
-
 
             <div v-if="errorsStock.length > 0">
                 <p class="mb-2 mt-4 font-bold text-md">

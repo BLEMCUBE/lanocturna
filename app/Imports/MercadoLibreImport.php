@@ -28,18 +28,26 @@ class MercadoLibreImport implements ToCollection, WithHeadingRow, WithCalculated
 
             if (!empty($row['SKU'])) {
 
+              
+                if(!is_null($row['CLIENTE'])){
+                    $cliente=json_encode(["nombre"=>$row['CLIENTE']]);
+                }else{
+                    $cliente=NULL;
+                }
+                
                 //comprobando si existe
-                $existe_nro_venta = Venta::where('nro_compra', '=', $row['# de venta'])->first();
+                $existe_nro_venta = Venta::where('nro_compra', '=', $row['NUMERO COMPRA'])->first();
 
                 if (is_null($existe_nro_venta)) {
                     
                     //creando venta
                     $venta = Venta::create([
-                        'nro_compra' => $row['# de venta'],
+                        'nro_compra' => $row['NUMERO COMPRA'],
                         'estado' => 'FACTURADO',
                         'destino' => $this->destino,
                         'moneda' => 'Pesos',
                         'tipo' => 'ENVIO',
+                        'cliente' =>$cliente,
                         'vendedor_id' => $this->usuario->id,
                         'facturador_id' => $this->usuario->id,
                         'fecha_facturacion' => now()
@@ -54,18 +62,27 @@ class MercadoLibreImport implements ToCollection, WithHeadingRow, WithCalculated
                         [
 
                             "producto_id" => $prod->id,
-                            "cantidad" =>  $row['Unidades'],
+                            "cantidad" =>  $row['CANTIDAD'],
 
                         ]
                     );
                     //actualizando stock producto
                     $old_stock = $prod->stock;
-                    $new_stock = $old_stock -  $row['Unidades'];
+                    $new_stock = $old_stock -  $row['CANTIDAD'];
                     $prod->update([
                         "stock" => $new_stock,
                         "stock_futuro" => $new_stock + $prod->en_camino
                     ]);
                 } else {
+                    var_dump($cliente);
+                    $existe_nro_venta->update([
+                        'destino' => $this->destino,
+                        'cliente' =>$cliente,
+                        'vendedor_id' => $this->usuario->id,
+                        'facturador_id' => $this->usuario->id,
+                        'fecha_facturacion' => now()
+                    ]);
+
 
                     //reponiendo el producto a stock
                     foreach ($existe_nro_venta->detalles_ventas as $producto) {
@@ -86,13 +103,13 @@ class MercadoLibreImport implements ToCollection, WithHeadingRow, WithCalculated
                         [
 
                             "producto_id" => $prod_n->id,
-                            "cantidad" =>  $row['Unidades'],
+                            "cantidad" =>  $row['CANTIDAD'],
 
                         ]
                     );
                     //actualizando stock producto
                     $ne_stock = $prod_n->stock;
-                    $new_stock = $ne_stock -  $row['Unidades'];
+                    $new_stock = $ne_stock -  $row['CANTIDAD'];
                     $prod_n->update([
                         "stock" => $new_stock,
                         "stock_futuro" => $new_stock + $prod_n->en_camino
@@ -100,5 +117,6 @@ class MercadoLibreImport implements ToCollection, WithHeadingRow, WithCalculated
                 }
             }
         }
+        
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
+use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteProductoRmaController;
 use App\Http\Controllers\ReporteProductoVendidoController;
@@ -273,5 +274,9 @@ Route::controller(RmaController::class)->group(function () {
 //Reporte Listado  productos Rma
 Route::get('/reportes-productos-rma', [ReporteProductoRmaController::class, 'index'])->name('reportes.productosrma')->middleware(['auth', 'verified']);
 Route::get('/reportes-productos-rma/exportproductoventas',[ReporteProductoRmaController::class, 'exportProductoRma'])->name('reportes.exportproductorma')->middleware('auth');
+
+//Plantilas importar
+Route::get('/plantillas/importar/{nombre}',[PlantillaController::class, 'descargarPlantilla'])->name('plantillas.importar')->middleware('auth');
+
 
 require __DIR__.'/auth.php';
