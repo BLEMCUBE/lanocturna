@@ -195,6 +195,7 @@ class EnvioController extends Controller
                 'destino' => $request->destino,
                 'moneda' => $request->moneda,
                 'tipo' => $request->tipo ?? 'ENVIO',
+                'cliente' => json_encode($request->cliente),
                 'vendedor_id' => $vendedor->id,
                 'facturador_id' => $vendedor->id,
                 'fecha_facturacion' => now()
@@ -430,27 +431,26 @@ class EnvioController extends Controller
         $filas_a = array_slice($filas[0], 1);
 
         $n_fila = 1;
-        foreach ($filas_a as $fila) {
-            if (!empty($fila[0])) {
-
-                $prod = Producto::where('origen', '=', $fila[14])->first();
-                $compra = Venta::where('nro_compra', '=', $fila[0])
+        foreach ($filas_a as $col) {
+            if (!empty($col[0])) {
+                $prod = Producto::where('origen', '=', $col[2])->first();
+                $compra = Venta::where('nro_compra', '=', $col[0])
                     ->whereNull('fecha_anulacion')->first();
                 $n_fila = $n_fila + 1;
 
                 if (is_null($prod)) {
                     array_push($no_existe, [
                         'fila' => $n_fila,
-                        'sku' => $fila[14],
+                        'sku' => $col[2],
                     ]);
                 }
 
 
                 if (!empty($prod)) {
-                    if ($prod->stock < $fila[5]) {
+                    if ($prod->stock < $col[1]) {
                         array_push($existe_stock, [
                             'fila' => $n_fila,
-                            'sku' => $fila[14],
+                            'sku' => $col[2],
                             'stock' => $prod->stock
                         ]);
                     }
@@ -460,15 +460,17 @@ class EnvioController extends Controller
                 if (!empty($compra)) {
                     array_push($existe_compra, [
                         'fila' => $n_fila,
-                        'nro_compra' => $fila[0],
+                        'nro_compra' => $col[0],
                     ]);
                 }
                 //}
             }
         }
+        //echo "<pre>". var_dump(count($no_existe)). "</pre>";
+        
 
         //if (count($no_existe) > 1  || count($existe_compra) > 0 || count($existe_stock) > 1) {
-        if (count($no_existe) > 0  || count($existe_stock) > 1) {
+        if (count($no_existe) > 1  || count($existe_stock) > 1) {
             throw ValidationException::withMessages([
                 'filas' => [$no_existe],
                 'compras' => [$existe_compra],

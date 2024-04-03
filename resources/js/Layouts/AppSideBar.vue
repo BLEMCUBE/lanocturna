@@ -424,7 +424,7 @@ const showDropdown = ref(false)
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('envios.dac')" :active="route().current('envios.dac')">
-                                <span class="ml-2 uppercase ">Envios dac
+                                <span class="ml-2 uppercase ">Envios UES WEB
                                     <Badge v-show="total_dac.length > 0"
                                         class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
                                         :value="total_dac" />
