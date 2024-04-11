@@ -15,6 +15,7 @@ use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteProductoRmaController;
 use App\Http\Controllers\ReporteProductoVendidoController;
+use App\Http\Controllers\ReporteStockProductosController;
 use App\Http\Controllers\ReporteVendedoresPedidosController;
 use App\Http\Controllers\ReporteVentaController;
 use App\Http\Controllers\RmaController;
@@ -243,6 +244,10 @@ Route::get('/reportes-productos-vendidos/exportproductoventas',[ReporteProductoV
 //Reporte Listado  vendedores con mas pedidos
 Route::get('/reportes-vendedores-pedidos', [ReporteVendedoresPedidosController::class, 'index'])->name('reportes.vendedorespedidos')->middleware(['auth', 'verified']);
 Route::get('/reportes-vendedores-pedidos/exportvendedorespedidos',[ReporteVendedoresPedidosController::class, 'exportVendedoresPedidos'])->name('reportes.exportvendedorespedidos')->middleware('auth');
+
+//Reporte Listado  stock productos
+Route::get('/reportes-productos-stock', [ReporteStockProductosController::class, 'index'])->name('reportes.stockproductos')->middleware(['auth', 'verified']);
+Route::get('/reportes-productos-stock/exportxls',[ReporteStockProductosController::class, 'exportXls'])->name('reportes.exportxls')->middleware('auth');
 
 
 //Rma -Presupuesto

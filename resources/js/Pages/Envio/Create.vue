@@ -13,9 +13,11 @@ const toast = useToast();
 const titulo = "Mercado Libre"
 const ruta = 'envios'
 const isShowModalProducto = ref(false);
+const isShowModalNroCompra = ref(false);
 const isLoad = ref(false);
 const errorsFilas = ref();
 const errorsCompras = ref();
+const errorsNroCompra = ref();
 const errorsStock = ref();
 const inputArchivo = ref(null);
 const { tipo_cambio } = usePage().props
@@ -203,12 +205,12 @@ const pickFile = (e) => {
 
 //descarga formato Excel
 const descargarFormatoExcel = (nombre) => {
-if (nombre.length>0) {
-    window.open(route('plantillas.importar', nombre), '_blank');
-} else {
+    if (nombre.length > 0) {
+        window.open(route('plantillas.importar', nombre), '_blank');
+    } else {
 
-   return;
-}
+        return;
+    }
 }
 
 //envio de excel
@@ -234,17 +236,20 @@ const submitExcel = () => {
             inputArchivo.value.value = null
             uploadMercado.reset('archivo');
             if (er.filas != undefined || er.compras != undefined || er.stock != undefined) {
-                if (er.filas.length > 0 || er.compras.length > 0 || er.stock.length > 0) {
-                    //errorsFilas.value = er.filas.slice(1);
+                if (er.stock.length > 0 || er.compras.length > 0 || er.filas.length > 0) {
                     errorsFilas.value = er.filas;
-                    //errorsCompras.value = er.compras.slice(1);
                     errorsCompras.value = er.compras;
                     errorsStock.value = er.stock;
-                    //errorsStock.value = er.stock.slice(1);
                     isShowModalProducto.value = true;
-
+                }
+            } else if (er.error_compra != undefined) {
+                if (er.error_compra.length > 0) {
+                    errorsNroCompra.value = er.error_compra;
+                    isShowModalNroCompra.value = true;
                 }
             }
+
+
         }
     }
     );
@@ -255,8 +260,11 @@ const closeModalProducto = () => {
     uploadMercado.reset('archivo');
     isShowModalProducto.value = false;
 };
-//subir excel mercado
-
+const closeModalNroCompra = () => {
+    inputArchivo.value.value = null //reset input type file
+    uploadMercado.reset('archivo');
+    isShowModalNroCompra.value = false;
+};
 
 </script>
 <template>
@@ -297,16 +305,16 @@ const closeModalProducto = () => {
 
         <div class="col-span-12 shadow-default xl:col-span-3 flex h-auto items-end justify-center pb-1">
             <div class="h-10">
-                <Button label="Importar" type="button" class="text-normal"
-                :class="{ 'opacity-50': form.processing }" :disabled="uploadMercado.processing"
-                @click.prevent="submitExcel" />
+                <Button label="Importar" type="button" class="text-normal" :class="{ 'opacity-50': form.processing }"
+                    :disabled="uploadMercado.processing" @click.prevent="submitExcel" />
             </div>
         </div>
 
         <div class="col-span-12 xl:col-span-3 flex h-auto items-end justify-start px-1">
             <div class="h-8">
-                <Button label="Descargar formato"  size="md" severity="success" type="button" 
-                class="p-1 text-xs font-light ring-0" @click="descargarFormatoExcel('formato_importar_mercadolibre.xlsx')" />
+                <Button label="Descargar formato" size="md" severity="success" type="button"
+                    class="p-1 text-xs font-light ring-0"
+                    @click="descargarFormatoExcel('formato_importar_mercadolibre.xlsx')" />
             </div>
         </div>
 
@@ -377,8 +385,8 @@ const closeModalProducto = () => {
                                 class="text-base font-medium leading-6 text-gray-900" />
                             <InputText type="text" id="nro_compra" v-model="form.nro_compra"
                                 placeholder="ingrese nro compra" :pt="{
-        root: { class: 'h-9 w-full' }
-    }" />
+                                    root: { class: 'h-9 w-full' }
+                                }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.nro_compra" />
 
                         </div>
@@ -432,10 +440,10 @@ const closeModalProducto = () => {
                     <template #loading> Cargando... </template>
 
                     <Column field="nombre" header="Productos" :pt="{
-        bodyCell: {
-            class: 'flex justify-start text-center p-0 mx-0'
-        }
-    }">
+                        bodyCell: {
+                            class: 'flex justify-start text-center p-0 mx-0'
+                        }
+                    }">
                         <template #body="slotProps">
                             <div class="w-full mx-auto px-1">
                                 <div class="flex flex-col gap-y-1 mx-2 sm:flex-row sm:items-center sm:justify-between">
@@ -446,7 +454,7 @@ const closeModalProducto = () => {
                                             <p
                                                 class="text-gray-800 mb-2 text-xs whitespace-pre-line font-bold leading-1">
                                                 {{
-        slotProps.data.nombre }}</p>
+                                                    slotProps.data.nombre }}</p>
                                             <div class="font-bold leading-none text-xs text-gray-800 pb-1">Origen: <span
                                                     class="px-1 py-0  font-normal">{{ slotProps.data.origen
                                                     }}</span></div>
@@ -479,13 +487,14 @@ const closeModalProducto = () => {
                                     <div class="px-auto">
                                         <Button severity="success" aria-label="Add"
                                             @click="addToCart(slotProps.data.id)" icon="fas fa-cart-plus" :pt="{
-        root: {
-            class: 'flex items-center justify-center font-medium w-10'
-        },
-        label: {
-            class: 'hidden'
-        }
-    }" :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
+                                                root: {
+                                                    class: 'flex items-center justify-center font-medium w-10'
+                                                },
+                                                label: {
+                                                    class: 'hidden'
+                                                }
+                                            }"
+                                            :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
                                     </div>
 
                                 </div>
@@ -501,17 +510,17 @@ const closeModalProducto = () => {
 
         <!--Modal productos-->
         <Dialog v-model:visible="isShowModalProducto" modal :style="{ width: '30vw' }" :pt="{
-        header: {
-            class: 'mt-5 pb-2 px-5'
-        },
-        content: {
-            class: 'p-4'
-        },
-    }">
+            header: {
+                class: 'mt-5 pb-2 px-5'
+            },
+            content: {
+                class: 'p-4'
+            },
+        }">
 
             <div v-if="errorsFilas.length > 0">
 
-                <p class="mb-2 font-bold text-md">
+                <p class="mb-2 font-semibold text-md">
                     Los siguientes productos no estan registrado , por favor registre y vuelva a intentar.
                 </p>
 
@@ -540,7 +549,7 @@ const closeModalProducto = () => {
             </div>
 
             <div v-if="errorsCompras.length > 0">
-                <p class="mb-2 mt-4 font-bold text-md">
+                <p class="mb-2 mt-4 font-semibold text-md">
                     Las siguientes compras ya existen en el sistema, por favor corriga e intente nuevamente.
                 </p>
 
@@ -569,21 +578,21 @@ const closeModalProducto = () => {
             </div>
 
             <div v-if="errorsStock.length > 0">
-                <p class="mb-2 mt-4 font-bold text-md">
+                <p class="mb-2 mt-4 font-semibold text-md">
                     Los siguientes productos no disponen de stock.
                 </p>
 
                 <table class="w-full border">
                     <thead>
-                        <tr class="w-full border">
-                            <th class="w-26 text-center border">
+                        <tr class="w-full border ">
+                            <th class="w-26 text-center border font-semibold">
                                 Fila
                             </th>
-                            <th class="text-center border">
+                            <th class="text-center border font-semibold">
                                 SKU
                             </th>
-                            <th class="text-center border">
-                                Stock
+                            <th class="text-center border font-semibold">
+                                Stock en Sistema
                             </th>
                         </tr>
                     </thead>
@@ -609,7 +618,7 @@ const closeModalProducto = () => {
                     <div class="text-center">
                         <i class="pi pi-exclamation-triangle text-yellow-500" style="font-size: 3rem"></i>
                     </div>
-                    <div class="font-bold text-2xl m-3">No se ha podido importar</div>
+                    <div class="font-semibold text-xl m-3">No se ha podido importar</div>
                 </div>
             </template>
 
@@ -621,6 +630,39 @@ const closeModalProducto = () => {
 
         </Dialog>
         <!--Modal productos-->
+
+        <!--Modal nro compra-->
+        <Dialog v-model:visible="isShowModalNroCompra" modal :style="{ width: '30vw' }" :pt="{
+            header: {
+                class: 'mt-5 pb-2 px-5'
+            },
+            content: {
+                class: 'p-4'
+            },
+        }">
+            <div>
+                <p class="mb-2 mt-0 font-semibold text-center text-md">
+                    {{ errorsNroCompra }}
+                </p>
+
+            </div>
+            <template #header>
+                <div class="flex flex-column align-items-center" style="flex: 1">
+                    <div class="text-center">
+                        <i class="pi pi-exclamation-triangle text-yellow-500" style="font-size: 3rem"></i>
+                    </div>
+                    <div class="font-semibold text-xl m-3">No se ha podido importar</div>
+                </div>
+            </template>
+
+
+            <div class="flex justify-end py-3">
+                <Button label="Aceptar" size="small" type="button" @click="closeModalNroCompra()" />
+
+            </div>
+
+        </Dialog>
+        <!--Modal nro compra-->
     </AppLayout>
 </template>
 

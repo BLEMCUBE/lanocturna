@@ -455,6 +455,9 @@ $resultadoProductoLista=new ProductoVentaCollection($productoLista);
             //eliminando  detalle
             $venta->detalles_ventas()->delete();
 
+            //eliminando  venta
+            $venta->delete();
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
