@@ -73,7 +73,8 @@ class MercadoLibreImport implements ToCollection, WithHeadingRow, WithCalculated
                         "stock" => $new_stock,
                         "stock_futuro" => $new_stock + $prod->en_camino
                     ]);
-                } else {
+                } 
+                /*else {
                     var_dump($cliente);
                     $existe_nro_venta->update([
                         'destino' => $this->destino,
@@ -114,7 +115,7 @@ class MercadoLibreImport implements ToCollection, WithHeadingRow, WithCalculated
                         "stock" => $new_stock,
                         "stock_futuro" => $new_stock + $prod_n->en_camino
                     ]);
-                }
+                }*/
             }
         }
         

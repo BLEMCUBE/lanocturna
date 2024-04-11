@@ -429,7 +429,6 @@ class EnvioController extends Controller
         $existe_stock = [];
         $filas = Excel::toArray([], $file);
         $filas_a = array_slice($filas[0], 1);
-
         $n_fila = 1;
         foreach ($filas_a as $col) {
             if (!empty($col[0])) {
@@ -464,13 +463,14 @@ class EnvioController extends Controller
                     ]);
                 }
                 //}
+            }else{
+                throw ValidationException::withMessages([
+                    'error_compra' => "Número de compra no debe esta vacio.",
+                ]);
             }
         }
-        //echo "<pre>". var_dump(count($no_existe)). "</pre>";
-        
 
-        //if (count($no_existe) > 1  || count($existe_compra) > 0 || count($existe_stock) > 1) {
-        if (count($no_existe) > 1  || count($existe_stock) > 1) {
+        if (count($no_existe) > 0  || count($existe_stock) > 0 || count($existe_compra) > 0) {
             throw ValidationException::withMessages([
                 'filas' => [$no_existe],
                 'compras' => [$existe_compra],
