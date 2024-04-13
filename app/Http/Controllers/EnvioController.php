@@ -58,7 +58,8 @@ class EnvioController extends Controller
                     ->orWhere('estado', "VALIDADO")
                     ->orWhere('estado', "FACTURADO");
             })
-                ->select('*')
+                ->select('id','cliente','destino','facturado','estado','tipo','nro_compra'
+                ,'observaciones','total','parametro','created_at')
                 ->orderBy('created_at', 'DESC')->get()
         );
         return Inertia::render('Envio/Index', [

@@ -16,7 +16,7 @@ import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 
 
-
+const date = ref();
 const toast = useToast();
 const tabla_ventas = ref()
 const titulo = "Historial de Envios"
@@ -62,8 +62,6 @@ const shortcuts = [
     },
 ]
 
-const date = ref([new Date(), new Date()]);
-//const date = ref([]);
 //filtrado
 const filtrado = (value) => {
 if(value[0]!=null && value[1]!=null){
@@ -83,6 +81,7 @@ if(value[0]!=null && value[1]!=null){
 
         }
         );
+        date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
     }else{
         router.get(route(ruta+'.historial'))
     }
@@ -153,11 +152,8 @@ const clickDetalle = (e) => {
     btnVer(e.data.id)
 }
 onMounted(() => {
-    cargando.value = true;
-     tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
-     cargando.value = false;
-
-
+    date.value = [subDays(new Date(), 2), new Date()];
+    filtrado(date.value);
 });
 
 const show = (tipo, titulo, mensaje) => {

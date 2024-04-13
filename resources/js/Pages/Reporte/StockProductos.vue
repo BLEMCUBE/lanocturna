@@ -14,14 +14,17 @@ import { FilterMatchMode } from 'primevue/api';
 const { roles } = usePage().props.auth
 const total_productos = ref([]);
 const total_cantidad = ref();
-
+const cargando = ref(false)
 const date = ref();
-const titulo = "Stock de Productos "
+const titulo = "Stock por Fecha"
 const ruta = 'reportes'
 const now = moment();
 const rutaprod = 'productos'
 //filtrado
 const filtrado = (value) => {
+    total_productos.value = [];
+    cargando.value=true;
+
     if (value != null) {
         router.get(
             "/reportes-productos-stock/",
@@ -32,12 +35,11 @@ const filtrado = (value) => {
             {
                 preserveState: true,
                 onSuccess: () => {
-                    total_cantidad.value = usePage().props.total_cantidad;
                     total_productos.value = usePage().props.total_productos;
+                    cargando.value=false;
                 }
             }
         );
-        //date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
         date.value = moment(value).format('YYYY-MM-DD');
     }
 }
@@ -54,10 +56,8 @@ if (date.value != null) {
 }
 }
 onMounted(() => {
-    //date.value = [subDays(new Date(), 30), new Date()];
-    date.value = subDays(new Date(), 1);
+    date.value = subDays(new Date(), 30);
     filtrado(date.value);
-
 
 });
 
@@ -117,7 +117,7 @@ const btnVer = (id) => {
 
         <div class="card px-4 mb-4 col-span-12 rounded-lg">
             <div class="col-span-full flex justify-between items-center">
-                <h5 class="text-2xl font-medium">Stock de Producto</h5>
+                <h5 class="text-2xl font-medium">Stock por Fecha</h5>
             </div>
             <div class="grid grid-cols-12 gap-4 mt-4 mb-2">
                 <!--Contenido-->
@@ -132,7 +132,7 @@ const btnVer = (id) => {
 
 
                 <div
-                    class="card px-4 py-3 mb-4 bg-white col-span-12 rounded-lg shadow-lg 2xl:col-span-8 dark:border-gray-700  dark:bg-gray-800">
+                    class="card px-4 py-3 mb-4 bg-white col-span-10 rounded-lg shadow-lg 2xl:col-span-6 dark:border-gray-700  dark:bg-gray-800">
                 <!--
 
                     <b>TOTAL CANTIDADES : {{ total_cantidad }}
@@ -140,7 +140,8 @@ const btnVer = (id) => {
                     -->
                         
                     <DataTable size="small" 
-                    sortField="stock" :sortOrder="-1"
+                
+                    sortField="resultado_final" :sortOrder="1" :loading="cargando"
                     v-model:filters="filters" :value="total_productos" :paginator="true" :rows="20"
                         :rowsPerPageOptions="[20, 40, 100, 200]"
                         :pt="{
@@ -152,9 +153,9 @@ const btnVer = (id) => {
                         >
                         <template #header size="small" class="bg-secondary-900">
                             <div class="flex justify-content-end text-md">
-                                <!--
+                            
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />
-                            -->
+                            
                                 <div v-if="roles.includes('Super Administrador') || roles.includes('Administrador')"
                                 v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 text-xs text-white rounded' } }"
                                 class=" w-10 h-8  ml-5 rounded flex justify-center items-center text-base font-semibold text-white mr-1">
@@ -170,46 +171,15 @@ const btnVer = (id) => {
                         <template #empty> No existe Resultado </template>
                         <template #loading> Cargando... </template>
                         <Column field="sku" header="SKU"></Column>
-                        <!--
-
-                            <Column field="imagen" header="Imagen" :pt="{
-                                bodyCell: {
-                                    class: 'flex justify-center text-center w-12'
-                                },
-                                headerCell: {
-                                    class: 'w-10'
-                                }
-                            }">
-                            <template #loading>
-                            </template>
-                            <template #body="slotProps">
-                                <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
-                                :src="slotProps.data.imagen" alt="image">
-                            </template>
-                        </Column>
-                        -->
                         <Column field="nombre" header="Nombre" sortable></Column>
-                        <Column field="codigo_barra" header="Código Barra" sortable></Column>
-                        <Column field="stock" header="Stock" sortable>
+                        <Column field="resultado_final" class="text-center" header="Stock" sortable>
                             <template #loading>
                             </template>
                             <template #body="slotProps">
                                 <div class="text-center">
-                                    {{ slotProps.data.stock }}
+                                    {{ slotProps.data.resultado_final }}
                                 </div>
                             </template></Column>
-                        <!--
-
-                            <Column field="ventas_totales" header="Ventas Totales" sortable
-                            :pt="{
-                                bodyCell: {
-                                    class: 'flex justify-center text-center w-14'
-                                },
-                                headerCell: {
-                                    class: 'w-14'
-                                }
-                            }"></Column>
-                        -->
                       
                     </DataTable>
                 </div>

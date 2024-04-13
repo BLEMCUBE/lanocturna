@@ -49,7 +49,8 @@ class VentaController extends Controller
             }
         }
 
-        $venta_query = Venta::select('*')
+        $venta_query = Venta::select('id','cliente','destino','facturado','estado','tipo','nro_compra'
+        ,'observaciones','total','parametro','created_at')
         ->where(function ($query) {
             $query->where("tipo", "=", "VENTA")
                 ->orWhere("tipo", "=", "ENVIO");

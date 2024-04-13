@@ -16,7 +16,7 @@ class ReporteStockProductosController extends Controller
     public function index()
     {
 
-        $query_total_productos = DB::table('venta_detalles as det')
+        $query_total_ventas = DB::table('venta_detalles as det')
             ->join('ventas as ve', 'det.venta_id', '=', 've.id')
             ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
             ->when(Request::input('inicio'), function ($query) {
@@ -29,10 +29,8 @@ class ReporteStockProductosController extends Controller
             ->select(
                 'prod.nombre',
                 'prod.origen',
-                //'prod.imagen',
-                'prod.codigo_barra',
-                'prod.stock',
-                'prod.id',
+                //'prod.codigo_barra',
+                'prod.stock AS stock_actual',
                 'det.producto_id',
                 DB::raw("sum(det.cantidad) as ventas_totales")
             )
@@ -40,29 +38,54 @@ class ReporteStockProductosController extends Controller
             ->get();
 
         $total_cantidad = 0;
-        $total_cantidad = array_sum(array_column($query_total_productos->toArray(), 'ventas_totales'));
+        $total_cantidad = array_sum(array_column($query_total_ventas->toArray(), 'ventas_totales'));
         $ultimas_ventas = [];
 
-        foreach ($query_total_productos as $vent) {
-          
+        foreach ($query_total_ventas as $vent) {
+
+            $query_total_import = DB::table('importaciones_detalles as imd')
+                ->join('importaciones as im', 'imd.importacion_id', '=', 'im.id')
+                ->join('productos as prod', 'prod.origen', '=', 'imd.sku')
+                ->when(Request::input('inicio'), function ($query) {
+                    $query->whereDate('im.fecha_arribado', '>=', Request::input('inicio'));
+                })
+                ->when(Request::input('fin'), function ($query) {
+                    $query->whereDate('im.fecha_arribado', '<=', Request::input('fin'));
+                })
+                ->where('im.estado', '=', 'Arribado')
+                ->where('prod.origen', '=', $vent->origen)
+                ->select(
+                    'imd.sku',
+                    DB::raw("GROUP_CONCAT( im.nro_carpeta SEPARATOR ';' ) as carpetas"),
+                    DB::raw("SUM(imd.pcs_bulto) as importaciones_totales")
+                )
+                ->groupBy('prod.origen')
+                ->first();
+            $totales_importacion = 0;
+            if (!is_null($query_total_import)) {
+
+                $totales_importacion = $query_total_import->importaciones_totales;
+            }
+
             array_push($ultimas_ventas, [
-                "id" => $vent->id,
+                "id" => $vent->producto_id,
                 "sku" => $vent->origen,
                 "nombre" => $vent->nombre,
-                "codigo_barra" => $vent->codigo_barra,
-                //"stock" => $vent->stock,
-                "stock" => $vent->stock+ $vent->ventas_totales,
-                //"imagen" => $vent->imagen,
-                "ventas_totales" => $vent->ventas_totales,
+                //"totales_importacion" => $totales_importacion,
+                //"codigo_barra" => $vent->codigo_barra,
+                //"stock_actual" => $vent->stock_actual,
+                "resultado_final" => $vent->stock_actual + $vent->ventas_totales - $totales_importacion,
+                //"ventas_totales" => $vent->ventas_totales,
                 "total_productos" => round(($vent->ventas_totales / $total_cantidad) * 100, 2),
             ]);
         }
+
         $total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
             return $value['total_productos'];
         }));
 
         return Inertia::render('Reporte/StockProductos', [
-            'total_cantidad' => $total_cantidad,
+            //'total_cantidad' => $total_cantidad,
             'total_productos' => $total_productos,
 
         ]);
@@ -74,83 +97,98 @@ class ReporteStockProductosController extends Controller
         $fecha_inicio = Carbon::parse(Request::input('inicio'));
         $fecha_fin = Carbon::parse(Request::input('fin'));
 
-        $filename = "STOCK_PRODUCTOS_" . $fecha_inicio->format('d_m_Y'). ".xlsx";
+        $filename = "STOCK_PRODUCTOS_POR_FECHA_" . $fecha_inicio->format('d_m_Y') . ".xlsx";
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
         $sheet->setCellValue('A1', "FECHA: ");
         $sheet->setCellValue('B1', $fecha_inicio->format('d/m/Y'));
-        $sheet->getStyle('A' . (string)1 . ':' . 'C' . (string)1)->getFont()->setBold(true);
-        $sheet->getStyle('A' . (string)1 . ':' . 'C' . (string)1)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A' . (string)1 . ':' . 'C' . (string)1)->getAlignment()->setVertical('center');
+        $sheet->getStyle('A' . (string)1 . ':' . 'B' . (string)1)->getFont()->setBold(true);
+        $sheet->getStyle('A' . (string)1 . ':' . 'B' . (string)1)->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A' . (string)1 . ':' . 'A' . (string)1)->getAlignment()->setVertical('center');
         $f = 3;
 
         $sheet->setCellValue('A' . (string)$f, "SKU");
         $sheet->setCellValue('B' . (string)$f, "NOMBRE");
         $sheet->setCellValue('C' . (string)$f, "STOCK");
-        $sheet->setCellValue('D' . (string)$f, "CODIGO BARRA");
 
-        $sheet->getStyle('A' . (string)3 . ':' . 'D' . (string)3)->getFont()->setBold(true);
-        $sheet->getStyle('A' . (string)3 . ':' . 'D' . (string)3)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A' . (string)3 . ':' . 'D' . (string)3)->getAlignment()->setVertical('center');
+        $sheet->getStyle('A' . (string)3 . ':' . 'C' . (string)3)->getFont()->setBold(true);
+        $sheet->getStyle('A' . (string)3 . ':' . 'C' . (string)3)->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A' . (string)3 . ':' . 'C' . (string)3)->getAlignment()->setVertical('center');
 
         //datos
-        $query_total_productos = DB::table('venta_detalles as det')
-            ->join('ventas as ve', 'det.venta_id', '=', 've.id')
-            ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
+        $query_total_ventas = DB::table('venta_detalles as det')
+        ->join('ventas as ve', 'det.venta_id', '=', 've.id')
+        ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
+        ->when(Request::input('inicio'), function ($query) {
+            $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
+        })
+        ->when(Request::input('fin'), function ($query) {
+            $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
+        })
+        ->where('det.producto_validado', '=', 1)
+        ->select(
+            'prod.nombre',
+            'prod.origen',
+            //'prod.codigo_barra',
+            'prod.stock AS stock_actual',
+            'det.producto_id',
+            DB::raw("sum(det.cantidad) as ventas_totales")
+        )
+        ->groupBy('prod.id')
+        ->get();
+
+    $total_cantidad = 0;
+    $total_cantidad = array_sum(array_column($query_total_ventas->toArray(), 'ventas_totales'));
+    $ultimas_ventas = [];
+
+    foreach ($query_total_ventas as $vent) {
+
+        $query_total_import = DB::table('importaciones_detalles as imd')
+            ->join('importaciones as im', 'imd.importacion_id', '=', 'im.id')
+            ->join('productos as prod', 'prod.origen', '=', 'imd.sku')
             ->when(Request::input('inicio'), function ($query) {
-                $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
+                $query->whereDate('im.fecha_arribado', '>=', Request::input('inicio'));
             })
             ->when(Request::input('fin'), function ($query) {
-                $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
+                $query->whereDate('im.fecha_arribado', '<=', Request::input('fin'));
             })
-            ->where('det.producto_validado', '=', 1)
+            ->where('im.estado', '=', 'Arribado')
+            ->where('prod.origen', '=', $vent->origen)
             ->select(
-                'prod.nombre',
-                'prod.origen',
-                //'prod.imagen',
-                'prod.codigo_barra',
-                'prod.stock',
-                'prod.id',
-                'det.producto_id',
-                DB::raw("sum(det.cantidad) as ventas_totales")
+                'imd.sku',
+                DB::raw("GROUP_CONCAT( im.nro_carpeta SEPARATOR ';' ) as carpetas"),
+                DB::raw("SUM(imd.pcs_bulto) as importaciones_totales")
             )
-            ->groupBy('prod.id')
-            ->get();
+            ->groupBy('prod.origen')
+            ->first();
+        $totales_importacion = 0;
+        if (!is_null($query_total_import)) {
 
-        $total_cantidad = 0;
-        $total_cantidad = array_sum(array_column($query_total_productos->toArray(), 'ventas_totales'));
-        $ultimas_ventas = [];
-
-        foreach ($query_total_productos as $vent) {
-          
-            array_push($ultimas_ventas, [
-                "id" => $vent->id,
-                "sku" => $vent->origen,
-                "nombre" => $vent->nombre,
-                //"stock" => $vent->stock,
-                "stock" => $vent->stock+ $vent->ventas_totales,
-                "codigo_barra" => $vent->codigo_barra,
-                //"imagen" => $vent->imagen,
-                "ventas_totales" => $vent->ventas_totales,
-                "total_productos" => round(($vent->ventas_totales / $total_cantidad) * 100, 2),
-            ]);
+            $totales_importacion = $query_total_import->importaciones_totales;
         }
-        $total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
-            return $value['total_productos'];
-        }));
+
+        array_push($ultimas_ventas, [
+            "id" => $vent->producto_id,
+            "sku" => $vent->origen,
+            "nombre" => $vent->nombre,
+            "resultado_final" => $vent->stock_actual + $vent->ventas_totales - $totales_importacion,
+            "total_productos" => round(($vent->ventas_totales / $total_cantidad) * 100, 2),
+        ]);
+    }
+
+    $total_productos = array_values(Arr::sort($ultimas_ventas, function (array $value) {
+        return $value['resultado_final'];
+    }));
 
         foreach ($total_productos as $key => $vent) {
             $f++;
             $sheet->setCellValueExplicit('A' . $f, $vent['sku'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('B' . $f, $vent['nombre']);
-            $sheet->setCellValue('C' . $f, $vent['stock']);
-            $sheet->setCellValueExplicit('D' . $f, $vent['codigo_barra'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('C' . $f, $vent['resultado_final']);
         }
 
-        //$sheet->getStyle('A4:H4' . $sheet->getHighestRow())->getAlignment()->setVertical('center');
-        //activando auto size
         $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(0);
         foreach ($sheet->getColumnIterator() as $column) {
             $sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);

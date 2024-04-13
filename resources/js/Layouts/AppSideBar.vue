@@ -137,7 +137,7 @@ const showDropdown = ref(false)
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('reportes.stockproductos')"
                                 :active="route().current('reportes.stockproductos')">
-                                <span class="ml-2 uppercase">STOCK DE PRODUCTOS</span>
+                                <span class="ml-2 uppercase">STOCK POR FECHA</span>
                             </NavLinkSideBarNotIcon>
                         </li>
                     </div>
