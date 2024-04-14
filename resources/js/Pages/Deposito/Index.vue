@@ -138,7 +138,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
@@ -210,7 +210,7 @@ const filters = ref({
                     <template #expansion="slotProps">
                         <div class="px-1">
                             <DataTable :value="slotProps.data.productos" scrollable scrollHeight="300px"
-                            paginator :rows="100" v-model:filters="filters"
+                            paginator :rows="50" v-model:filters="filters"
                                 v-model:selection="formDelete.productos"
                                 :pt="{
 

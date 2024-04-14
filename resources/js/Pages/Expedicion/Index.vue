@@ -72,7 +72,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -84,7 +84,7 @@ const filters = ref({
 
                 <DataTable :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer' }
-                }" scrollable scrollHeight="700px" paginator :rows="100"
+                }" scrollable scrollHeight="700px" paginator :rows="50"
                     tableStyle="min-width: 50rem" @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-start  text-md">

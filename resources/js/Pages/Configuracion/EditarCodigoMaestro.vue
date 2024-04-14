@@ -63,7 +63,7 @@ onMounted(() => {
         <Head title="Configuraciones" />
         <AppLayout :pagina="[{ 'label': titulo, link: false }]">
             <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg lg:col-span-6 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg lg:col-span-6 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />

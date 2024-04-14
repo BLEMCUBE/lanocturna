@@ -30,7 +30,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -40,7 +40,7 @@ const filters = ref({
             <div class="align-middle">
                 <DataTable size="small"  :filters="filters" :value="lista_depositos"
                 scrollable scrollHeight="800px"
-                paginator :rows="100"
+                paginator :rows="50"
                 :pt="{
                     root:{class:'text-xs'}
                 }"

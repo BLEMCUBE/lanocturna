@@ -141,7 +141,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <div class=" px-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
@@ -157,7 +157,7 @@ const filters = ref({
                     <DataTable sortField="rotacion_stock" :sortOrder="1" :filters="filters" :value="tabla_vendidos" :pt="{
                         root: { class: 'w-auto' }
                     }" scrollable scrollHeight="350px"
-                        paginator :rows="100" tableStyle="min-width: 50rem"
+                        paginator :rows="50" tableStyle="min-width: 50rem"
                         size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">

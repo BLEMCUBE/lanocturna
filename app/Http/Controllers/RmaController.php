@@ -409,10 +409,10 @@ class RmaController extends Controller
             $rma_cliente = json_decode($rma->cliente);
             $data = [
                 'nro_servicio' => $rma->nro_servicio,
-                'cliente' => $rma_cliente->nombre ?? '',
-                'producto' => $rma->prod_origen . " / " . $rma->prod_nombre ?? '',
-                'defecto' => $rma->defecto ?? '',
-                'observaciones' => $rma->observaciones ?? '',
+                'cliente' => $rma_cliente->nombre ?? '-',
+                'producto' => $rma->prod_origen . " / " . $rma->prod_nombre ?? '-',
+                'defecto' => $rma->defecto ?? '-',
+                'observaciones' => $rma->observaciones ?? '-',
                 'fecha' => (now())->format('d/m/Y H:i:s')
             ];
             $pdf = Pdf::loadView('pdfs.ticketEnvioRma', ['data' => $data]);
@@ -426,7 +426,7 @@ class RmaController extends Controller
     public function rma_stock()
     {
         $query_depositos = RmaStock::with(['producto' => function ($query) {
-            $query->select('id', 'origen', 'nombre', 'imagen', 'codigo_barra');
+            $query->select('id', 'origen', 'nombre', 'imagen');
         }])->with(['rma' => function ($query) {
             $query->select('id', 'defecto', 'observaciones');
         }])->select('*')->orderBy('producto_completo', 'DESC')->get();
@@ -436,7 +436,7 @@ class RmaController extends Controller
         $depositos = [];
         $det_producto = [];
         $id_stock = 0;
-        $prod_completo = "SI";
+        $prod_completo = "";
 
         foreach ($grouped as $deposito) {
 
@@ -459,6 +459,7 @@ class RmaController extends Controller
 
             array_push($depositos, [
                 "id" => $id_stock,
+                "producto_completo"=>$prod->producto_completo,
                 "nombre" =>  $prod_completo == "SI" ? "PRODUCTOS COMPLETO" : "PRODUCTOS PARCIALES",
                 "productos" => $det_producto,
 

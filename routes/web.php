@@ -279,6 +279,7 @@ Route::controller(RmaController::class)->group(function () {
 //Reporte Listado  productos Rma
 Route::get('/reportes-productos-rma', [ReporteProductoRmaController::class, 'index'])->name('reportes.productosrma')->middleware(['auth', 'verified']);
 Route::get('/reportes-productos-rma/exportproductoventas',[ReporteProductoRmaController::class, 'exportProductoRma'])->name('reportes.exportproductorma')->middleware('auth');
+Route::get('/reportes-productos-rma/exportstockrma/{completo}',[ReporteProductoRmaController::class, 'exportStockRma'])->name('reportes.exportstockrma')->middleware('auth');
 
 //Plantilas importar
 Route::get('/plantillas/importar/{nombre}',[PlantillaController::class, 'descargarPlantilla'])->name('plantillas.importar')->middleware('auth');

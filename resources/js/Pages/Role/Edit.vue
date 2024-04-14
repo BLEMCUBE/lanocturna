@@ -60,7 +60,7 @@ const show = (tipo,titulo,mensaje) => {
         <AppLayout :pagina="[{ 'label': titulo, link: false }]">
             <Toast />
             <div
-                class="px-4 py-2 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700 sm:p-2 dark:bg-gray-800">
+                class="px-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700 sm:p-2 dark:bg-gray-800">
                 <div class="px-5 pb-2 col-span-full flex justify-between items-center">
                     <h5 class="text-2xl font-medium">Permisos de {{ role.name }}</h5>
                 </div>

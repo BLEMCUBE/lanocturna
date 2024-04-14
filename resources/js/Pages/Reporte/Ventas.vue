@@ -226,7 +226,7 @@ const shortcuts = [
                     </div>
                 </div>
 
-                <div class="col-span-12  bg-white px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm ">
+                <div class="col-span-12  bg-white px-4 border border-gray-200 rounded-lg shadow-sm ">
                     <h3 class="flex items-center mb-4 text-lg font-semibold text-gray-900">Gráfico de Ventas
                     </h3>
                     <div id="chart">

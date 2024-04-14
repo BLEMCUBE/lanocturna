@@ -178,7 +178,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -192,7 +192,7 @@ const filters = ref({
 
                 <DataTable :filters="filters" :value="tabla_ventas"  :loading="cargando"  :pt="{
                     bodyRow: { class: 'hover:cursor-pointer p-1 hover:bg-gray-100 hover:text-black' }
-                }" scrollable scrollHeight="700px"   paginator :rows="100"
+                }" scrollable scrollHeight="700px"   paginator :rows="50"
                     @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="grid grid-cols-6 gap-4 m-1.5">
@@ -203,7 +203,7 @@ const filters = ref({
 
                                 <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
                                     format="DD/MM/YYYY"
-                                    class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
+                                    class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
                                      v-model:value="date" :shortcuts="shortcuts" lang="es"
                                     placeholder="Seleccione Fecha"></date-picker>
 

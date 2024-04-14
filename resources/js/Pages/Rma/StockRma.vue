@@ -1,11 +1,8 @@
-
-
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted, watch, computed } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-import CambiarDepositoModal from '@/Pages/Deposito/Partials/CambiarDepositoModal.vue';
 
 import { FilterMatchMode } from 'primevue/api';
 const { roles } = usePage().props.auth
@@ -24,6 +21,18 @@ onMounted(() => {
     expandedRows.value = null;
 
 });
+
+//descarga excel
+const descargaExcel = (tipo) => {
+
+
+    if (tipo != null) {
+        window.open(route('reportes.exportstockrma', { 'completo':tipo  }), '_blank');
+    } else {
+
+        return;
+    }
+}
 const btnEliminar = (id) => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
@@ -108,10 +117,11 @@ const filters = ref({
 });
 </script>
 <template>
+
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
@@ -119,9 +129,8 @@ const filters = ref({
             </div>
             <div class="align-middle">
 
-                <DataTable v-model:expandedRows="expandedRows"  size="small" v-bind:rowClass="rowClass"
-                    :value="lista_depositos" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
-                    tableStyle="min-width: 50rem" :pt="{
+                <DataTable v-model:expandedRows="expandedRows" size="small" v-bind:rowClass="rowClass"
+                    :value="lista_depositos" scrollable scrollHeight="800px" tableStyle="min-width: 50rem" :pt="{
 
                     }">
 
@@ -144,7 +153,7 @@ const filters = ref({
                     }" />
 
                     <Column sortable field="nombre" header="Items" :pt="{
-                        bodyCell: { class: 'bg-secondary-900/30 font-bold text-center'  },
+                        bodyCell: { class: 'bg-secondary-900/30 font-bold text-center' },
                         headerCell: { class: 'uppercase bg-secondary-100 text-md' },
 
 
@@ -152,41 +161,32 @@ const filters = ref({
                     }"></Column>
 
                     <Column header="Cantidad Productos" :pt="{
-                        bodyCell: { class: 'bg-secondary-900/30 font-bold w-24  text-center' },
-                        headerContent: { class: ' mx-2' },
+                        bodyCell: { class: 'bg-secondary-900/30 text-sm font-bold w-56  text-center' },
+                        headerContent: { class: ' mx-2 ' },
                         headerCell: { class: 'uppercase bg-secondary-900 text-md' },
 
                     }">
-                        <template #body="slotProps">
-                            {{ (slotProps.data.productos.length)
-                            }}
-                        </template>
-                    </Column>
-                    <!--
-                    <Column header="" :pt="{
-                        bodyCell: { class: 'bg-secondary-900/30 font-bold w-14  text-center' },
-                        headerContent: { class: 'mx-2 text-cente' },
-                        headerCell: { class: 'uppercase bg-secondary-900 text-md' },
 
-                    }">
                         <template #body="slotProps">
-                                <div v-if="roles.includes('Super Administrador')||roles.includes('Administrador')"
-                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
-                                    <a :href="route('depositos.exportar', slotProps.data.id)" target="_blank"
-                                    class="py-auto p-2 text-xl"><i
-                                            class="fas fa-file-excel text-white"></i>
-                                    </a>
-                                </div>
+                            <div class="flex items-center justify-center">
+                                <div class="mx-2">
+                                    {{ (slotProps.data.productos.length) }}
+                            </div>
 
+                                <Button
+                                :pt="{
+                                    root: { class: 'px-2 py-2 text-xl bg-green-600 border-none hover:bg-green-500' }
+                                }"
+                                    @click.prevent="descargaExcel(slotProps.data.producto_completo)"><i class="fas fa-file-excel text-white text-xl"></i></Button>
+
+                            </div>
                         </template>
                     </Column>
 
-                    -->
                     <template #expansion="slotProps">
                         <div class="px-1">
-                            <DataTable :value="slotProps.data.productos" scrollable scrollHeight="300px"
-                                :virtualScrollerOptions="{ itemSize: 46 }" v-model:filters="filters">
+                            <DataTable :value="slotProps.data.productos" v-model:filters="filters" :paginator="true"
+                                :rows="20" :rowsPerPageOptions="[20, 40, 100, 200]">
 
                                 <Column field="sku" filterField="sku" header="Sku" sortable :pt="{
                                     bodyCell: { class: 'text-center p-0 m-0 w-36' },
@@ -232,18 +232,18 @@ const filters = ref({
                                     },
                                     bodyCellContent: {
 
-                                        class: 'text-center  w-96'
+                                        class: 'text-center  w-96 font-sm'
                                     },
 
                                 }">
                                 </Column>
 
                                 <Column field="defecto" header="Defecto" sortable :pt="{
-                                    bodyCell: { class: 'text-center p-0 m-0 w-36' },
-                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-36' },
+                                    bodyCell: { class: 'text-center p-0 m-0 w-96' },
+                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-96' },
                                     headerContent: {
 
-                                        class: 'text-center w-36'
+                                        class: 'text-center w-96 font-sm'
                                     },
                                     bodyCellContent: {
 
@@ -253,25 +253,25 @@ const filters = ref({
                                 }">
                                 </Column>
                                 <Column field="observaciones" header="Observaciones" sortable :pt="{
-                                    bodyCell: { class: 'text-center p-0 m-0 w-36' },
-                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-36' },
+                                    bodyCell: { class: 'text-center p-0 m-0 w-96' },
+                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-96' },
                                     headerContent: {
 
-                                        class: 'text-center w-36'
+                                        class: 'text-center w-96'
                                     },
                                     bodyCellContent: {
 
-                                        class: 'text-center w-36'
+                                        class: 'text-center w-96 font-sm'
                                     },
 
                                 }">
                                 </Column>
                                 <Column field="cantidad_total" header="Cantidad Total" sortable :pt="{
-                                    bodyCell: { class: 'text-center p-0 m-0 w-36' },
-                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-36' },
+                                    bodyCell: { class: 'text-center p-0 m-0 w-36 font-sm' },
+                                    headerCell: { class: 'bg-sky-300 p-0 m-0 w-36 font-sm' },
                                     headerContent: {
 
-                                        class: 'text-center w-36'
+                                        class: 'text-center w-36 font-sm'
                                     },
                                     bodyCellContent: {
 
@@ -322,4 +322,3 @@ const filters = ref({
 
     </AppLAyout>
 </template>
-

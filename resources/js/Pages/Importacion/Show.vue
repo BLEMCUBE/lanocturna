@@ -31,7 +31,7 @@ const clickDetalle=(e)=>{
     <AppLayout
         :pagina="[{ 'label': 'Importaciones', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-0 bg-white col-span-12 justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-0 bg-white col-span-12 justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <div class="mb-5 px-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
