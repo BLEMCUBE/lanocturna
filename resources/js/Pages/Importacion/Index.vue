@@ -136,7 +136,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -149,7 +149,7 @@ const filters = ref({
 
             <div class="align-middle  p-3">
                 <DataTable :filters="filters" :value="cars" scrollable scrollHeight="700px"
-                paginator :rows="100" resizableColumns columnResizeMode="expand" :pt="{
+                paginator :rows="50" resizableColumns columnResizeMode="expand" :pt="{
     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
 
 }" @row-click="clickDetalle" size="small">

@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-class ProductoImportRequest extends FormRequest
+class ProductoImportStockRequest extends FormRequest
 {
     public function authorize()
     {

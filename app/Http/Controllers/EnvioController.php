@@ -28,10 +28,6 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Request as Req;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Reader\Exception as PhpException;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 class EnvioController extends Controller
@@ -58,7 +54,8 @@ class EnvioController extends Controller
                     ->orWhere('estado', "VALIDADO")
                     ->orWhere('estado', "FACTURADO");
             })
-                ->select('*')
+                ->select('id','cliente','destino','facturado','estado','tipo','nro_compra'
+                ,'observaciones','total','parametro','created_at')
                 ->orderBy('created_at', 'DESC')->get()
         );
         return Inertia::render('Envio/Index', [
@@ -465,7 +462,7 @@ class EnvioController extends Controller
                 //}
             }else{
                 throw ValidationException::withMessages([
-                    'error_compra' => "Número de compra no debe esta vacio.",
+                    'error_compra' => "Número de compra no debe estar vacio.",
                 ]);
             }
         }

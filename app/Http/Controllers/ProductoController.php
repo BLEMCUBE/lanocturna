@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exports\ProductosExport;
 use App\Exports\ProductoVentaExport;
-use App\Http\Requests\ProductoImportRequest;
+use App\Http\Requests\ProductoImportStockRequest;
 use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
 use App\Http\Resources\ProductoCollection;
-use App\Imports\ProductoImport;
+use App\Imports\ProductoStockImport;
+use Illuminate\Validation\ValidationException;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
 use App\Models\ProductoYuan;
@@ -17,6 +18,7 @@ use App\Models\VentaDetalle;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Exception;
 use Illuminate\Support\Facades\Request;
 
 
@@ -243,11 +245,51 @@ class ProductoController extends Controller
     {
         return Inertia::render('Producto/Importar');
     }
-    public function importExcel(ProductoImportRequest $request)
+    public function importarStock(ProductoImportStockRequest $request)
     {
         $file = $request->file('archivo');
-        //importando excel
-        Excel::import(new ProductoImport(), $file);
+        $no_existe = [];
+        $filas = Excel::toArray([], $file);
+        $filas_a = array_slice($filas[0], 1);
+        $n_fila = 1;
+        foreach ($filas_a as $col) {
+            if (!empty($col[0])) {
+                $prod = Producto::where('origen', '=', $col[0])->first();
+                $n_fila = $n_fila + 1;
+
+                if (is_null($prod)) {
+                    array_push($no_existe, [
+                        'fila' => $n_fila,
+                        'sku' => $col[0],
+                    ]);
+                }
+            }else{
+                throw ValidationException::withMessages([
+                    'error_sku' => "SKU no debe estar vacio.",
+                ]);
+            }
+        }
+
+        if (count($no_existe) > 0   ) {
+            throw ValidationException::withMessages([
+                'filas' => [$no_existe]
+            ]);
+        } else {
+
+            DB::beginTransaction();
+            try {
+
+                //importando excel
+                Excel::import(new ProductoStockImport(), $file);
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollBack();
+                return [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
     }
 
     public function actualizarFuturo()

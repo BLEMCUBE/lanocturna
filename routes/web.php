@@ -93,7 +93,7 @@ Route::controller(ProductoController::class)->group(function () {
     Route::get('/productos/{id}/exportproductoventas', 'exportProductoVentas')->name('productos.exportproductoventas')->middleware('auth');
     Route::get('/productos/actualizarfuturo', 'actualizarFuturo')->name('productos.actualizarfuturo')->middleware('auth');
     Route::get('/productos/actualizarYuanes', 'actualizarYuanes')->name('productos.actualizarYuanes')->middleware('auth');
-    //Route::post('/productos/importar', 'importExcel')->name('productos.importar')->middleware('auth');
+    Route::post('/productos/importarstock', 'importarStock')->name('productos.importarstock')->middleware('auth');
     Route::get('/productos/vistaimportar', 'vistaImportar')->name('productos.vistaimportar')->middleware('auth');
     Route::get('/productos/create', 'create')->name('productos.create')->middleware('auth');
     Route::get('/productos/{id}', 'edit')->name('productos.edit')->middleware('auth');
@@ -214,6 +214,7 @@ Route::controller(DepositoController::class)->group(function () {
     Route::post('/depositos/destroyproductos', 'destroyProductos')->name('depositos.destroyproductos')->middleware('auth');
     Route::delete('/depositos/{id}', 'destroy')->name('depositos.destroy')->middleware('auth');
     Route::delete('/depositos/{id}/deposito', 'destroyDeposito')->name('depositos.destroydeposito')->middleware('auth');
+    Route::post('/depositos/destroydepositolista', 'destroyDepositoLista')->name('depositos.destroydepositolista')->middleware('auth');
 });
 
 //Compra
@@ -279,6 +280,7 @@ Route::controller(RmaController::class)->group(function () {
 //Reporte Listado  productos Rma
 Route::get('/reportes-productos-rma', [ReporteProductoRmaController::class, 'index'])->name('reportes.productosrma')->middleware(['auth', 'verified']);
 Route::get('/reportes-productos-rma/exportproductoventas',[ReporteProductoRmaController::class, 'exportProductoRma'])->name('reportes.exportproductorma')->middleware('auth');
+Route::get('/reportes-productos-rma/exportstockrma/{completo}',[ReporteProductoRmaController::class, 'exportStockRma'])->name('reportes.exportstockrma')->middleware('auth');
 
 //Plantilas importar
 Route::get('/plantillas/importar/{nombre}',[PlantillaController::class, 'descargarPlantilla'])->name('plantillas.importar')->middleware('auth');

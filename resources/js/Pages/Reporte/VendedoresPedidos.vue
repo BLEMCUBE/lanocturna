@@ -124,7 +124,7 @@ const btnVer = (id) => {
 
 
                 <div
-                    class="card px-4 py-3 mb-4 bg-white col-span-12 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+                    class="card px-4 mb-4 bg-white col-span-12 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
                     <DataTable size="small" v-model:filters="filters" :value="total_ventas" :paginator="true" :rows="20"
                         :rowsPerPageOptions="[20, 40, 100, 200]"
