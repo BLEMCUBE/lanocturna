@@ -233,7 +233,8 @@ class DepositoController extends Controller
 
 
         //Lista deposito_detalle
-        $lista_depo = DepositoLista::whereNot('id', $deposito_detalle->deposito_lista_id)->get();
+        $lista_depo = DepositoLista::whereNot('id', $deposito_detalle->deposito_lista_id)
+        ->orderBy('nombre','desc')->get();
 
         $lista_depositos = [];
         foreach ($lista_depo as $destino) {
@@ -272,7 +273,7 @@ class DepositoController extends Controller
         }
 
         //Lista deposito_detalle
-        $lista_depo = DepositoLista::whereNot('id', $origen_id)->get();
+        $lista_depo = DepositoLista::whereNot('id', $origen_id)->orderBy('nombre','asc')->get();
 
         $lista_depositos = [];
         foreach ($lista_depo as $destino) {
@@ -603,6 +604,17 @@ class DepositoController extends Controller
             if (!empty($deposito)) {
                 $deposito->delete();
             }
+        }
+    }
+
+    public function destroyDepositoLista(Request $request)
+    {
+        $id = $request->input('id');
+        $deposito = DepositoLista::find($id);
+        
+        if (!empty($deposito)) {
+            $deposito->depositos_productos()->delete();
+            //$deposito->delete();
         }
     }
 

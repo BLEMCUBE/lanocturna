@@ -153,7 +153,7 @@ const clickDetalle = (e) => {
 
                                 <div class="flex  items-center">
 
-                                    <img class="rounded  mr-5 mr-5 bg-white shadow-2xl text-center w-10 h-10 object-contain"
+                                    <img class="rounded  mr-5  bg-white shadow-2xl text-center w-10 h-10 object-contain"
                                         :src="slotProps.data.producto.imagen" alt="image">
                                     <p class="text-xs text-center flex-wrap">{{ slotProps.data.producto.nombre }}</p>
                                 </div>

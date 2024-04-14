@@ -214,6 +214,7 @@ Route::controller(DepositoController::class)->group(function () {
     Route::post('/depositos/destroyproductos', 'destroyProductos')->name('depositos.destroyproductos')->middleware('auth');
     Route::delete('/depositos/{id}', 'destroy')->name('depositos.destroy')->middleware('auth');
     Route::delete('/depositos/{id}/deposito', 'destroyDeposito')->name('depositos.destroydeposito')->middleware('auth');
+    Route::post('/depositos/destroydepositolista', 'destroyDepositoLista')->name('depositos.destroydepositolista')->middleware('auth');
 });
 
 //Compra
