@@ -279,7 +279,7 @@ class EnvioController extends Controller
             )
         ]);
     }
-    public function show($id)
+    public function show($id,$tipo='index')
     {
         $subtema = Venta::with(['detalles_ventas' => function ($query) {
             $query->select('venta_detalles.*')->with(['producto' => function ($query) {
@@ -293,7 +293,8 @@ class EnvioController extends Controller
 
         $venta = new VentaResource($subtema);
         return Inertia::render('Envio/Show', [
-            'venta' => $venta
+            'venta' => $venta,
+            'tipo'=>$tipo
         ]);
     }
 

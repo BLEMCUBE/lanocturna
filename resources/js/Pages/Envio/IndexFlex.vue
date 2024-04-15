@@ -1,20 +1,14 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm, router } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
-
+import { Head, usePage, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
-import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 
-const toast = useToast();
 const tabla_ventas = ref()
-const { permissions } = usePage().props.auth
 const titulo = "Envios Flex"
 const ruta = 'envios'
-
 //actualizar pagina
 setTimeout(() => {
     if (route().current('envios.flex')) {
@@ -22,27 +16,14 @@ setTimeout(() => {
     }
 }, 60000);
 
-const btnVer = (id) => {
-    router.get(route(ruta + '.show', id));
-
-};
-
-
-
 const clickDetalle = (e) => {
-
-    btnVer(e.data.id)
+    router.get(route(ruta + '.show', {id:e.data.id,tipo:'flex'}));
 }
+
 onMounted(() => {
-
-    //tabla_ventas.value = usePage().props.ventas.data;
     tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
-
 });
 
-const show = (tipo, titulo, mensaje) => {
-    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
-};
 
 const colorEstado = (estado) => {
     switch (estado) {

@@ -42,6 +42,10 @@ class ProductoController extends Controller
             )
         ]);
     }
+    public function ajusteStock()
+    {
+        return Inertia::render('Producto/AjustarStock');
+    }
 
     public function create()
     {

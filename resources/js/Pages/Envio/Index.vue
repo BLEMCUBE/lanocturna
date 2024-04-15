@@ -22,17 +22,10 @@ setTimeout(() => {
     }
 }, 60000);
 
-const btnVer = (id) => {
-    router.get(route(ruta + '.show', id));
-
-};
-
-
-
 const clickDetalle = (e) => {
-
-    btnVer(e.data.id)
+    router.get(route(ruta + '.show', {id:e.data.id,tipo:'index'}));
 }
+
 onMounted(() => {
 
     //tabla_ventas.value = usePage().props.ventas.data;
