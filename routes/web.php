@@ -93,6 +93,7 @@ Route::controller(ProductoController::class)->group(function () {
     Route::get('/productos/{id}/exportproductoventas', 'exportProductoVentas')->name('productos.exportproductoventas')->middleware('auth');
     Route::get('/productos/actualizarfuturo', 'actualizarFuturo')->name('productos.actualizarfuturo')->middleware('auth');
     Route::get('/productos/actualizarYuanes', 'actualizarYuanes')->name('productos.actualizarYuanes')->middleware('auth');
+    Route::get('/productos/ajuste-stock', 'ajusteStock')->name('productos.ajuste-stock')->middleware('auth');
     Route::post('/productos/importarstock', 'importarStock')->name('productos.importarstock')->middleware('auth');
     Route::get('/productos/vistaimportar', 'vistaImportar')->name('productos.vistaimportar')->middleware('auth');
     Route::get('/productos/create', 'create')->name('productos.create')->middleware('auth');
