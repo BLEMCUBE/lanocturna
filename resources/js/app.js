@@ -14,7 +14,7 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import PrimeVue from 'primevue/config';
 import Tailwind_PT from "@/passthrough/tailwind";
-import MyDesignSystem from "@/passthrough/designsystem";
+//import MyDesignSystem from "@/passthrough/designsystem";
 //import Tailwind from "primevue/passthrough/tailwind";
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';

@@ -1,5 +1,3 @@
-
-
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted, watch, computed } from 'vue'
@@ -22,6 +20,10 @@ const formDelete = useForm({
     id: '',
     productos: []
 });
+const formDeleteDeposito = useForm({
+    id: '',
+});
+
 
 onMounted(() => {
     lista_depositos.value = usePage().props.depositos;
@@ -45,13 +47,13 @@ const btnEliminar = () => {
 
     }).then((result) => {
         if (result.isConfirmed) {
-            isSend.value=true;
+            isSend.value = true;
             formDelete.post(route(ruta + '.destroyproductos'),
                 {
                     preserveScroll: true,
                     forceFormData: true,
                     onSuccess: () => {
-                        isSend.value=false;
+                        isSend.value = false;
                         formDelete.reset();
                         show('success', 'Eliminado', 'Se ha eliminado')
                         setTimeout(() => {
@@ -62,6 +64,43 @@ const btnEliminar = () => {
                 });
         }
     });
+}
+
+
+const btnEliminarDeposito = (id) => {
+
+const alerta = Swal.mixin({ buttonsStyling: true });
+alerta.fire({
+    width: 350,
+    title: "Seguro de eliminar ",
+    text: 'Se eliminará definitivamente',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Eliminar',
+    cancelButtonText: 'Cancelar',
+    cancelButtonColor: 'red',
+    confirmButtonColor: '#2563EB',
+
+}).then((result) => {
+    if (result.isConfirmed) {
+        isSend.value = true;
+        formDeleteDeposito.id=id;
+        formDeleteDeposito.post(route(ruta + '.destroydepositolista'),
+            {
+                preserveScroll: true,
+                forceFormData: true,
+                onSuccess: () => {
+                    isSend.value = false;
+                    formDelete.reset();
+                    show('success', 'Eliminado', 'Se ha eliminado')
+                    setTimeout(() => {
+                        router.get(route(ruta + '.index'));
+                    }, 700);
+
+                }
+            });
+    }
+});
 }
 
 
@@ -108,7 +147,7 @@ const collapseAll = () => {
 };
 
 const expandEvent = (event) => {
-    expandedRows.value = lista_depositos.value.filter((p) => p.id==event.data.id);
+    expandedRows.value = lista_depositos.value.filter((p) => p.id == event.data.id);
     formDelete.reset();
 
 };
@@ -135,10 +174,11 @@ const filters = ref({
 });
 </script>
 <template>
+
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
@@ -147,9 +187,8 @@ const filters = ref({
             <div class="align-middle">
 
                 <DataTable v-model:expandedRows="expandedRows" size="small" v-bind:rowClass="rowClass"
-                v-on:row-collapse="collapseEvent" v-on:row-expand="expandEvent"
-                                    :value="lista_depositos" scrollable scrollHeight="800px" :virtualScrollerOptions="{ itemSize: 46 }"
-                    tableStyle="min-width: 50rem" :pt="{
+                    v-on:row-collapse="collapseEvent" v-on:row-expand="expandEvent" :value="lista_depositos" scrollable
+                    scrollHeight="800px" pagination :rows=50 tableStyle="min-width: 50rem" :pt="{
 
                     }">
 
@@ -180,7 +219,7 @@ const filters = ref({
                     }"></Column>
 
                     <Column header="Cantidad Productos" :pt="{
-                        bodyCell: { class: 'bg-secondary-900/30 font-bold w-24  text-center' },
+                        bodyCell: { class: 'bg-secondary-900/30 font-bold w-14  text-center' },
                         headerContent: { class: ' mx-2' },
                         headerCell: { class: 'uppercase bg-secondary-900 text-md' },
 
@@ -191,63 +230,67 @@ const filters = ref({
                         </template>
                     </Column>
                     <Column header="" :pt="{
-                            bodyCell: { class: 'bg-secondary-900/30 font-bold w-14  text-center' },
-                            headerContent: { class: 'mx-2 text-center' },
-                            headerCell: { class: 'uppercase bg-secondary-900 text-md' },
+                        bodyCell: { class: 'bg-secondary-900/30 font-bold w-14  text-center' },
+                        headerContent: { class: 'mx-2 text-center' },
+                        headerCell: { class: 'uppercase bg-secondary-900 text-md' },
 
-                        }">
-                        <template #body="slotProps">
-                            <div v-if="roles.includes('Super Administrador') || roles.includes('Administrador')"
+                    }">
+                        <template #body="slotProps" >
+                            <div class="flex justify-center items-center mx-2">
+
+                                <div v-if="roles.includes('Super Administrador') || roles.includes('Administrador')"
                                 v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                 class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
                                 <a :href="route('depositos.exportar', slotProps.data.id)" target="_blank"
-                                    class="py-auto p-2 text-xl"><i class="fas fa-file-excel text-white"></i>
-                                </a>
+                                class="py-auto p-2 text-xl"><i class="fas fa-file-excel text-white"></i>
+                            </a>
+                        </div>
+                            <div class="w-8 h-8" v-if="roles.includes('Super Administrador') || roles.includes('Administrador')">
+                                <Button v-if="slotProps.data.id > 2 && slotProps.data.productos.length==0"
+                                    class="w-8 h-8 rounded bg-red-700 p-2  text-base font-normal text-white hover:bg-red-600"
+                                    v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                    @click.prevent="btnEliminarDeposito(slotProps.data.id)"><i class="fas fa-trash-alt w-6 h-4"></i></Button>
+                                </div>
                             </div>
-
+                                
                         </template>
                     </Column>
                     <template #expansion="slotProps">
                         <div class="px-1">
-                            <DataTable :value="slotProps.data.productos" scrollable scrollHeight="300px"
-                            paginator :rows="100" v-model:filters="filters"
-                                v-model:selection="formDelete.productos"
-                                :pt="{
+                            <DataTable :value="slotProps.data.productos" scrollable scrollHeight="300px" paginator
+                                :rows="100" v-model:filters="filters" v-model:selection="formDelete.productos" :pt="{
 
                                     header: { class: 'text-center pb-0 mb-0' },
                                     headerContent: { class: 'bg-sky-300 pb-0 mb-0' },
 
-                                }"
-                                >
+                                }">
                                 <template #header size="small">
                                     <div class="flex justify-content-end text-base bg-sky-300 px-5 py-2">
 
                                         <div>
 
-                                                <CambiarProductosDepositoModal :origen-id="slotProps.data.id"
-                                                :origen-nombre="slotProps.data.nombre"
-                                                :productos="formDelete.productos"
+                                            <CambiarProductosDepositoModal :origen-id="slotProps.data.id"
+                                                :origen-nombre="slotProps.data.nombre" :productos="formDelete.productos"
                                                 @update:valor=eventoEnvio($event)
                                                 :disabled-status="!formDelete.productos || !formDelete.productos.length">
-                                                </CambiarProductosDepositoModal>
+                                            </CambiarProductosDepositoModal>
 
                                         </div>
 
-                                                <div v-if=" isSend==false">
-                                                    <Button :disabled="!formDelete.productos || !formDelete.productos.length"
-                                                    v-if="slotProps.data.id == 2"
-                                                    class="w-auto rounded bg-red-700 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
-                                                    v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                                    @click.prevent="btnEliminar()"><i class="fas fa-trash-alt w-6 h-4"></i></Button>
-                                                </div>
+                                        <div v-if="isSend == false">
+                                            <Button :disabled="!formDelete.productos || !formDelete.productos.length"
+                                                v-if="slotProps.data.id == 2"
+                                                class="w-auto rounded bg-red-700 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
+                                                v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                                @click.prevent="btnEliminar()"><i
+                                                    class="fas fa-trash-alt w-6 h-4"></i></Button>
+                                        </div>
                                     </div>
                                 </template>
-                                <Column selectionMode="multiple" headerStyle="width: 3rem"
-                                :pt="{
-                                          headerCell: { class: 'text-center bg-sky-300' },
-                                          bodyCell: { class: 'text-center' },
-                                    }"></Column
-                                    >
+                                <Column selectionMode="multiple" headerStyle="width: 3rem" :pt="{
+                                    headerCell: { class: 'text-center bg-sky-300' },
+                                    bodyCell: { class: 'text-center' },
+                                }"></Column>
                                 <Column field="sku" filterField="sku" header="Sku" sortable :pt="{
                                     bodyCell: { class: 'text-center p-0 m-0 w-36' },
                                     headerCell: { class: 'bg-sky-300 p-0 m-0 w-36 ' },

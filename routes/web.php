@@ -11,9 +11,11 @@ use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
+use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteProductoRmaController;
 use App\Http\Controllers\ReporteProductoVendidoController;
+use App\Http\Controllers\ReporteStockProductosController;
 use App\Http\Controllers\ReporteVendedoresPedidosController;
 use App\Http\Controllers\ReporteVentaController;
 use App\Http\Controllers\RmaController;
@@ -91,7 +93,8 @@ Route::controller(ProductoController::class)->group(function () {
     Route::get('/productos/{id}/exportproductoventas', 'exportProductoVentas')->name('productos.exportproductoventas')->middleware('auth');
     Route::get('/productos/actualizarfuturo', 'actualizarFuturo')->name('productos.actualizarfuturo')->middleware('auth');
     Route::get('/productos/actualizarYuanes', 'actualizarYuanes')->name('productos.actualizarYuanes')->middleware('auth');
-    //Route::post('/productos/importar', 'importExcel')->name('productos.importar')->middleware('auth');
+    Route::get('/productos/ajuste-stock', 'ajusteStock')->name('productos.ajuste-stock')->middleware('auth');
+    Route::post('/productos/importarstock', 'importarStock')->name('productos.importarstock')->middleware('auth');
     Route::get('/productos/vistaimportar', 'vistaImportar')->name('productos.vistaimportar')->middleware('auth');
     Route::get('/productos/create', 'create')->name('productos.create')->middleware('auth');
     Route::get('/productos/{id}', 'edit')->name('productos.edit')->middleware('auth');
@@ -181,7 +184,8 @@ Route::controller(EnvioController::class)->group(function () {
     Route::get('/envios/dac', 'indexDac')->name('envios.dac')->middleware('auth');
     Route::get('/envios/cadeteria', 'indexCadeteria')->name('envios.cadeteria')->middleware('auth');
     Route::get('/envios/ticket/{id}', 'generarTicket')->name('envios.generar_ticket')->middleware('auth');
-    Route::get('/envios/{id}', 'show')->name('envios.show')->middleware('auth');
+    //Route::get('/envios/{id}', 'show')->name('envios.show')->middleware('auth');
+    Route::get('/envios/{id}/{tipo}', 'show')->name('envios.show')->middleware('auth');
 
 });
 
@@ -212,6 +216,7 @@ Route::controller(DepositoController::class)->group(function () {
     Route::post('/depositos/destroyproductos', 'destroyProductos')->name('depositos.destroyproductos')->middleware('auth');
     Route::delete('/depositos/{id}', 'destroy')->name('depositos.destroy')->middleware('auth');
     Route::delete('/depositos/{id}/deposito', 'destroyDeposito')->name('depositos.destroydeposito')->middleware('auth');
+    Route::post('/depositos/destroydepositolista', 'destroyDepositoLista')->name('depositos.destroydepositolista')->middleware('auth');
 });
 
 //Compra
@@ -243,6 +248,10 @@ Route::get('/reportes-productos-vendidos/exportproductoventas',[ReporteProductoV
 Route::get('/reportes-vendedores-pedidos', [ReporteVendedoresPedidosController::class, 'index'])->name('reportes.vendedorespedidos')->middleware(['auth', 'verified']);
 Route::get('/reportes-vendedores-pedidos/exportvendedorespedidos',[ReporteVendedoresPedidosController::class, 'exportVendedoresPedidos'])->name('reportes.exportvendedorespedidos')->middleware('auth');
 
+//Reporte Listado  stock productos
+Route::get('/reportes-productos-stock', [ReporteStockProductosController::class, 'index'])->name('reportes.stockproductos')->middleware(['auth', 'verified']);
+Route::get('/reportes-productos-stock/exportxls',[ReporteStockProductosController::class, 'exportXls'])->name('reportes.exportxls')->middleware('auth');
+
 
 //Rma -Presupuesto
 Route::controller(RmaController::class)->group(function () {
@@ -273,5 +282,10 @@ Route::controller(RmaController::class)->group(function () {
 //Reporte Listado  productos Rma
 Route::get('/reportes-productos-rma', [ReporteProductoRmaController::class, 'index'])->name('reportes.productosrma')->middleware(['auth', 'verified']);
 Route::get('/reportes-productos-rma/exportproductoventas',[ReporteProductoRmaController::class, 'exportProductoRma'])->name('reportes.exportproductorma')->middleware('auth');
+Route::get('/reportes-productos-rma/exportstockrma/{completo}',[ReporteProductoRmaController::class, 'exportStockRma'])->name('reportes.exportstockrma')->middleware('auth');
+
+//Plantilas importar
+Route::get('/plantillas/importar/{nombre}',[PlantillaController::class, 'descargarPlantilla'])->name('plantillas.importar')->middleware('auth');
+
 
 require __DIR__.'/auth.php';

@@ -135,6 +135,17 @@ const showDropdown = ref(false)
                             v-show="permissions.includes('reporte-productos-vendidos')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('reportes.stockproductos')"
+                                :active="route().current('reportes.stockproductos')">
+                                <span class="ml-2 uppercase">STOCK POR FECHA</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+                        <li @click="setMenu('reportes')" class="w-full"
+                            v-show="permissions.includes('reporte-productos-vendidos')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('reportes.productosvendidos')"
                                 :active="route().current('reportes.productosvendidos')">
                                 <span class="ml-2 uppercase">PRODUCTOS VENDIDOS</span>
@@ -237,7 +248,17 @@ const showDropdown = ref(false)
                         </li>
                     </div>
                     <div class="flex items-center">
-
+                        <li @click="setMenu('configuraciones')" class="w-full"
+                            v-show="permissions.includes('configuraciones')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('productos.ajuste-stock')"
+                                :active="route().current('productos.ajuste-stock')">
+                                <span class="ml-2 uppercase"> AJUSTE DE STOCK</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
 
                         <li @click="setMenu('configuraciones')" class="w-full"
                             v-show="permissions.includes('configuraciones')">
@@ -396,11 +417,10 @@ const showDropdown = ref(false)
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('envios.index')" :active="route().current('envios.index')">
                                 <span class="ml-2 uppercase ">Envios Ues
-                                    <Badge v-show="total_ues.length > 0"
-                                        class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
-                                        :value="total_ues" />
+                                    <Badge v-show="total_ues.length > 0" class="ml-4 px-1 mr-auto text-[12px] font-base"
+                                        severity="danger" :value="total_ues" />
                                 </span>
-                             
+
                             </NavLinkSideBarNotIcon>
                         </li>
                     </div>
@@ -418,21 +438,20 @@ const showDropdown = ref(false)
                             </NavLinkSideBarNotIcon>
                         </li>
                     </div>
-                    
+
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('envios.dac')" :active="route().current('envios.dac')">
-                                <span class="ml-2 uppercase ">Envios dac
-                                    <Badge v-show="total_dac.length > 0"
-                                        class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
-                                        :value="total_dac" />
+                                <span class="ml-2 uppercase ">Envios UES WEB
+                                    <Badge v-show="total_dac.length > 0" class="ml-4 px-1 mr-auto text-[12px] font-base"
+                                        severity="danger" :value="total_dac" />
                                 </span>
                             </NavLinkSideBarNotIcon>
                         </li>
                     </div>
-                    
+
                     <div class="flex items-center">
                         <li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
                             <NavLinkSideBarNotIcon

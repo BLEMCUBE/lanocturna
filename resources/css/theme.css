@@ -843,6 +843,7 @@
     padding: 0.75rem 0.75rem;
     min-width: 3rem;
   }
+ 
   .p-inputgroup-addon:last-child {
     border-right: 1px solid #d4d4d8;
   }
@@ -2433,7 +2434,7 @@
     background: #EEF2FF;
     color: #312E81;
   }
-
+/*
   .p-datatable .p-datatable-tbody > tr > td .p-row-toggler,
   .p-datatable .p-datatable-tbody > tr > td .p-row-editor-init,
   .p-datatable .p-datatable-tbody > tr > td .p-row-editor-save,
@@ -2458,7 +2459,7 @@
 
     outline-offset: 0;
     box-shadow: 0 0 0 1px #6366F1;
-  }
+  }*/
   .p-dataview .p-paginator-top {
     border-width: 0 0 1px 0;
     border-radius: 0;

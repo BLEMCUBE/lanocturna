@@ -3,10 +3,6 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-//import DataTable from 'primevue/datatable';
-import ColumnGroup from 'primevue/columngroup';   // optional
-import Row from 'primevue/row';                   // optional
-
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
@@ -16,7 +12,6 @@ const tabla_productos = ref()
 const { permissions } = usePage().props.auth
 const titulo = "Productos"
 const ruta = 'productos'
-
 const formDelete = useForm({
     id: '',
 });
@@ -39,10 +34,7 @@ const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
 
 };
-const btnEditar = (id) => {
-    router.get(route(ruta + '.edit', id));
 
-};
 const btnEliminar = (id, name) => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
@@ -77,7 +69,6 @@ const btnEliminar = (id, name) => {
 
 onMounted(() => {
 
-    //tabla_productos.value = usePage().props.productos.data;
     tabla_productos.value = Array.from(usePage().props.productos.data, (x) => x);
 
 });
@@ -99,13 +90,16 @@ const filters = ref({
 });
 </script>
 <template>
+
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
-        <div class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12">
+
+
+        <div class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12">
 
             <!--Contenido-->
             <Toast />
-            <div class="px-3 pb-2 col-span-full flex justify-start items-center">
+            <div class="px-3 p-2 col-span-full flex justify-start items-center">
                 <h5 class="text-2xl font-medium pr-5">{{ titulo }}</h5>
             </div>
 
@@ -127,8 +121,8 @@ const filters = ref({
                 <DataTable :rowClass="rowClass" :filters="filters" :value="tabla_productos" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                     root: { class: 'w-auto' }
-                }" :globalFilterFields="['codigo_barra', 'origen', 'nombre']" scrollable scrollHeight="700px"
-                    paginator :rows="100" @row-click="clickDetalle" size="small">
+                }" :globalFilterFields="['codigo_barra', 'origen', 'nombre']" scrollable scrollHeight="700px" paginator :rows="50"
+                    @row-click="clickDetalle" size="small">
                     <template #header>
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -201,9 +195,6 @@ const filters = ref({
             <!--Contenido-->
 
         </div>
-
+ 
     </AppLayout>
 </template>
-
-
-<style type="text/css"></style>

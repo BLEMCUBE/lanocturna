@@ -160,7 +160,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -174,7 +174,7 @@ const filters = ref({
 
                 <DataTable resizableColumns  :filters="filters" :value="tabla_ventas" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer' }
-                }" scrollable scrollHeight="700px" paginator :rows="100"
+                }" scrollable scrollHeight="700px" paginator :rows="50"
                     @row-click="clickDetalle" size="small">
 
                     <template #header>
@@ -186,7 +186,7 @@ const filters = ref({
 
                                 <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
                                     format="DD/MM/YYYY"
-                                    class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
+                                    class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
                                      v-model:value="date" :shortcuts="shortcuts" lang="es"
                                     placeholder="Seleccione Fecha"></date-picker>
 
@@ -234,7 +234,7 @@ const filters = ref({
                             <Button
                                 v-if="permissions.includes('eliminar-ventas') && slotProps.data.estado !== 'ANULADO'"
                                 @click="btnEliminar(slotProps.data.id)"
-                                class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 hover:bg-red-600 "
+                                class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 "
                                 v-tooltip.top="{ value: `Anular`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
                                     class="fas fa-ban"></i></Button>
 

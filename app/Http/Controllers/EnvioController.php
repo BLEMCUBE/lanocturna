@@ -28,10 +28,6 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Request as Req;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Reader\Exception as PhpException;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 class EnvioController extends Controller
@@ -58,7 +54,8 @@ class EnvioController extends Controller
                     ->orWhere('estado', "VALIDADO")
                     ->orWhere('estado', "FACTURADO");
             })
-                ->select('*')
+                ->select('id','cliente','destino','facturado','estado','tipo','nro_compra'
+                ,'observaciones','total','parametro','created_at')
                 ->orderBy('created_at', 'DESC')->get()
         );
         return Inertia::render('Envio/Index', [
@@ -195,6 +192,7 @@ class EnvioController extends Controller
                 'destino' => $request->destino,
                 'moneda' => $request->moneda,
                 'tipo' => $request->tipo ?? 'ENVIO',
+                'cliente' => json_encode($request->cliente),
                 'vendedor_id' => $vendedor->id,
                 'facturador_id' => $vendedor->id,
                 'fecha_facturacion' => now()
@@ -281,7 +279,7 @@ class EnvioController extends Controller
             )
         ]);
     }
-    public function show($id)
+    public function show($id,$tipo='index')
     {
         $subtema = Venta::with(['detalles_ventas' => function ($query) {
             $query->select('venta_detalles.*')->with(['producto' => function ($query) {
@@ -295,7 +293,8 @@ class EnvioController extends Controller
 
         $venta = new VentaResource($subtema);
         return Inertia::render('Envio/Show', [
-            'venta' => $venta
+            'venta' => $venta,
+            'tipo'=>$tipo
         ]);
     }
 
@@ -428,29 +427,27 @@ class EnvioController extends Controller
         $existe_stock = [];
         $filas = Excel::toArray([], $file);
         $filas_a = array_slice($filas[0], 1);
-
         $n_fila = 1;
-        foreach ($filas_a as $fila) {
-            if (!empty($fila[0])) {
-
-                $prod = Producto::where('origen', '=', $fila[14])->first();
-                $compra = Venta::where('nro_compra', '=', $fila[0])
+        foreach ($filas_a as $col) {
+            if (!empty($col[0])) {
+                $prod = Producto::where('origen', '=', $col[2])->first();
+                $compra = Venta::where('nro_compra', '=', $col[0])
                     ->whereNull('fecha_anulacion')->first();
                 $n_fila = $n_fila + 1;
 
                 if (is_null($prod)) {
                     array_push($no_existe, [
                         'fila' => $n_fila,
-                        'sku' => $fila[14],
+                        'sku' => $col[2],
                     ]);
                 }
 
 
                 if (!empty($prod)) {
-                    if ($prod->stock < $fila[5]) {
+                    if ($prod->stock < $col[1]) {
                         array_push($existe_stock, [
                             'fila' => $n_fila,
-                            'sku' => $fila[14],
+                            'sku' => $col[2],
                             'stock' => $prod->stock
                         ]);
                     }
@@ -460,15 +457,18 @@ class EnvioController extends Controller
                 if (!empty($compra)) {
                     array_push($existe_compra, [
                         'fila' => $n_fila,
-                        'nro_compra' => $fila[0],
+                        'nro_compra' => $col[0],
                     ]);
                 }
                 //}
+            }else{
+                throw ValidationException::withMessages([
+                    'error_compra' => "Número de compra no debe estar vacio.",
+                ]);
             }
         }
 
-        //if (count($no_existe) > 1  || count($existe_compra) > 0 || count($existe_stock) > 1) {
-        if (count($no_existe) > 0  || count($existe_stock) > 1) {
+        if (count($no_existe) > 0  || count($existe_stock) > 0 || count($existe_compra) > 0) {
             throw ValidationException::withMessages([
                 'filas' => [$no_existe],
                 'compras' => [$existe_compra],

@@ -62,7 +62,7 @@ const clickDetalle = (e) => {
         </Dialog>
         <!--Modal productos-->
         <div
-            class="card px-4 py-3 mb-0 bg-white col-span-12 justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-0 bg-white col-span-12 justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <div class="mb-5 px-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
@@ -120,7 +120,7 @@ const clickDetalle = (e) => {
                         scrollable scrollHeight="700px" @row-click="clickDetalle" :pt="{
                             bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                             root: { class: 'w-auto' }
-                        }" :paginator="true" :rows="100" tableStyle="min-width: 50rem" size="small">
+                        }" :paginator="true" :rows="50" tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -153,7 +153,7 @@ const clickDetalle = (e) => {
 
                                 <div class="flex  items-center">
 
-                                    <img class="rounded  mr-5 mr-5 bg-white shadow-2xl text-center w-10 h-10 object-contain"
+                                    <img class="rounded  mr-5  bg-white shadow-2xl text-center w-10 h-10 object-contain"
                                         :src="slotProps.data.producto.imagen" alt="image">
                                     <p class="text-xs text-center flex-wrap">{{ slotProps.data.producto.nombre }}</p>
                                 </div>

@@ -21,7 +21,7 @@ const { permissions } = usePage().props.auth
 const titulo = "Historial de Ventas"
 const ruta = 'ventas'
 const { tipo_cambio } = usePage().props
-
+const date = ref();
 const formDelete = useForm({
     id: '',
 });
@@ -61,8 +61,11 @@ const shortcuts = [
     },
 ]
 
-const date = ref([new Date(), new Date()]);
-//const date = ref([]);
+onMounted(() => {
+    date.value = [subDays(new Date(), 2), new Date()];
+    filtrado(date.value);
+});
+
 //filtrado
 const filtrado = (value) => {
     if (value[0] != null && value[1] != null) {
@@ -76,15 +79,14 @@ const filtrado = (value) => {
             {
                 preserveState: true,
                 onSuccess: () => {
-                    //tabla_ventas.value = usePage().props.ventas.data;
-
-                    //tabla_ventas.value = usePage().props.ventas.data;
-                    tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
+                    //tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
+                    tabla_ventas.value = usePage().props.ventas.data;
                     cargando.value = false;
                 }
 
             }
         );
+        date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
     } else {
         router.get(route(ruta + '.index'))
     }
@@ -152,15 +154,7 @@ const clickDetalle = (e) => {
 
     btnVer(e.data.id)
 }
-onMounted(() => {
-    cargando.value = true;
-    //tabla_ventas.value = usePage().props.ventas.data;
 
-    tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
-    cargando.value = false;
-
-
-});
 
 const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
@@ -191,7 +185,7 @@ const filters = ref({
 <template>
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
-        <div class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12">
+        <div class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12">
 
             <!--Contenido-->
             <Toast />
@@ -205,7 +199,7 @@ const filters = ref({
 
                 <DataTable :filters="filters" :value="tabla_ventas" :loading="cargando" :pt="{
                     bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100' }
-                }" scrollable scrollHeight="700px" paginator :rows="100" @row-click="clickDetalle"
+                }" scrollable scrollHeight="700px" paginator :rows="50" @row-click="clickDetalle"
                     size="small">
 
                     <template #header>
@@ -215,7 +209,7 @@ const filters = ref({
                             }" />
 
                             <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
-                                class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
+                                class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
                                 v-model:value="date" :shortcuts="shortcuts" lang="es"
                                 placeholder="Seleccione Fecha"></date-picker>
 
@@ -354,7 +348,7 @@ const filters = ref({
 
                             <Button v-if="permissions.includes('eliminar-ventas') && slotProps.data.estado !== 'ANULADO'"
                                 @click="btnEliminar(slotProps.data.id)"
-                                class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 hover:bg-red-600 "
+                                class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 "
                                 v-tooltip.top="{ value: `Anular`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
                                     class="fas fa-ban"></i></Button>
 
