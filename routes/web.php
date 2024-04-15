@@ -184,7 +184,8 @@ Route::controller(EnvioController::class)->group(function () {
     Route::get('/envios/dac', 'indexDac')->name('envios.dac')->middleware('auth');
     Route::get('/envios/cadeteria', 'indexCadeteria')->name('envios.cadeteria')->middleware('auth');
     Route::get('/envios/ticket/{id}', 'generarTicket')->name('envios.generar_ticket')->middleware('auth');
-    Route::get('/envios/{id}', 'show')->name('envios.show')->middleware('auth');
+    //Route::get('/envios/{id}', 'show')->name('envios.show')->middleware('auth');
+    Route::get('/envios/{id}/{tipo}', 'show')->name('envios.show')->middleware('auth');
 
 });
 

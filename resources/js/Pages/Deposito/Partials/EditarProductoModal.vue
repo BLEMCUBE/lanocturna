@@ -145,7 +145,7 @@ const show = (tipo, titulo, mensaje) => {
                             class="block text-base font-medium leading-6 text-gray-900" />
                         <input type="number" v-model="form.pcs_bulto" class="p-inputtext p-component text-gray-700 bg-white
                             border appearance-none rounded text-sm px-2 py-0
-                            p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
+                            p-inputnumber-input h-9 m-0 w-full text-end" />
                         <InputError class="mt-1 text-xs" :message="form.errors.pcs_bulto" />
                     </div>
 
@@ -154,7 +154,7 @@ const show = (tipo, titulo, mensaje) => {
                             class="block text-base font-medium leading-6 text-gray-900" />
                         <input type="number" v-model="form.bultos" class="p-inputtext p-component text-gray-700 bg-white
                             border appearance-none rounded text-sm px-2 py-0
-                            p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
+                            p-inputnumber-input h-9 m-0 w-full text-end" />
                         <InputError class="mt-1 text-xs" :message="form.errors.bultos" />
                     </div>
 
@@ -163,7 +163,7 @@ const show = (tipo, titulo, mensaje) => {
                             class="block text-base font-medium leading-6 text-gray-900" />
                         <input type="number" v-model="form.cantidad_total" class="p-inputtext p-component text-gray-700 bg-white
                             border appearance-none rounded text-sm px-2 py-0
-                            p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
+                            p-inputnumber-input h-9 m-0 w-full text-end" />
                         <InputError class="mt-1 text-xs" :message="form.errors.cantidad_total" />
                     </div>
 

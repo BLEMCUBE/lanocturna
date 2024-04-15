@@ -1,17 +1,18 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import InputError from '@/Components/InputError.vue';
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import { useToast } from "primevue/usetoast";
 import Swal from 'sweetalert2';
 import InputLabel from '@/Components/InputLabel.vue';
-const { permissions } = usePage().props.auth
 const toast = useToast();
 const titulo = "Detalle"
 const ruta = 'envios'
+const rutaLink=ref('');
 const isShowModal = ref(false);
 const isConfirm = ref(false);
+const tipo=ref('');
 const form = useForm({
     id: '',
     vendedor: '',
@@ -46,7 +47,8 @@ const btnValidar = () => {
             isShowModal.value = false
             show('success', 'Mensaje', 'Pedido confirmado')
             setTimeout(() => {
-                router.get(route(ruta + '.index'));
+                //router.get(route(ruta + '.index'));
+                router.get(route(ruta + '.'+tipo.value));
             }, 1000);
         },
         onFinish: () => {
@@ -141,8 +143,13 @@ const validarCodigoMaestro = () => {
 
 };
 
+onBeforeMount(()=>{
+    tipo.value = usePage().props.tipo;
+    rutaLink.value=ruta+'.'+usePage().props.tipo;
+})
 onMounted(() => {
     var datos = usePage().props.venta.data;
+   
     form.id = datos.id
     form.fecha = datos.fecha
     form.codigo = datos.codigo
@@ -172,7 +179,7 @@ onMounted(() => {
 </script>
 <template>
     <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': 'Envios', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
+    <AppLayout :pagina="[{ 'label': 'Envios ', link: true, url: route(ruta+'.'+tipo) }, { 'label': titulo, link: false }]">
         <div
             class="card px-4 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
@@ -270,7 +277,7 @@ onMounted(() => {
                             <td class="border border-gray-300 p-2">{{ item.origen }}</td>
                             <td class="border border-gray-300 p-2">{{ item.nombre }}</td>
                             <td class="border border-gray-300 p-2">
-                                <input type="password" v-if="form.estado == 'FACTURADO' || form.estado == 'VALIDADO' && !item.producto_validado"
+                                <input type="password" v-if="(form.estado == 'FACTURADO' || form.estado == 'VALIDADO') && !item.producto_validado"
                                     v-on:keyup.enter="validarCodigo($event, index)"
                                     class="p-inputtext text-end p-component h-8 w-full font-sans
                                     font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1" />
@@ -281,7 +288,7 @@ onMounted(() => {
 
                             </td>
                             <td>
-                                <Button v-if="form.estado == 'FACTURADO'  || form.estado == 'VALIDADO' && !item.producto_validado"
+                                <Button v-if="(form.estado == 'FACTURADO'  || form.estado == 'VALIDADO') && !item.producto_validado"
                                     class="w-8 h-8 rounded bg-primary-700   px-2 py-1 text-xs font-normal text-white m-1 hover:bg-primary-600"
                                     @click.prevent="openModal(index)"><i class="fas fa-key"></i></Button>
                             </td>
@@ -302,7 +309,7 @@ onMounted(() => {
 
 
             <!--Modal codigo maestro-->
-            <Dialog v-model:visible="isShowModal" modal header="Código Maestro" :style="{ width: '50vw' }" position="top"
+            <Dialog v-model:visible="isShowModal" modal header="Código Maestro" :style="{ width: '25vw' }" position="top"
                 :pt="{
                     header: {
                         class: 'mt-6 p-2 lg:p-4 '
