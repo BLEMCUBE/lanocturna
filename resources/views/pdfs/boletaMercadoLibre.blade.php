@@ -192,11 +192,12 @@
                 <col style='width:2.7cm;'>
             </colgroup>
             <tr>
+                <td> &nbsp; </td>
             </tr>
             <tr>
-                <td colspan="5" class="fw-700 tg-right fs-22"> <img src="{{asset('images/logo-bn.png')}}" alt="logo"
-                        height="40px"></td>
+                <td> &nbsp; </td>
             </tr>
+        
             <tr>
                 <td colspan="5" class="ba fw-700 tg-center fs-22">Recibo de entrega de producto</td>
             </tr>
@@ -204,12 +205,13 @@
                 <td colspan="5" class="ba fw-700 tg-center fs-14">1. Datos de quien recibe el artículo</td>
             </tr>
             <tr>
-                <td colspan="5" class="ba fs-10">Nombre completo:</td>
+                <td colspan="5" class="ba fs-10">Nombre completo: <b class="fs-14">{{$data["cliente_nombre"]}}</b> </td>
             </tr>
             <tr class="fs-10">
                 <td class="ba tg-left" colspan="3">Cédula de identidad: </td>
-                <td class="ba" colspan="2">Teléfono:</td>
+                <td class="ba" colspan="2">Teléfono: <b class="fs-12">{{$data["cliente_telefono"]}}</td>
             </tr>
+           
             <tr>
                 <td colspan="5" class="ba fw-700 tg-center fs-14">2. Información del producto</td>
             </tr>
@@ -219,8 +221,8 @@
             </tr>
             @foreach($data['detalle'] as $key =>$item )
 
-            <tr class="fs-12">
-                <td class="ba tg-center" colspan="3">{{$item["producto"]["nombre"]}}</td>
+            <tr class="fs-11">
+                <td class="ba tg-left" colspan="3">{{$item["cantidad"]}} {{$item["producto"]["nombre"]}}</td>
                 <td class="ba tg-center" colspan="2">{{$data["nro_compra"]}}</td>
             </tr>
             @endforeach

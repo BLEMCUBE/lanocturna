@@ -155,9 +155,12 @@ class ExpedicionController extends Controller
         ->where('slug',"direccion-tienda")
         ->get()[0];
         if (!empty($venta)) {
+            $cliente=json_decode($venta->cliente);
             $customPaper = array(0, 0, 419.5, 595.4);
             $data = [
                 'codigo' => $venta->codigo,
+                'cliente_nombre' => $cliente->nombre??"",
+                'cliente_telefono' => $cliente->telefono??"",
                 'detalle' => $venta->detalles_ventas,
                 'nro_compra' => is_null($venta->nro_compra) ? $venta->codigo : $venta->nro_compra,
                 'lugar' => $lugar->value ?? '',
