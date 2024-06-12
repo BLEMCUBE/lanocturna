@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CodigoMaestroUpdateRequest;
+use App\Http\Requests\ConfiguracionUpdateRequest;
 use App\Models\Configuracion;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -19,12 +20,8 @@ class ConfiguracionController extends Controller
     }
     public function index()
     {
-        /*$configuraciones=Configuracion::all();
-        return Inertia::render('Configuracion/Index', [
-            'configuraciones' => $configuraciones
-        ]);*/
+     
         $codigo_maestro=Configuracion::where('slug','codigo-maestro')->first();
-        //return $codigo_maestro;
         return Inertia::render('Configuracion/EditarCodigoMaestro', [
             'codigo_maestro' => $codigo_maestro
         ]);
@@ -39,6 +36,33 @@ class ConfiguracionController extends Controller
         $codigo->save();
 
     }
+
+    public function webDatos()
+    {
+        $configuraciones=Configuracion::
+        select('id','slug','key','value')
+        ->whereNot('id',1)
+        ->orderBy('slug')
+        ->get()        
+        ;
+        return Inertia::render('Configuracion/Index', [
+            'lista_configuracion' => 
+                $configuraciones
+                
+        ]);
+
+    }
+
+    public function updateDatos(ConfiguracionUpdateRequest $request)
+    {
+        foreach ($request->config as $config) {
+            $up_config = Configuracion::find($config['id']);
+            $up_config->update([
+                "value" => $config['value']
+            ]);
+        }
+    }
+
 
 
 

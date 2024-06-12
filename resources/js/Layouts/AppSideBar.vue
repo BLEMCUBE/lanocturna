@@ -264,6 +264,17 @@ const showDropdown = ref(false)
                             v-show="permissions.includes('configuraciones')">
                             <NavLinkSideBarNotIcon
                                 class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('configuraciones.web')" :active="route().current('configuraciones.web')">
+                                <span class="ml-2 uppercase">Datos Web</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+                    <div class="flex items-center">
+
+                        <li @click="setMenu('configuraciones')" class="w-full"
+                            v-show="permissions.includes('configuraciones')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
                                 :href="route('configuraciones.index')"
                                 :active="route().current('configuraciones.index')">
                                 <span class="ml-2 uppercase">Código Maestro</span>

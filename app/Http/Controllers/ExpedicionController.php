@@ -14,6 +14,8 @@ use App\Models\Rma;
 use App\Models\RmaStock;
 use App\Models\VentaDetalle;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 
 class ExpedicionController extends Controller
@@ -138,6 +140,35 @@ class ExpedicionController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
             ];
+        }
+    }
+
+    public function generarPdf($id){
+        
+        $venta = Venta::with(['detalles_ventas' => function ($query) {
+            $query->select('venta_detalles.*')->with(['producto' => function ($query) {
+                $query->select('id', 'nombre', 'codigo_barra', 'origen');
+            }]);
+        }])->where("id", "=", $id)->get()[0];
+        $lugar= Configuracion::
+        select('value')
+        ->where('slug',"direccion-tienda")
+        ->get()[0];
+        if (!empty($venta)) {
+            $customPaper = array(0, 0, 419.5, 595.4);
+            $data = [
+                'codigo' => $venta->codigo,
+                'detalle' => $venta->detalles_ventas,
+                'nro_compra' => is_null($venta->nro_compra) ? $venta->codigo : $venta->nro_compra,
+                'lugar' => $lugar->value ?? '',
+                'fecha' => (now())->format('d/m/Y H:i:s')
+            ];
+
+            $pdf = Pdf::loadView('pdfs.boletaMercadoLibre', ['data' => $data]);
+            $pdf->setPaper($customPaper);
+            return $pdf->stream('ticket_' . $data['codigo'] . '.pdf');
+        } else {
+            return Redirect::route('envios.index');
         }
     }
 }
