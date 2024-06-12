@@ -63,7 +63,7 @@ onMounted(() => {
         <Head title="Configuraciones" />
         <AppLayout :pagina="[{ 'label': titulo, link: false }]">
             <div
-            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg lg:col-span-6 dark:border-gray-700  dark:bg-gray-800">
+            class="card p-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg lg:col-span-6 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -98,7 +98,7 @@ onMounted(() => {
 
                     </div>
 
-                    <div class="flex justify-end pt-2">
+                    <div class="flex justify-end p-2">
                         <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="cancelCrear"
                             type="button" />
                         <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"

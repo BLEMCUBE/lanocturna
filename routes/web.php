@@ -65,6 +65,8 @@ Route::controller(OpcionesController::class)->group(function () {
 Route::controller(ConfiguracionController::class)->group(function () {
     Route::get('/configuraciones', 'index')->name('configuraciones.index')->middleware('auth');
     Route::post('/configuraciones/update/{id}', 'update')->name('configuraciones.update')->middleware('auth');
+    Route::get('/configuraciones/datos-web', 'webDatos')->name('configuraciones.web')->middleware('auth');
+    Route::post('/configuraciones/update-web', 'updateDatos')->name('configuraciones.updateweb')->middleware('auth');
 
 
 });
@@ -168,6 +170,7 @@ Route::controller(ExpedicionController::class)->group(function () {
     Route::post('/expediciones/update/{id}', 'validarProductos')->name('expediciones.update')->middleware('auth');
     Route::get('/expediciones', 'index')->name('expediciones.index')->middleware('auth');
     Route::get('/expediciones/{id}', 'show')->name('expediciones.show')->middleware('auth');
+    Route::get('/expediciones/pdf/{id}', 'generarPdf')->name('expediciones.pdf')->middleware('auth');
 });
 
 //Envio

@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage,router } from '@inertiajs/vue3';
+import { Head, usePage, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
 import moment from 'moment';
 import EditarModal from '@/Pages/Importacion/EditarModal.vue';
@@ -17,16 +17,17 @@ const filters = ref({
 onMounted(() => {
 
 
-    import_detalle.value =Array.from( importacion_detalle, (x) => x);
+    import_detalle.value = Array.from(importacion_detalle, (x) => x);
 
 });
 
-const clickDetalle=(e)=>{
-    document.getElementById("show-"+e.data.id).click();
-//btnVer(e.data.id)
+const clickDetalle = (e) => {
+    document.getElementById("show-" + e.data.id).click();
+    //btnVer(e.data.id)
 }
 </script>
 <template>
+
     <Head :title="titulo" />
     <AppLayout
         :pagina="[{ 'label': 'Importaciones', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
@@ -37,7 +38,8 @@ const clickDetalle=(e)=>{
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
             <div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
-                <span class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
+                <span
+                    class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
                     <EditarModal :clienteId="importacion.id">
 
                     </EditarModal>
@@ -61,7 +63,7 @@ const clickDetalle=(e)=>{
                 </div>
                 <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
                     <b> Mueve Stock:</b>
-                    <p>{{ (importacion.mueve_stock)?' SI ':' NO ' }}</p>
+                    <p>{{ (importacion.mueve_stock) ? ' SI ' : ' NO ' }}</p>
                 </div>
                 <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
                     <b>Total:</b>
@@ -90,16 +92,12 @@ const clickDetalle=(e)=>{
                 <!-- Línea con gradiente -->
                 <div class="align-middle">
 
+                    <DataTable sortField="id" :sortOrder="1" :filters="filters" :value="import_detalle" scrollable
+                        scrollHeight="700px" resizableColumns columnResizeMode="expand" paginator :rows="50"
+                        @row-click="clickDetalle" :pt="{
+                            bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
 
-                    <DataTable sortField="id" :sortOrder="1" :filters="filters"
-                       :value="import_detalle" scrollable scrollHeight="700px"
-                       resizableColumns columnResizeMode="expand"
-                       @row-click="clickDetalle"
-                       :pt="{
-                    bodyRow:{class:'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
-
-                }"
-                        :virtualScrollerOptions="{ numToleratedItems:5, itemSize: 46 }" size="small">
+                        }" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -114,24 +112,24 @@ const clickDetalle=(e)=>{
                             headerContent: { class: 'break-words ' }
 
                         }"></Column>
-                        <Column field="imagen" header="Referencia"  :pt="{
+                        <Column field="imagen" header="Referencia" :pt="{
                             bodyCell: {
                                 class: 'flex items-center'
                             },
-                            bodyCellContent:{
-                                class:'flex items-center'
+                            bodyCellContent: {
+                                class: 'flex items-center'
                             }
 
                         }">
                             <template #body="slotProps">
 
                                 <div class="flex  items-center">
-                                <div class="w-20">
-                                    <img class="rounded  bg-white shadow-2xl text-center w-20 h-14 object-contain mr-2"
-                                        :src="slotProps.data.imagen" alt="image">
+                                    <div class="w-20">
+                                        <img class="rounded  bg-white shadow-2xl text-center w-20 h-14 object-contain mr-2"
+                                            :src="slotProps.data.imagen" alt="image">
                                     </div>
                                     <p class="text-xs text-center flex-wrap">{{ slotProps.data.nombre }}</p>
-                                    </div>
+                                </div>
                             </template>
                         </Column>
 
@@ -173,7 +171,7 @@ const clickDetalle=(e)=>{
                             }
                         }"></Column>
                         <Column field="cbm_bulto" sortable header="CBM/Bulto" :pt="{
-                             bodyCell: {
+                            bodyCell: {
                                 class: 'text-center'
                             },
                             headerContent: {
@@ -186,7 +184,7 @@ const clickDetalle=(e)=>{
                             }
                         }"></Column>
 
-                          <Column :pt="{
+                        <Column :pt="{
                             bodyCell: {
                                 class: 'hidden'
                             },
@@ -195,11 +193,11 @@ const clickDetalle=(e)=>{
                             }
                         }">
 
-                        <template #body="slotProps">
+                            <template #body="slotProps">
 
-                           <EditarProductoModal :clienteId="slotProps.data.id" ></EditarProductoModal>
+                                <EditarProductoModal :clienteId="slotProps.data.id"></EditarProductoModal>
                             </template>
-                    </Column>
+                        </Column>
                     </DataTable>
 
                 </div>
