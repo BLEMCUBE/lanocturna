@@ -253,8 +253,8 @@ class EnvioController extends Controller
             }
         }
 
-        $venta_query = 
-            Venta::select('*',DB::raw("DATE_FORMAT(created_at,'%d/%m/%y  %H:%i:%s') AS fecha"))->where(function ($query) {
+        $venta_query = new VentaCollection(
+            Venta::select('*')->where(function ($query) {
                 $query->where('destino', "CADETERIA")
                     ->orWhere('destino', "FLEX")
                     ->orWhere('destino', "UES")
@@ -266,19 +266,17 @@ class EnvioController extends Controller
                 ->when(Req::input('fin'), function ($query) {
                     $query->whereDate('created_at', '<=', Req::input('fin') . ' 23:59:00');
                 })
-                ->when(Req::input('buscar'), function ($query) {
-                    $query->where('nro_compra', 'Like', '%'.Req::input('buscar'). '%');
-                })
                 ->where(function ($query) {
                     $query->where("tipo", "=", "VENTA")
                         ->orWhere("tipo", "=", "ENVIO");
                 })
-                ->where('estado', 'COMPLETADO')->orderBy('id', 'DESC')->paginate(100);
-        
-        
+                ->where('estado', 'COMPLETADO')->orderBy('id', 'DESC')->get()
+        );
         return Inertia::render('Envio/Historial', [
             'tipo_cambio' => $hoy_tipo_cambio,
-            'ventas' => $venta_query
+            'ventas' => new VentaCollection(
+                $venta_query
+            )
         ]);
     }
     public function show($id,$tipo='index')

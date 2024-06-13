@@ -181,7 +181,7 @@ const filters = ref({
             class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <Toast />
-            <div class=" px-5 py-2 col-span-full flex justify-between items-center">
+            <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
             <div class="align-middle">
