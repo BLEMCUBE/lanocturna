@@ -63,7 +63,7 @@ const shortcuts = [
 
 onMounted(() => {
     date.value = [subDays(new Date(), 2), new Date()];
-   // filtrado(date.value);
+    filtrado(date.value);
 });
 
 //filtrado
@@ -80,7 +80,8 @@ const filtrado = (value) => {
                 preserveState: true,
                 onSuccess: () => {
                     //tabla_ventas.value = Array.from(usePage().props.ventas.data, (x) => x);
-                    tabla_ventas.value = usePage().props.ventas.data;
+                    //tabla_ventas.value = usePage().props.ventas.data;
+                    tabla_ventas.value = usePage().props.ventas;
                     cargando.value = false;
                 }
 
@@ -183,7 +184,7 @@ const filters = ref({
 <template>
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
-        <div class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12">
+        <div class="card p-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12">
 
             <!--Contenido-->
             <Toast />
@@ -278,6 +279,11 @@ const filters = ref({
                                 :style="{ height: '17px', 'flex-grow': '1', overflow: 'hidden' }">
 
                             </div>
+                        </template>
+                        <template #body="slotProps">
+                            
+                                {{ slotProps.data.cliente!=="null"?slotProps.data.cliente:""}}
+                            
                         </template>
                     </Column>
 
