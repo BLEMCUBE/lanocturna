@@ -76,7 +76,7 @@ const show = (tipo, titulo, mensaje) => {
 
             <!--Contenido-->
             <Toast />
-            <div class="px-5 pb-2 col-span-full flex justify-between items-center">
+            <div class="px-5 py-2 col-span-full flex justify-between items-center">
 
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 <CrearModal v-if="permissions.includes('crear-usuarios')"></CrearModal>

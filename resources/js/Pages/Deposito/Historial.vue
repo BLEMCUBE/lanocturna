@@ -34,7 +34,7 @@ const filters = ref({
 
             <!--Contenido-->
             <Toast />
-            <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
+            <div class=" px-5 p-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
             <div class="align-middle">

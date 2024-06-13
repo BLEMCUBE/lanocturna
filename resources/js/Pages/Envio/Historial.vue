@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,watch } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 
@@ -14,7 +14,8 @@ import 'vue-datepicker-next/index.css';
 import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
-
+import Pagination from '@/Components/Pagination.vue';
+const props = defineProps(['ventas'])
 
 const date = ref();
 const toast = useToast();
@@ -25,6 +26,7 @@ const cargando = ref(false)
 const formDelete = useForm({
     id: '',
 });
+
 
 //*datepicker  */
 const shortcuts = [
@@ -61,7 +63,14 @@ const shortcuts = [
         },
     },
 ]
+const searchField = ref(''); //Should really load it from the query string
 
+//const url = route('ventas.index');
+
+watch(searchField, 
+() => {
+	router.get("/envios/historial/", {buscar: searchField.value}, {preserveState: true, preserveScroll: true, only: ['ventas']}), 300}
+    );
 //filtrado
 const filtrado = (value) => {
 if(value[0]!=null && value[1]!=null){
@@ -147,13 +156,12 @@ const btnEliminar = (id, name) => {
     });
 }
 
-const clickDetalle = (e) => {
-
-    btnVer(e.data.id)
+const clickDetalle = (id) => {
+    btnVer(id)
 }
 onMounted(() => {
     date.value = [subDays(new Date(), 2), new Date()];
-    filtrado(date.value);
+    //filtrado(date.value);
 });
 
 const show = (tipo, titulo, mensaje) => {
@@ -182,141 +190,63 @@ const filters = ref({
 
             <!--Contenido-->
             <Toast />
-            <div class="px-3 pb-2 col-span-full flex justify-between items-center">
+            <div class="px-3 py-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
 
 
             </div>
 
-            <div class="align-middle">
+             <!--tabla-->
+             <div class="align-middle py-4">
+                <div class="grid grid-cols-6 gap-4 m-1.5">
+                    <InputText v-model="searchField" placeholder="Buscar N° Compra" :pt="{
+                        root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
+                    }" />
 
-                <DataTable :filters="filters" :value="tabla_ventas"  :loading="cargando"  :pt="{
-                    bodyRow: { class: 'hover:cursor-pointer p-1 hover:bg-gray-100 hover:text-black' }
-                }" scrollable scrollHeight="700px"   paginator :rows="50"
-                    @row-click="clickDetalle" size="small">
-                    <template #header>
-                        <div class="grid grid-cols-6 gap-4 m-1.5">
-                            <InputText v-model="filters['global'].value" placeholder="Buscar"
-                            :pt="{
-                                root:{class:'col-span-6 lg:col-span-2 m-1.5'}
-                            }"/>
+                    <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
+                        class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
+                        v-model:value="date" :shortcuts="shortcuts" lang="es"
+                        placeholder="Seleccione Fecha"></date-picker>
 
-                                <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
-                                    format="DD/MM/YYYY"
-                                    class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
-                                     v-model:value="date" :shortcuts="shortcuts" lang="es"
-                                    placeholder="Seleccione Fecha"></date-picker>
+                </div>
+                <div style="overflow:auto; max-height: 700px;">
 
-                        </div>
-                    </template>
-                    <template #empty> No existe Resultado </template>
-                    <template #loading> Cargando... </template>
-                    <Column field="fecha" header="Fecha y Hora" sortable :pt="{
-                        bodyCellContent: {
-                            class: 'text-center w-44'
-                        },
-                        headerContent: {
+                    <table class="w-full text-md bg-white shadow-md rounded mb-4">
+                        <thead style="position: sticky;" class="top-0 z-[1]">
+                            <tr class="bg-secondary-100">
+                                <th class="p-1.5">Fecha y Hora</th>
+                                <th>Destino</th>
+                                <th>Nº Compra</th>
+                                <th>Cliente</th>
+                                <th>Observaciones</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
 
-                            class: 'text-center w-44'
-                        },
-                        headerCell: {
-
-                            class: 'text-center w-44'
-                        },
-                        bodyCell: {
-
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="destino" header="Destino" sortable :pt="{
-                         bodyCellContent: {
-                            class: 'text-center w-40'
-                        },
-                        headerContent: {
-
-                            class: 'text-center w-40'
-                        },
-                        headerCell: {
-
-                            class: 'text-center w-40'
-                        },
-                        bodyCell: {
-
-                            class: 'text-center'
-                        }
-                    }"></Column>
-
-                    <Column field="nro_compra" header="N° Compra" sortable :pt="{
-                         bodyCellContent: {
-                            class: 'text-center w-52'
-                        },
-                        headerContent: {
-
-                            class: 'text-center w-52'
-                        },
-                        headerCell: {
-
-                            class: 'text-center w-52'
-                        },
-                        bodyCell: {
-
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="cliente" header="Cliente" sortable :pt="{
-                         bodyCellContent: {
-                            class: 'text-center w-52'
-                        },
-                        headerContent: {
-
-                            class: 'text-center w-52'
-                        },
-                        headerCell: {
-
-                            class: 'text-center w-52'
-                        },
-                        bodyCell: {
-
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <!--
-
-    <Column field="estado" header="Estado" sortable :pt="{
-        bodyCell: {
-            class: 'text-center'
-                        }
-                    }">
-                        <template #body="slotProps">
-                            <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
-                                {{ slotProps.data.estado }}
-                            </span>
-                        </template>
-                    </Column>
-                -->
-
-                    <Column field="observaciones" sortable header="Observaciones" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
-
-                    <Column header="Acciones" style="width:100px" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }">
-                        <template #body="slotProps">
-                            <span
+                        <tbody>
+                            <tr v-for="post in props.ventas.data" 
+                                class="border text-center hover:cursor-pointer hover:bg-gray-100">
+                                <td @click="clickDetalle(post.id)">{{ post.fecha }}</td>
+                                <td @click="clickDetalle(post.id)">{{ post.destino }}</td>
+                                <td @click="clickDetalle(post.id)">{{ post.nro_compra }}</td>
+                                <td @click="clickDetalle(post.id)">{{ JSON.parse(post.cliente)["nombre"]??""}}</td>
+                                <td @click="clickDetalle(post.id)">{{ post.observaciones }}</td>
+                                <td>
+                                    <span
                                 class="inline-block rounded bg-sky-300 px-2 py-1 text-base font-semibold text-white mr-1 mb-1 hover:bg-sky-400">
-                                <a :href="route('envios.generar_ticket', slotProps.data.id)" target="_blank"><i
+                                <a :href="route('envios.generar_ticket', post.id)" target="_blank"><i
                                         class="fas fa-print"></i></a>
                             </span>
-                        </template>
-                    </Column>
-                </DataTable>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <Pagination :elements="props.ventas"></Pagination>
 
             </div>
+            <!--tabla-->
             <!--Contenido-->
         </div>
     </AppLayout>
