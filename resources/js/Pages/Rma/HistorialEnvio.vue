@@ -63,7 +63,7 @@ const date = ref([new Date(), new Date()]);
 const filtrado = (value) => {
     if (value[0] != null && value[1] != null) {
 
-        router.get('/rmas/historial-envios/',
+        router.get(route(ruta + '.historial-envios'),
             {
                 inicio: moment(value[0]).format('YYYY-MM-DD'),
                 fin: moment(value[1]).format('YYYY-MM-DD')
