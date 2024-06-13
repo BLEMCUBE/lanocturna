@@ -67,7 +67,7 @@ const filtrado = (value) => {
 if(value[0]!=null && value[1]!=null){
     tabla_ventas.value = [];
     cargando.value = true;
-    router.get('/envios/historial/',
+    router.get(route(ruta+'.historial'),
     {
         inicio: moment(value[0]).format('YYYY-MM-DD'),
         fin: moment(value[1]).format('YYYY-MM-DD')

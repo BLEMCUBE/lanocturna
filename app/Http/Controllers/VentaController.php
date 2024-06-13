@@ -49,8 +49,9 @@ class VentaController extends Controller
             }
         }
 
-        $venta_query = Venta::select('id','cliente','destino','facturado','estado','tipo','nro_compra'
-        ,'observaciones','total','parametro','created_at')
+        $venta_query = Venta::select('id','cliente','facturado','estado','tipo','nro_compra'
+        ,'observaciones','total','parametro',DB::raw("DATE_FORMAT(created_at ,'%d/%m/%Y %H:%i:%s') AS fecha"))
+
         ->where(function ($query) {
             $query->where("tipo", "=", "VENTA")
                 ->orWhere("tipo", "=", "ENVIO");
@@ -68,6 +69,7 @@ class VentaController extends Controller
             'ventas' => new VentaCollection(
                 $venta_query
             )
+
         ]);
     }
     public function create()

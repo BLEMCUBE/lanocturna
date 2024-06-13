@@ -97,19 +97,17 @@ const colorEstado = (estado) => {
     switch (estado) {
         case 'PENDIENTE DE FACTURACIÓN':
             return 'text-orange-600'
-            break;
         case 'FACTURADO':
             return 'text-blue-600'
-            break;
         case 'COMPLETADO':
             return 'text-green-600'
-            break;
+
         case 'ANULADO':
             return 'text-red-600'
-            break;
+
         default:
             return 'text-black'
-            break;
+
     }
 }
 
