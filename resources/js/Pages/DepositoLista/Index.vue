@@ -72,10 +72,10 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="px-4 py-3 mb-4 bg-white col-span-12  lg:col-span-6 py-5 rounded-lg shadow-lg lg:col-span-6">
+            class="px-4 py-3 mb-4 bg-white col-span-12  rounded-lg shadow-lg lg:col-span-6">
             <!--Contenido-->
             <Toast />
-            <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
+            <div class=" px-5 py-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 <CrearModal></CrearModal>
             </div>
