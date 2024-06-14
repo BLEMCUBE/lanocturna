@@ -50,10 +50,9 @@ class VentaController extends Controller
         }
 
         $venta_query = Venta::select('id','facturado','estado','tipo','nro_compra'
-        ,'observaciones','total','parametro','created_at','cliente'
-        ,DB::raw("DATE_FORMAT(created_at ,'%d/%m/%Y %H:%i:%s') AS fecha")
-        ,DB::raw("JSON_UNQUOTE(json_extract(cliente,'$.nombre')) AS cliente")
-        )
+        ,'observaciones','total','parametro','created_at'
+        ,DB::raw("DATE_FORMAT(created_at,'%d/%m/%y  %H:%i:%s') AS fecha")
+        ,DB::raw("JSON_UNQUOTE(json_extract(cliente,'$.nombre')) AS cliente"))
         ->where(function ($query) {
             $query->where("tipo", "=", "VENTA")
                 ->orWhere("tipo", "=", "ENVIO");
@@ -64,8 +63,11 @@ class VentaController extends Controller
             ->when(Request::input('fin'), function ($query) {
                 $query->whereDate('created_at', '<=', Request::input('fin') . ' 23:59:00');
             })
+            ->when(Request::input('buscar'), function ($query) {
+                $query->where('nro_compra', 'LIKE', '%'.Request::input('buscar'). '%');
+            })
             ->orderBy('created_at', 'DESC')
-            ->get();
+            ->paginate(100)->withQueryString();
         return Inertia::render('Venta/Index', [
             'tipo_cambio' => $hoy_tipo_cambio,
             //'ventas' => new VentaCollection($venta_query)

@@ -27,7 +27,7 @@ const filtrado = (value) => {
 
     if (value != null) {
         router.get(
-            "/reportes-productos-stock/",
+            route(ruta+'.stockproductos'),
             {
                 inicio: moment(value).format('YYYY-MM-DD'),
                 fin: now.format('YYYY-MM-DD')
