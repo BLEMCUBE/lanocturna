@@ -472,7 +472,7 @@ class VentaController extends Controller
             $venta->detalles_ventas()->delete();
 
             //eliminando  venta
-            $venta->delete();
+            //$venta->delete();
 
             DB::commit();
         } catch (Exception $e) {

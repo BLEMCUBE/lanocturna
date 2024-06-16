@@ -219,7 +219,7 @@ const filters = ref({
             <!--tabla-->
             <div class="align-middle py-4">
                 <div class="grid grid-cols-6 gap-4 m-1.5">
-                    <InputText v-model="buscar" placeholder="Buscar N° Compra" :pt="{
+                    <InputText v-model="buscar" placeholder="Buscar por N° Compra o Cliente" :pt="{
                         root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
                     }" />
 
