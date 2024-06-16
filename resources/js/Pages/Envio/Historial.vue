@@ -67,7 +67,7 @@ const filtrado = (value) => {
 if(value[0]!=null && value[1]!=null){
     tabla_ventas.value = [];
     cargando.value = true;
-    router.get(route(ruta+'.historial'),
+    router.get('/envios/historial/',
     {
         inicio: moment(value[0]).format('YYYY-MM-DD'),
         fin: moment(value[1]).format('YYYY-MM-DD')
@@ -280,20 +280,6 @@ const filters = ref({
                             class: 'text-center'
                         }
                     }"></Column>
-                    <!--
-
-    <Column field="estado" header="Estado" sortable :pt="{
-        bodyCell: {
-            class: 'text-center'
-                        }
-                    }">
-                        <template #body="slotProps">
-                            <span class="font-semibold text-md" :class="colorEstado(slotProps.data.estado)">
-                                {{ slotProps.data.estado }}
-                            </span>
-                        </template>
-                    </Column>
-                -->
 
                     <Column field="observaciones" sortable header="Observaciones" :pt="{
                         bodyCell: {

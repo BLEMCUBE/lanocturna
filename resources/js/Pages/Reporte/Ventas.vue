@@ -19,7 +19,7 @@ const titulo = "Reporte Ventas"
 const filtrado = (value) => {
     if (value[0] != null && value[1] != null) {
         router.get(
-            "/reportes-ventas/",
+            route('reportes.ventas'),
             {
                 inicio: moment(value[0]).format('YYYY-MM-DD'),
                 fin: moment(value[1]).format('YYYY-MM-DD')

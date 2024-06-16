@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted,watch } from 'vue'
+import { ref, watch } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import { FilterMatchMode } from 'primevue/api';
@@ -13,18 +13,27 @@ import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import Pagination from '@/Components/Pagination.vue';
-const props = defineProps(['ventas'])
-const toast = useToast();
+const props = defineProps({
+    ventas: {
+        type: Object,
+        default: () => ({}),
+    },
+    filtro: {
+        type: Object,
+        default: () => ({}),
+    },
+});
 
-const cargando = ref(false)
+const toast = useToast();
 const { permissions } = usePage().props.auth
 const titulo = "Historial de Ventas"
 const ruta = 'ventas'
 const { tipo_cambio } = usePage().props
-const date = ref();
+
 const formDelete = useForm({
     id: '',
 });
+
 //*datepicker  */
 const shortcuts = [
     {
@@ -60,42 +69,55 @@ const shortcuts = [
         },
     },
 ]
-const searchField = ref(''); //Should really load it from the query string
 
-const url = route('ventas.index');
+let buscar = ref(props.filtro.buscar);
+let date = ref([props.filtro.inicio, props.filtro.fin]);
+let inicio = ref(props.filtro.inicio);
+let fin = ref(props.filtro.fin);
 
-watch(searchField, 
-() => {
-	router.get(url, {buscar: searchField.value}, {preserveState: true, preserveScroll: true, only: ['ventas']}), 300}
+
+watch(buscar, (value) => {
+    router.get(
+        route(ruta + '.index'),
+        {
+            buscar: value,
+            inicio: inicio.value,
+            fin: fin.value
+        },
+        {
+            preserveState: true,
+            replace: true,
+        }
     );
-
-onMounted(() => {
-    date.value = [subDays(new Date(), 2), new Date()];
-    //filtrado(date.value);
 });
+
+
 
 //filtrado
 const filtrado = (value) => {
+    console.log("vv", value)
     if (value[0] != null && value[1] != null) {
-        cargando.value = true;
-        router.get(route(ruta + '.index'),
-            {
-                inicio: moment(value[0]).format('YYYY-MM-DD'),
-                fin: moment(value[1]).format('YYYY-MM-DD')
-            },
-            {
-                preserveState: true,
-                onSuccess: () => {
-                    
-                    cargando.value = false;
-                }
-
-            }
-        );
         date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
+        inicio.value = date.value[0];
+        fin.value = date.value[1];
     } else {
-        //router.get(route(ruta + '.index'))
+        date.value = [];
+        inicio.value = null;
+        fin.value = null;
     }
+    router.get(
+        route(ruta + '.index'),
+        {
+            buscar: buscar.value,
+            inicio: inicio.value,
+            fin: fin.value
+        },
+        {
+            preserveState: true,
+            replace: true,
+        }
+    );
+
 
 }
 
@@ -103,19 +125,14 @@ const colorEstado = (estado) => {
     switch (estado) {
         case 'PENDIENTE DE FACTURACIÓN':
             return 'text-orange-600'
-            break;
         case 'FACTURADO':
             return 'text-blue-600'
-            break;
         case 'COMPLETADO':
             return 'text-green-600'
-            break;
         case 'ANULADO':
             return 'text-red-600'
-            break;
         default:
             return 'text-black'
-            break;
     }
 }
 
@@ -202,13 +219,13 @@ const filters = ref({
             <!--tabla-->
             <div class="align-middle py-4">
                 <div class="grid grid-cols-6 gap-4 m-1.5">
-                    <InputText v-model="searchField" placeholder="Buscar N° Compra" :pt="{
+                    <InputText v-model="buscar" placeholder="Buscar N° Compra" :pt="{
                         root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
                     }" />
 
                     <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
                         class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
-                        v-model:value="date" :shortcuts="shortcuts" lang="es"
+                        v-model:value="date" :shortcuts="shortcuts" lang="es" editable="false"
                         placeholder="Seleccione Fecha"></date-picker>
 
                 </div>
@@ -228,14 +245,14 @@ const filters = ref({
                         </thead>
 
                         <tbody>
-                            <tr v-for="post in props.ventas.data" 
+                            <tr v-for="post in ventas.data"
                                 class="border text-center hover:cursor-pointer hover:bg-gray-100">
-                                <td @click="clickDetalle(post.id)">{{ post.fecha??"" }}</td>
-                                <td @click="clickDetalle(post.id)">{{ post.nro_compra!="null"?post.nro_compra:"" }}</td>
-                                <td @click="clickDetalle(post.id)">{{ post.cliente!="null"?post.cliente:""}}</td>
+                                <td @click="clickDetalle(post.id)">{{ post.fecha ?? "" }}</td>
+                                <td @click="clickDetalle(post.id)">{{ post.nro_compra != "null" ? post.nro_compra : "" }}</td>
+                                <td @click="clickDetalle(post.id)">{{ post.cliente != "null" ? post.cliente : "" }}</td>
                                 <td @click="clickDetalle(post.id)" class="p-1.5"> <span class="font-semibold text-md"
                                         :class="colorEstado(post.estado)">
-                                        {{ post.estado??"" }}
+                                        {{ post.estado ?? "" }}
                                     </span></td>
                                 <td>{{ post.total }}</td>
                                 <td @click="clickDetalle(post.id)">{{ post.observaciones }}</td>
@@ -251,7 +268,7 @@ const filters = ref({
                     </table>
                 </div>
 
-                <Pagination :elements="props.ventas"></Pagination>
+                <Pagination :elements="ventas"></Pagination>
 
             </div>
             <!--tabla-->
