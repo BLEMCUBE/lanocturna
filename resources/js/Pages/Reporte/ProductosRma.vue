@@ -22,7 +22,7 @@ const ruta = 'reportes'
 const filtrado = (value) => {
     if (value[0] != null && value[1] != null) {
         router.get(
-            "/reportes-productos-rma/",
+            route(ruta+'.productosrma'),
             {
                 inicio: moment(value[0]).format('YYYY-MM-DD'),
                 fin: moment(value[1]).format('YYYY-MM-DD')
