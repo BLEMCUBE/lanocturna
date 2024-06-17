@@ -92,7 +92,7 @@ const filters = ref({
 
             <!--Contenido-->
             <Toast />
-            <div class="px-3 pb-2 col-span-full flex justify-between items-center">
+            <div class="p-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
 
                 <Button size="small" :label="'Importar Bultos'" severity="success" @click="BtnCrear"></Button>

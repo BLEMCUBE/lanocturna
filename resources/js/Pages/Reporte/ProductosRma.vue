@@ -122,7 +122,7 @@ const shortcuts = [
 
 
                 <div
-                    class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+                    class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
                     <b>
                         TOTAL CANTIDADES : {{ total_cantidad }}
                         <!--
