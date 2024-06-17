@@ -1,12 +1,12 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref } from 'vue'
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { ref,onMounted } from 'vue'
+import { Head, useForm, router,usePage } from '@inertiajs/vue3';
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-
+import Multiselect from '@vueform/multiselect';
 
 const previewImage = ref('/images/productos/sin_foto.png');
 const toast = useToast();
@@ -23,12 +23,27 @@ const form = useForm({
     stock_futuro: 0,
     imagen: '',
     photo: '',
+    categorias:[]
 })
 
 const setStock = (e) => {
     form.stock_futuro = e
 }
+//const categorias = ref([])
+const lista_categorias = ref({
+    value: '',
+    closeOnSelect: true,
+    placeholder: "Categorías",
+    mode: 'tags',
+    searchable: true,
+    options: [],
+});
 
+onMounted(() => {
+
+lista_categorias.value.options = usePage().props.lista_categorias
+
+});
 //funcion solo numero
 const NumbersOnly = (evt) => {
 
@@ -93,7 +108,7 @@ const pickFile = (e) => {
     <AppLayout
         :pagina="[{ 'label': 'Productos', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <div
-            class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 mb-4 bg-white col-span-12 py-5  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
             <Toast />
@@ -115,7 +130,7 @@ const pickFile = (e) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.origen" />
                         </div>
 
-                        <div class="col-span-12 shadow-default xl:col-span-3">
+                        <div class="col-span-12 shadow-default xl:col-span-5">
                             <InputLabel for="nombre" value="Nombre"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <InputText type="text" id="nombre" v-model="form.nombre" placeholder="Ingrese nombre" :pt="{
@@ -123,7 +138,12 @@ const pickFile = (e) => {
                             }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.nombre" />
                         </div>
-
+                        <div class="col-span-12 shadow-default xl:col-span-4">
+                            <InputLabel for="categorias" value="Categoría"
+                                class="block text-base font-medium leading-6 text-gray-900" />
+                        <Multiselect id="categorias" v-model="form.categorias" class="w-full" v-bind="lista_categorias">
+                        </Multiselect>
+                        </div>
                         <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="aduana" value="Aduana"
                                 class="block text-base font-medium leading-6 text-gray-900" />

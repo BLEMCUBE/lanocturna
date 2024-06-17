@@ -6,7 +6,7 @@ import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-
+import Multiselect from '@vueform/multiselect';
 const previewImage = ref('/images/productos/sin_foto.png');
 const toast = useToast();
 
@@ -23,10 +23,12 @@ const form = useForm({
     stock_minimo: 0,
     //stock_futuro:'',
     imagen: '',
-    photo: ''
+    photo: '',
+    categorias:[]
 })
 
 onMounted(() => {
+    lista_categorias.value.options = usePage().props.lista_categorias
     var datos = usePage().props.producto;
     form.id = datos.id
     form.nombre = datos.nombre
@@ -36,6 +38,12 @@ onMounted(() => {
     form.stock = datos.stock
     form.stock_minimo = datos.stock_minimo
     form.stock_futuro = datos.stock_futuro
+    if(datos.categorias.length>0){
+        datos.categorias.forEach((ele)=>{
+            form.categorias.push(ele.id)
+        })
+        //form.categorias= [datos.categorias.map(entry => entry.id).join(',')]
+    }
     //previewImage.value= usePage().props.base_url+datos.imagen
     previewImage.value = datos.imagen
     form.imagen = datos.imagen
@@ -65,6 +73,14 @@ const submit = () => {
 
 
 };
+const lista_categorias = ref({
+    value: '',
+    closeOnSelect: true,
+    placeholder: "Categorías",
+    mode: 'tags',
+    searchable: true,
+    options: [],
+});
 const setStock = (e) => {
     if(e.target.value.length>0)
 
@@ -128,6 +144,12 @@ const pickFile = (e) => {
                                 root: { class: 'h-9 w-full' }
                             }" />
                             <InputError class="mt-1 text-xs" :message="form.errors.nombre" />
+                        </div>
+                        <div class="col-span-12 shadow-default xl:col-span-4">
+                            <InputLabel for="categorias" value="Categoría"
+                                class="block text-base font-medium leading-6 text-gray-900" />
+                        <Multiselect id="categorias" v-model="form.categorias" class="w-full" v-bind="lista_categorias">
+                        </Multiselect>
                         </div>
 
                         <div class="col-span-12 shadow-default xl:col-span-3">

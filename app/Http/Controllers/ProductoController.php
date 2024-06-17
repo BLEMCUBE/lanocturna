@@ -43,7 +43,7 @@ class ProductoController extends Controller
                 'label' =>  $value->name,
             ]);
         }
-        $cte = Request::input('buscar');
+
         $productos_query = Producto::query()->select(
             'id',
             'origen',
@@ -68,15 +68,16 @@ class ProductoController extends Controller
             })
             ->when(Request::input('categoria'), function ($query) {
                 $query->whereHas('categorias', function ($query) {
-                    $query->whereIn('id', [Request::input('categoria')]);
+                    $query->whereIn('id', Request::input('categoria'));
                 });
             })
 
             ->orderBy('nombre', 'ASC')
             ->paginate(100)->withQueryString();
+            
 
         return Inertia::render('Producto/Index', [
-            'categorias' => $lista_categorias,
+            'lista_categorias' => $lista_categorias,
             'productos' => $productos_query,
             'filtro' => Request::only(['buscar', 'categoria'])
         ]);
@@ -88,7 +89,18 @@ class ProductoController extends Controller
 
     public function create()
     {
-        return Inertia::render('Producto/Create');
+        $categorias = Categoria::get();
+        $lista_categorias = [];
+        foreach ($categorias as $value) {
+            array_push($lista_categorias, [
+                'value' => $value->id,
+                'label' =>  $value->name,
+            ]);
+        }
+        return Inertia::render('Producto/Create',
+        [
+            'lista_categorias' => $lista_categorias
+        ]);
     }
 
     public function store(ProductoStoreRequest $request)
@@ -113,12 +125,27 @@ class ProductoController extends Controller
             "stock" => $new_stock,
             "stock_futuro" => $new_stock + $producto->en_camino
         ]);
+
+        if(!empty($request->categorias)){
+            $producto->categorias()->sync($request->categorias);
+        }
     }
 
     public function edit($id)
     {
-        $producto = Producto::findOrFail($id);
+        $categorias = Categoria::get();
+        $lista_categorias = [];
+        foreach ($categorias as $value) {
+            array_push($lista_categorias, [
+                'value' => $value->id,
+                'label' =>  $value->name,
+            ]);
+        }
+        $producto = Producto::with(['categorias' => function ($query) {
+            $query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
+        }])->findOrFail($id);
         return Inertia::render('Producto/Edit', [
+            'lista_categorias' => $lista_categorias,
             'producto' => $producto
         ]);
     }
@@ -155,6 +182,12 @@ class ProductoController extends Controller
             "stock" => $new_stock,
             "stock_futuro" => $new_stock + $producto->en_camino
         ]);
+
+        if(!empty($request->categorias)){
+            $producto->categorias()->sync($request->categorias);
+        }else{
+            $producto->categorias()->detach();
+        }
     }
 
 
@@ -284,7 +317,31 @@ class ProductoController extends Controller
 
     public function exportExcel()
     {
-        return Excel::download(new ProductosExport(), 'productos.xlsx');
+        $productos = Producto::query()->select(
+            'id',
+            'origen',
+            'nombre',
+            'aduana',
+            'codigo_barra',
+            'imagen',
+            'stock',
+            'stock_minimo',
+            'stock_futuro',
+            'en_camino',
+            'arribado'            
+        )
+            ->with(['categorias' => function ($query) {
+                $query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
+            }])
+            ->when(Request::input('categoria'), function ($query) {
+                $query->whereHas('categorias', function ($query) {
+                    $query->whereIn('id', Request::input('categoria'));
+                });
+            })
+
+            ->orderBy('nombre', 'ASC')
+            ->get();
+        return Excel::download(new ProductosExport($productos), 'Productos.xlsx');
     }
     public function vistaImportar()
     {
