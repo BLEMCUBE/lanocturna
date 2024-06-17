@@ -7,8 +7,8 @@ use App\Exports\ProductoVentaExport;
 use App\Http\Requests\ProductoImportStockRequest;
 use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
-use App\Http\Resources\ProductoCollection;
 use App\Imports\ProductoStockImport;
+use App\Models\Categoria;
 use Illuminate\Validation\ValidationException;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
@@ -35,11 +35,50 @@ class ProductoController extends Controller
 
     public function index()
     {
+        $categorias = Categoria::get();
+        $lista_categorias = [];
+        foreach ($categorias as $value) {
+            array_push($lista_categorias, [
+                'value' => $value->id,
+                'label' =>  $value->name,
+            ]);
+        }
+        $cte = Request::input('buscar');
+        $productos_query = Producto::query()->select(
+            'id',
+            'origen',
+            'nombre',
+            'aduana',
+            'codigo_barra',
+            'imagen',
+            'stock',
+            'stock_minimo',
+            'stock_futuro',
+            'en_camino',
+            'arribado',
+            'created_at',
+            DB::raw("DATE_FORMAT(created_at,'%d/%m/%y  %H:%i:%s') AS fecha")
+        )
+            ->with(['categorias' => function ($query) {
+                $query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
+            }])
+            ->when(Request::input('buscar'), function ($query) {
+                $query->where(DB::raw('lower(origen)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
+                    ->orWhere(DB::raw('lower(nombre)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%');
+            })
+            ->when(Request::input('categoria'), function ($query) {
+                $query->whereHas('categorias', function ($query) {
+                    $query->whereIn('id', [Request::input('categoria')]);
+                });
+            })
+
+            ->orderBy('nombre', 'ASC')
+            ->paginate(100)->withQueryString();
+
         return Inertia::render('Producto/Index', [
-            'productos' => new ProductoCollection(
-                Producto::orderBy('id', 'DESC')
-                    ->get()
-            )
+            'categorias' => $lista_categorias,
+            'productos' => $productos_query,
+            'filtro' => Request::only(['buscar', 'categoria'])
         ]);
     }
     public function ajusteStock()
@@ -133,6 +172,8 @@ class ProductoController extends Controller
                     $query->select(DB::raw("id,nro_carpeta,nro_contenedor,
                 DATE_FORMAT(fecha_arribado ,'%d/%m/%Y') AS fecha"));
                 }]);
+        }])->with(['categorias' => function ($query) {
+            $query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
         }])->select(DB::raw("productos.*"))
             ->orderBy('id', 'ASC')->findOrFail($id);
 
@@ -156,7 +197,7 @@ class ProductoController extends Controller
             )->where('prod.id', '=', $id)
             ->orderBy('imp.fecha_arribado', 'DESC')->get();
 
-            $productoEnCamino = DB::table('importaciones as imp')
+        $productoEnCamino = DB::table('importaciones as imp')
             ->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
             ->join('productos as prod', 'prod.origen', '=', 'det.sku')
             ->select(
@@ -267,14 +308,14 @@ class ProductoController extends Controller
                         'sku' => $col[0],
                     ]);
                 }
-            }else{
+            } else {
                 throw ValidationException::withMessages([
                     'error_sku' => "SKU no debe estar vacio.",
                 ]);
             }
         }
 
-        if (count($no_existe) > 0   ) {
+        if (count($no_existe) > 0) {
             throw ValidationException::withMessages([
                 'filas' => [$no_existe]
             ]);
@@ -433,7 +474,6 @@ class ProductoController extends Controller
                 "producto_id" => $producto->id,
                 "tipo_cambio_yuan_id" => 1,
             ]);
-
         }
         return 'Yuanes Actualizado';
     }

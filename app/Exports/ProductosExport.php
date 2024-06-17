@@ -6,6 +6,7 @@ use App\Models\Producto;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Illuminate\Support\Facades\DB;
 
 class ProductosExport implements FromView, ShouldAutoSize
 {
@@ -15,7 +16,9 @@ class ProductosExport implements FromView, ShouldAutoSize
 
 
         return view('excel.productos', [
-            'productos' => Producto::get()
+            'productos' => Producto::with(['categorias' => function ($query) {
+                $query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
+            }])->get()
         ]);
     }
 }
