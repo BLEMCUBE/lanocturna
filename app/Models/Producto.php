@@ -60,4 +60,11 @@ class Producto extends Model
     {
         return $this->belongsToMany(TipoCambioYuan::class, 'productos_yuanes', 'producto_id', 'tipo_cambio_yuan_id');
     }
+    
+    public function categorias()
+    {
+        //return $this->belongsToMany(Categoria::class, 'categoria_producto', 'producto_id', 'categoria_id');
+        return $this->belongsToMany(Categoria::class)
+        ->withTimestamps();
+    }
 }

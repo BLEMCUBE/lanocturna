@@ -73,7 +73,7 @@ const date = ref([new Date(), new Date()]);
 const filtrado = (value) => {
     if (value[0] != null && value[1] != null) {
 
-        router.get('/rmas/',
+        router.get(route(ruta + '.index'),
             {
                 inicio: moment(value[0]).format('YYYY-MM-DD'),
                 fin: moment(value[1]).format('YYYY-MM-DD')
@@ -170,7 +170,7 @@ const filters = ref({
 
             <!--Contenido-->
             <Toast />
-            <div class="px-3 pb-2 col-span-full flex justify-between items-center">
+            <div class="p-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 <Button size="small" :label="'Ingresar RMA'" severity="success" @click="BtnCrearRma"></Button>
 

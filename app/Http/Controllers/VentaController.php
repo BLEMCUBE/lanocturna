@@ -43,31 +43,46 @@ class VentaController extends Controller
             $fecha = Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
             if ($fecha->eq($actual)) {
                 $hoy_tipo_cambio = true;
-                $tipo_cambio = $ultimo_tipo_cambio;
             } else {
                 $hoy_tipo_cambio = false;
             }
         }
 
-        $venta_query = Venta::select('id','cliente','destino','facturado','estado','tipo','nro_compra'
-        ,'observaciones','total','parametro','created_at')
-        ->where(function ($query) {
-            $query->where("tipo", "=", "VENTA")
-                ->orWhere("tipo", "=", "ENVIO");
-        })
+        $venta_query = Venta::query()->select(
+            'id',
+            'facturado',
+            'estado',
+            'tipo',
+            'nro_compra',
+            'observaciones',
+            'total',
+            'parametro',
+            'created_at',
+            DB::raw("DATE_FORMAT(created_at,'%d/%m/%y  %H:%i:%s') AS fecha"),
+            DB::raw("JSON_UNQUOTE(json_extract(cliente,'$.nombre')) AS cliente")
+        )
+            ->when(Request::input('buscar'), function ($query) {
+                $query->where(DB::raw('lower(nro_compra)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
+                    ->orWhere(DB::raw('lower(cliente)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%');
+            })
             ->when(Request::input('inicio'), function ($query) {
                 $query->whereDate('created_at', '>=', Request::input('inicio') . ' 00:00:00');
             })
             ->when(Request::input('fin'), function ($query) {
                 $query->whereDate('created_at', '<=', Request::input('fin') . ' 23:59:00');
             })
+            ->where(function ($query) {
+                $query->where("tipo", "=", "VENTA")
+                    ->orWhere("tipo", "=", "ENVIO");
+            })
+
+
             ->orderBy('created_at', 'DESC')
-            ->get();
+            ->paginate(100)->withQueryString();
         return Inertia::render('Venta/Index', [
             'tipo_cambio' => $hoy_tipo_cambio,
-            'ventas' => new VentaCollection(
-                $venta_query
-            )
+            'ventas' => $venta_query,
+            'filtro' => Request::only(['buscar', 'inicio', 'fin'])
         ]);
     }
     public function create()
@@ -120,17 +135,17 @@ class VentaController extends Controller
         }
 
 
-$productoLista = Producto::with(['importacion_detalles' => function ($query) {
-    $query->select('id','sku', 'cantidad_total', 'importacion_id','estado');
-}, 'importacion_detalles.importacion' => function ($query1) {
-    $query1->select('id', 'estado','nro_carpeta');
-}])->select('*')
-->orderBy('nombre', 'ASC')
+        $productoLista = Producto::with(['importacion_detalles' => function ($query) {
+            $query->select('id', 'sku', 'cantidad_total', 'importacion_id', 'estado');
+        }, 'importacion_detalles.importacion' => function ($query1) {
+            $query1->select('id', 'estado', 'nro_carpeta');
+        }])->select('*')
+            ->orderBy('nombre', 'ASC')
 
-->get();
+            ->get();
 
 
-$resultadoProductoLista=new ProductoVentaCollection($productoLista);
+        $resultadoProductoLista = new ProductoVentaCollection($productoLista);
 
         return Inertia::render('Venta/Create', [
             'hoy_tipo_cambio' => $hoy_tipo_cambio,
@@ -183,16 +198,16 @@ $resultadoProductoLista=new ProductoVentaCollection($productoLista);
                 $query->select('id', 'name');
             }])
             ->orderBy('id', 'DESC')->findOrFail($id);
-        //return $venta;
-        $productoLista = Producto::with(['importacion_detalles' => function ($query) {
-            $query->select('id','sku', 'cantidad_total', 'importacion_id','estado');
-        }, 'importacion_detalles.importacion' => function ($query1) {
-            $query1->select('id', 'estado','nro_carpeta');
-        }])->select('*')
-        ->orderBy('nombre', 'ASC')
 
-        ->get();
-        $resultadoProductoLista=new ProductoVentaCollection($productoLista);
+            $productoLista = Producto::with(['importacion_detalles' => function ($query) {
+            $query->select('id', 'sku', 'cantidad_total', 'importacion_id', 'estado');
+        }, 'importacion_detalles.importacion' => function ($query1) {
+            $query1->select('id', 'estado', 'nro_carpeta');
+        }])->select('*')
+            ->orderBy('nombre', 'ASC')
+
+            ->get();
+        $resultadoProductoLista = new ProductoVentaCollection($productoLista);
 
         if ($venta->tipo == "VENTA") {
             return Inertia::render('Venta/Edit', [
@@ -457,7 +472,7 @@ $resultadoProductoLista=new ProductoVentaCollection($productoLista);
             $venta->detalles_ventas()->delete();
 
             //eliminando  venta
-            $venta->delete();
+            //$venta->delete();
 
             DB::commit();
         } catch (Exception $e) {

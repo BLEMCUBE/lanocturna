@@ -3,6 +3,7 @@
     <tr style="background-color: aquamarine">
         <th>origen</th>
         <th>nombre</th>
+        <th>categoria</th>
         <th>aduana</th>
         <th>codigo_barra</th>
         <th>imagen</th>
@@ -21,6 +22,19 @@
         <tr>
             <td>{{ $producto->origen??'' }}</td>
             <td>{{ $producto->nombre??'' }}</td>
+            <td>
+                @if($producto->categorias)
+                @foreach($producto->categorias as $key => $value)
+                @if ($loop->first)
+                 {{$value->name}}
+                 @else
+                 , {{$value->name}}
+
+                @endif
+                    
+                @endforeach
+                @endif
+            </td>
             <td>{{ $producto->aduana??'' }}</td>
             <td>{{ $producto->codigo_barra??'' }}</td>
             <td>{{ $producto->imagen??'' }}</td>

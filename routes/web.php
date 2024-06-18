@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CajaController;
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\ConfiguracionController;
@@ -65,6 +66,8 @@ Route::controller(OpcionesController::class)->group(function () {
 Route::controller(ConfiguracionController::class)->group(function () {
     Route::get('/configuraciones', 'index')->name('configuraciones.index')->middleware('auth');
     Route::post('/configuraciones/update/{id}', 'update')->name('configuraciones.update')->middleware('auth');
+    Route::get('/configuraciones/datos-web', 'webDatos')->name('configuraciones.web')->middleware('auth');
+    Route::post('/configuraciones/update-web', 'updateDatos')->name('configuraciones.updateweb')->middleware('auth');
 
 
 });
@@ -168,6 +171,7 @@ Route::controller(ExpedicionController::class)->group(function () {
     Route::post('/expediciones/update/{id}', 'validarProductos')->name('expediciones.update')->middleware('auth');
     Route::get('/expediciones', 'index')->name('expediciones.index')->middleware('auth');
     Route::get('/expediciones/{id}', 'show')->name('expediciones.show')->middleware('auth');
+    Route::get('/expediciones/pdf/{id}', 'generarPdf')->name('expediciones.pdf')->middleware('auth');
 });
 
 //Envio
@@ -286,6 +290,17 @@ Route::get('/reportes-productos-rma/exportstockrma/{completo}',[ReporteProductoR
 
 //Plantilas importar
 Route::get('/plantillas/importar/{nombre}',[PlantillaController::class, 'descargarPlantilla'])->name('plantillas.importar')->middleware('auth');
+
+//Categoria
+Route::controller(CategoriaController::class)->prefix('categorias')->name('categorias.')
+->middleware('auth')->group(function () {
+    Route::post('/update/{id}', 'update')->name('update');
+    Route::get('/', 'index')->name('index');
+    Route::get('/{id}', 'show')->name('show');
+    Route::post('/store', 'store')->name('store');
+    Route::delete('/{id}', 'destroy')->name('destroy');
+});
+
 
 
 require __DIR__.'/auth.php';

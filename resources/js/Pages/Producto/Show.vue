@@ -32,7 +32,8 @@ const form = useForm({
     stock: 0,
     stock_minimo: 0,
     imagen: '',
-    photo: ''
+    photo: '',
+    categorias:[]
 })
 const date = ref([new Date(), new Date()]);
 const date2 = ref([new Date(), new Date()]);
@@ -169,6 +170,7 @@ onMounted(() => {
     form.stock_futuro = datos.stock_futuro
     previewImage.value = datos.imagen
     form.imagen = datos.imagen
+    form.categorias=datos.categorias
 
 });
 const filters = ref({
@@ -295,6 +297,13 @@ const clickDetImportacion = (e) => {
                                 Cotización Yuanes:
                             </b>
                             {{ (ultimo_yang>0)?ultimo_yang:'-' }}
+                        </p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                                Categoría:
+                            </b>
+                             {{ form.categorias.map(entry => entry.name).join(', ') }} 
                         </p>
                     </div>
                 </div>

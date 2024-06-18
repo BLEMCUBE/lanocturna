@@ -174,6 +174,13 @@ onMounted(() => {
             <!--Contenido-->
             <Toast />
 
+            <div class="px-2 py-0 m-0 mt-0 text-white  col-span-full  flex justify-start items-center">
+                <span
+                    class="inline-block rounded bg-blue-500 px-2 py-1 text-base font-normal text-white mr-1 mb-1 hover:bg-sky-400">
+                    <a :href="route('expediciones.pdf', form.id)" target="_blank"><i class="fas fa-print"></i>
+                        Recibo</a>
+                </span>
+            </div>
             <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
                 <h5 class="text-2xl font-medium">Cliente: {{ form.cliente }}</h5>
             </div>
