@@ -95,7 +95,6 @@ watch(buscar, (value) => {
 
 //filtrado
 const filtrado = (value) => {
-    console.log("vv", value)
     if (value[0] != null && value[1] != null) {
         date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
         inicio.value = date.value[0];
@@ -200,10 +199,8 @@ const ok = (icono, mensaje) => {
     })
 }
 
-const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
 </script>
+
 <template>
 
     <Head :title="titulo" />
@@ -211,7 +208,7 @@ const filters = ref({
         <div class="card p-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12">
             <!--Contenido-->
             <Toast />
-            <div class="px-3 pb-2 col-span-full flex justify-between items-center">
+            <div class="p-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 <Button size="small" :label="'Crear Venta'" severity="success" @click="BtnCrear"></Button>
 
@@ -219,7 +216,7 @@ const filters = ref({
             <!--tabla-->
             <div class="align-middle py-4">
                 <div class="grid grid-cols-6 gap-4 m-1.5">
-                    <InputText v-model="buscar" placeholder="Buscar por N° Compra o Cliente" :pt="{
+                    <InputText v-model="buscar" placeholder="N° Compra o Cliente" :pt="{
                         root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
                     }" />
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CajaController;
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\ConfiguracionController;
@@ -289,6 +290,17 @@ Route::get('/reportes-productos-rma/exportstockrma/{completo}',[ReporteProductoR
 
 //Plantilas importar
 Route::get('/plantillas/importar/{nombre}',[PlantillaController::class, 'descargarPlantilla'])->name('plantillas.importar')->middleware('auth');
+
+//Categoria
+Route::controller(CategoriaController::class)->prefix('categorias')->name('categorias.')
+->middleware('auth')->group(function () {
+    Route::post('/update/{id}', 'update')->name('update');
+    Route::get('/', 'index')->name('index');
+    Route::get('/{id}', 'show')->name('show');
+    Route::post('/store', 'store')->name('store');
+    Route::delete('/{id}', 'destroy')->name('destroy');
+});
+
 
 
 require __DIR__.'/auth.php';

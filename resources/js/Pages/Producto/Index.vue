@@ -1,12 +1,22 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm, router } from '@inertiajs/vue3';
+import { ref, onMounted, watch } from 'vue'
+import { Head, usePage, useForm, router,Link } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-import { FilterMatchMode } from 'primevue/api';
-import Column from 'primevue/column';
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
+import Multiselect from '@vueform/multiselect';
+import Pagination from '@/Components/Pagination.vue';
+const props = defineProps({
+    productos: {
+        type: Object,
+        default: () => ({}),
+    },
+    filtro: {
+        type: Object,
+        default: () => ({}),
+    },
+});
 const toast = useToast();
 const tabla_productos = ref()
 const { permissions } = usePage().props.auth
@@ -16,16 +26,48 @@ const formDelete = useForm({
     id: '',
 });
 
-const rowClass = (data) => {
+let categorias = ref([props.filtro.categoria])
+let buscar = ref(props.filtro.buscar);
+
+watch(buscar, (value) => {
+    router.get(
+        route(ruta + '.index'),
+        {
+            buscar: value,
+            categoria: categorias.value
+        },
+        {
+            preserveState: true,
+            replace: true,
+        }
+    );
+});
+
+
+watch(categorias, (value) => {
+    router.get(
+        route(ruta + '.index'),
+        {
+            categoria: value,
+            buscar: buscar.value,
+        },
+        {
+            preserveState: true,
+            replace: true,
+        }
+    );
+});
+
+const rowClass = (stock, stock_minimo, stock_futuro) => {
     //Si stock = < stock minimo Y stock_futuro = stock
-    if (parseFloat(data.stock) <= parseFloat(data.stock_minimo) && parseFloat(data.stock) == parseFloat(data.stock_futuro)) {
+    if (parseFloat(stock) <= parseFloat(stock_minimo) && parseFloat(stock) == parseFloat(stock_futuro)) {
         //return "text-red-700 text-xs"
-        return ["bg-red-700 text-xs text-white"]
+        return "bg-red-700 text-white"
     }
     //Si stock = < stock mínimo y stock_futuro > stock
-    if (parseFloat(data.stock) <= parseFloat(data.stock_minimo) && parseFloat(data.stock_futuro) > parseFloat(data.stock)) {
-        //return ["text-orange-500 text-xs"]
-        return "bg-orange-500 text-xs text-white"
+    if (parseFloat(stock) <= parseFloat(stock_minimo) && parseFloat(stock_futuro) > parseFloat(stock)) {
+
+        return "bg-orange-500 text-black"
     }
 };
 
@@ -66,12 +108,20 @@ const btnEliminar = (id, name) => {
         }
     });
 }
+const lista_categorias = ref({
+    value: '',
+    closeOnSelect: true,
+    placeholder: "Categorías",
+    mode: 'tags',
+    searchable: true,
+    options: [],
+});
 
 onMounted(() => {
-
-    tabla_productos.value = Array.from(usePage().props.productos.data, (x) => x);
-
+    tabla_productos.value = usePage().props.productos.data;
+    lista_categorias.value.options = usePage().props.lista_categorias
 });
+
 
 const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
@@ -80,14 +130,11 @@ const show = (tipo, titulo, mensaje) => {
 const BtnCrear = () => {
     router.get(route(ruta + '.create'));
 }
-const clickDetalle = (e) => {
-    btnVer(e.data.id)
+const clickDetalle = (id) => {
+    btnVer(id)
 }
 
 
-const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
 </script>
 <template>
 
@@ -107,7 +154,7 @@ const filters = ref({
                 <span
                     v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                     class=" w-8 h-8 rounded bg-green-600 flex justify-center mr-5 items-center text-base font-semibold text-white hover:bg-green-600">
-                    <a :href="route('productos.exportar')" target="_blank" class="py-auto"><i
+                    <a :href="route(ruta + '.exportar',{categoria: categorias})" target="_blank" class="py-auto"><i
                             class="fas fa-file-excel text-white"></i>
                     </a>
 
@@ -116,85 +163,69 @@ const filters = ref({
 
             </div>
 
-            <div class="align-middle">
 
-                <DataTable :rowClass="rowClass" :filters="filters" :value="tabla_productos" :pt="{
-                    bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
-                    root: { class: 'w-auto' }
-                }" :globalFilterFields="['codigo_barra', 'origen', 'nombre']" scrollable scrollHeight="700px" paginator :rows="50"
-                    @row-click="clickDetalle" size="small">
-                    <template #header>
-                        <div class="flex justify-content-end text-md">
-                            <InputText v-model="filters['global'].value" placeholder="Buscar" />
-                        </div>
-                    </template>
-                    <template #empty> No existe Resultado </template>
-                    <template #loading> Cargando... </template>
+            <!--tabla-->
+            <div class="align-middle py-4">
 
-                    <Column field="stock" sortable header="Stock" :pt="{
-                        bodyCell: {
-                            class: 'text-center w-12'
-                        }
-                    }"></Column>
-                    <Column field="stock_futuro" sortable header="Stock futuro" :pt="{
-                        bodyCell: {
-                            class: 'text-center w-12'
-                        }
-                    }"></Column>
-                    <Column field="imagen" header="Imagen" :pt="{
-                        bodyCell: {
-                            class: 'flex justify-center text-center w-12'
-                        },
-                        headerCell: {
-                            class: 'w-10'
-                        }
-                    }">
-                        <template #loading>
-                        </template>
-                        <template #body="slotProps">
-                            <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
-                                :src="slotProps.data.imagen" alt="image">
-                        </template>
-                    </Column>
-                    <Column field="origen" header="Origen" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center w-36'
-                        }
-                    }"></Column>
-                    <Column field="nombre" header="Nombre" sortable :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
+                <div class="grid grid-cols-12 gap-4  m-3">
 
+                    <div class="flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-3">
+                        <InputText class="w-full" v-model="buscar" placeholder="Buscar" />
+                    </div>
+                    <div class="flex justify-content-end text-md col-span-12 lg:col-span-8 2xl:col-span-9">
+                        <Multiselect id="categorias" v-model="categorias" class="w-full" v-bind="lista_categorias">
+                        </Multiselect>
+                    </div>
+                </div>
+                <div style="overflow:auto; max-height: 700px;">
 
+                    <table class="w-full text-md bg-white shadow-md rounded mb-4">
+                        <thead style="position: sticky;" class="top-0 z-[1]">
+                            <tr class="bg-secondary-100">
+                                <th class="p-1.5">Stock</th>
+                                <th>Stock futuro</th>
+                                <th class="p-2">Imagen</th>
+                                <th>Origen</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
 
-                    <Column header="Acciones" style="width:80px" class="px-auto">
-                        <template #loading>
-                        </template>
-                        <template #body="slotProps">
-                            <!--
+                        <tbody>
+                            <tr v-for="post in productos.data"
+                                class="border text-center hover:cursor-pointer hover:bg-gray-100 hover:text-black"
+                                :class="rowClass(post.stock, post.stock_minimo, post.stock_futuro)">
+                                <td @click="clickDetalle(post.id)">{{ post.stock ?? "" }}</td>
+                                <td @click="clickDetalle(post.id)">{{ post.stock_futuro }}</td>
+                                <td @click="clickDetalle(post.id)">
+                                    <img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
+                                        :src="post.imagen" alt="image">
+                                </td>
+                                <td @click="clickDetalle(post.id)">{{ post.origen }}</td>
+                                <td @click="clickDetalle(post.id)">{{ post.nombre }}</td>
 
-                                <button v-if="permissions.includes('editar-productos')"
-                                class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
-                                v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
-                                @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
-                            -->
+                                <td @click="clickDetalle(post.id)">
+                                    {{ post.categorias.map(entry => entry.name).join(',') ?? "" }}</td>
+                                <td>
+                                    <button v-if="permissions.includes('eliminar-productos')"
+                                        class="w-8 h-8 rounded bg-red-700  border border-white px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
+                                        v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+                                        @click.prevent="btnEliminar(post.id, post.nombre)"><i
+                                            class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                            <button v-if="permissions.includes('eliminar-productos')"
-                                class="w-8 h-8 rounded bg-red-700  border border-white px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
-                                v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                @click.prevent="btnEliminar(slotProps.data.id, slotProps.data.nombre)"><i
-                                    class="fas fa-trash-alt"></i></button>
-
-                        </template>
-                    </Column>
-                </DataTable>
+                <Pagination :elements="productos"></Pagination>
 
             </div>
+            <!--tabla-->
             <!--Contenido-->
 
         </div>
- 
+
     </AppLayout>
 </template>

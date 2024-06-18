@@ -5,31 +5,25 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-import CrearModal from '@/Pages/Usuario/Partials/CrearModal.vue';
-import EditarModal from '@/Pages/Usuario/Partials/EditarModal.vue';
-import { FilterMatchMode } from 'primevue/api';
-import { useToast } from "primevue/usetoast";
+import CrearModal from '@/Pages/Categoria/Partials/CrearModal.vue';
+import EditarModal from '@/Pages/Categoria/Partials/EditarModal.vue';
 
+import { FilterMatchMode } from 'primevue/api';
 const tabla_clientes = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Usuarios"
-const ruta = 'usuarios'
+import { useToast } from "primevue/usetoast";
 const toast = useToast();
-
-const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
+const titulo = "Categorías"
+const ruta = 'categorias'
 
 
 const formDelete = useForm({
     id: '',
 });
 
-
 onMounted(() => {
-    tabla_clientes.value = usePage().props.usuarios.data;
+    tabla_clientes.value = usePage().props.categorias.data;
 });
-
 
 
 //modal eliminar
@@ -57,31 +51,34 @@ const eliminar = (id, name) => {
                         setTimeout(() => {
                             router.get(route(ruta + '.index'));
                         }, 1000);
+
                     }
                 });
         }
     });
 }
 
+
 const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
 
+const filters = ref({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+
+});
 </script>
 <template>
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-        class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
-
+            class="px-4 mb-4 bg-white col-span-12  lg:col-span-6 py-5 rounded-lg shadow-lg 2xl:col-span-5 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <Toast />
-            <div class="px-5 pb-2 col-span-full flex justify-between items-center">
-
+            <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-                <CrearModal v-if="permissions.includes('crear-usuarios')"></CrearModal>
+                <CrearModal ></CrearModal>
             </div>
-
             <div class="align-middle">
                 <DataTable  size="small" v-model:filters="filters" :value="tabla_clientes" :paginator="true"
                     :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
@@ -91,21 +88,37 @@ const show = (tipo, titulo, mensaje) => {
                         <div class="flex justify-content-end text-md">
                             <InputText v-model="filters['global'].value" placeholder="Buscar" />
                         </div>
-
                     </template>
                     <template #empty> No existe Resultado </template>
                     <template #loading> Cargando... </template>
-                    <Column field="id" header="ID"></Column>
-                    <Column field="name" header="Nombre" sortable></Column>
-                    <Column field="username" header="Usuario" sortable></Column>
-                    <Column field="roles" header="Rol" sortable></Column>
-                    <Column header="Acciones" style="width:100px">
+                    <!--
+                    <Column  header="ID" :pt="{
+                        bodyCell: {
+                            class: 'text-center'
+                        }
+                    }">
+                     <template #body="slotProps">
+                        <span>
+
+                            {{ slotProps.data.id }}
+                        </span>
+                        </template>
+                    </Column>
+                    -->
+
+                    <Column field="name" header="Categoría" sortable :pt="{
+                        bodyCell: {
+                            class: 'px-3 text-start'
+                        }
+                    }"></Column>
+
+                   <Column header="Acciones" style="width:100px">
                         <template #body="slotProps">
-                            <span v-if="permissions.includes('editar-usuarios')"
+                            <span 
                                 class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
                                 <EditarModal :cliente-id="slotProps.data.id"></EditarModal>
                             </span>
-                            <span v-if="permissions.includes('eliminar-usuarios')"
+                            <span v-if="slotProps.data.productos==0"
                                 class="inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-red-600">
                                 <button @click.prevent="eliminar(slotProps.data.id, slotProps.data.name)"><i
                                         class="fas fa-trash-alt"></i></button>
@@ -114,10 +127,11 @@ const show = (tipo, titulo, mensaje) => {
                     </Column>
                 </DataTable>
             </div>
+
             <!--Contenido-->
         </div>
 
-    </AppLayout>
+    </AppLAyout>
 </template>
 
 
