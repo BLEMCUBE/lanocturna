@@ -187,7 +187,6 @@ const clickDetalle = (id) => {
                                 <th class="p-2">Imagen</th>
                                 <th>Origen</th>
                                 <th>Nombre</th>
-                                <th>Categoría</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -204,9 +203,6 @@ const clickDetalle = (id) => {
                                 </td>
                                 <td @click="clickDetalle(post.id)">{{ post.origen }}</td>
                                 <td @click="clickDetalle(post.id)">{{ post.nombre }}</td>
-
-                                <td @click="clickDetalle(post.id)">
-                                    {{ post.categorias.map(entry => entry.name).join(',') ?? "" }}</td>
                                 <td>
                                     <button v-if="permissions.includes('eliminar-productos')"
                                         class="w-8 h-8 rounded bg-red-700  border border-white px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
