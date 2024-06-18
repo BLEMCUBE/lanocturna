@@ -114,11 +114,11 @@ const filters = ref({
 
                    <Column header="Acciones" style="width:100px">
                         <template #body="slotProps">
-                            <span v-if="permissions.includes('editar-usuarios')"
+                            <span 
                                 class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
                                 <EditarModal :cliente-id="slotProps.data.id"></EditarModal>
                             </span>
-                            <span v-if="permissions.includes('eliminar-usuarios')"
+                            <span v-if="slotProps.data.productos==0"
                                 class="inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-red-600">
                                 <button @click.prevent="eliminar(slotProps.data.id, slotProps.data.name)"><i
                                         class="fas fa-trash-alt"></i></button>

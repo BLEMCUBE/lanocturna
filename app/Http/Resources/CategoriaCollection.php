@@ -19,7 +19,8 @@ class CategoriaCollection extends ResourceCollection
 
                 return [
                     'id' => $row->id,
-                    'name' => $row->name
+                    'name' => $row->name,
+                    'productos'=>count($row->productos)
                    
                 ];
             }),
