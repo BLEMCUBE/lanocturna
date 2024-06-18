@@ -137,7 +137,7 @@ const pickFile = (e) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.origen" />
                         </div>
 
-                        <div class="col-span-12 shadow-default xl:col-span-3">
+                        <div class="col-span-12 shadow-default xl:col-span-5">
                             <InputLabel for="nombre" value="Nombre"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <InputText type="text" id="nombre" v-model="form.nombre" placeholder="Ingrese nombre" :pt="{
