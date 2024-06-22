@@ -312,7 +312,6 @@ class ProductoController extends Controller
         if (file_exists($url_save) && $old_photo != "/images/productos/sin_foto.png") {
             unlink($url_save);
         }
-        $producto->categorias()->detach();
         $producto->delete();
     }
 

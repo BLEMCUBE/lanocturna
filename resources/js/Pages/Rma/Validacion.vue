@@ -2,21 +2,19 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
+
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
-
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
-
 const titulo = "Validación Rma"
 const ruta = 'rmas'
 
-setTimeout(() => {
-    if (route().current('rmas.validacion')) {
-        //window.open(self.location, '_self');
+setTimeout(()=>{
+    if(route().current('rmas.validacion')){
+        window.open(self.location, '_self');
     }
 }, 60000);
 
@@ -25,9 +23,7 @@ const btnVer = (id) => {
 
 };
 
-const formDelete = useForm({
-    id: '',
-});
+
 
 
 const clickDetalle = (e) => {
@@ -40,39 +36,6 @@ onMounted(() => {
 
 });
 
-
-const btnEliminar = (id) => {
-
-    const alerta = Swal.mixin({ buttonsStyling: true });
-    alerta.fire({
-        width: 350,
-        title: "Seguro de Eliminar ",
-        text: 'Se eliminará definitivamente',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar',
-        cancelButtonColor: 'red',
-        confirmButtonColor: '#2563EB',
-
-    }).then((result) => {
-        if (result.isConfirmed) {
-            formDelete.delete(route(ruta + '.destroy-subido', id),
-                {
-                    preserveScroll: true,
-                    forceFormData: true,
-                    onSuccess: () => {
-                        show('success', 'Eliminado', 'Se ha eliminado')
-                        setTimeout(() => {
-                            router.get(route(ruta + '.index'));
-                        }, 1000);
-
-                    }
-                });
-        }
-    });
-}
-
 const show = (tipo, titulo, mensaje) => {
     toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
@@ -84,7 +47,6 @@ const filters = ref({
 });
 </script>
 <template>
-
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
@@ -98,137 +60,141 @@ const filters = ref({
 
             <div class="align-middle">
 
-                <DataTable :filters="filters" :value="tabla_ventas" :pt="{
-                    bodyRow: { class: 'hover:cursor-pointer p-1 hover:bg-gray-100 hover:text-black' }
-                }" scrollable scrollHeight="700px" paginator :rows="50" @row-click="clickDetalle" size="small">
-                    <template #header>
-                        <div class="grid grid-cols-6 gap-4 m-1.5">
-                            <InputText v-model="filters['global'].value" placeholder="Buscar" :pt="{
-                                root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
-                            }" />
+<DataTable :filters="filters" :value="tabla_ventas" :pt="{
+    bodyRow: { class: 'hover:cursor-pointer p-1 hover:bg-gray-100 hover:text-black' }
+}" scrollable scrollHeight="700px" paginator :rows="50"
+    @row-click="clickDetalle" size="small">
+    <template #header>
+        <div class="grid grid-cols-6 gap-4 m-1.5">
+            <InputText v-model="filters['global'].value" placeholder="Buscar" :pt="{
+                root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
+            }" />
 
-                        </div>
-                    </template>
-                    <template #empty> No existe Resultado </template>
-                    <template #loading> Cargando... </template>
-                    <Column field="fecha" header="Fecha y Hora" sortable :pt="{
-                        bodyCellContent: {
-                            class: 'text-center w-40'
-                        },
-                        headerContent: {
+            <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
+                class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
+                v-model:value="date" :shortcuts="shortcuts" lang="es"
+                placeholder="Seleccione Fecha"></date-picker>
 
-                            class: 'text-center w-40'
-                        },
-                        headerCell: {
+        </div>
+    </template>
+    <template #empty> No existe Resultado </template>
+    <template #loading> Cargando... </template>
+    <Column field="fecha" header="Fecha y Hora" sortable :pt="{
+        bodyCellContent: {
+            class: 'text-center w-40'
+        },
+        headerContent: {
 
-                            class: 'text-center w-40'
-                        },
-                        bodyCell: {
+            class: 'text-center w-40'
+        },
+        headerCell: {
 
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="destino" header="Destino" sortable :pt="{
-                        bodyCellContent: {
-                            class: 'text-center w-40'
-                        },
-                        headerContent: {
+            class: 'text-center w-40'
+        },
+        bodyCell: {
 
-                            class: 'text-center w-40'
-                        },
-                        headerCell: {
+            class: 'text-center'
+        }
+    }"></Column>
+    <Column field="destino" header="Destino" sortable :pt="{
+        bodyCellContent: {
+            class: 'text-center w-40'
+        },
+        headerContent: {
 
-                            class: 'text-center w-40'
-                        },
-                        bodyCell: {
+            class: 'text-center w-40'
+        },
+        headerCell: {
 
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="parametro.rma.nro_servicio" header="Nº de Servicio" context="small" sortable :pt="{
+            class: 'text-center w-40'
+        },
+        bodyCell: {
 
-                        bodyCellContent: {
-                            class: ' w-36'
-                        },
-                        headerCell: {
-                            class: 'w-36'
-                        },
-                        bodyCell: {
+            class: 'text-center'
+        }
+    }"></Column>
+    <Column field="parametro.rma.nro_servicio" header="Nº de Servicio" context="small" sortable :pt="{
 
-                            class: 'text-center'
-                        },
-                        headerContent: {
+        bodyCellContent: {
+            class: ' w-36'
+        },
+        headerCell: {
+            class: 'w-36'
+        },
+        bodyCell: {
 
-                            class: 'text-center w-36'
-                        },
+            class: 'text-center'
+        },
+        headerContent: {
 
-                    }">
-                        <template #loading>
-                        </template>
-                    </Column>
-                    <Column field="parametro.rma.nro_compra" header="N° Compra" sortable :pt="{
-                        bodyCellContent: {
-                            class: 'text-center w-52'
-                        },
-                        headerContent: {
+            class: 'text-center w-36'
+        },
 
-                            class: 'text-center w-52'
-                        },
-                        headerCell: {
+    }">
+        <template #loading>
+        </template>
+    </Column>
+    <Column field="parametro.rma.nro_compra" header="N° Compra" sortable :pt="{
+        bodyCellContent: {
+            class: 'text-center w-52'
+        },
+        headerContent: {
 
-                            class: 'text-center w-52'
-                        },
-                        bodyCell: {
+            class: 'text-center w-52'
+        },
+        headerCell: {
 
-                            class: 'text-center'
-                        }
-                    }"></Column>
-                    <Column field="cliente" header="Cliente" sortable :pt="{
-                        bodyCellContent: {
-                            class: 'text-center w-52'
-                        },
-                        headerContent: {
+            class: 'text-center w-52'
+        },
+        bodyCell: {
 
-                            class: 'text-center w-52'
-                        },
-                        headerCell: {
+            class: 'text-center'
+        }
+    }"></Column>
+    <Column field="cliente" header="Cliente" sortable :pt="{
+        bodyCellContent: {
+            class: 'text-center w-52'
+        },
+        headerContent: {
 
-                            class: 'text-center w-52'
-                        },
-                        bodyCell: {
+            class: 'text-center w-52'
+        },
+        headerCell: {
 
-                            class: 'text-center'
-                        }
-                    }"></Column>
+            class: 'text-center w-52'
+        },
+        bodyCell: {
+
+            class: 'text-center'
+        }
+    }"></Column>
 
 
-                    <Column field="observaciones" sortable header="Observaciones" :pt="{
-                        bodyCell: {
-                            class: 'text-center'
-                        }
-                    }"></Column>
+    <Column field="observaciones" sortable header="Observaciones" :pt="{
+        bodyCell: {
+            class: 'text-center'
+        }
+    }"></Column>
 
-                    <Column header="Acciones" style="width:100px" :pt="{
-                        bodyCell: {
-                            class: 'text-center p-0'
-                        }
-                    }">
-                        <template #loading>
-                        </template>
-                        <template #body="slotProps">
-                            <div class="flex items-center justify-center py-1">
-                                <Button v-if="slotProps.data.modo !== 'ENTREGADO'"
-                                    @click="btnEliminar(slotProps.data.id)"
-                                    class="w-8 h-8 rounded py-0.5 border-red-700 bg-red-700 hover:bg-red-600 hover:border-red-600 text-base font-normal text-white"
-                                    v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
-                                        class="fas fa-trash"></i></Button>
-                            </div>
+    <!--
+    <Column header="Acciones" style="width:100px" :pt="{
+        bodyCell: {
+            class: 'text-center'
+        }
+    }">
+        <template #body="slotProps">
+            <span
+                class="inline-block rounded bg-sky-300 px-2 py-1 text-base font-semibold text-white mr-1 mb-1 hover:bg-sky-400">
+                <a :href="route('rmas.generar_ticket', slotProps.data.id)" target="_blank"><i
+                        class="fas fa-print"></i></a>
+            </span>
+        </template>
+    </Column>
 
-                        </template>
-                    </Column>
-                </DataTable>
+    -->
+</DataTable>
 
-            </div>
+</div>
             <!--Contenido-->
 
         </div>
