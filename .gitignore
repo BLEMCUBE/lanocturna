@@ -1,12 +1,10 @@
 /.phpunit.cache
 /node_modules
-!/public/build
+/public/build
 /public/hot
-/devnocturna
 /public/storage
 /storage/*.key
 /vendor
-/web-nocturna-NO-BORRAR
 .env
 .env.backup
 .env.production

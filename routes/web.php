@@ -258,28 +258,28 @@ Route::get('/reportes-productos-stock/exportxls',[ReporteStockProductosControlle
 
 
 //Rma -Presupuesto
-Route::controller(RmaController::class)->group(function () {
-    /*
-    Route::post('/ventas/updatemercado/{id}', 'updatemercado')->name('ventas.updatemercado')->middleware('auth');*/
-    Route::get('/rmas/subir/{id}', 'showsubir')->name('rmas.showsubir')->middleware('auth');
-    Route::get('/rmas/subir', 'rma_subir')->name('rmas.subir')->middleware('auth');
-    Route::post('/rmas/maestro', 'verificarCodigoMaestro')->name('rmas.maestro')->middleware('auth');
-    Route::post('/rmas/rma-update/{id}', 'rma_update')->name('rmas.rma-update')->middleware('auth');
-    Route::get('/rmas/rma-edit/{id}', 'rma_edit')->name('rmas.rma-edit')->middleware('auth');
-    Route::post('/rmas/rma-store', 'rma_store')->name('rmas.rma-store')->middleware('auth');
-    Route::post('/rmas/rma-subir', 'subir_store')->name('rmas.subir-store')->middleware('auth');
-    Route::get('/rmas/rma-create', 'rma_create')->name('rmas.rma-create')->middleware('auth');
-    Route::get('/rmas/stock-rma', 'rma_stock')->name('rmas.rma-stock')->middleware('auth');
-    Route::get('/rmas/validacion', 'validacionRma')->name('rmas.validacion')->middleware('auth');
-    Route::get('/rmas', 'index')->name('rmas.index')->middleware('auth');
-    Route::get('/rmas/historial', 'historial')->name('rmas.historial')->middleware('auth');
-    Route::get('/rmas/historial-envios', 'historialEnvios')->name('rmas.historial-envios')->middleware('auth');
-    Route::get('/rmas/{id}/historial', 'showHistorial')->name('rmas.show-historial')->middleware('auth');
-    Route::get('/rmas/{id}/validacion', 'validacionRmaShow')->name('rmas.show-validacion')->middleware('auth');
-    Route::get('/rmas/{id}', 'show')->name('rmas.show')->middleware('auth');
-    Route::get('/rmas/{id}/ticket', 'generarTicket')->name('rmas.generar_ticket')->middleware('auth');
-    Route::delete('/rmas/{id}', 'destroy')->name('rmas.destroy')->middleware('auth');
-    Route::delete('/rmas/{id}/stock', 'destroyStock')->name('rmas.destroy-stock')->middleware('auth');
+Route::controller(RmaController::class)->prefix('rmas')->name('rmas.')->middleware('auth')->group(function () {
+   
+    Route::get('/subir/{id}', 'showsubir')->name('showsubir');
+    Route::get('/subir', 'rma_subir')->name('subir');
+    Route::post('/maestro', 'verificarCodigoMaestro')->name('maestro');
+    Route::post('/rma-update/{id}', 'rma_update')->name('rma-update');
+    Route::get('/rma-edit/{id}', 'rma_edit')->name('rma-edit');
+    Route::post('/rma-store', 'rma_store')->name('rma-store');
+    Route::post('/rma-subir', 'subir_store')->name('subir-store');
+    Route::get('/rma-create', 'rma_create')->name('rma-create');
+    Route::get('/stock-rma', 'rma_stock')->name('rma-stock');
+    Route::get('/validacion', 'validacionRma')->name('validacion');
+    Route::get('/', 'index')->name('index');
+    Route::get('/historial', 'historial')->name('historial');
+    Route::get('/historial-envios', 'historialEnvios')->name('historial-envios');
+    Route::get('/{id}/historial', 'showHistorial')->name('show-historial');
+    Route::get('/{id}/validacion', 'validacionRmaShow')->name('show-validacion');
+    Route::get('/{id}', 'show')->name('show');
+    Route::get('/{id}/ticket', 'generarTicket')->name('generar_ticket');
+    Route::delete('/{id}', 'destroy')->name('destroy');
+    Route::delete('/{id}/stock', 'destroyStock')->name('destroy-stock');
+    Route::delete('/{id}/subido', 'destroySubido')->name('destroy-subido');
 
 });
 
