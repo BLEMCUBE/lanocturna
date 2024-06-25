@@ -15,6 +15,7 @@ const ruta = 'rmas'
 
 const { lista_destinos } = usePage().props
 const { lista_rmas } = usePage().props
+const { rma_existe } = usePage().props.errors
 const { vendedor } = usePage().props
 const { vendedor_id } = usePage().props
 
@@ -38,8 +39,8 @@ const form = useForm({
     {
         rma: {},
         opt: {
-            mueve_stock:"NO",
-            producto_completo:"SI"
+            mueve_stock: "NO",
+            producto_completo: "SI"
         }
     },
     productos: [],
@@ -55,13 +56,13 @@ const form = useForm({
 const setMueveStock = (e) => {
     if (e.value.code == form.parametro.opt.mueve_stock)
         return;
-    form.parametro.opt.mueve_stock=e.value.code
+    form.parametro.opt.mueve_stock = e.value.code
 
 }
 const setProductoCompleto = (e) => {
     if (e.value.code == form.parametro.opt.producto_completo)
         return;
-    form.parametro.opt.producto_completo=e.value.code
+    form.parametro.opt.producto_completo = e.value.code
 
 }
 const selectedMueveStock = ref({ name: 'NO', code: 'NO' });
@@ -86,7 +87,7 @@ const lista_destino = ref({
 onMounted(() => {
     lista_destino.value.options = lista_destinos
     lista_rmas.value = lista_rmas
-    form.vendedor_id=vendedor_id
+    form.vendedor_id = vendedor_id
 })
 
 const selectedRma = ref({ name: '', code: '' });
@@ -157,6 +158,7 @@ const cancelCrear = () => {
 
 </script>
 <template>
+
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <!--Contenido-->
@@ -166,14 +168,20 @@ const cancelCrear = () => {
             <Toast />
             <div class="mt-2 mb-4 col-span-12 lg:col-span-12">
 
-                <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
+                <div v-if="form.errors.rma_existe"
+                    class="px-0 py-1 m-2 mt-0 bg-red-600 text-white  col-span-full  flex justify-center items-center">
+                    <h5 class="text-md font-medium">{{ form.errors.rma_existe }}</h5>
+                </div>
+                <div
+                    class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
                     <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 </div>
                 <form>
                     <div class="grid grid-cols-12 gap-1 py-0">
                         <!--Tabla-->
                         <div class="col-span-12 mx-2 py-1 shadow-default xl:col-span-4">
-                            <InputLabel for="estado" value="Rma" class="text-base font-medium leading-1 text-gray-900" />
+                            <InputLabel for="estado" value="Rma"
+                                class="text-base font-medium leading-1 text-gray-900" />
 
                             <Dropdown v-model="selectedRma" id="estado" @change="setRma" filter :options="lista_rmas"
                                 optionLabel="name" :pt="{
@@ -187,10 +195,11 @@ const cancelCrear = () => {
                         </div>
 
                         <div class="col-span-12 mx-2 py-1 shadow-default xl:col-span-4">
-                            <InputLabel for="productoCompleto" value="Producto Completo?" class="text-base font-medium leading-1 text-gray-900" />
+                            <InputLabel for="productoCompleto" value="Producto Completo?"
+                                class="text-base font-medium leading-1 text-gray-900" />
 
-                            <Dropdown v-model="selectProductoCompleto" id="productoCompleto"  @change="setProductoCompleto" filter :options="productoCompleto"
-                                optionLabel="name" :pt="{
+                            <Dropdown v-model="selectProductoCompleto" id="productoCompleto"
+                                @change="setProductoCompleto" filter :options="productoCompleto" optionLabel="name" :pt="{
                                     root: { class: 'w-full' },
                                     trigger: { class: 'fas fa-caret-down text-gray-400 my-auto' },
                                     item: ({ props, state, context }) => ({
@@ -201,17 +210,19 @@ const cancelCrear = () => {
 
                         </div>
                         <div class="col-span-12 mx-2 py-1 shadow-default xl:col-span-4">
-                            <InputLabel for="stock" value="Mueve Stock?" class="text-base font-medium leading-1 text-gray-900" />
+                            <InputLabel for="stock" value="Mueve Stock?"
+                                class="text-base font-medium leading-1 text-gray-900" />
 
-                            <Dropdown v-model="selectedMueveStock" id="stock" :disabled="form.parametro.rma.stock==0" @change="setMueveStock" filter :options="mueveStock"
-                                optionLabel="name" :pt="{
+                            <Dropdown v-model="selectedMueveStock" id="stock" :disabled="form.parametro.rma.stock == 0"
+                                @change="setMueveStock" filter :options="mueveStock" optionLabel="name" :pt="{
                                     root: { class: 'w-full' },
                                     trigger: { class: 'fas fa-caret-down text-gray-400 my-auto' },
                                     item: ({ props, state, context }) => ({
                                         class: context.selected ? 'text-white bg-primary-900 p-2' : context.focused ? 'bg-blue-100 p-2' : undefined
                                     })
                                 }" placeholder="Seleccione" />
-                                 <InputError class="mt-1 text-xs" message="No existe stock" v-if="form.parametro.rma.stock==0"/>
+                            <InputError class="mt-1 text-xs" message="No existe stock"
+                                v-if="form.parametro.rma.stock == 0" />
 
                         </div>
 
@@ -231,7 +242,7 @@ const cancelCrear = () => {
                                     <td class="border border-gray-300 p-1">{{ form.parametro.rma.prod_nombre }}</td>
                                     <td v-if="form.parametro.rma.prod_serie" class="border border-gray-300 p-1">{{
                                         form.parametro.rma.prod_serie
-                                    }}</td>
+                                        }}</td>
 
                                 </tr>
                             </tbody>
@@ -240,7 +251,8 @@ const cancelCrear = () => {
                         <div class="col-span-12 mx-2 py-1 shadow-default 2xl:col-span-12">
 
                             <InputError class="mt-1 text-lg w-full" :message="form.errors.productos" />
-                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg" :message="error" />
+                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg"
+                                :message="error" />
                         </div>
                         <!--Datos-->
                         <div
