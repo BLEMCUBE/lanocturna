@@ -87,7 +87,6 @@ class RotacionStockController extends Controller
 			array_push($ultimas_ventas, [
 				"origen" => $venta->origen,
 				"nombre" => $venta->nombre,
-				"nombre" => $venta->nombre,
 				"categorias" => !is_null($venta->categorias)?implode(", ",$l_cat->all()):'',
 				"ultima_compra" =>!empty($ultima_compra_venta) ? $ultima_compra_venta[0]->fecha_compra : '',
 				"ultima_venta" => !empty($ultima_compra_venta) ? $ultima_compra_venta[0]->fecha_venta : '',

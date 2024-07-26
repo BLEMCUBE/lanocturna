@@ -28,18 +28,12 @@ const props = defineProps({
 let categorias = ref([])
 //let buscar = ref(props.filtro.buscar);
 let buscar = ref();
-//let date = ref([props.filtro.inicio, props.filtro.fin]);
 let date = ref([]);
-//let inicio = ref(props.filtro.inicio);
 let inicio = ref();
-//let fin = ref(props.filtro.fin);
 let fin = ref();
 
-//const date = ref();
+
 date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
-
-const fechaVentaExport = ref([]);
-
 
 
 watch(buscar, (value) => {
@@ -223,12 +217,12 @@ onMounted(() => {
 							<div class="flex justify-content-end text-md col-span-12 lg:col-span-3 2xl:col-span-3">
 								<InputText class="h-9 w-full" v-model="buscar" placeholder="Buscar" />
 							</div>
-							<div class="flex justify-content-end text-md col-span-12 lg:col-span-5 2xl:col-span-5">
+							<div class="flex justify-content-end text-md col-span-12 lg:col-span-5 2xl:col-span-7">
 								<Multiselect id="categorias" v-model="categorias" class="w-full"
 									v-bind="lista_categorias">
 								</Multiselect>
 							</div>
-							<div class="flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-4">
+							<div class="flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-2">
 								<date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
 									format="DD/MM/YYYY"
 									class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
