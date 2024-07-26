@@ -2,6 +2,8 @@ import { defineConfig,splitVendorChunkPlugin } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 //import { fileURLToPath, URL } from 'node:url';
+//import styleImport from 'vite-plugin-style-import'
+//import { resolve } from 'path'
 export default defineConfig({
 
     plugins: [
@@ -30,8 +32,21 @@ export default defineConfig({
           "fast-deep-equal",
         ],
       },*/
-   /* build: {
-        rollupOptions: {
+	  base: '/build/',
+	  build: {
+		chunkSizeWarningLimit:1600,
+		rollupOptions: {
+			output:{
+				manualChunks(id) {
+				  if (id.includes('node_modules')) {
+
+					  return id.toString().split('node_modules/')[1].split('/')[0].toString();
+				  }
+			  }
+			}
+		}
+
+        /*rollupOptions: {
 
           input: 'resources/js/app.js',
           output: {
@@ -49,6 +64,6 @@ export default defineConfig({
               return 'assets/[name]-[hash][extname]';
             },
           }
-        }
-      }*/
+        }*/
+      }
 });

@@ -92,7 +92,11 @@ const descargaExcelProductoVentas = () => {
 
 
 	if (date.value[0] != null && date.value[1] != null) {
-		window.open(route('rotacion-stock.exportproductoventas', [{ 'inicio': date.value[0], 'fin': date.value[1] }]), '_blank');
+		window.open(route('rotacion-stock.exportproductoventas', [
+			{
+			'categoria': categorias.value,
+			'inicio': date.value[0],
+			'fin': date.value[1] }]), '_blank');
 	} else {
 
 		return;
@@ -195,7 +199,7 @@ onMounted(() => {
 
 			<div class="bg-white mr-0 ml-0 shadow rounded-lg border border-gray-300">
 
-				<div class="align-middle p-3">
+				<div class="align-middle px-3 pt-3">
 					<div class="w-full flex items-center">
 						<div class="font-bold">
 							MESES: {{ mes }}
@@ -212,12 +216,12 @@ onMounted(() => {
 						</div>
 					</div>
 					<!--tabla-->
-					<div class="align-middle py-4">
+					<div class="align-middle py-2">
 
 						<div class="grid grid-cols-12 gap-4 m-3">
 
 							<div class="flex justify-content-end text-md col-span-12 lg:col-span-3 2xl:col-span-3">
-								<InputText class="w-full" v-model="buscar" placeholder="Buscar" />
+								<InputText class="h-9 w-full" v-model="buscar" placeholder="Buscar" />
 							</div>
 							<div class="flex justify-content-end text-md col-span-12 lg:col-span-5 2xl:col-span-5">
 								<Multiselect id="categorias" v-model="categorias" class="w-full"
@@ -255,7 +259,8 @@ onMounted(() => {
 
 										<td>{{ post.origen }} </td>
 										<td>{{ post.nombre }}</td>
-										<td> {{ post.categorias.map(entry => entry.name).join(', ') }}</td>
+										<!--<td> {{ post.categorias.map(entry => entry.name).join(', ') }}</td>-->
+										<td> {{ post.categorias }}</td>
 										<td>{{ post.ultima_compra }}</td>
 										<td>{{ post.ultima_venta }}</td>
 										<td>{{ post.ventas_totales }}</td>
