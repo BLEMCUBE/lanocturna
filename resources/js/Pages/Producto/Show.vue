@@ -33,7 +33,7 @@ const form = useForm({
     stock_minimo: 0,
     imagen: '',
     photo: '',
-    categorias:[]
+    categorias: []
 })
 const date = ref([new Date(), new Date()]);
 const date2 = ref([new Date(), new Date()]);
@@ -170,7 +170,7 @@ onMounted(() => {
     form.stock_futuro = datos.stock_futuro
     previewImage.value = datos.imagen
     form.imagen = datos.imagen
-    form.categorias=datos.categorias
+    form.categorias = datos.categorias
 
 });
 const filters = ref({
@@ -193,6 +193,7 @@ const clickDetImportacion = (e) => {
 
 </script>
 <template>
+
     <Head :title="titulo" />
     <AppLayout
         :pagina="[{ 'label': 'Productos', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
@@ -262,21 +263,21 @@ const clickDetImportacion = (e) => {
                         </p>
                     </div>
                 -->
-                <div class="col-span-2 row-span-3" v-if="productoEnCamino.length>0">
-                    <b class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300">
-                        En camino:
-                    </b>
-                    <ul class="list-disc list-outside">
-                        <li class="ml-3" v-for="item in productoEnCamino">
-                            <p class="text-xl leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
-                                {{item.nro_carpeta}}
-                            </b>:
-                            {{item.cantidad_total}}
-                        </p>
-                        </li>
+                    <div class="col-span-2 row-span-3" v-if="productoEnCamino.length > 0">
+                        <b class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300">
+                            En camino:
+                        </b>
+                        <ul class="list-disc list-outside">
+                            <li class="ml-3" v-for="item in productoEnCamino">
+                                <p class="text-xl leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
+                                        {{ item.nro_carpeta }}
+                                    </b>:
+                                    {{ item.cantidad_total }}
+                                </p>
+                            </li>
 
 
-                    </ul>
+                        </ul>
 
                     </div>
                     <div class="col-span-2">
@@ -296,14 +297,14 @@ const clickDetImportacion = (e) => {
                         <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
                                 Cotización Yuanes:
                             </b>
-                            {{ (ultimo_yang>0)?ultimo_yang:'-' }}
+                            {{ (ultimo_yang > 0) ? ultimo_yang : '-' }}
                         </p>
                     </div>
                     <div class="col-span-2">
                         <p class="text-lg leading-2 mt-0 text-gray-700 dark:text-gray-300"><b>
                                 Categoría:
                             </b>
-                             {{ form.categorias.map(entry => entry.name).join(', ') }} 
+                            {{ form.categorias.map(entry => entry.name).join(', ') }}
                         </p>
                     </div>
                 </div>
@@ -322,8 +323,8 @@ const clickDetImportacion = (e) => {
                         bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                         root: { class: 'w-auto' }
                     }" scrollable scrollHeight="350px" :virtualScrollerOptions="{
-    numToleratedItems: 30, itemSize: 46
-}" tableStyle="min-width: 50rem" size="small">
+                        numToleratedItems: 30, itemSize: 46
+                    }" tableStyle="min-width: 50rem" size="small">
                         <template #header>
                             <div class="flex justify-content-end text-md">
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />
@@ -383,8 +384,8 @@ const clickDetImportacion = (e) => {
                 <!-- Línea con gradiente -->
                 <div class="align-middle p-2">
 
-                    <DataTable :filters="filters_importacion" @row-click="clickDetImportacion" :value="tabla_importaciones"
-                        :pt="{
+                    <DataTable :filters="filters_importacion" @row-click="clickDetImportacion"
+                        :value="tabla_importaciones" :pt="{
                             bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
                             root: { class: 'w-auto' }
                         }" scrollable scrollHeight="350px" :virtualScrollerOptions="{ itemSize: 46 }"
