@@ -32,7 +32,7 @@ export default defineConfig({
           "fast-deep-equal",
         ],
       },*/
-	  base: '/build/',
+	  //base: '/build/',
 	  build: {
 		chunkSizeWarningLimit:1600,
 		rollupOptions: {

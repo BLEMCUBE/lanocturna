@@ -237,7 +237,8 @@ class ProductoController extends Controller
                 'imp.nro_carpeta',
                 'imp.estado',
                 'det.cantidad_total',
-                'det.importacion_id'
+                'det.importacion_id',
+				DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado")
             )
             ->where('prod.id', '=', $id)
             ->where('imp.estado', '=', 'En camino')
