@@ -2262,7 +2262,7 @@
     "src": "resources/js/Pages/Producto/Index.vue"
   },
   "resources/js/Pages/Producto/Show.vue": {
-    "file": "assets/Show-06c1e42a.js",
+    "file": "assets/Show-0f6f08c5.js",
     "imports": [
       "_AppLayout-08ffa2ac.js",
       "_@inertiajs-ab1bf9dd.js",
@@ -2463,13 +2463,15 @@
     "src": "resources/js/Pages/Reporte/ProductosRma.vue"
   },
   "resources/js/Pages/Reporte/ProductosVendidos.vue": {
-    "file": "assets/ProductosVendidos-315893a2.js",
+    "file": "assets/ProductosVendidos-50847b3f.js",
     "imports": [
       "_AppLayout-08ffa2ac.js",
       "_@inertiajs-ab1bf9dd.js",
       "_vue-datepicker-next-31061510.js",
       "_moment-fbc5633a.js",
       "_primevue-232ee6f7.js",
+      "_@vueform-21ff8afc.js",
+      "_Pagination-e120bd15.js",
       "_date-fns-7c3f4903.js",
       "_@vue-1043e4d5.js",
       "_logo-e22dfca4.js",
@@ -3113,7 +3115,7 @@
     "src": "resources/js/Pages/Role/Index.vue"
   },
   "resources/js/Pages/RotacionStock/Index.vue": {
-    "file": "assets/Index-dc87fc03.js",
+    "file": "assets/Index-28570503.js",
     "imports": [
       "_AppLayout-08ffa2ac.js",
       "_@inertiajs-ab1bf9dd.js",
@@ -3682,7 +3684,7 @@
     "src": "resources/js/Pages/Welcome.vue"
   },
   "resources/js/app.css": {
-    "file": "assets/app-6a979ee6.css",
+    "file": "assets/app-cbd51566.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.js": {
@@ -3699,7 +3701,7 @@
       "assets/Inter-Bold-3e242080.woff"
     ],
     "css": [
-      "assets/app-6a979ee6.css",
+      "assets/app-cbd51566.css",
       "assets/primeicons-ae9a42f0.css"
     ],
     "dynamicImports": [
@@ -3802,7 +3804,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-1959e0e5.js",
+    "file": "assets/app-3dc4a7d0.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",
