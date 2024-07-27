@@ -35,7 +35,7 @@ class ProductoController extends Controller
 
     public function index()
     {
-        $categorias = Categoria::get();
+        $categorias = Categoria::orderBy('name', 'ASC')->get();
         $lista_categorias = [];
         foreach ($categorias as $value) {
             array_push($lista_categorias, [
@@ -74,7 +74,7 @@ class ProductoController extends Controller
 
             ->orderBy('nombre', 'ASC')
             ->paginate(100)->withQueryString();
-            
+
 
         return Inertia::render('Producto/Index', [
             'lista_categorias' => $lista_categorias,
@@ -133,8 +133,8 @@ class ProductoController extends Controller
 
     public function edit($id)
     {
-        $categorias = Categoria::get();
-        $lista_categorias = [];
+    	$categorias = Categoria::orderBy('name', 'ASC')->get();
+    	$lista_categorias = [];
         foreach ($categorias as $value) {
             array_push($lista_categorias, [
                 'value' => $value->id,
@@ -237,7 +237,8 @@ class ProductoController extends Controller
                 'imp.nro_carpeta',
                 'imp.estado',
                 'det.cantidad_total',
-                'det.importacion_id'
+                'det.importacion_id',
+				DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado")
             )
             ->where('prod.id', '=', $id)
             ->where('imp.estado', '=', 'En camino')
@@ -329,7 +330,7 @@ class ProductoController extends Controller
             'stock_minimo',
             'stock_futuro',
             'en_camino',
-            'arribado'            
+            'arribado'
         )
             ->with(['categorias' => function ($query) {
                 $query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
