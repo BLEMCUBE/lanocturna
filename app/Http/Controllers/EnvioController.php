@@ -104,7 +104,7 @@ class EnvioController extends Controller
         ]);
     }
 
-    //CADETERIA 
+    //CADETERIA
     public function indexCadeteria()
     {
         $expedidiones = new VentaCollection(
@@ -161,7 +161,8 @@ class EnvioController extends Controller
         $productoLista = Producto::with(['importacion_detalles' => function ($query) {
             $query->select('id', 'sku', 'cantidad_total', 'importacion_id', 'estado');
         }, 'importacion_detalles.importacion' => function ($query1) {
-            $query1->select('id', 'estado', 'nro_carpeta');
+            $query1->select('id', 'estado', 'nro_carpeta',
+			DB::raw("DATE_FORMAT(fecha_arribado,'%d/%m/%y') AS fecha_arribado"));
         }])->select('*')
             ->orderBy('nombre', 'ASC')
 

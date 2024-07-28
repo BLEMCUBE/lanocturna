@@ -138,7 +138,8 @@ class VentaController extends Controller
         $productoLista = Producto::with(['importacion_detalles' => function ($query) {
             $query->select('id', 'sku', 'cantidad_total', 'importacion_id', 'estado');
         }, 'importacion_detalles.importacion' => function ($query1) {
-            $query1->select('id', 'estado', 'nro_carpeta');
+            $query1->select('id', 'estado', 'nro_carpeta',
+			DB::raw("DATE_FORMAT(fecha_arribado,'%d/%m/%y') AS fecha_arribado"));
         }])->select('*')
             ->orderBy('nombre', 'ASC')
 
@@ -146,7 +147,6 @@ class VentaController extends Controller
 
 
         $resultadoProductoLista = new ProductoVentaCollection($productoLista);
-
         return Inertia::render('Venta/Create', [
             'hoy_tipo_cambio' => $hoy_tipo_cambio,
             'tipo_cambio' => $tipo_cambio,
@@ -202,8 +202,9 @@ class VentaController extends Controller
             $productoLista = Producto::with(['importacion_detalles' => function ($query) {
             $query->select('id', 'sku', 'cantidad_total', 'importacion_id', 'estado');
         }, 'importacion_detalles.importacion' => function ($query1) {
-            $query1->select('id', 'estado', 'nro_carpeta');
-        }])->select('*')
+            $query1->select('id', 'estado', 'nro_carpeta',
+			DB::raw("DATE_FORMAT(fecha_arribado,'%d/%m/%y') AS fecha_arribado"));
+		        }])->select('*')
             ->orderBy('nombre', 'ASC')
 
             ->get();
