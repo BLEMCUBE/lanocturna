@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use App\Models\ImportacionDetalle;
+use App\Models\Producto;
 use App\Models\ProductoYuan;
 use App\Models\TipoCambioYuan;
 use Inertia\Inertia;
@@ -13,32 +15,54 @@ use Illuminate\Support\Arr;
 use Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
+use App\Traits\PaginationTrait;
 class ReporteProductoVendidoController extends Controller
 {
+	use PaginationTrait;
     public function index()
     {
 
-        $query_total_productos = DB::table('venta_detalles as det')
-            ->join('ventas as ve', 'det.venta_id', '=', 've.id')
-            ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
+		$categorias = Categoria::orderBy('name', 'ASC')->get();
+        $lista_categorias = [];
+        foreach ($categorias as $value) {
+            array_push($lista_categorias, [
+                'value' => $value->id,
+                'label' =>  $value->name,
+            ]);
+        }
+			$query_total_productos = Producto::query()
+			->select(
+				'productos.nombre',
+                'productos.origen',
+                'productos.imagen',
+                'productos.stock',
+                'productos.id',
+                'det.producto_id',
+                DB::raw("sum(det.cantidad) as ventas_totales")
+			)
+			->join('venta_detalles as det', 'det.producto_id', '=', 'productos.id')
+			->join('ventas as ve', 've.id', '=', 'det.venta_id')
+			->with(['categorias' => function ($query) {
+				$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
+			}])
             ->when(Request::input('inicio'), function ($query) {
                 $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
             })
             ->when(Request::input('fin'), function ($query) {
                 $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
             })
+			->when(Request::input('buscar'), function ($query) {
+				$query->where(DB::raw('lower(origen)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
+					->orWhere(DB::raw('lower(nombre)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%');
+			})
+			->when(Request::input('categoria'), function ($query) {
+				$query->whereHas('categorias', function ($query) {
+					$query->whereIn('id', Request::input('categoria'));
+				});
+			})
             ->where('det.producto_validado', '=', 1)
-            ->select(
-                'prod.nombre',
-                'prod.origen',
-                'prod.imagen',
-                'prod.stock',
-                'prod.id',
-                'det.producto_id',
-                DB::raw("sum(det.cantidad) as ventas_totales")
-            )
-            ->groupBy('prod.id')
+
+            ->groupBy('productos.id')
             ->get();
 
         $total_cantidad = 0;
@@ -67,11 +91,15 @@ class ReporteProductoVendidoController extends Controller
             } else {
                 $ultimo_yang = 0;
             }
+			$l_cat=$vent->categorias->map(function ($item, int $key) {
+				return $item->name;
+			});
             array_push($ultimas_ventas, [
                 "id" => $vent->id,
                 "sku" => $vent->origen,
                 "nombre" => $vent->nombre,
                 "stock" => $vent->stock,
+				"categorias" => !is_null($vent->categorias)?implode(", ",$l_cat->all()):'',
                 "imagen" => $vent->imagen,
                 'costo_aprox' => number_format($costo_aprox, 2, ','),
                 "ventas_totales" => $vent->ventas_totales,
@@ -81,10 +109,15 @@ class ReporteProductoVendidoController extends Controller
         $total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
             return $value['porcentaje'];
         }));
+		$datos = $this->paginate($total_productos, 100);
+		$datos->withPath('/reportes-productos-vendidos')
+		->withQueryString();
 
         return Inertia::render('Reporte/ProductosVendidos', [
             'total_cantidad' => $total_cantidad,
-            'total_productos' => $total_productos,
+			'filtro' => Request::only(['buscar', 'categoria', 'inicio', 'fin']),
+			'lista_categorias' => $lista_categorias,
+            'total_productos' => $datos,
 
         ]);
     }
@@ -119,36 +152,47 @@ class ReporteProductoVendidoController extends Controller
 
         $sheet->setCellValue('A' . (string)$f, "SKU");
         $sheet->setCellValue('B' . (string)$f, "NOMBRE");
-        $sheet->setCellValue('C' . (string)$f, "STOCK");
-        $sheet->setCellValue('D' . (string)$f, "COSTO APROXIMADO");
-        $sheet->setCellValue('E' . (string)$f, "VENTAS TOTALES");
-        $sheet->setCellValue('F' . (string)$f, "PORCENTAJE");
+        $sheet->setCellValue('C' . (string)$f, "CATEGORIA");
+        $sheet->setCellValue('D' . (string)$f, "STOCK");
+        $sheet->setCellValue('E' . (string)$f, "COSTO APROXIMADO");
+        $sheet->setCellValue('F' . (string)$f, "VENTAS TOTALES");
+        $sheet->setCellValue('G' . (string)$f, "PORCENTAJE");
 
-        $sheet->getStyle('A' . (string)3 . ':' . 'F' . (string)3)->getFont()->setBold(true);
-        $sheet->getStyle('A' . (string)3 . ':' . 'F' . (string)3)->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A' . (string)3 . ':' . 'F' . (string)3)->getAlignment()->setVertical('center');
+        $sheet->getStyle('A' . (string)3 . ':' . 'G' . (string)3)->getFont()->setBold(true);
+        $sheet->getStyle('A' . (string)3 . ':' . 'G' . (string)3)->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A' . (string)3 . ':' . 'G' . (string)3)->getAlignment()->setVertical('center');
 
         //datos
-        $query_total_productos = DB::table('venta_detalles as det')
-            ->join('ventas as ve', 'det.venta_id', '=', 've.id')
-            ->join('productos as prod', 'prod.id', '=', 'det.producto_id')
-            ->when(Request::input('inicio'), function ($query) {
-                $query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
-            })
-            ->when(Request::input('fin'), function ($query) {
-                $query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
-            })
-            ->where('det.producto_validado', '=', 1)
-            ->select(
-                'prod.nombre',
-                'prod.origen',
-                'prod.stock',
-                'prod.id',
-                'det.producto_id',
-                DB::raw("sum(det.cantidad) as ventas_totales")
-            )
-            ->groupBy('prod.id')
-            ->get();
+		$query_total_productos = Producto::query()
+		->select(
+			'productos.nombre',
+			'productos.origen',
+			'productos.imagen',
+			'productos.stock',
+			'productos.id',
+			'det.producto_id',
+			DB::raw("sum(det.cantidad) as ventas_totales")
+		)
+		->join('venta_detalles as det', 'det.producto_id', '=', 'productos.id')
+		->join('ventas as ve', 've.id', '=', 'det.venta_id')
+		->with(['categorias' => function ($query) {
+			$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
+		}])
+		->when(Request::input('inicio'), function ($query) {
+			$query->whereDate('ve.fecha_facturacion', '>=', Request::input('inicio'));
+		})
+		->when(Request::input('fin'), function ($query) {
+			$query->whereDate('ve.fecha_facturacion', '<=', Request::input('fin'));
+		})
+		->when(Request::input('categoria'), function ($query) {
+			$query->whereHas('categorias', function ($query) {
+				$query->whereIn('id', Request::input('categoria'));
+			});
+		})
+		->where('det.producto_validado', '=', 1)
+
+		->groupBy('productos.id')
+		->get();
 
         $total_cantidad = 0;
         $total_cantidad = array_sum(array_column($query_total_productos->toArray(), 'ventas_totales'));
@@ -176,10 +220,14 @@ class ReporteProductoVendidoController extends Controller
             } else {
                 $ultimo_yang = 0;
             }
+			$l_cat=$vent->categorias->map(function ($item, int $key) {
+				return $item->name;
+			});
             array_push($ultimas_ventas, [
                 "id" => $vent->id,
                 "sku" => $vent->origen,
                 "nombre" => $vent->nombre,
+				"categorias" => !is_null($vent->categorias)?implode(", ",$l_cat->all()):'',
                 "stock" => $vent->stock,
                 'costo_aprox' => round(($costo_aprox), 2),
                 "ventas_totales" => $vent->ventas_totales,
@@ -194,10 +242,11 @@ class ReporteProductoVendidoController extends Controller
             $f++;
             $sheet->setCellValueExplicit('A' . $f, $vent['sku'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('B' . $f, $vent['nombre']);
-            $sheet->setCellValue('C' . $f, $vent['stock']);
-            $sheet->setCellValue('D' . $f,$vent['costo_aprox']);
-            $sheet->setCellValue('E' . $f, $vent['ventas_totales']);
-            $sheet->setCellValue('F' . $f, $vent['porcentaje']);
+            $sheet->setCellValue('C' . $f, $vent['categorias']);
+            $sheet->setCellValue('D' . $f, $vent['stock']);
+            $sheet->setCellValue('E' . $f,$vent['costo_aprox']);
+            $sheet->setCellValue('F' . $f, $vent['ventas_totales']);
+            $sheet->setCellValue('G' . $f, $vent['porcentaje']);
         }
 
         //$sheet->getStyle('A4:H4' . $sheet->getHighestRow())->getAlignment()->setVertical('center');
