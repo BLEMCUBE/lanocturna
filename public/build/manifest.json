@@ -1434,7 +1434,7 @@
     "src": "resources/js/Pages/DepositoLista/Partials/EditarModal.vue"
   },
   "resources/js/Pages/Envio/Create.vue": {
-    "file": "assets/Create-7646c4bd.js",
+    "file": "assets/Create-678d7b50.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-08ffa2ac.js",
@@ -3474,7 +3474,7 @@
     "src": "resources/js/Pages/Venta/CIndex.vue"
   },
   "resources/js/Pages/Venta/Create.vue": {
-    "file": "assets/Create-f73e4f6e.js",
+    "file": "assets/Create-f909a19f.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-08ffa2ac.js",
@@ -3510,7 +3510,7 @@
     "src": "resources/js/Pages/Venta/Create.vue"
   },
   "resources/js/Pages/Venta/Edit.vue": {
-    "file": "assets/Edit-68eef8f2.js",
+    "file": "assets/Edit-c7c1332c.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-08ffa2ac.js",
@@ -3546,7 +3546,7 @@
     "src": "resources/js/Pages/Venta/Edit.vue"
   },
   "resources/js/Pages/Venta/EditMercado.vue": {
-    "file": "assets/EditMercado-d4855220.js",
+    "file": "assets/EditMercado-5110ea77.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-08ffa2ac.js",
@@ -3684,7 +3684,7 @@
     "src": "resources/js/Pages/Welcome.vue"
   },
   "resources/js/app.css": {
-    "file": "assets/app-cbd51566.css",
+    "file": "assets/app-17d86707.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.js": {
@@ -3701,7 +3701,7 @@
       "assets/Inter-Bold-3e242080.woff"
     ],
     "css": [
-      "assets/app-cbd51566.css",
+      "assets/app-17d86707.css",
       "assets/primeicons-ae9a42f0.css"
     ],
     "dynamicImports": [
@@ -3804,7 +3804,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-3dc4a7d0.js",
+    "file": "assets/app-c17974ea.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",
