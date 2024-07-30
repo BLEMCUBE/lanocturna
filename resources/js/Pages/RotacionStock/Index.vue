@@ -28,7 +28,7 @@ let inicio = ref();
 let fin = ref();
 
 
-date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
+
 
 watch(categorias, (value) => {
 	router.get(
@@ -52,11 +52,10 @@ watch(categorias, (value) => {
 //filtrado
 const filtradoVenta = (value) => {
 	if (value[0] != null && value[1] != null) {
-		date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
+		//date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
 		inicio.value = date.value[0];
 		fin.value = date.value[1];
 	} else {
-		date.value = [];
 		inicio.value = null;
 		fin.value = null;
 	}
@@ -69,6 +68,7 @@ const filtradoVenta = (value) => {
 		},
 		{
 			preserveState: true,
+			replace: true,
 			onSuccess: () => {
 				tabla_vendidos.value = usePage().props.productos;
 				mes.value = usePage().props.meses;
@@ -142,6 +142,7 @@ const lista_categorias = ref({
 onMounted(() => {
 	lista_categorias.value.options = usePage().props.lista_categorias
 	mes.value = usePage().props.meses;
+	date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
 	filtradoVenta(date.value)
 });
 

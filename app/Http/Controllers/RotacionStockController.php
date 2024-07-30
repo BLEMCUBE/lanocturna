@@ -104,7 +104,7 @@ class RotacionStockController extends Controller
 			'lista_categorias' => $lista_categorias,
 			//'productos' => $datos,
 			'productos' => $ultimas_ventas,
-			'filtro' => Request::only(['buscar', 'categoria', 'inicio', 'fin'])
+			'filtro' => Request::only(['categoria', 'inicio', 'fin'])
 		]);
 	}
 
