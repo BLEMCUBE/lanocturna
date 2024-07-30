@@ -3571,7 +3571,7 @@ const Tailwind_PT = {
             var props = _ref175.props,
             context = _ref175.context;
           return {
-            "class": ['text-left border-0  leading-[2rem] border-solid text-md border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
+            "class": ['text-left border-0  leading-[1.2rem] border-solid text-md border-gray-300 px-auto', (context === null || context === void 0 ? void 0 : context.size) === 'small' ? 'p-1' : (context === null || context === void 0 ? void 0 : context.size) === 'large' ? 'p-5' : 'p-1',
             // Size
             'dark:text-white/80 dark:border-blue-900/40',
             // Dark Mode

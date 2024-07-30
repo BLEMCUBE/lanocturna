@@ -10,58 +10,33 @@ import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import { FilterMatchMode } from 'primevue/api';
 import Multiselect from '@vueform/multiselect';
-import Pagination from '@/Components/Pagination.vue';
 
 const { roles } = usePage().props.auth
 const titulo = "Productos Vendidos"
 const ruta = 'reportes'
 const rutaprod = 'productos'
 const props = defineProps({
-	total_productos: {
-		type: Object,
-		default: () => ({}),
-	},
 	filtro: {
 		type: Object,
 		default: () => ({}),
 	},
 
 });
-const total_cantidad=ref()
+const total_productos = ref([]);
+const total_cantidad = ref();
+
 let categorias = ref([])
-let buscar = ref();
 let date = ref([]);
 let inicio = ref();
 let fin = ref();
 
 date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
 
-watch(buscar, (value) => {
-	router.get(
-		route(ruta + '.productosvendidos'),
-		{
-			buscar: buscar.value,
-			categoria: categorias.value,
-			inicio: date.value[0],
-			fin: date.value[1],
-		},
-		{
-			preserveState: true,
-			replace: true,
-			onSuccess: () => {
-				total_cantidad.value = usePage().props.total_cantidad;
-				categorias.value = usePage().props.filtro.categoria
-			}
-		}
-	);
-});
-
-
 watch(categorias, (value) => {
 	router.get(
 		route(ruta + '.productosvendidos'),
 		{
-			buscar: buscar.value,
+
 			categoria: categorias.value,
 			inicio: date.value[0],
 			fin: date.value[1],
@@ -71,7 +46,7 @@ watch(categorias, (value) => {
 			replace: true,
 			onSuccess: () => {
 				total_cantidad.value = usePage().props.total_cantidad;
-				//categorias.value = usePage().props.filtro.categoria
+				total_productos.value = usePage().props.total_productos;
 
 			}
 		}
@@ -93,7 +68,7 @@ const filtrado = (value) => {
 	router.get(
 		route(ruta + '.productosvendidos'),
 		{
-			buscar: buscar.value,
+
 			categoria: categorias.value,
 			inicio: inicio.value,
 			fin: fin.value
@@ -104,6 +79,7 @@ const filtrado = (value) => {
 			onSuccess: () => {
 				total_cantidad.value = usePage().props.total_cantidad;
 				categorias.value = usePage().props.filtro.categoria
+				total_productos.value = usePage().props.total_productos;
 			}
 		}
 	);
@@ -127,8 +103,8 @@ const descargaExcelProductoVentas = () => {
 		window.open(route('reportes.exportproductoventas', [{
 			'categoria': categorias.value,
 			'inicio': date.value[0],
-			 'fin': date.value[1]
-			}]), '_blank');
+			'fin': date.value[1]
+		}]), '_blank');
 	} else {
 
 		return;
@@ -136,15 +112,10 @@ const descargaExcelProductoVentas = () => {
 }
 
 onMounted(() => {
-	total_cantidad.value = usePage().props.total_cantidad;
 	lista_categorias.value.options = usePage().props.lista_categorias
-	date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
-
+    filtrado(date.value);
 });
 
-const filters = ref({
-	global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
 
 //*datepicker  */
 const shortcuts = [
@@ -181,10 +152,18 @@ const shortcuts = [
 		},
 	},
 ]
-const clickDetalle = (id) => {
-	router.get(route(rutaprod + '.show', id));
+const clickDetalle = (e) => {
+    btnVer(e.data.id)
+}
+const btnVer = (id) => {
+    router.get(route(rutaprod + '.show', id));
 
 };
+
+const filters = ref({
+	global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+
 
 </script>
 
@@ -193,17 +172,16 @@ const clickDetalle = (id) => {
 	<Head title="Reporte Ventas" />
 	<AppLayout :pagina="[{ 'label': 'Reportes', link: false }, { 'label': titulo, link: false }]">
 
-		<div class="card px-2 mb-4 col-span-12 rounded-lg">
-			<div class="col-span-full flex justify-between items-center">
+		<div
+			class="card px-4 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+
+			<!--Contenido-->
+			<div class=" px-3 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">Listado Productos más vendidos</h5>
 			</div>
-			<div class="grid grid-cols-12 gap-4 mt-4 mb-2">
-				<!--Contenido-->
-
-				<div
-					class="card px-4 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
-
-					<div class="w-full flex items-center mt-4">
+			<div class="bg-white mr-0 ml-0 shadow rounded-l">
+				<div class="align-middle px-3 pt-3">
+					<div class="w-full flex items-center">
 						<div class="font-bold">
 							TOTAL CANTIDADES: {{ total_cantidad }}
 						</div>
@@ -218,67 +196,72 @@ const clickDetalle = (id) => {
 							</Button>
 						</div>
 					</div>
-					<!--tabla-->
-					<div class="align-middle py-4">
 
-						<div class="grid grid-cols-12 gap-4 m-3">
+					<div class="align-middle p-2">
 
-							<div class="flex justify-content-end text-md col-span-12 lg:col-span-3 2xl:col-span-3">
-								<InputText class="h-9 w-full" v-model="buscar" placeholder="Buscar" />
-							</div>
-							<div class="flex justify-content-end text-md col-span-12 lg:col-span-5 2xl:col-span-7">
-								<Multiselect id="categorias" v-model="categorias" class="w-full"
-									v-bind="lista_categorias">
-								</Multiselect>
-							</div>
-							<div class="flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-2">
-								<date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
-									format="DD/MM/YYYY"
-									class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
-									v-model:value="date" :shortcuts="shortcuts" lang="es" editable="false"
-									placeholder="Seleccione Fecha"></date-picker>
-							</div>
+						<DataTable size="small" v-model:filters="filters" :value="total_productos" :paginator="true"
+							:rows="100" :pt="{
+								bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+								root: { class: 'w-auto text-base' }
+							}" @row-click="clickDetalle"
+							paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown">
+							<template #header size="small" class="bg-secondary-900">
 
-						</div>
-						<div style="overflow:auto; max-height: 700px;">
+								<div class="grid grid-cols-12 gap-2 m-1">
 
-							<table class="w-full text-md bg-white shadow-md rounded mb-4">
-								<thead style="position: sticky;" class="top-0 z-[1]">
-									<tr class="bg-secondary-100">
-										<th class="p-1.5">SKU</th>
-										<th class="p-2">Imagen</th>
-										<th>Nombre</th>
-										<th>Categoria</th>
-										<th>Stock</th>
-										<th>Costo Aprox.</th>
-										<th>Ventas Totales</th>
-										<th>Porcentaje</th>
-									</tr>
-								</thead>
-
-								<tbody>
-									<tr v-for="post in total_productos.data"
-										class="border text-center hover:cursor-pointer hover:bg-gray-100 hover:text-black">
-										<td @click="clickDetalle(post.id)">{{ post.sku }}</td>
-										<td @click="clickDetalle(post.id)">
-											<img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
-												:src="post.imagen" alt="image">
-										</td>
-										<td @click="clickDetalle(post.id)">{{ post.nombre }}</td>
-										<td @click="clickDetalle(post.id)"> {{ post.categorias }}</td>
-										<td @click="clickDetalle(post.id)">{{ post.stock ?? 0 }}</td>
-										<td @click="clickDetalle(post.id)">{{ post.costo_aprox }}</td>
-										<td @click="clickDetalle(post.id)">{{ post.ventas_totales }}</td>
-										<td @click="clickDetalle(post.id)">{{ post.porcentaje }} %</td>
-
-									</tr>
-								</tbody>
-							</table>
-						</div>
-
-						<Pagination :elements="total_productos"></Pagination>
+									<div
+										class="flex justify-content-end text-md col-span-12 lg:col-span-3 2xl:col-span-3">
+										<InputText class="h-9 w-full" v-model="filters['global'].value"
+											placeholder="Buscar" />
+									</div>
+									<div
+										class="flex justify-content-end text-md col-span-12 lg:col-span-5 2xl:col-span-7">
+										<Multiselect id="categorias" v-model="categorias" class="w-full"
+											v-bind="lista_categorias">
+										</Multiselect>
+									</div>
+									<div
+										class="flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-2">
+										<date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
+											format="DD/MM/YYYY"
+											class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
+											v-model:value="date" :shortcuts="shortcuts" lang="es" editable="false"
+											placeholder="Seleccione Fecha"></date-picker>
+									</div>
+								</div>
+							</template>
+							<template #empty> No existe Resultado </template>
+							<template #loading> Cargando... </template>
+							<Column field="sku" header="SKU"></Column>
+							<Column field="imagen" header="Imagen" :pt="{
+								bodyCell: { class: 'text-center' },
+								headerTitle: { class: 'text-center w-12' },
+							}">
+								<template #loading>
+								</template>
+								<template #body="slotProps">
+									<img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
+										:src="slotProps.data.imagen" alt="image">
+								</template>
+							</Column>
+							<Column field="nombre" header="Nombre" ></Column>
+							<Column field="categorias" header="Categoria" ></Column>
+							<Column field="stock" header="Stock" sortable></Column>
+							<Column field="costo_aprox" header="Costo aprox" sortable></Column>
+							<Column field="ventas_totales" header="Ventas Totales" sortable :pt="{
+								bodyCell: { class: 'text-center' },
+								headerTitle: { class: 'text-center w-14' },
+							}"></Column>
+							<Column field="porcentaje" header="Porcentaje" sortable :pt="{
+								bodyCell: { class: 'text-center' },
+								headerTitle: { class: 'text-center w-20' },
+							}">
+								<template #body="slotProps">
+									{{ (slotProps.data.porcentaje) }} %
+								</template>
+							</Column>
+						</DataTable>
 					</div>
-					<!--tabla-->
 				</div>
 				<!--Contenido-->
 			</div>

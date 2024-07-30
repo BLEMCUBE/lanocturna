@@ -97,13 +97,13 @@ class RotacionStockController extends Controller
 			]);
 		}
 
-		$datos = $this->paginate($ultimas_ventas, 100);
-		$datos->withPath('/rotacion-stock')
-		->withQueryString();
+		//$datos = $this->paginate($ultimas_ventas, 100);
+		//$datos->withPath('/rotacion-stock')->withQueryString();
 		return Inertia::render('RotacionStock/Index', [
 			'meses' => $meses,
 			'lista_categorias' => $lista_categorias,
-			'productos' => $datos,
+			//'productos' => $datos,
+			'productos' => $ultimas_ventas,
 			'filtro' => Request::only(['buscar', 'categoria', 'inicio', 'fin'])
 		]);
 	}

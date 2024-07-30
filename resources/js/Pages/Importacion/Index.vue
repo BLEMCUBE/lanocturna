@@ -16,15 +16,15 @@ const ruta = 'importaciones'
 const { tipo_cambio } = usePage().props
 
 const formDelete = useForm({
-    id: '',
+	id: '',
 });
 const cars = ref();
 const virtualCars = ref();
 onMounted(() => {
 
-    tabla_productos.value = usePage().props.productos.data;
-    cars.value = Array.from(tabla_productos.value, (x) => x);
-    virtualCars.value = Array.from({ length: tabla_productos.value.length });
+	tabla_productos.value = usePage().props.productos.data;
+	cars.value = Array.from(tabla_productos.value, (x) => x);
+	virtualCars.value = Array.from({ length: tabla_productos.value.length });
 });
 
 //const virtualCars = ref([{}]);
@@ -33,254 +33,258 @@ const lazyLoading = ref(false);
 const loadLazyTimeout = ref();
 
 const loadCarsLazy = (event) => {
-    !lazyLoading.value && (lazyLoading.value = true);
+	!lazyLoading.value && (lazyLoading.value = true);
 
-    if (loadLazyTimeout.value) {
-        clearTimeout(loadLazyTimeout.value);
-    }
+	if (loadLazyTimeout.value) {
+		clearTimeout(loadLazyTimeout.value);
+	}
 
-    //simulate remote connection with a timeout
-    loadLazyTimeout.value = setTimeout(() => {
-        let _virtualCars = [...virtualCars.value];
-        let { first, last } = event;
+	//simulate remote connection with a timeout
+	loadLazyTimeout.value = setTimeout(() => {
+		let _virtualCars = [...virtualCars.value];
+		let { first, last } = event;
 
-        //load data of required page
-        const loadedCars = cars.value.slice(first, last);
+		//load data of required page
+		const loadedCars = cars.value.slice(first, last);
 
-        //populate page of virtual cars
-        Array.prototype.splice.apply(_virtualCars, [...[first, last - first], ...loadedCars]);
+		//populate page of virtual cars
+		Array.prototype.splice.apply(_virtualCars, [...[first, last - first], ...loadedCars]);
 
-        virtualCars.value = _virtualCars;
-        lazyLoading.value = false;
-    }, Math.random() * 1000 + 250);
+		virtualCars.value = _virtualCars;
+		lazyLoading.value = false;
+	}, Math.random() * 1000 + 250);
 };
 const btnVer = (id) => {
-    router.get(route(ruta + '.show', id));
+	router.get(route(ruta + '.show', id));
 
 };
 const btnDescargar = (id) => {
-    router.get(route(ruta + '.exportar', id));
+	router.get(route(ruta + '.exportar', id));
 
 };
 const btnEditar = (id) => {
-    router.get(route(ruta + '.edit', id));
+	router.get(route(ruta + '.edit', id));
 
 };
 const btnEliminar = (id) => {
 
-    const alerta = Swal.mixin({ buttonsStyling: true });
-    alerta.fire({
-        width: 350,
-        title: "Seguro de eliminar ",
-        text: 'Se eliminará definitivamente',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar',
-        cancelButtonColor: 'red',
-        confirmButtonColor: '#2563EB',
+	const alerta = Swal.mixin({ buttonsStyling: true });
+	alerta.fire({
+		width: 350,
+		title: "Seguro de eliminar ",
+		text: 'Se eliminará definitivamente',
+		icon: 'question',
+		showCancelButton: true,
+		confirmButtonText: 'Eliminar',
+		cancelButtonText: 'Cancelar',
+		cancelButtonColor: 'red',
+		confirmButtonColor: '#2563EB',
 
-    }).then((result) => {
-        if (result.isConfirmed) {
-            formDelete.delete(route(ruta + '.destroy', id),
-                {
-                    preserveScroll: true,
-                    forceFormData: true,
-                    onSuccess: () => {
-                        show('success', 'Eliminado', 'Se ha eliminado')
-                        setTimeout(() => {
-                            router.get(route(ruta + '.index'));
-                        }, 1000);
+	}).then((result) => {
+		if (result.isConfirmed) {
+			formDelete.delete(route(ruta + '.destroy', id),
+				{
+					preserveScroll: true,
+					forceFormData: true,
+					onSuccess: () => {
+						show('success', 'Eliminado', 'Se ha eliminado')
+						setTimeout(() => {
+							router.get(route(ruta + '.index'));
+						}, 1000);
 
-                    }
-                });
-        }
-    });
+					}
+				});
+		}
+	});
 }
 
 const clickDetalle = (e) => {
-    btnVer(e.data.id)
+	btnVer(e.data.id)
 }
 
 
 
 const show = (tipo, titulo, mensaje) => {
-    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
 
 const BtnCrear = () => {
-    if (tipo_cambio == true) {
+	if (tipo_cambio == true) {
 
-        router.get(route(ruta + '.create'));
-    } else {
-        ok('error', 'No se ha especificado el tipo de cambio Yuanes para el día')
-    }
+		router.get(route(ruta + '.create'));
+	} else {
+		ok('error', 'No se ha especificado el tipo de cambio Yuanes para el día')
+	}
 }
 
 
 
 const ok = (icono, mensaje) => {
 
-    Swal.fire({
-        width: 350,
-        title: mensaje,
-        icon: icono
-    })
+	Swal.fire({
+		width: 350,
+		title: mensaje,
+		icon: icono
+	})
 }
 
 const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+	'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 </script>
 <template>
-    <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': titulo, link: false }]">
-        <div
-            class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
-            <!--Contenido-->
-            <Toast />
-            <div class="p-3 col-span-full flex justify-between items-center">
-                <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+	<Head :title="titulo" />
+	<AppLayout :pagina="[{ 'label': titulo, link: false }]">
+		<div
+			class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
-                <Button size="small" :label="'Importar Excel'" severity="success" @click="BtnCrear"></Button>
+			<!--Contenido-->
+			<Toast />
+			<div class="p-3 col-span-full flex justify-between items-center">
+				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 
-            </div>
+				<Button size="small" :label="'Importar Excel'" severity="success" @click="BtnCrear"></Button>
 
-            <div class="align-middle  p-3">
-                <DataTable :filters="filters" :value="cars" scrollable scrollHeight="700px"
-                paginator :rows="50" resizableColumns columnResizeMode="expand" :pt="{
-    bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
+			</div>
 
-}" @row-click="clickDetalle" size="small">
-                    <template #header>
-                        <div class="flex justify-content-end text-md">
-                            <InputText v-model="filters['global'].value" placeholder="Buscar" />
-                        </div>
-                    </template>
-                    <template #empty> No existe Resultado </template>
-                    <template #loading> Cargando... </template>
+			<div class="align-middle  p-3">
+				<DataTable :filters="filters" :value="cars" scrollable scrollHeight="700px" paginator :rows="50"
+					resizableColumns columnResizeMode="expand" :pt="{
+						bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
 
-                    <Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
-                        bodyCell: { class: 'text-center' },
-
-                        headerContent: {
-                            class: 'text-center'
-                        },
-                        bodyCellContent: {
-
-                            class: 'text-center'
-                        },
-
-                    }">
-
-                    </Column>
-                    <Column field="fecha_arribado" sortable header="Fecha Arribado" :pt="{
-                        bodyCell: { class: 'text-center' },
-                        headerTitle: { class: 'text-center' },
-                        headerContent: {
-                            class: 'text-center'
-                        },
-                        bodyCellContent: {
-
-                            class: 'flex align-items-center text-center'
-                        },
-
-                    }">
-
-                    </Column>
-                    <Column field="estado" header="Estado de pedido" sortable :pt="{
-                        bodyCell: { class: 'text-center' },
-
-                        headerContent: {
-                            class: 'text-center'
-                        },
-                        bodyCellContent: {
-
-                            class: 'text-center'
-                        },
-
-                    }">
-
-                    </Column>
-                    <Column field="total" sortable header="Total" :pt="{
-                        bodyCell: { class: 'text-center' },
-
-                        headerContent: {
-                            class: 'text-center'
-                        },
-                        bodyCellContent: {
-
-                            class: 'text-center'
-                        },
-
-                    }">
-
-                    </Column>
-                    <Column field="cbm_total" sortable header="Total CBM" :pt="{
-                        bodyCell: { class: 'text-center' },
-
-                        headerContent: {
-                            class: 'text-center'
-                        },
-                        bodyCellContent: {
-
-                            class: 'text-center'
-                        },
-
-                    }">
-
-                    </Column>
-                    <Column field="cantidad_productos" sortable header="Cantidad productos" :pt="{
-                        bodyCell: { class: 'text-center' },
-
-                        headerContent: {
-                            class: 'text-center'
-                        },
-                        bodyCellContent: {
-
-                            class: 'text-center'
-                        },
-
-                    }">
-
-                    </Column>
-
-                    <Column header="Acciones" style="width:130px" :pt="{
-                        bodycell: { class: 'px-auto text-center' }
-                    }">
+						root: { class: 'text-base' }
 
 
-                        <template #body="slotProps">
-                            <div class="text-white flex justify-center items-center" v-if="slotProps.data != undefined">
-                                <span
-                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
-                                    <a :href="route('importaciones.exportar', slotProps.data.id)" target="_blank"
-                                        class="py-auto"><i class="fas fa-file-excel text-white"></i>
-                                    </a>
+					}" @row-click="clickDetalle" size="small">
+					<template #header>
+						<div class="flex justify-content-end text-md">
+							<InputText v-model="filters['global'].value" placeholder="Buscar" />
+						</div>
+					</template>
+					<template #empty> No existe Resultado </template>
+					<template #loading> Cargando... </template>
 
-                                </span>
-                                <Button
-                                    class="w-8 h-8 rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
-                                    v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                    @click.prevent="btnEliminar(slotProps.data.id)"><i
-                                        class="fas fa-trash-alt"></i></Button>
-                            </div>
+					<Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
+						bodyCell: { class: 'text-center' },
+
+						headerContent: {
+							class: 'text-center'
+						},
+						bodyCellContent: {
+
+							class: 'text-center'
+						},
+
+					}">
+
+					</Column>
+					<Column field="fecha_arribado" sortable header="Fecha Arribado" :pt="{
+						bodyCell: { class: 'text-center' },
+						headerTitle: { class: 'text-center' },
+						headerContent: {
+							class: 'text-center'
+						},
+						bodyCellContent: {
+
+							class: 'flex align-items-center text-center'
+						},
+
+					}">
+
+					</Column>
+					<Column field="estado" header="Estado de pedido" sortable :pt="{
+						bodyCell: { class: 'text-center' },
+
+						headerContent: {
+							class: 'text-center'
+						},
+						bodyCellContent: {
+
+							class: 'text-center'
+						},
+
+					}">
+
+					</Column>
+					<Column field="total" sortable header="Total" :pt="{
+						bodyCell: { class: 'text-center' },
+
+						headerContent: {
+							class: 'text-center'
+						},
+						bodyCellContent: {
+
+							class: 'text-center'
+						},
+
+					}">
+
+					</Column>
+					<Column field="cbm_total" sortable header="Total CBM" :pt="{
+						bodyCell: { class: 'text-center' },
+
+						headerContent: {
+							class: 'text-center'
+						},
+						bodyCellContent: {
+
+							class: 'text-center'
+						},
+
+					}">
+
+					</Column>
+					<Column field="cantidad_productos" sortable header="Cantidad productos" :pt="{
+						bodyCell: { class: 'text-center' },
+
+						headerContent: {
+							class: 'text-center'
+						},
+						bodyCellContent: {
+
+							class: 'text-center'
+						},
+
+					}">
+
+					</Column>
+
+					<Column header="Acciones" style="width:130px" :pt="{
+						bodycell: { class: 'px-auto text-center' }
+					}">
 
 
-                        </template>
-                    </Column>
+						<template #body="slotProps">
+							<div class="text-white flex justify-center items-center" v-if="slotProps.data != undefined">
+								<span
+									v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+									class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
+									<a :href="route('importaciones.exportar', slotProps.data.id)" target="_blank"
+										class="py-auto"><i class="fas fa-file-excel text-white"></i>
+									</a>
+
+								</span>
+								<Button
+									class="w-8 h-8 rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
+									v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+									@click.prevent="btnEliminar(slotProps.data.id)"><i
+										class="fas fa-trash-alt"></i></Button>
+							</div>
 
 
-                </DataTable>
+						</template>
+					</Column>
 
-            </div>
-            <!--Contenido-->
 
-        </div>
+				</DataTable>
 
-    </AppLayout>
+			</div>
+			<!--Contenido-->
+
+		</div>
+
+	</AppLayout>
 </template>
 
 
