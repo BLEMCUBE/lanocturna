@@ -113,9 +113,9 @@ class ReporteProductoVendidoController extends Controller
 		$datos->withPath('/reportes-productos-vendidos')->withQueryString();*/
         return Inertia::render('Reporte/ProductosVendidos', [
             'total_cantidad' => $total_cantidad,
-			'filtro' => Request::only(['buscar', 'categoria', 'inicio', 'fin']),
+			'filtro' => Request::only(['categoria', 'inicio', 'fin']),
 			'lista_categorias' => $lista_categorias,
-            'total_productos' => $ultimas_ventas,
+            'total_productos' => $total_productos,
 
         ]);
     }
