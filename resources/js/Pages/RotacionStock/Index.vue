@@ -23,11 +23,11 @@ const props = defineProps({
 });
 
 let categorias = ref([])
-let date = ref([]);
+let date = ref();
 let inicio = ref();
 let fin = ref();
 
-
+date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
 
 
 watch(categorias, (value) => {
@@ -40,7 +40,7 @@ watch(categorias, (value) => {
 		},
 		{
 			preserveState: true,
-			replace: true,
+			//replace: true,
 			onSuccess: () => {
 				mes.value = usePage().props.meses;
 				tabla_vendidos.value = usePage().props.productos;
@@ -60,12 +60,12 @@ const filtradoVenta = (value) => {
 		route(ruta + '.index'),
 		{
 			categoria: categorias.value,
-			inicio: inicio.value,
-			fin: fin.value
+			inicio: date.value[0],
+			fin: date.value[1],
 		},
 		{
 			preserveState: true,
-			replace: true,
+			//replace: true,
 			onSuccess: () => {
 				tabla_vendidos.value = usePage().props.productos;
 				mes.value = usePage().props.meses;
@@ -139,7 +139,7 @@ const lista_categorias = ref({
 onMounted(() => {
 	lista_categorias.value.options = usePage().props.lista_categorias
 	mes.value = usePage().props.meses;
-	date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
+
 	filtradoVenta(date.value)
 });
 
@@ -204,7 +204,7 @@ const filters = ref({
 										<date-picker @change="filtradoVenta" type="date" range value-type="YYYY-MM-DD"
 											format="DD/MM/YYYY"
 											class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
-											v-model:value="date" :shortcuts="shortcuts" lang="es" editable="false"
+											v-model:value="date" :shortcuts="shortcuts" lang="es" :clearable = "false" :editable="false"
 											placeholder="Seleccione Fecha"></date-picker>
 									</div>
 								</div>
