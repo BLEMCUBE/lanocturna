@@ -95,6 +95,13 @@ const showDropdown = ref(false)
                     <span class="ml-2 uppercase">Productos</span>
                 </NavLinkSideBar>
             </li>
+            <li @click="setMenu('catalogo')" v-show="permissions.includes('menu-catalogo')">
+                <NavLinkSideBar icon-class="fas fa-book"
+                    class="flex items-center justify-start px-3 py-2 text-base font-medium"
+                    :href="route('catalogo.index')" :active="route().current('catalogo.index')">
+                    <span class="ml-2 uppercase">Catálogo</span>
+                </NavLinkSideBar>
+            </li>
 
             <!--Reportes-->
             <Disclosure as="div" class="p-0" v-slot="{ open }" :default-open="configStore.getCurrentMenu == 'reportes'"
