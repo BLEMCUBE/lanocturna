@@ -55,9 +55,6 @@ const filtradoVenta = (value) => {
 		//date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
 		inicio.value = date.value[0];
 		fin.value = date.value[1];
-	} else {
-		inicio.value = null;
-		fin.value = null;
 	}
 	router.get(
 		route(ruta + '.index'),
