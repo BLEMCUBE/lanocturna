@@ -2534,7 +2534,7 @@
     "src": "resources/js/Pages/Reporte/ProductosRma.vue"
   },
   "resources/js/Pages/Reporte/ProductosVendidos.vue": {
-    "file": "assets/ProductosVendidos-b61fcd2d.js",
+    "file": "assets/ProductosVendidos-b1368a32.js",
     "imports": [
       "_AppLayout-c524edf2.js",
       "_@inertiajs-ab1bf9dd.js",
@@ -3185,7 +3185,7 @@
     "src": "resources/js/Pages/Role/Index.vue"
   },
   "resources/js/Pages/RotacionStock/Index.vue": {
-    "file": "assets/Index-c12440f1.js",
+    "file": "assets/Index-4fa24994.js",
     "imports": [
       "_AppLayout-c524edf2.js",
       "_@inertiajs-ab1bf9dd.js",
@@ -3876,7 +3876,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-668d6205.js",
+    "file": "assets/app-63939c17.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",
