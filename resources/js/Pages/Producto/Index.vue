@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted, watch } from 'vue'
-import { Head, usePage, useForm, router,Link } from '@inertiajs/vue3';
+import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";

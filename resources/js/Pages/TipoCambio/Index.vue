@@ -72,7 +72,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="px-4 py-3 mb-4 bg-white col-span-12  lg:col-span-6 py-5 rounded-lg shadow-lg 2xl:col-span-6 dark:border-gray-700  dark:bg-gray-800">
+            class="px-4 py-3 mb-4 bg-white col-span-12  lg:col-span-6 rounded-lg shadow-lg 2xl:col-span-6 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
@@ -81,7 +81,7 @@ const filters = ref({
             </div>
             <div class="align-middle">
                 <DataTable  size="small" v-model:filters="filters" :value="tabla_clientes" :paginator="true"
-                    :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
+                    :rows="100"
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
                     tableStyle="width: 100%">
                     <template #header size="small" class="bg-secondary-900">

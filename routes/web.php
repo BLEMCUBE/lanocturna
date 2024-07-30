@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CajaController;
+use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CompraController;
@@ -245,7 +246,7 @@ Route::controller(RotacionStockController::class)->group(function () {
 Route::get('/reportes-ventas', [ReporteVentaController::class, 'index'])->name('reportes.ventas')->middleware(['auth', 'verified']);
 
 //Reporte Listado  productos
-Route::get('/reportes-productos-vendidos', [ReporteProductoVendidoController::class, 'index'])->name('reportes.productosvendidos')->middleware(['auth', 'verified']);
+Route::get('/reportes-productos-vendidos', [ReporteProductoVendidoController::class, 'index'])->name('reportes.productosvendidos')->middleware(['auth']);
 Route::get('/reportes-productos-vendidos/exportproductoventas',[ReporteProductoVendidoController::class, 'exportProductoVentas'])->name('reportes.exportproductoventas')->middleware('auth');
 
 //Reporte Listado  vendedores con mas pedidos
@@ -259,7 +260,7 @@ Route::get('/reportes-productos-stock/exportxls',[ReporteStockProductosControlle
 
 //Rma -Presupuesto
 Route::controller(RmaController::class)->prefix('rmas')->name('rmas.')->middleware('auth')->group(function () {
-   
+
     Route::get('/subir/{id}', 'showsubir')->name('showsubir');
     Route::get('/subir', 'rma_subir')->name('subir');
     Route::post('/maestro', 'verificarCodigoMaestro')->name('maestro');
@@ -301,6 +302,10 @@ Route::controller(CategoriaController::class)->prefix('categorias')->name('categ
     Route::delete('/{id}', 'destroy')->name('destroy');
 });
 
-
+//Catalogo
+Route::controller(CatalogoController::class)->group(function () {
+    Route::post('/catalogo/update/{id}', 'update')->name('catalogo.update')->middleware('auth');
+    Route::get('/catalogo', 'index')->name('catalogo.index')->middleware('auth');
+});
 
 require __DIR__.'/auth.php';
