@@ -246,7 +246,7 @@ Route::controller(RotacionStockController::class)->group(function () {
 Route::get('/reportes-ventas', [ReporteVentaController::class, 'index'])->name('reportes.ventas')->middleware(['auth', 'verified']);
 
 //Reporte Listado  productos
-Route::get('/reportes-productos-vendidos', [ReporteProductoVendidoController::class, 'index'])->name('reportes.productosvendidos')->middleware(['auth', 'verified']);
+Route::get('/reportes-productos-vendidos', [ReporteProductoVendidoController::class, 'index'])->name('reportes.productosvendidos')->middleware(['auth']);
 Route::get('/reportes-productos-vendidos/exportproductoventas',[ReporteProductoVendidoController::class, 'exportProductoVentas'])->name('reportes.exportproductoventas')->middleware('auth');
 
 //Reporte Listado  vendedores con mas pedidos

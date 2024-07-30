@@ -26,24 +26,23 @@ const total_productos = ref([]);
 const total_cantidad = ref();
 
 let categorias = ref([])
-let date = ref([]);
+let date = ref();
 let inicio = ref();
 let fin = ref();
 
-
+date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
 
 watch(categorias, (value) => {
 	router.get(
 		route(ruta + '.productosvendidos'),
 		{
-
 			categoria: categorias.value,
 			inicio: date.value[0],
 			fin: date.value[1],
 		},
 		{
 			preserveState: true,
-			replace: true,
+			//replace: true,
 			onSuccess: () => {
 				total_cantidad.value = usePage().props.total_cantidad;
 				total_productos.value = usePage().props.total_productos;
@@ -66,12 +65,12 @@ const filtrado = (value) => {
 		{
 
 			categoria: categorias.value,
-			inicio: inicio.value,
-			fin: fin.value
+			inicio: date.value[0],
+			fin: date.value[1],
 		},
 		{
 			preserveState: true,
-			replace: true,
+			//replace: true,
 			onSuccess: () => {
 				total_cantidad.value = usePage().props.total_cantidad;
 				categorias.value = usePage().props.filtro.categoria
@@ -109,7 +108,6 @@ const descargaExcelProductoVentas = () => {
 
 onMounted(() => {
 	lista_categorias.value.options = usePage().props.lista_categorias
-	date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
     filtrado(date.value);
 });
 
@@ -222,7 +220,7 @@ const filters = ref({
 										<date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
 											format="DD/MM/YYYY"
 											class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
-											v-model:value="date" :shortcuts="shortcuts" lang="es" editable="false"
+											v-model:value="date" :shortcuts="shortcuts" :clearable = "false" lang="es" :editable="false"
 											placeholder="Seleccione Fecha"></date-picker>
 									</div>
 								</div>
