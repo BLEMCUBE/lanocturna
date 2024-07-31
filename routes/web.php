@@ -13,6 +13,7 @@ use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
+use App\Http\Controllers\PagoImportacionController;
 use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteProductoRmaController;
@@ -308,4 +309,18 @@ Route::controller(CatalogoController::class)->group(function () {
     Route::get('/catalogo', 'index')->name('catalogo.index')->middleware('auth');
 });
 
+//Pagos Importaciones
+Route::controller(PagoImportacionController::class)->prefix('pagos-importaciones')->name('pagos-importaciones.')
+->middleware('auth')->group(function () {
+    Route::delete('/{id}', 'destroy')->name('destroy');
+    Route::get('/{id}', 'edit')->name('edit');
+    Route::get('/{id}/export', 'exportExcel')->name('exportar');
+    Route::get('/{id}/show', 'show')->name('show');
+    //Route::get('/importaciones/{id}/showmodal', 'showModal')->name('importaciones.showmodal')->middleware('auth');
+    //Route::get('/importaciones/{id}/showproductomodal', 'showProductoModal')->name('importaciones.showproductomodal')->middleware('auth');
+    //Route::post('/importaciones/{id}/updateproducto', 'updateProducto')->name('importaciones.updateproducto')->middleware('auth');
+    Route::post('/update/{id}', 'update')->name('update');
+    Route::get('/', 'index')->name('index');
+    Route::post('/store', 'store')->name('store');
+});
 require __DIR__.'/auth.php';

@@ -103,6 +103,45 @@ const showDropdown = ref(false)
                 </NavLinkSideBar>
             </li>
 
+
+            <!--Contabilidad-->
+            <Disclosure as="div" class="p-0" v-slot="{ open }" :default-open="configStore.getCurrentMenu == 'contabilidad'"
+                v-show="permissions.includes('menu-contabilidad')">
+                <h3 class="flow-root text-white hover:text-primary-900">
+                    <DisclosureButton
+                        class="flex w-full items-center py-2 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
+                        <div
+                            class="font-medium static  flex justify-start items-center w-full py-2 text-white hover:bg-secondary-100 hover:text-primary-900">
+                            <div
+                                class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
+                                <i class="fas fa-file-contract mr-3 ml-1"></i>
+                                Contabilidad
+                                <div class="pr-2 py-4 absolute right-0 z-50 ">
+                                    <ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
+                                    <ChevronUpIcon v-else class="h-8 w-8" aria-hidden="true" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </DisclosureButton>
+                </h3>
+                <DisclosurePanel class="pt-1" as="div">
+
+                    <div class="flex items-center">
+                        <li @click="setMenu('contabilidad')" class="w-full"
+                            v-show="permissions.includes('lista-pagos')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('pagos-importaciones.index')" :active="route().current('pagos-importaciones.index')">
+                                <span class="ml-2 uppercase">Pagos Importaciones</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+
+                </DisclosurePanel>
+            </Disclosure>
+            <!--Contabilidad-->
             <!--Reportes-->
             <Disclosure as="div" class="p-0" v-slot="{ open }" :default-open="configStore.getCurrentMenu == 'reportes'"
                 v-show="permissions.includes('menu-reportes')">

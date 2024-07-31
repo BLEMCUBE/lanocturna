@@ -51,7 +51,7 @@ class ImportacionController extends Controller
         return Inertia::render('Importacion/Index', [
             'tipo_cambio' => $hoy_tipo_cambio,
             'productos' => new ImportacionCollection(
-                Importacion::orderBy('fecha_arribado', 'DESC')
+                Importacion::with(['importaciones_detalles'])->orderBy('fecha_arribado', 'DESC')
                     ->get()
             )
         ]);
@@ -96,6 +96,7 @@ class ImportacionController extends Controller
                 'total' => $request->total ?? 0,
                 'fecha_arribado' => $request->fecha_arribado ?? '',
                 'fecha_camino' => $request->fecha_camino ?? '',
+                'costo_cif' => $request->costo_cif ?? 0,
                 'mueve_stock' => $request->mueve_stock ?? false,
                 'user_id' => $usuario->id
 
@@ -314,6 +315,7 @@ class ImportacionController extends Controller
             $importacion->estado = $request->input('estado');
             $importacion->fecha_arribado     = $request->input('fecha_arribado');
             $importacion->fecha_camino = $request->input('fecha_camino');
+            $importacion->costo_cif = $request->input('costo_cif');
             $importacion->save();
 
             DB::commit();
@@ -334,7 +336,7 @@ class ImportacionController extends Controller
 
         $importacion = DB::table('importaciones as impor')
             ->select(DB::raw("impor.*,DATE_FORMAT(impor.created_at,'%d/%m/%y %H:%i:%s') AS fecha,
-        FORMAT(impor.total, 2, 'en_US') as total"))
+        FORMAT(impor.total, 2, 'en_US') as total,FORMAT(impor.costo_cif, 2, 'en_US') as costo_cif"))
             ->where('id', $id)->first();
         //return $importacion;
 

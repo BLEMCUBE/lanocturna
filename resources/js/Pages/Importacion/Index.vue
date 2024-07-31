@@ -18,42 +18,13 @@ const { tipo_cambio } = usePage().props
 const formDelete = useForm({
 	id: '',
 });
-const cars = ref();
-const virtualCars = ref();
+
 onMounted(() => {
 
 	tabla_productos.value = usePage().props.productos.data;
-	cars.value = Array.from(tabla_productos.value, (x) => x);
-	virtualCars.value = Array.from({ length: tabla_productos.value.length });
 });
 
-//const virtualCars = ref([{}]);
 
-const lazyLoading = ref(false);
-const loadLazyTimeout = ref();
-
-const loadCarsLazy = (event) => {
-	!lazyLoading.value && (lazyLoading.value = true);
-
-	if (loadLazyTimeout.value) {
-		clearTimeout(loadLazyTimeout.value);
-	}
-
-	//simulate remote connection with a timeout
-	loadLazyTimeout.value = setTimeout(() => {
-		let _virtualCars = [...virtualCars.value];
-		let { first, last } = event;
-
-		//load data of required page
-		const loadedCars = cars.value.slice(first, last);
-
-		//populate page of virtual cars
-		Array.prototype.splice.apply(_virtualCars, [...[first, last - first], ...loadedCars]);
-
-		virtualCars.value = _virtualCars;
-		lazyLoading.value = false;
-	}, Math.random() * 1000 + 250);
-};
 const btnVer = (id) => {
 	router.get(route(ruta + '.show', id));
 
@@ -149,7 +120,7 @@ const filters = ref({
 			</div>
 
 			<div class="align-middle  p-3">
-				<DataTable :filters="filters" :value="cars" scrollable scrollHeight="700px" paginator :rows="50"
+				<DataTable :filters="filters" :value="tabla_productos" scrollable scrollHeight="700px" paginator :rows="50"
 					resizableColumns columnResizeMode="expand" :pt="{
 						bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
 
