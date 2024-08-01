@@ -28,17 +28,9 @@ const clickDetalle = (e) => {
 //descarga excel
 const btnDescargar = () => {
 
-	if (date.value[0] != null && date.value[1] != null) {
-		window.open(route('rotacion-stock.exportproductoventas', [
-			{
-				'categoria': categorias.value,
-				'inicio': date.value[0],
-				'fin': date.value[1]
-			}]), '_blank');
-	} else {
 
-		return;
-	}
+		window.open(route(ruta+'.exportar'), '_blank');
+
 }
 
 const filters = ref({
@@ -97,7 +89,7 @@ const getInfoAgregar = (obj) => {
 			<Toast />
 			<div class="py-1 px-3 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
-				<Button @click="btnDescargar"
+				<Button @click.prevent="btnDescargar"
 					v-tooltip.top="{ value: `Exportar Excel`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
 					:pt="{
 						root: { class: 'py-auto px-2.5 py-2 text-lg bg-green-600 border-none hover:bg-green-500' }
@@ -123,6 +115,12 @@ const getInfoAgregar = (obj) => {
 					<template #loading> Cargando... </template>
 
 					<Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
+						bodyCell: { class: 'text-center' },
+						headerTitle: { class: 'text-center' },
+					}">
+					</Column>
+
+					<Column field="nro_contenedor" header="No. de Contenedor" sortable :pt="{
 						bodyCell: { class: 'text-center' },
 						headerTitle: { class: 'text-center' },
 					}">

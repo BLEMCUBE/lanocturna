@@ -313,9 +313,8 @@ Route::controller(CatalogoController::class)->group(function () {
 Route::controller(PagoImportacionController::class)->prefix('pagos-importaciones')->name('pagos-importaciones.')
 ->middleware('auth')->group(function () {
     Route::delete('/{id}', 'destroy')->name('destroy');
-    Route::get('/{id}/export', 'exportExcel')->name('exportar');
+    Route::get('/export', 'exportExcel')->name('exportar');
     Route::get('/{id}/showdetalle', 'showDetalle')->name('showdetalle');
-    //Route::post('/update/{id}', 'update')->name('update');
     Route::get('/', 'index')->name('index');
     Route::post('/store', 'store')->name('store');
 });

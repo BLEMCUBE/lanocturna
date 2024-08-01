@@ -49,7 +49,8 @@ class CatalogoController extends Controller
 			}])
 			->when(Request::input('buscar'), function ($query) {
 				$query->where(DB::raw('lower(origen)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
-					->orWhere(DB::raw('lower(nombre)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%');
+					->orWhere(DB::raw('lower(nombre)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
+					->orWhere(DB::raw('lower(codigo_barra)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%');
 			})
 			->when(Request::input('categoria'), function ($query) {
 				$query->whereHas('categorias', function ($query) {

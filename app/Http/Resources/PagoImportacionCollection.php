@@ -24,6 +24,7 @@ class PagoImportacionCollection extends ResourceCollection
 					//'costo_cif'=>number_format($row->costo_cif, 2,',', '.')??0,
 					//'saldo'=>number_format($row->importaciones_pagos->sum('monto'), 2,',', '.')??0,
 					'costo_cif' => $row->costo_cif ?? 0,
+					'nro_contenedor' => $row->nro_contenedor,
 					'pagado' => $row->importaciones_pagos->sum('monto'),
 					'porcentaje'=>$row->importaciones_pagos->sum('monto')>0&&$row->costo_cif>0?$row->importaciones_pagos->sum('monto') *100/$row->costo_cif :0,
 					'fecha_arribado' => !is_null($row->fecha_arribado) ? Carbon::createFromFormat('Y-m-d H:i:s', $row->fecha_arribado)->format('d/m/Y') : '',
