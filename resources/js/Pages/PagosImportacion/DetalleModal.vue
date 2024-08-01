@@ -1,201 +1,172 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import { useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+
+import { useForm, usePage } from '@inertiajs/vue3';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { useToast } from "primevue/usetoast";
-import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 
-const toast = useToast();
-const titulo = "Importación"
-const ruta = "importaciones"
-
+const { permissions } = usePage().props.auth
+const formDelete = useForm({
+	id: '',
+});
+const emit = defineEmits(['pass-info']);
+const ruta = "pagos-importaciones"
 //Variables
 const isShowModal = ref(false);
-
+const store = ref('CANCELAR')
 const form = useForm({
-    id: '',
-    estado: '',
-    nro_carpeta: '',
-    nro_carpeta: '',
-    nro_contenedor: '',
-    estado: '',
-    fecha_arribado: '',
-    fecha_camino: '',
+	id: '',
+	nro_carpeta: '',
+	costo_cif: '',
+	pagos: [],
+	pagado: '',
+	saldo: ''
 })
 
 const props = defineProps({
-    clienteId: {
-        type: Number,
-        default: null,
-    },
-
+	importacionId: {
+		type: Number,
+		default: null,
+	},
+	showDetalle: {
+		type: Boolean,
+		default: false,
+	},
 
 });
 
-
-//Funciones
-const setEstado = (e) => {
-
-    if (selectedEstado.value.code == form.estado)
-        return;
-        form.estado = selectedEstado.value.code;
-
+const btnEliminar = (id) => {
+	formDelete.delete(route(ruta + '.destroy', id),
+		{
+			preserveScroll: true,
+			forceFormData: true,
+			onSuccess: () => {
+				dataEdit(props.importacionId)
+				store.value = "ELIMINADO"
+				passInfo();
+			}
+		});
 }
 
-const addCliente = () => {
-    dataEdit(props.clienteId);
+const agregarPago = () => {
+	store.value = "AGREGAR";
+	passInfo();
+}
+//Funciones
+onMounted(() => {
+	dataEdit(props.importacionId)
+});
 
-};
-
-const selectedEstado = ref();
-const lista_estado = ref([
-    { name: 'Arribado', code: 'Arribado' },
-    { name: 'En camino', code: 'En camino' },
-]);
-
+function passInfo() {
+	emit('pass-info', { store: store.value, importacionId: props.importacionId })
+}
 
 const dataEdit = (id) => {
-    axios.get(route(ruta + '.showmodal', id))
-        .then(res => {
-            var datos = res.data.importacion
-            form.id = datos.id
-            form.nro_carpeta = datos.nro_carpeta
-            form.nro_contenedor = datos.nro_contenedor
-            form.estado = datos.estado
-            selectedEstado.value = lista_estado.value.find(pr => pr.code === datos.estado);
-            form.fecha_arribado = moment(datos.fecha_arribado).format('YYYY-MM-DD');
-            form.fecha_camino = moment(datos.fecha_camino).format('YYYY-MM-DD');
-            isShowModal.value = true;
-
-        })
-
+	axios.get(route(ruta + '.showdetalle', id))
+		.then(res => {
+			var datos = res.data.importacion
+			form.id = datos.id
+			form.nro_carpeta = datos.nro_carpeta
+			form.costo_cif = datos.costo_cif
+			form.pagos = datos.importaciones_pagos
+			form.pagado = (datos.importaciones_pagos.reduce((acc, cur) => acc + parseFloat(cur['monto']), 0)).toFixed(2)
+			form.saldo = datos.costo_cif - form.pagado;
+			isShowModal.value = true;
+		})
 };
 
 
 const closeModal = () => {
-    form.reset();
-    form.clearErrors()
-    isShowModal.value = false;
+	form.reset();
+	form.clearErrors()
+	store.value = "CANCELAR"
+	passInfo();
 };
 
-
-//envio de formulario
-const submit = () => {
-
-    form.clearErrors()
-    form.post(route(ruta + '.update', form.id), {
-        preserveScroll: true,
-        forceFormData: true,
-        onSuccess: () => {
-            isShowModal.value = false
-            show('success', 'Mensaje', 'Se ha editado')
-            setTimeout(() => {
-                router.get(route(ruta + '.show', form.id));
-            }, 1000);
-        },
-        onFinish: () => {
-        },
-        onError: () => {
-
-        }
-    });
-
-};
-
-const show = (tipo, titulo, mensaje) => {
-    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
-};
 </script>
 
 <template>
-    <section>
-        <button type="button" @click="addCliente"><i class="fas fa-edit"></i></button>
-        <Toast />
-        <Dialog v-model:visible="isShowModal" modal :header="'Editar ' + titulo" :style="{ width: '30vw' }" position="top"
-            :pt="{
-                header: {
-                    class: 'mt-6 p-2'
-                },
-                content: {
-                    class: 'p-2'
-                },
-            }">
-            <form>
-                <div class="px-2 pt-4 pb-0 grid grid-cols-12 gap-2 mb-2">
+	<section>
+		<Toast />
+		<Dialog v-model:visible="isShowModal" @hide="passInfo" modal :header="`Pagos importación: ${form.nro_carpeta}`"
+			:style="{ width: '40vw' }" position="top" :pt="{
+				header: {
+					class: 'mt-4 p-2'
+				},
+				content: {
+					class: 'p-2'
+				},
+			}">
+			<form>
+				<div class="px-2 pt-0 pb-0 grid grid-cols-12 gap-2 mb-2">
 
-                    <div class="col-span-12 shadow-default lg:col-span-6">
-                        <InputLabel for="nro_carpeta" value="No. de Carpeta"
-                            class="block text-base font-medium leading-6 text-gray-900" />
+					<div class="col-span-12">
+						<p><b>Costo CIF: </b> {{ $numberFormat(form.costo_cif) }}</p>
+					</div>
+					<div class="col-span-12">
+						<p><b>Pagos Ingresados: </b></p>
+					</div>
+					<div class="col-span-12">
 
-                        <InputText type="text" id="nro_carpeta" v-model="form.nro_carpeta"
-                            placeholder="Ingrese No. de Carpeta" :pt="{
-                                root: { class: 'h-9 w-full' }
-                            }" />
-                        <InputError class="mt-1 text-xs" :message="form.errors.nro_carpeta" />
-                    </div>
-
-                    <div class="col-span-12 shadow-default lg:col-span-6">
-                        <InputLabel for="nro_contenedor" value="BL o No. de Contenedor"
-                            class="block text-base font-medium leading-6 text-gray-900" />
-                        <InputText type="text" id="nro_contenedor" v-model="form.nro_contenedor"
-                            placeholder="Ingrese BL o No. de Contenedor" :pt="{
-                                root: { class: 'h-9 w-full' }
-                            }" />
-                        <InputError class="mt-1 text-xs" :message="form.errors.nro_contenedor" />
-                    </div>
-
-                    <div class="col-span-12 shadow-default">
-                        <InputLabel for="estado" value="Estado"
-                            class="block text-base font-medium leading-6 text-gray-900" />
-                        <Dropdown v-model="selectedEstado" @change="setEstado" :options="lista_estado" optionLabel="name"
-                            :pt="{
-                                root: { class: 'w-full' },
-                                trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
-                                item: ({ props, state, context }) => ({
-                                    class: context.selected ? 'text-white bg-primary-900' : context.focused ? 'bg-blue-100' : undefined
-                                })
-                            }" placeholder="Seleccione estado" />
-                        <InputError class="mt-1 text-xs" :message="form.errors.estado" />
-                    </div>
-
-
-                    <div class="col-span-12 shadow-default my-auto ">
-                        <InputLabel for="fecha_camino" value="Fecha En Camino"
-                            class="block text-base font-medium leading-6 text-gray-900" />
-                        <date-picker :clearable="false" :editable="true" type="date" value-type="YYYY-MM-DD"
-                            format="DD/MM/YYYY"
-                            class="p-component col-span-6  text-gray-700  bg-white  transition-colors duration-200 border-0 px-0 py-0"
-                            v-model:value="form.fecha_camino" lang="es" placeholder="Seleccione Fecha"></date-picker>
-                        <InputError class="mt-1 text-xs" :message="form.errors.fecha_camino" />
-                    </div>
-
-                    <div class="col-span-12 shadow-default my-auto">
-                        <InputLabel for="estado" value="Fecha Arribado"
-                            class="block text-base font-medium leading-6 text-gray-900" />
-                        <date-picker :clearable="false" :editable="true" type="date" value-type="YYYY-MM-DD"
-                            format="DD/MM/YYYY"
-                            class="p-component col-span-6  text-gray-700  bg-white  transition-colors duration-200 border-0 px-0 py-0"
-                            v-model:value="form.fecha_arribado" lang="es" placeholder="Seleccione Fecha"></date-picker>
-                        <InputError class="mt-1 text-xs" :message="form.errors.fecha_arribado" />
-                    </div>
-
-
-
-                </div>
-                <div class="flex justify-end py-3">
-                    <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="closeModal"
-                        type="button" />
-
-                    <Button label="Guardar" size="small" type="button" @click.prevent="submit"
-                        :class="{ 'opacity-50': form.processing }" :disabled="form.processing" />
-                </div>
-            </form>
-        </Dialog>
-    </section>
+						<table class="w-full border">
+							<thead>
+								<tr class="w-full border text-[14px]">
+									<th class="w-26 text-center border">
+										Fecha
+									</th>
+									<th class="text-center border">
+										Banco
+									</th>
+									<th class="text-center border">
+										Nro. de Transacción
+									</th>
+									<th class="text-center border">
+										Monto
+									</th>
+									<th class="text-center border">
+										Acciones
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="w-full text-center border text-xs" v-for="item in form.pagos">
+									<td class="text-center border text-[14px]">
+										{{ moment(item.fecha_pago).format('DD/MM/YYYY') }}
+									</td>
+									<td class="text-center border text-[14px]">
+										{{ item.banco }}
+									</td>
+									<td class="text-center border text-[14px]">
+										{{ item.nro_transaccion }}
+									</td>
+									<td class="text-center border text-[14px]">
+										{{ $numberFormat(item.monto) }}
+									</td>
+									<td class="text-center border text-[14px]">
+										<Button v-if="permissions.includes('eliminar-pagos')"
+											class="w-8 h-8 rounded bg-red-700 border-0 flex justify-center text-center text-base font-normal text-white hover:bg-red-600"
+											v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+											@click.prevent="btnEliminar(item.id)"><i
+												class="fas fa-trash-alt text-[14px] text-center"></i></Button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-span-12 pt-2">
+						<p><b>Saldo: </b> {{ $numberFormat(form.saldo) }}</p>
+					</div>
+				</div>
+				<div class="flex justify-end py-3">
+					<Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small"
+						@click="closeModal" type="button" />
+					<Button label="Agregar Pago" v-if="form.saldo > 0" size="small" type="button"
+						@click.prevent="agregarPago" :class="{ 'opacity-50': form.processing }"
+						:disabled="form.processing" />
+				</div>
+			</form>
+		</Dialog>
+	</section>
 </template>

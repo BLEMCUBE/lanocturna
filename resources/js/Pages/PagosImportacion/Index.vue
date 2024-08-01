@@ -1,16 +1,17 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm, router } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
-
+import { Head, usePage, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
-import { useToast } from "primevue/usetoast";
-const toast = useToast();
+import DetalleModal from '@/Pages/PagosImportacion/DetalleModal.vue';
+import AgregarModal from '@/Pages/PagosImportacion/AgregarModal.vue';
+
 const tabla_productos = ref([])
-const { permissions } = usePage().props.auth
+const importacionId = ref(null)
+const isShowModalDetalle = ref(false);
+const isShowModalAgregar = ref(false);
 const titulo = "Pagos Importaciones"
 const ruta = 'pagos-importaciones'
 
@@ -19,13 +20,9 @@ onMounted(() => {
 
 });
 
-const btnVer = (id) => {
-	router.get(route(ruta + '.show', id));
-
-};
-
 const clickDetalle = (e) => {
-	btnVer(e.data.id)
+	importacionId.value = e.data.id;
+	isShowModalDetalle.value = true;
 }
 
 //descarga excel
@@ -44,22 +41,50 @@ const btnDescargar = () => {
 	}
 }
 
-const show = (tipo, titulo, mensaje) => {
-	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
-};
-
-const ok = (icono, mensaje) => {
-
-	Swal.fire({
-		width: 350,
-		title: mensaje,
-		icon: icono
-	})
-}
-
 const filters = ref({
 	'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+
+const getInfoDetalle = (obj) => {
+	isShowModalDetalle.value = false;
+	console.log(obj.importacionId)
+	switch (obj.store) {
+		case 'CANCELAR':
+			isShowModalDetalle.value = false;
+			break;
+		case 'AGREGAR':
+			importacionId.value = obj.importacionId
+			isShowModalAgregar.value = true;
+			break;
+		case 'ELIMINADO':
+			setTimeout(() => {
+				router.get(route(ruta + '.index'));
+			}, 1000);
+			break;
+		default:
+			break;
+	}
+
+
+}
+const getInfoAgregar = (obj) => {
+	switch (obj.store) {
+		case 'CANCELAR':
+			isShowModalAgregar.value = false;
+			break;
+		case 'AGREGAR':
+			break;
+		case 'ELIMINADO':
+			setTimeout(() => {
+				router.get(route(ruta + '.index'));
+			}, 1000);
+			break;
+		default:
+			break;
+	}
+
+
+}
 </script>
 <template>
 
@@ -72,8 +97,6 @@ const filters = ref({
 			<Toast />
 			<div class="py-1 px-3 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
-
-
 				<Button @click="btnDescargar"
 					v-tooltip.top="{ value: `Exportar Excel`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
 					:pt="{
@@ -87,7 +110,6 @@ const filters = ref({
 					:rows="50" columnResizeMode="expand" :pt="{
 						bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
 						root: { class: 'text-base' }
-
 					}" @row-click="clickDetalle" size="small">
 					<template #header>
 						<div class="flex justify-content-end text-md">
@@ -167,14 +189,15 @@ const filters = ref({
 						</template>
 					</Column>
 					-->
-
-
 				</DataTable>
-
+				<!--Contenido-->
 			</div>
-			<!--Contenido-->
-
 		</div>
+		<DetalleModal v-if="isShowModalDetalle" @pass-info="getInfoDetalle" :importacion-id="importacionId"
+			:show-detalle="isShowModalDetalle">
+		</DetalleModal>
+		<AgregarModal v-if="isShowModalAgregar" @pass-info="getInfoAgregar" :importacion-id="importacionId"
+			:show-detalle="isShowModalAgregar"></AgregarModal>
 
 	</AppLayout>
 </template>
