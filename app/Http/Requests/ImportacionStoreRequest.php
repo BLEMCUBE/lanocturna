@@ -20,6 +20,7 @@ class ImportacionStoreRequest extends FormRequest
             'estado' => 'required',
             'mueve_stock' => 'required',
             'fecha_arribado' => 'required',
+			'costo_cif'=>'numeric|required',
             'fecha_camino' => 'required',
             'archivo'=> 'required|mimes:xlsx,xls'
 

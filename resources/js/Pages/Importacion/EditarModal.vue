@@ -22,11 +22,10 @@ const form = useForm({
     id: '',
     estado: '',
     nro_carpeta: '',
-    nro_carpeta: '',
     nro_contenedor: '',
-    estado: '',
     fecha_arribado: '',
     fecha_camino: '',
+    costo_cif: '',
 })
 
 const props = defineProps({
@@ -68,6 +67,7 @@ const dataEdit = (id) => {
             form.nro_carpeta = datos.nro_carpeta
             form.nro_contenedor = datos.nro_contenedor
             form.estado = datos.estado
+            form.costo_cif = datos.costo_cif
             selectedEstado.value = lista_estado.value.find(pr => pr.code === datos.estado);
             form.fecha_arribado = moment(datos.fecha_arribado).format('YYYY-MM-DD');
             form.fecha_camino = moment(datos.fecha_camino).format('YYYY-MM-DD');
@@ -185,7 +185,13 @@ const show = (tipo, titulo, mensaje) => {
                         <InputError class="mt-1 text-xs" :message="form.errors.fecha_arribado" />
                     </div>
 
-
+					<div class="col-span-12 shadow-default my-auto">
+							<InputLabel for="costo_cif" value="Costo CIF"
+								class="block text-base font-medium leading-6 text-gray-900" />
+							<input type="number" v-model="form.costo_cif" class="p-inputtext p-component text-gray-700 bg-white
+                            border appearance-none rounded text-basw h-9 m-0 w-full text-end" />
+							<InputError class="mt-1 text-xs" :message="form.errors.costo_cif" />
+						</div>
 
                 </div>
                 <div class="flex justify-end py-3">

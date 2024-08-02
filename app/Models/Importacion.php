@@ -20,6 +20,7 @@ class Importacion extends Model
         'fecha_camino',
         'mueve_stock',
         'user_id',
+		'costo_cif',
         'created_at'
 
     ];
@@ -31,5 +32,9 @@ class Importacion extends Model
     public function depositos_detalles()
     {
         return $this->hasMany(DepositoDetalle::class);
+    }
+	public function importaciones_pagos()
+    {
+        return $this->hasMany(PagoImportacion::class);
     }
 }
