@@ -131,136 +131,139 @@ import TreeSelect from 'primevue/treeselect';
 import TreeTable from 'primevue/treetable';
 import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
-
-
+import helperNumbers from '@/helpers/helperNumbers'
+import helperStrings from '@/helpers/helperStrings'
 import { createPinia } from 'pinia'
 const pinia = createPinia()
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
-    resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
-    setup({ el, App, props, plugin }) {
-      return   createApp({ render: () => h(App, props) })
+	title: (title) => `${title} - ${appName}`,
+	resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
+	setup({ el, App, props, plugin }) {
+		return createApp({ render: () => h(App, props) })
+			.use(plugin)
+			.use(ZiggyVue, Ziggy)
+			.use(pinia)
+			.use(VueApexCharts)
+			.use(PrimeVue, {
+				unstyled: false, ripple: true,
+				pt: Tailwind_PT
+			})
+			.use(helperNumbers)
+			.use(helperStrings)
+			.use(ConfirmationService)
+			.use(ToastService)
+			.use(DialogService)
+			.directive('tooltip', Tooltip)
+			.directive('badge', BadgeDirective)
+			.directive('ripple', Ripple)
+			.directive('styleclass', StyleClass)
+			.directive('focustrap', FocusTrap)
+			.component('Accordion', Accordion)
+			.component('AccordionTab', AccordionTab)
+			.component('AutoComplete', AutoComplete)
+			.component('Avatar', Avatar)
+			.component('AvatarGroup', AvatarGroup)
+			.component('Badge', Badge)
+			.component('BlockUI', BlockUI)
+			//.component('Breadcrumb', Breadcrumb)
+			.component('Button', Button)
+			.component('Calendar', Calendar)
+			.component('Card', Card)
+			.component('Carousel', Carousel)
+			.component('CascadeSelect', CascadeSelect)
+			.component('Checkbox', Checkbox)
+			.component('Chip', Chip)
+			.component('Chips', Chips)
+			.component('ColorPicker', ColorPicker)
+			.component('Column', Column)
+			.component('ColumnGroup', ColumnGroup)
+			.component('ConfirmDialog', ConfirmDialog)
+			.component('ConfirmPopup', ConfirmPopup)
+			.component('ContextMenu', ContextMenu)
+			.component('DataTable', DataTable)
+			.component('DataView', DataView)
+			.component('DataViewLayoutOptions', DataViewLayoutOptions)
+			.component('DeferredContent', DeferredContent)
+			.component('Dialog', Dialog)
+			.component('Divider', Divider)
+			.component('Dock', Dock)
+			.component('Dropdown', Dropdown)
+			.component('DynamicDialog', DynamicDialog)
+			.component('Fieldset', Fieldset)
+			.component('FileUpload', FileUpload)
+			.component('Galleria', Galleria)
+			.component('Image', Image)
+			.component('InlineMessage', InlineMessage)
+			.component('Inplace', Inplace)
+			.component('InputMask', InputMask)
+			.component('InputNumber', InputNumber)
+			.component('InputSwitch', InputSwitch)
+			.component('InputText', InputText)
+			.component('Knob', Knob)
+			.component('Listbox', Listbox)
+			.component('MegaMenu', MegaMenu)
+			.component('Menu', Menu)
+			.component('Menubar', Menubar)
+			.component('Message', Message)
+			.component('MultiSelect', MultiSelect)
+			.component('OrderList', OrderList)
+			.component('OrganizationChart', OrganizationChart)
+			.component('OverlayPanel', OverlayPanel)
+			.component('Paginator', Paginator)
+			.component('Panel', Panel)
+			.component('PanelMenu', PanelMenu)
+			.component('Password', Password)
+			.component('PickList', PickList)
+			.component('ProgressBar', ProgressBar)
+			.component('ProgressSpinner', ProgressSpinner)
+			.component('RadioButton', RadioButton)
+			.component('Rating', Rating)
+			.component('Row', Row)
+			.component('SelectButton', SelectButton)
+			.component('ScrollPanel', ScrollPanel)
+			.component('ScrollTop', ScrollTop)
+			.component('Slider', Slider)
+			.component('Sidebar', Sidebar)
+			.component('Skeleton', Skeleton)
+			.component('SpeedDial', SpeedDial)
+			.component('SplitButton', SplitButton)
+			.component('Splitter', Splitter)
+			.component('SplitterPanel', SplitterPanel)
+			.component('Steps', Steps)
+			.component('TabMenu', TabMenu)
+			.component('TabView', TabView)
+			.component('TabPanel', TabPanel)
+			.component('Tag', Tag)
+			.component('Textarea', Textarea)
+			.component('Terminal', Terminal)
+			.component('TieredMenu', TieredMenu)
+			.component('Timeline', Timeline)
+			.component('Toast', Toast)
+			.component('Toolbar', Toolbar)
+			.component('ToggleButton', ToggleButton)
+			.component('Tree', Tree)
+			.component('TreeSelect', TreeSelect)
+			.component('TreeTable', TreeTable)
+			.component('TriStateCheckbox', TriStateCheckbox)
+			.component('VirtualScroller', VirtualScroller)
+			.component("font-awesome-icon", FontAwesomeIcon)
+			.mount(el);
 
-        .use(plugin)
-            .use(ZiggyVue, Ziggy)
-            .use(pinia)
-            .use(VueApexCharts)
-            .use(PrimeVue, { unstyled: false, ripple: true,
-                pt: Tailwind_PT })
-            .use(ConfirmationService)
-            .use(ToastService)
-            .use(DialogService)
-            .directive('tooltip', Tooltip)
-            .directive('badge', BadgeDirective)
-            .directive('ripple', Ripple)
-            .directive('styleclass', StyleClass)
-            .directive('focustrap', FocusTrap)
-            .component('Accordion', Accordion)
-            .component('AccordionTab', AccordionTab)
-            .component('AutoComplete', AutoComplete)
-            .component('Avatar', Avatar)
-            .component('AvatarGroup', AvatarGroup)
-            .component('Badge', Badge)
-            .component('BlockUI', BlockUI)
-            //.component('Breadcrumb', Breadcrumb)
-            .component('Button', Button)
-            .component('Calendar', Calendar)
-            .component('Card', Card)
-            .component('Carousel', Carousel)
-            .component('CascadeSelect', CascadeSelect)
-            .component('Checkbox', Checkbox)
-            .component('Chip', Chip)
-            .component('Chips', Chips)
-            .component('ColorPicker', ColorPicker)
-            .component('Column', Column)
-            .component('ColumnGroup', ColumnGroup)
-            .component('ConfirmDialog', ConfirmDialog)
-            .component('ConfirmPopup', ConfirmPopup)
-            .component('ContextMenu', ContextMenu)
-            .component('DataTable', DataTable)
-            .component('DataView', DataView)
-            .component('DataViewLayoutOptions', DataViewLayoutOptions)
-            .component('DeferredContent', DeferredContent)
-            .component('Dialog', Dialog)
-            .component('Divider', Divider)
-            .component('Dock', Dock)
-            .component('Dropdown', Dropdown)
-            .component('DynamicDialog', DynamicDialog)
-            .component('Fieldset', Fieldset)
-            .component('FileUpload', FileUpload)
-            .component('Galleria', Galleria)
-            .component('Image', Image)
-            .component('InlineMessage', InlineMessage)
-            .component('Inplace', Inplace)
-            .component('InputMask', InputMask)
-            .component('InputNumber', InputNumber)
-            .component('InputSwitch', InputSwitch)
-            .component('InputText', InputText)
-            .component('Knob', Knob)
-            .component('Listbox', Listbox)
-            .component('MegaMenu', MegaMenu)
-            .component('Menu', Menu)
-            .component('Menubar', Menubar)
-            .component('Message', Message)
-            .component('MultiSelect', MultiSelect)
-            .component('OrderList', OrderList)
-            .component('OrganizationChart', OrganizationChart)
-            .component('OverlayPanel', OverlayPanel)
-            .component('Paginator', Paginator)
-            .component('Panel', Panel)
-            .component('PanelMenu', PanelMenu)
-            .component('Password', Password)
-            .component('PickList', PickList)
-            .component('ProgressBar', ProgressBar)
-            .component('ProgressSpinner', ProgressSpinner)
-            .component('RadioButton', RadioButton)
-            .component('Rating', Rating)
-            .component('Row', Row)
-            .component('SelectButton', SelectButton)
-            .component('ScrollPanel', ScrollPanel)
-            .component('ScrollTop', ScrollTop)
-            .component('Slider', Slider)
-            .component('Sidebar', Sidebar)
-            .component('Skeleton', Skeleton)
-            .component('SpeedDial', SpeedDial)
-            .component('SplitButton', SplitButton)
-            .component('Splitter', Splitter)
-            .component('SplitterPanel', SplitterPanel)
-            .component('Steps', Steps)
-            .component('TabMenu', TabMenu)
-            .component('TabView', TabView)
-            .component('TabPanel', TabPanel)
-            .component('Tag', Tag)
-            .component('Textarea', Textarea)
-            .component('Terminal', Terminal)
-            .component('TieredMenu', TieredMenu)
-            .component('Timeline', Timeline)
-            .component('Toast', Toast)
-            .component('Toolbar', Toolbar)
-            .component('ToggleButton', ToggleButton)
-            .component('Tree', Tree)
-            .component('TreeSelect', TreeSelect)
-            .component('TreeTable', TreeTable)
-            .component('TriStateCheckbox', TriStateCheckbox)
-            .component('VirtualScroller', VirtualScroller)
-            .component("font-awesome-icon", FontAwesomeIcon)
-            .mount(el);
+	},
 
-    },
-
-    progress: {
-        color: '#ffd700',
-         // The delay after which the progress bar will appear, in milliseconds...
-    //delay: 250,
+	progress: {
+		color: '#ffd700',
+		// The delay after which the progress bar will appear, in milliseconds...
+		//delay: 250,
 
 
-    // Whether to include the default NProgress styles...
-    includeCSS: true,
+		// Whether to include the default NProgress styles...
+		includeCSS: true,
 
-    // Whether the NProgress spinner will be shown...
-    showSpinner: true,
-    },
+		// Whether the NProgress spinner will be shown...
+		showSpinner: true,
+	},
 });
 

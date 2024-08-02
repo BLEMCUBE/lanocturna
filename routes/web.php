@@ -13,6 +13,7 @@ use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
+use App\Http\Controllers\PagoImportacionController;
 use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteProductoRmaController;
@@ -306,6 +307,16 @@ Route::controller(CategoriaController::class)->prefix('categorias')->name('categ
 Route::controller(CatalogoController::class)->group(function () {
     Route::post('/catalogo/update/{id}', 'update')->name('catalogo.update')->middleware('auth');
     Route::get('/catalogo', 'index')->name('catalogo.index')->middleware('auth');
+});
+
+//Pagos Importaciones
+Route::controller(PagoImportacionController::class)->prefix('pagos-importaciones')->name('pagos-importaciones.')
+->middleware('auth')->group(function () {
+    Route::delete('/{id}', 'destroy')->name('destroy');
+    Route::get('/export', 'exportExcel')->name('exportar');
+    Route::get('/{id}/showdetalle', 'showDetalle')->name('showdetalle');
+    Route::get('/', 'index')->name('index');
+    Route::post('/store', 'store')->name('store');
 });
 
 require __DIR__.'/auth.php';

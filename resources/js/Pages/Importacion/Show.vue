@@ -49,37 +49,41 @@ const clickDetalle = (e) => {
             </div>
 
             <div class="grid grid-cols-6 my-2 col-span-12 ">
-                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                <div class="mx-5 col-span-6 gap-2 m-1 lg:col-span-3 flex">
                     <b> No. de Carpeta:</b>
                     <p>{{ importacion.nro_carpeta }}</p>
                 </div>
-                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                <div class="mx-5 col-span-6 gap-2 m-1 lg:col-span-3 flex">
                     <b> BL o No. de Contenedor:</b>
                     <p>{{ importacion.nro_contenedor }}</p>
                 </div>
-                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                <div class="mx-5 col-span-6 gap-2 m-1 lg:col-span-3 flex">
                     <b> Estado:</b>
                     <p>{{ importacion.estado }}</p>
                 </div>
-                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                <div class="mx-5 col-span-6 gap-2 m-1 lg:col-span-3 flex">
                     <b> Mueve Stock:</b>
                     <p>{{ (importacion.mueve_stock) ? ' SI ' : ' NO ' }}</p>
                 </div>
-                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                <div class="mx-5 col-span-6 gap-2 m-1 lg:col-span-3 flex">
                     <b>Total:</b>
                     <p>{{ importacion.total }}</p>
                 </div>
-                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                <div class="mx-5 col-span-6 gap-2 m-1 lg:col-span-3 flex">
                     <b>Fecha En Camino :</b>
                     <p>{{ moment(importacion.fecha_camino).format('DD/MM/YYYY') }}</p>
                 </div>
-                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                <div class="mx-5 col-span-6 gap-2 m-1 lg:col-span-3 flex">
                     <b>Fecha Arribado :</b>
                     <p>{{ moment(importacion.fecha_arribado).format('DD/MM/YYYY') }}</p>
                 </div>
-                <div class="mx-5 col-span-6 gap-4 m-2 lg:col-span-3 flex">
+                <div class="mx-5 col-span-6 gap-2 m-1 lg:col-span-3 flex">
                     <b>Cantidad productos :</b>
                     <p>{{ importacion_detalle.length }}</p>
+                </div>
+				<div class="mx-5 col-span-6 gap-2 m-1 lg:col-span-3 flex">
+                    <b>Costo CIF :</b>
+                    <p>{{ importacion.costo_cif }}</p>
                 </div>
 
             </div>

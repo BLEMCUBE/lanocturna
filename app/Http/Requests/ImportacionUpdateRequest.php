@@ -19,6 +19,7 @@ class ImportacionUpdateRequest extends FormRequest
             'nro_contenedor' => 'required',
              'estado' => 'required',
              'fecha_arribado' => 'required',
+			 'costo_cif'=>'numeric|required',
              'fecha_camino' => 'required',
 
         ];
