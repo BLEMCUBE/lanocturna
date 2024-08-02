@@ -13,8 +13,8 @@
     <tbody>
     @foreach($importaciones as $importacion)
         <tr>
-            <td>{{ strval( $importacion->importacion->nro_carpeta)??'' }}</td>
-            <td>{{ strval( $importacion->importacion->nro_contenedor)??'' }}</td>
+            <td>{{ strval( $importacion->nro_carpeta)??'' }}</td>
+            <td>{{ strval( $importacion->nro_contenedor)??'' }}</td>
             <td>{{ $importacion->fecha??'' }}</td>
             <td style="text-align:right">{{ $importacion->monto??'' }}</td>
             <td style="text-align:right">{{ $importacion->banco ??'' }}</td>

@@ -87,8 +87,11 @@ class PagoImportacionController extends Controller
 
 	public function exportExcel()
 	{
-		$datos = PagoImportacion::with(['importacion'])
-		->select('*',DB::raw("DATE_FORMAT(fecha_pago,'%d/%m/%y') AS fecha"))->orderBy('id', 'DESC')
+			$datos=DB::table('pagos_importaciones as pa')
+			->join('importaciones as im','im.id','=','pa.importacion_id')
+			->select('im.nro_carpeta','im.nro_contenedor','pa.monto','pa.banco','pa.nro_transaccion',
+			DB::raw("DATE_FORMAT(pa.fecha_pago,'%d/%m/%y') AS fecha"))
+			->orderByRaw('pa.fecha_pago - im.nro_carpeta desc')
 			->get();
 		return Excel::download(new PagosImportacionesExport($datos), 'PagosImportaciones.xlsx');
 	}
