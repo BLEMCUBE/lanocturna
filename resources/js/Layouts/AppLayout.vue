@@ -6,7 +6,7 @@ import { Link } from '@inertiajs/vue3';
 import AppTopBar from '@/Layouts/AppTopBar.vue';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import AppSideBar from '@/Layouts/AppSideBar.vue'
-import AppFooter from '@/Layouts/AppFooter.vue'
+//import AppFooter from '@/Layouts/AppFooter.vue'
 import { useLayout } from '@/composables/layout';
 import { useConfigStore } from '@/store/config.js'
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
@@ -96,8 +96,6 @@ const isOutsideClicked = (event) => {
                     <slot></slot>
                 </div>
             </div>
-
-            <AppFooter></AppFooter>
         </div>
         <div class="layout-mask"></div>
     </div>
