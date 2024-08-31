@@ -139,6 +139,27 @@ const showDropdown = ref(false)
                         </li>
                     </div>
 
+                    <div class="flex items-center">
+                        <li @click="setMenu('contabilidad')" class="w-full"
+                            v-show="permissions.includes('lista-conceptopago')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('concepto-pago.index')" :active="route().current('concepto-pago.index')">
+                                <span class="ml-2 uppercase">Conceptos de Pago</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+
+					<div class="flex items-center">
+                        <li @click="setMenu('contabilidad')" class="w-full"
+                            v-show="permissions.includes('lista-pagoservicio')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('pago-servicio.index')" :active="route().current('pago-servicio.index')">
+                                <span class="ml-2 uppercase">Pagos</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
                 </DisclosurePanel>
             </Disclosure>
             <!--Contabilidad-->

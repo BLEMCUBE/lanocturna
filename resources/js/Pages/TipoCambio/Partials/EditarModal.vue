@@ -12,7 +12,6 @@ const ruta = "tipo_cambio"
 
 //Variables
 const isShowModal = ref(false);
-const fec_nac = ref()
 
 const form = useForm({
     id: '',

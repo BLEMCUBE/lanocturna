@@ -14,7 +14,6 @@ const ruta = "clientes"
 
 //Variables
 const isShowModal = ref(false);
-const fec_nac = ref()
 
 const form = useForm({
     id: '',

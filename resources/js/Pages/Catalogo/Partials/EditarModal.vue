@@ -20,7 +20,6 @@ const { setFile, previewMap } = useFileUpdate();
 const inputDOM = ref(null);
 
 const fileChange = (e) => {
-	console.log(e.target.files);
 	setFile(e.target.files);
 	form.imagen = e.target.files[0]
 };
