@@ -11,7 +11,6 @@ const titulo = "Concepto Pago"
 const ruta = "concepto-pago"
 //Variables
 const isShowModal = ref(false);
-const fec_nac = ref()
 
 const form = useForm({
 	id: '',
@@ -48,10 +47,9 @@ const dataEdit = (id) => {
 };
 
 const mayuscula = (event) => {
-	console.log('event ', event.target.value.toUpperCase())
 	form.nombre = event.target.value.toUpperCase();
-
 };
+
 const closeModal = () => {
 	form.reset();
 	form.clearErrors()

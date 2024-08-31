@@ -39,7 +39,6 @@ const filters = ref({
 
 const getInfoDetalle = (obj) => {
 	isShowModalDetalle.value = false;
-	console.log(obj.importacionId)
 	switch (obj.store) {
 		case 'CANCELAR':
 			isShowModalDetalle.value = false;

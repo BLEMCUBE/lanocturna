@@ -15,6 +15,7 @@ use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\PagoImportacionController;
+use App\Http\Controllers\PagoServicioController;
 use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ReporteProductoRmaController;
@@ -322,4 +323,18 @@ Route::controller(ConceptoPagoController::class)->prefix('concepto-pago')->name(
 		Route::post('/store', 'store')->name('store');
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
+
+//Pago servicios
+Route::controller(PagoServicioController::class)->prefix('pago-servicio')->name('pago-servicio.')
+	->middleware('auth')->group(function () {
+		Route::post('/update/{id}', 'update')->name('update');
+		Route::get('/', 'index')->name('index');
+		Route::get('/conceptos', 'conceptos')->name('conceptos');
+		Route::get('/export', 'exportExcel')->name('exportar');
+		Route::get('/{id}', 'show')->name('show');
+		Route::post('/store', 'store')->name('store');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+
+	});
+
 require __DIR__ . '/auth.php';

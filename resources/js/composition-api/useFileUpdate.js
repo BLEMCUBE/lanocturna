@@ -36,7 +36,6 @@ export function useFileUpdate() {
 	const setFile = async (file = []) => {
 		initData();
 		previewMap.value = useQueuePreview(file);
-		console.log(previewMap.value);
 	};
 
 	return { setFile, previewMap };

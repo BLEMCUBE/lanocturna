@@ -23,9 +23,13 @@ class PagoServicio extends Model
 
     ];
 
-
     public function concepto_pago()
     {
         return $this->belongsTo(ConceptoPago::class,'concepto_pago_id','id');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class,'user_id','id');
     }
 }

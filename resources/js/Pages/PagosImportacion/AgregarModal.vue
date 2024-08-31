@@ -106,7 +106,7 @@ const show = (tipo, titulo, mensaje) => {
 <template>
 	<section>
 		<Toast />
-		<Dialog v-model:visible="isShowModal" modal :header="`Agregar pago a importación: ${form.nro_carpeta}`"
+		<Dialog v-model:visible="isShowModal"  @hide="passInfo"  modal :header="`Agregar pago a importación: ${form.nro_carpeta}`"
 			:style="{ width: '20vw' }" position="top" :pt="{
 				header: {
 					class: 'mt-4 p-2'

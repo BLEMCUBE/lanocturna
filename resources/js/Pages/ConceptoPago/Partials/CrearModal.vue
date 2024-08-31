@@ -16,13 +16,10 @@ onMounted(() => {
 
 const addCliente = () => {
 	isShowModal.value = true;
-
 };
 
 const mayuscula = (event) => {
-	console.log('event ',event.target.value.toUpperCase())
 	form.nombre=event.target.value.toUpperCase();
-
 };
 
 const closeModal = () => {
