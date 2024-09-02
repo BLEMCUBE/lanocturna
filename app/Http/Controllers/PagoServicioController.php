@@ -8,6 +8,7 @@ use App\Http\Requests\PagoServicioUpdateRequest;
 use App\Http\Resources\PagoServicioCollection;
 use App\Models\ConceptoPago;
 use App\Models\PagoServicio;
+use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
@@ -32,6 +33,12 @@ class PagoServicioController extends Controller
 			'items' => new PagoServicioCollection(
 				PagoServicio::with(['concepto_pago'])
 					->with(['usuario'])
+					->when(Request::input('inicio'), function ($query) {
+						$query->whereDate('fecha_pago', '>=', Request::input('inicio'));
+					})
+					->when(Request::input('fin'), function ($query) {
+						$query->whereDate('fecha_pago', '<=', Request::input('fin'));
+					})
 					->orderBy('id', 'DESC')
 					->get()
 			)
@@ -117,6 +124,12 @@ class PagoServicioController extends Controller
 				'pa.observacion',
 				DB::raw("DATE_FORMAT(pa.fecha_pago,'%d/%m/%y') AS fecha")
 			)
+			->when(Request::input('inicio'), function ($query) {
+				$query->whereDate('pa.fecha_pago', '>=', Request::input('inicio'));
+			})
+			->when(Request::input('fin'), function ($query) {
+				$query->whereDate('pa.fecha_pago', '<=', Request::input('fin'));
+			})
 			->orderByRaw('pa.fecha_pago desc')
 			->get();
 		return Excel::download(new PagosServiciosExport($datos), 'PagosServicios.xlsx');

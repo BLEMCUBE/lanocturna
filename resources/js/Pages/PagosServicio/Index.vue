@@ -1,8 +1,13 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, router,useForm } from '@inertiajs/vue3';
+import { Head, usePage, router, useForm } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
+import DatePicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
+import moment from 'moment';
+import 'vue-datepicker-next/locale/es.es.js';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import CrearModal from '@/Pages/PagosServicio/Partials/CrearModal.vue';
@@ -17,19 +22,54 @@ const ruta = 'pago-servicio'
 const formDelete = useForm({
 	id: '',
 });
+let date = ref();
+let inicio = ref();
+let fin = ref();
+
+date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
 
 
+
+//*datepicker  */
+const shortcuts = [
+	{
+		text: 'Hoy',
+		onClick() {
+			const date = [new Date(), new Date()];
+			return date;
+		},
+	},
+	{
+		text: 'Ayer',
+		onClick() {
+			const date = [subDays(new Date(), 1), subDays(new Date(), 1)];
+			//date.setTime(date.getTime() - 3600 * 1000 * 24);
+
+			return date;
+		},
+	},
+	{
+		text: 'Este mes',
+		onClick() {
+			const date = [startOfMonth(new Date()), endOfMonth(new Date())];
+
+			return date;
+		},
+	},
+	{
+		text: 'Este año',
+		onClick() {
+			const date = [startOfYear(new Date()), endOfYear(new Date())];
+
+			return date;
+		},
+	},
+]
 onMounted(() => {
 	tabla_items.value = usePage().props.items.data;
+	filtrado(date.value);
 });
 
-//descarga excel
-const btnDescargar = () => {
-
-
-	window.open(route(ruta + '.exportar'), '_blank');
-
-}
 
 const filters = ref({
 	'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -40,33 +80,72 @@ const show = (tipo, titulo, mensaje) => {
 //modal eliminar
 const eliminar = (id, name) => {
 
-const alerta = Swal.mixin({ buttonsStyling: true });
-alerta.fire({
-	width: 350,
-	title: "Seguro de eliminar " + name,
-	text: 'Se eliminará definitivamente',
-	icon: 'question',
-	showCancelButton: true,
-	confirmButtonText: 'Eliminar',
-	cancelButtonText: 'Cancelar',
-	cancelButtonColor: 'red',
-	confirmButtonColor: '#2563EB',
+	const alerta = Swal.mixin({ buttonsStyling: true });
+	alerta.fire({
+		width: 350,
+		title: "Seguro de eliminar " + name,
+		text: 'Se eliminará definitivamente',
+		icon: 'question',
+		showCancelButton: true,
+		confirmButtonText: 'Eliminar',
+		cancelButtonText: 'Cancelar',
+		cancelButtonColor: 'red',
+		confirmButtonColor: '#2563EB',
 
-}).then((result) => {
-	if (result.isConfirmed) {
-		formDelete.delete(route(ruta + '.destroy', id),
-			{
-				preserveScroll: true,
-				onSuccess: () => {
-					show('success', 'Eliminado', 'Se ha eliminado')
-					setTimeout(() => {
-						router.get(route(ruta + '.index'));
-					}, 1000);
+	}).then((result) => {
+		if (result.isConfirmed) {
+			formDelete.delete(route(ruta + '.destroy', id),
+				{
+					preserveScroll: true,
+					onSuccess: () => {
+						show('success', 'Eliminado', 'Se ha eliminado')
+						setTimeout(() => {
+							router.get(route(ruta + '.index'));
+						}, 1000);
 
-				}
-			});
+					}
+				});
+		}
+	});
+}
+
+//descarga excel
+const btnDescargar = () => {
+
+
+if (date.value[0] != null && date.value[1] != null) {
+	window.open(route(ruta + '.exportar', [{
+		'inicio': date.value[0],
+		'fin': date.value[1]
+	}]), '_blank');
+} else {
+
+	return;
+}
+}
+
+//filtrado
+const filtrado = (value) => {
+	if (value[0] != null && value[1] != null) {
+		//date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
+		inicio.value = date.value[0];
+		fin.value = date.value[1];
 	}
-});
+	router.get(
+		route(ruta + '.index'),
+		{
+			inicio: date.value[0],
+			fin: date.value[1],
+		},
+		{
+			preserveState: true,
+			//replace: true,
+			onSuccess: () => {
+				tabla_items.value = usePage().props.items.data;
+			}
+		}
+	);
+
 }
 </script>
 <template>
@@ -94,8 +173,8 @@ alerta.fire({
 				</div>
 			</div>
 			<div class="align-middle  py-1 px-3 ">
-				<DataTable :filters="filters" :value="tabla_items" scrollable scrollHeight="700px" paginator :rows="50"
-					columnResizeMode="expand" :pt="{
+				<DataTable :filters="filters" :value="tabla_items" :globalFilterFields="['concepto', 'observacion']"
+					scrollable scrollHeight="700px" paginator :rows="50" columnResizeMode="expand" :pt="{
 						bodyRow: { class: 'hover:bg-gray-100 hover:text-black' },
 						root: { class: 'text-base' }
 					}" size="small">
@@ -103,6 +182,13 @@ alerta.fire({
 						<div class="flex justify-content-end text-md">
 							<div class="w-72">
 								<InputText v-model="filters['global'].value" placeholder="Buscar" class="w-full" />
+							</div>
+							<div class="ml-5 flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-2">
+								<date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
+								format="DD/MM/YYYY"
+								class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
+								v-model:value="date" :shortcuts="shortcuts" :clearable="false" lang="es"
+								:editable="false" placeholder="Seleccione Fecha"></date-picker>
 							</div>
 						</div>
 					</template>
@@ -135,7 +221,7 @@ alerta.fire({
 						</template>
 					</Column>
 
-					<Column sortable header="Concepto" :pt="{
+					<Column sortable header="Concepto" field="concepto" :pt="{
 						bodyCell: { class: 'text-center' },
 						headerTitle: { class: 'text-center' },
 					}">
@@ -168,15 +254,15 @@ alerta.fire({
 						}
 					}">
 						<template #body="slotProps">
-							<div class="flex justify-end justify-items-center" >
+							<div class="flex justify-end justify-items-center">
 								<div v-if="permissions.includes('editar-pagoservicio')"
 									class="h-8 inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
 									<EditarModal :item-id="slotProps.data.id"></EditarModal>
 								</div>
 								<div v-if="permissions.includes('eliminar-pagoservicio')"
-								class="h-8 inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-red-600">
-								<button @click.prevent="eliminar(slotProps.data.id, slotProps.data.nro_factura)"><i
-									class="fas fa-trash-alt"></i></button>
+									class="h-8 inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-red-600">
+									<button @click.prevent="eliminar(slotProps.data.id, slotProps.data.nro_factura)"><i
+											class="fas fa-trash-alt"></i></button>
 								</div>
 							</div>
 
