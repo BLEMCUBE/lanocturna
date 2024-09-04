@@ -17,7 +17,7 @@ return new class extends Migration
 			$table->string('moneda')->nullable();
             $table->unsignedBigInteger('concepto_pago_id')->nullable();
 			$table->string('nro_factura')->nullable();
-			$table->float('monto',8,2)->default(0);
+			$table->double('monto')->default(0);
 			$table->text('observacion')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();

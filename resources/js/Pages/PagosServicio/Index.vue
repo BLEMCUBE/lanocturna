@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { Head, usePage, router, useForm } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
 import DatePicker from 'vue-datepicker-next';
@@ -12,8 +12,15 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import CrearModal from '@/Pages/PagosServicio/Partials/CrearModal.vue';
 import EditarModal from '@/Pages/PagosServicio/Partials/EditarModal.vue';
+import Multiselect from '@vueform/multiselect';
 import Swal from 'sweetalert2';
 import { useToast } from "primevue/usetoast";
+const props = defineProps({
+	filtro: {
+		type: Object,
+		default: () => ({}),
+	},
+});
 const { permissions } = usePage().props.auth
 const tabla_items = ref([])
 const toast = useToast();
@@ -26,8 +33,29 @@ let date = ref();
 let inicio = ref();
 let fin = ref();
 
+let conceptos = ref([])
 date.value = [moment(subDays(new Date(), 30)).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD')];
 
+
+
+watch(conceptos, (value) => {
+	router.get(
+		route(ruta + '.index'),
+		{
+			concepto: conceptos.value,
+			inicio: date.value[0],
+			fin: date.value[1],
+		},
+		{
+			preserveState: true,
+			//replace: true,
+			onSuccess: () => {
+				tabla_items.value = usePage().props.items.data;
+
+			}
+		}
+	);
+});
 
 
 //*datepicker  */
@@ -65,10 +93,6 @@ const shortcuts = [
 		},
 	},
 ]
-onMounted(() => {
-	tabla_items.value = usePage().props.items.data;
-	filtrado(date.value);
-});
 
 
 const filters = ref({
@@ -109,19 +133,28 @@ const eliminar = (id, name) => {
 	});
 }
 
+const lista_conceptos = ref({
+	value: '',
+	closeOnSelect: true,
+	placeholder: "Conceptos",
+	mode: 'tags',
+	searchable: true,
+	options: [],
+});
+
 //descarga excel
 const btnDescargar = () => {
 
+	if (date.value[0] != null && date.value[1] != null) {
+		window.open(route(ruta + '.exportar', [{
+			'concepto': conceptos.value,
+			'inicio': date.value[0],
+			'fin': date.value[1]
+		}]), '_blank');
+	} else {
 
-if (date.value[0] != null && date.value[1] != null) {
-	window.open(route(ruta + '.exportar', [{
-		'inicio': date.value[0],
-		'fin': date.value[1]
-	}]), '_blank');
-} else {
-
-	return;
-}
+		return;
+	}
 }
 
 //filtrado
@@ -134,6 +167,8 @@ const filtrado = (value) => {
 	router.get(
 		route(ruta + '.index'),
 		{
+
+			concepto: conceptos.value,
 			inicio: date.value[0],
 			fin: date.value[1],
 		},
@@ -141,12 +176,19 @@ const filtrado = (value) => {
 			preserveState: true,
 			//replace: true,
 			onSuccess: () => {
+				conceptos.value = usePage().props.filtro.concepto
 				tabla_items.value = usePage().props.items.data;
 			}
 		}
 	);
 
 }
+
+onMounted(() => {
+	lista_conceptos.value.options = usePage().props.conceptos
+	filtrado(date.value);
+});
+
 </script>
 <template>
 
@@ -173,28 +215,34 @@ const filtrado = (value) => {
 				</div>
 			</div>
 			<div class="align-middle  py-1 px-3 ">
-				<DataTable :filters="filters" :value="tabla_items" :globalFilterFields="['concepto', 'observacion']"
+				<DataTable :filters="filters" :value="tabla_items" :globalFilterFields="['tconcepto', 'observacion']"
 					scrollable scrollHeight="700px" paginator :rows="50" columnResizeMode="expand" :pt="{
 						bodyRow: { class: 'hover:bg-gray-100 hover:text-black' },
 						root: { class: 'text-base' }
 					}" size="small">
 					<template #header>
-						<div class="flex justify-content-end text-md">
-							<div class="w-72">
-								<InputText v-model="filters['global'].value" placeholder="Buscar" class="w-full" />
+						<div class="grid grid-cols-12 gap-2 m-1">
+
+							<div class="flex justify-content-end text-md col-span-12 lg:col-span-3 2xl:col-span-3">
+								<InputText class="h-9 w-full" v-model="filters['global'].value" placeholder="Buscar" />
 							</div>
-							<div class="ml-5 flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-2">
+							<div class="flex justify-content-end text-md col-span-12 lg:col-span-5 2xl:col-span-7">
+								<Multiselect id="conceptos" v-model="conceptos" class="w-full" v-bind="lista_conceptos">
+								</Multiselect>
+							</div>
+							<div class="flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-2">
 								<date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD"
-								format="DD/MM/YYYY"
-								class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
-								v-model:value="date" :shortcuts="shortcuts" :clearable="false" lang="es"
-								:editable="false" placeholder="Seleccione Fecha"></date-picker>
+									format="DD/MM/YYYY"
+									class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
+									v-model:value="date" :shortcuts="shortcuts" :clearable="false" lang="es"
+									:editable="false" placeholder="Seleccione Fecha"></date-picker>
 							</div>
 						</div>
+
 					</template>
 					<template #empty> No existe Resultado </template>
 					<template #loading> Cargando... </template>
-					<Column field="fecha_pago" sortable header="Fecha" :pt="{
+					<Column field="fecha" sortable header="Fecha" :pt="{
 						bodyCell: { class: 'text-center' },
 						headerTitle: { class: 'text-center' },
 					}">
@@ -221,15 +269,10 @@ const filtrado = (value) => {
 						</template>
 					</Column>
 
-					<Column sortable header="Concepto" field="concepto" :pt="{
+					<Column field="tconcepto" sortable header="Concepto" :pt="{
 						bodyCell: { class: 'text-center' },
 						headerTitle: { class: 'text-center' },
 					}">
-						<template #body="slotProps">
-							<span>
-								{{ slotProps.data.concepto }}
-							</span>
-						</template>
 					</Column>
 					<!--
 						<Column sortable header="Agregado por" :pt="{
