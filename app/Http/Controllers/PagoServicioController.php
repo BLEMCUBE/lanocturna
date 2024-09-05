@@ -42,6 +42,7 @@ class PagoServicioController extends Controller
 			'items' => new PagoServicioCollection(
 				PagoServicio::query()
 					->select(
+						'pagos_servicios.id',
 						'pagos_servicios.monto',
 						'pagos_servicios.moneda',
 						'pagos_servicios.nro_factura',
