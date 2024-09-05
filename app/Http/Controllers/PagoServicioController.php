@@ -28,19 +28,42 @@ class PagoServicioController extends Controller
 
 	public function index()
 	{
+		$conceptos = ConceptoPago::orderBy('nombre', 'ASC')->get();
+		$lista_categorias = [];
+		foreach ($conceptos as $value) {
+			array_push($lista_categorias, [
+				'value' => $value->id,
+				'label' =>  $value->nombre,
+			]);
+		}
 		return Inertia::render('PagosServicio/Index', [
-
+			'conceptos' => $lista_categorias,
+			'filtro' => Request::only(['conceptos']),
 			'items' => new PagoServicioCollection(
-				PagoServicio::with(['concepto_pago'])
-					->with(['usuario'])
+				PagoServicio::query()
+					->select(
+						'pagos_servicios.monto',
+						'pagos_servicios.moneda',
+						'pagos_servicios.nro_factura',
+						'pagos_servicios.observacion',
+						'cp.nombre as tconcepto',
+						DB::raw("DATE_FORMAT(pagos_servicios.fecha_pago,'%d/%m/%y') AS fecha")
+					)
+					->join('concepto_pago as cp', 'cp.id', '=', 'pagos_servicios.concepto_pago_id')
+					->with(['concepto_pago' => function ($query) {
+						$query->select(DB::raw("id,nombre"))->orderBy('nombre', 'ASC');
+					}])
 					->when(Request::input('inicio'), function ($query) {
-						$query->whereDate('fecha_pago', '>=', Request::input('inicio'));
+						$query->whereDate('pagos_servicios.fecha_pago', '>=', Request::input('inicio'));
 					})
 					->when(Request::input('fin'), function ($query) {
-						$query->whereDate('fecha_pago', '<=', Request::input('fin'));
+						$query->whereDate('pagos_servicios.fecha_pago', '<=', Request::input('fin'));
 					})
-					->orderBy('id', 'DESC')
-					->get()
+					->when(Request::input('concepto'), function ($query) {
+						$query->whereHas('concepto_pago', function ($query) {
+							$query->whereIn('id', Request::input('concepto'));
+						});
+					})->get()
 			)
 		]);
 	}
@@ -91,10 +114,10 @@ class PagoServicioController extends Controller
 	}
 
 	public function update(PagoServicioUpdateRequest $request, $id)
-    {
-        $item = PagoServicio::find($id);
-        $item->update($request->validated());
-    }
+	{
+		$item = PagoServicio::find($id);
+		$item->update($request->validated());
+	}
 
 	public function conceptos()
 	{
@@ -114,24 +137,31 @@ class PagoServicioController extends Controller
 
 	public function exportExcel()
 	{
-		$datos = DB::table('pagos_servicios as pa')
-			->join('concepto_pago as cp', 'cp.id', '=', 'pa.concepto_pago_id')
+		$datos = PagoServicio::query()
 			->select(
-				'pa.monto',
-				'pa.moneda',
-				'pa.nro_factura',
-				'cp.nombre as concepto',
-				'pa.observacion',
-				DB::raw("DATE_FORMAT(pa.fecha_pago,'%d/%m/%y') AS fecha")
+				'pagos_servicios.monto',
+				'pagos_servicios.moneda',
+				'pagos_servicios.nro_factura',
+				'pagos_servicios.observacion',
+				'cp.nombre as tconcepto',
+				DB::raw("DATE_FORMAT(pagos_servicios.fecha_pago,'%d/%m/%y') AS fecha")
 			)
+			->join('concepto_pago as cp', 'cp.id', '=', 'pagos_servicios.concepto_pago_id')
+			->with(['concepto_pago' => function ($query) {
+				$query->select(DB::raw("id,nombre"))->orderBy('nombre', 'DESC');
+			}])
 			->when(Request::input('inicio'), function ($query) {
-				$query->whereDate('pa.fecha_pago', '>=', Request::input('inicio'));
+				$query->whereDate('pagos_servicios.fecha_pago', '>=', Request::input('inicio'));
 			})
 			->when(Request::input('fin'), function ($query) {
-				$query->whereDate('pa.fecha_pago', '<=', Request::input('fin'));
+				$query->whereDate('pagos_servicios.fecha_pago', '<=', Request::input('fin'));
 			})
-			->orderByRaw('pa.fecha_pago desc')
-			->get();
+			->when(Request::input('concepto'), function ($query) {
+				$query->whereHas('concepto_pago', function ($query) {
+					$query->whereIn('id', Request::input('concepto'));
+				});
+			})->get();
+
 		return Excel::download(new PagosServiciosExport($datos), 'PagosServicios.xlsx');
 	}
 }

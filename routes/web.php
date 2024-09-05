@@ -94,6 +94,7 @@ Route::controller(ClienteController::class)->group(function () {
 //Producto
 Route::controller(ProductoController::class)->group(function () {
 	Route::get('/productos/export', 'exportExcel')->name('productos.exportar')->middleware('auth');
+	Route::post('/productos/storemasivo', 'storeMasivo')->name('productos.storemasivo')->middleware('auth');
 	Route::get('/productos/{id}/exportproductoventas', 'exportProductoVentas')->name('productos.exportproductoventas')->middleware('auth');
 	Route::get('/productos/actualizarfuturo', 'actualizarFuturo')->name('productos.actualizarfuturo')->middleware('auth');
 	Route::get('/productos/actualizarYuanes', 'actualizarYuanes')->name('productos.actualizarYuanes')->middleware('auth');
