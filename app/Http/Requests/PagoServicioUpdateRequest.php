@@ -21,6 +21,7 @@ class PagoServicioUpdateRequest extends FormRequest
 			'moneda' => 'required',
 			'concepto_pago_id' => 'required',
 			'monto' => 'numeric|required',
+			'observacion' => 'nullable',
 
 		];
 	}
