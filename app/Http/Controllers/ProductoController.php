@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Exports\ProductosExport;
 use App\Exports\ProductoVentaExport;
 use App\Http\Requests\ProductoImportStockRequest;
+use App\Http\Requests\ProductoMasivoStoreRequest;
 use App\Http\Requests\ProductoStoreRequest;
 use App\Http\Requests\ProductoUpdateRequest;
+use App\Imports\ProductoMasivoImport;
 use App\Imports\ProductoStockImport;
 use App\Models\Categoria;
 use Illuminate\Validation\ValidationException;
@@ -535,5 +537,56 @@ class ProductoController extends Controller
             ]);
         }
         return 'Yuanes Actualizado';
+    }
+
+    public function storeMasivo(ProductoMasivoStoreRequest $request)
+    {
+
+        $file = $request->file('archivo');
+        $existe = [];
+		$existe_codigo = [];
+        $filas = Excel::toArray([], $file);
+        $filas_a = array_slice($filas[0], 1);
+        $n_fila = 1;
+		foreach ($filas_a as $col) {
+            if (!empty($col[0])) {
+                $prod = Producto::where('origen', '=', strtoupper($col[0]))
+				->where('codigo_barra', '=', $col[3])
+				->first();
+                $n_fila = $n_fila + 1;
+
+                if (!is_null($prod)) {
+                    array_push($existe, [
+                        'fila' => $n_fila,
+                        'sku' => $col[0],
+						'codigo_barra' => $col[3]
+                    ]);
+                }
+                }else{
+                throw ValidationException::withMessages([
+                    'error_sku' => "SKU no debe estar vacio.",
+                ]);
+            }
+        }
+		if (count($existe) > 0 ) {
+            throw ValidationException::withMessages([
+                'filas' => [$existe]
+			]);
+        } else {
+
+            DB::beginTransaction();
+            try {
+
+                //importando excel
+                Excel::import(new ProductoMasivoImport(), $file);
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollBack();
+                return [
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
     }
 }

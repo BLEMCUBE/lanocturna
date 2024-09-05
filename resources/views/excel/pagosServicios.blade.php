@@ -17,7 +17,7 @@
             <td style="text-align:right">{{ strval( $importacion->nro_factura)??'' }}</td>
             <td>{{ $importacion->moneda??'' }}</td>
             <td style="text-align:right">{{ $importacion->monto??'' }}</td>
-            <td>{{ $importacion->concepto??'' }}</td>
+            <td>{{ $importacion->tconcepto??'' }}</td>
             <td>{{ $importacion->observacion??'' }}</td>
         </tr>
     @endforeach

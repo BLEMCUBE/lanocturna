@@ -7,6 +7,7 @@ import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 import Multiselect from '@vueform/multiselect';
 import Pagination from '@/Components/Pagination.vue';
+import CrearMasivoModal from '@/Pages/Producto/CrearMasivoModal.vue';
 const props = defineProps({
     productos: {
         type: Object,
@@ -141,7 +142,6 @@ const clickDetalle = (id) => {
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
 
-
         <div class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12">
 
             <!--Contenido-->
@@ -151,20 +151,18 @@ const clickDetalle = (id) => {
             </div>
 
             <div class="px-3 pb-2 col-span-full flex justify-end items-center">
-                <span
+				<CrearMasivoModal></CrearMasivoModal>
+                <div
                     v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                    class=" w-8 h-8 rounded bg-green-600 flex justify-center mr-5 items-center text-base font-semibold text-white hover:bg-green-600">
+                    class=" w-8 h-8 rounded bg-green-600 flex justify-center mx-5 items-center text-base font-semibold text-white hover:bg-green-600">
                     <a :href="route(ruta + '.exportar',{categoria: categorias})" target="_blank" class="py-auto"><i
                             class="fas fa-file-excel text-white"></i>
                     </a>
-
-                </span>
-                <Button size="small" :label="'Agregar Producto'" severity="success" @click="BtnCrear"></Button>
-
+                </div>
+                <Button size="small" :label="'Crear Producto'" severity="success" @click="BtnCrear"></Button>
             </div>
 
-
-            <!--tabla-->
+			<!--tabla-->
             <div class="align-middle py-4">
 
                 <div class="grid grid-cols-12 gap-4  m-3">
