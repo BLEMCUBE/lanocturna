@@ -2258,7 +2258,7 @@
     "src": "resources/js/Pages/PagosImportacion/Index.vue"
   },
   "resources/js/Pages/PagosServicio/Index.vue": {
-    "file": "assets/Index-96f0d51c.js",
+    "file": "assets/Index-0f79c8f9.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-50b5d09a.js",
@@ -2268,6 +2268,7 @@
       "_moment-fbc5633a.js",
       "resources/js/Pages/PagosServicio/Partials/CrearModal.vue",
       "resources/js/Pages/PagosServicio/Partials/EditarModal.vue",
+      "_@vueform-21ff8afc.js",
       "_sweetalert2-c47eda61.js",
       "_date-fns-7c3f4903.js",
       "_logo-e22dfca4.js",
@@ -2422,6 +2423,33 @@
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Producto/CIndex.vue"
   },
+  "resources/js/Pages/Producto/CrearMasivoModal.vue": {
+    "file": "assets/CrearMasivoModal-d81651ec.js",
+    "imports": [
+      "_@vue-1043e4d5.js",
+      "_InputError-933cc936.js",
+      "_InputLabel-bc304214.js",
+      "_@inertiajs-ab1bf9dd.js",
+      "_primevue-232ee6f7.js",
+      "_axios-4a70c6fc.js",
+      "_deepmerge-34bd70bf.js",
+      "_apexcharts-f697a6eb.js",
+      "_qs-ba0d1d34.js",
+      "_side-channel-009c6bc3.js",
+      "_get-intrinsic-bd2830fd.js",
+      "_has-symbols-e8f3ca0e.js",
+      "_has-proto-f7d0b240.js",
+      "_function-bind-22e7ee79.js",
+      "_has-26d28e02.js",
+      "_call-bind-e5c1c8b0.js",
+      "_object-inspect-0f5d75dd.js",
+      "_nprogress-a144f12f.js",
+      "_lodash.clonedeep-6a476b09.js",
+      "_lodash.isequal-cbdfea98.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/Pages/Producto/CrearMasivoModal.vue"
+  },
   "resources/js/Pages/Producto/Create.css": {
     "file": "assets/Create-e05d9de7.css",
     "src": "resources/js/Pages/Producto/Create.css"
@@ -2551,7 +2579,7 @@
     "src": "resources/js/Pages/Producto/Importar.vue"
   },
   "resources/js/Pages/Producto/Index.vue": {
-    "file": "assets/Index-ea11efb9.js",
+    "file": "assets/Index-056d0327.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-50b5d09a.js",
@@ -2560,6 +2588,7 @@
       "_primevue-232ee6f7.js",
       "_@vueform-21ff8afc.js",
       "_Pagination-e120bd15.js",
+      "resources/js/Pages/Producto/CrearMasivoModal.vue",
       "_logo-e22dfca4.js",
       "_pinia-ff353768.js",
       "_@vueuse-54bafaaf.js",
@@ -2579,7 +2608,9 @@
       "_object-inspect-0f5d75dd.js",
       "_nprogress-a144f12f.js",
       "_lodash.clonedeep-6a476b09.js",
-      "_lodash.isequal-cbdfea98.js"
+      "_lodash.isequal-cbdfea98.js",
+      "_InputError-933cc936.js",
+      "_InputLabel-bc304214.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Producto/Index.vue"
@@ -4061,6 +4092,7 @@
       "resources/js/Pages/PagosServicio/Partials/EditarModal.vue",
       "resources/js/Pages/Producto/AjustarStock.vue",
       "resources/js/Pages/Producto/CIndex.vue",
+      "resources/js/Pages/Producto/CrearMasivoModal.vue",
       "resources/js/Pages/Producto/Create.vue",
       "resources/js/Pages/Producto/Edit.vue",
       "resources/js/Pages/Producto/Importar.vue",
@@ -4107,7 +4139,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-ad3f1626.js",
+    "file": "assets/app-444c08af.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",
