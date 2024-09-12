@@ -257,6 +257,10 @@ const filters = ref({
 								bodyCell: { class: 'text-center' },
 								headerTitle: { class: 'text-center w-28' },
 							}"></Column>
+							<Column field="ult_precio_importacion" sortable header="Precio ultima importación" :pt="{
+								bodyCell: { class: 'text-center' },
+								headerTitle: { class: 'text-center w-28' },
+							}"></Column>
 
 						</DataTable>
 					</div>

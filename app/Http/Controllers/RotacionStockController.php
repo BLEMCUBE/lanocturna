@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categoria;
+use App\Models\ImportacionDetalle;
 use App\Models\Producto;
 use App\Models\VentaDetalle;
 use Exception;
@@ -84,6 +85,7 @@ class RotacionStockController extends Controller
 			$l_cat=$venta->categorias->map(function ($item, int $key) {
 				return $item->name;
 			});
+			$ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $venta->origen)->latest()->first();
 			array_push($ultimas_ventas, [
 				"origen" => $venta->origen,
 				"nombre" => $venta->nombre,
@@ -94,6 +96,7 @@ class RotacionStockController extends Controller
 				"stock" => $venta->stock,
 				"stock_futuro" => $venta->stock_futuro,
 				"rotacion_stock" => $rotacion_stock,
+				'ult_precio_importacion'=>!empty($ultimo_importacion)?$ultimo_importacion->precio:''
 			]);
 		}
 
@@ -147,13 +150,14 @@ class RotacionStockController extends Controller
 		$sheet->setCellValue('F' . (string)$f, "VENTAS TOTALES");
 		$sheet->setCellValue('G' . (string)$f, "STOCK");
 		$sheet->setCellValue('H' . (string)$f, "STOCK FUTURO");
-		$sheet->setCellValue('I' . (string)$f, "ROTACION DEL STOCK ");
+		$sheet->setCellValue('I' . (string)$f, "ROTACION DEL STOCK");
+		$sheet->setCellValue('J' . (string)$f, "PRECIO ULTIMA IMPORTACION");
 
 
-		$sheet->getStyle('A' . (string)3 . ':' . 'I' . (string)3)->getFont()->setBold(true);
+		$sheet->getStyle('A' . (string)3 . ':' . 'J' . (string)3)->getFont()->setBold(true);
 		//$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->applyFromArray($styleArray);
-		$sheet->getStyle('A' . (string)3 . ':' . 'I' . (string)3)->getAlignment()->setHorizontal('center');
-		$sheet->getStyle('A' . (string)3 . ':' . 'I' . (string)3)->getAlignment()->setVertical('center');
+		$sheet->getStyle('A' . (string)3 . ':' . 'J' . (string)3)->getAlignment()->setHorizontal('center');
+		$sheet->getStyle('A' . (string)3 . ':' . 'J' . (string)3)->getAlignment()->setVertical('center');
 		/*$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFB8CCE4');*/
@@ -217,6 +221,7 @@ class RotacionStockController extends Controller
 		$l_cat=$venta->categorias->map(function ($item, int $key) {
 			return $item->name;
 		});
+		$ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $venta->origen)->latest()->first();
 		array_push($ultimas_ventas, [
 			"origen" => $venta->origen,
 			"nombre" => $venta->nombre,
@@ -227,13 +232,9 @@ class RotacionStockController extends Controller
 			"stock" => $venta->stock,
 			"stock_futuro" => $venta->stock_futuro,
 			"rotacion_stock" => $rotacion_stock,
+			'ult_precio_importacion'=>!empty($ultimo_importacion)?$ultimo_importacion->precio:''
 		]);
 	}
-
-
-		/*$sorted = array_values(Arr::sort($ultimas_ventas, function (array $value) {
-            return $value['rotacion_stock'];
-        }));*/
 
 		$sorted = array_values(Arr::sort($ultimas_ventas, function (array $value) {
 			return $value['rotacion_stock'];
@@ -251,6 +252,7 @@ class RotacionStockController extends Controller
 			$sheet->setCellValue('G' . $f, $vent['stock']);
 			$sheet->setCellValue('H' . $f, $vent['stock_futuro']);
 			$sheet->setCellValue('I' . $f, $vent['rotacion_stock']);
+			$sheet->setCellValue('J' . $f, $vent['ult_precio_importacion']);
 		}
 
 		//$sheet->getStyle('A4:H4' . $sheet->getHighestRow())->getAlignment()->setVertical('center');
