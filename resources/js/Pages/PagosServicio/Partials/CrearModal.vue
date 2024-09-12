@@ -161,7 +161,7 @@ onMounted(() => {
 					<div class="col-span-12">
 						<InputLabel for="monto" value="Monto"
 							class="block text-base font-medium leading-6 text-gray-900" />
-						<input type="number" v-model="form.monto" step="0.1" class="p-inputtext p-component text-gray-700 bg-white
+						<input type="number" v-model="form.monto" step="0.01" class="p-inputtext p-component text-gray-700 bg-white
                             border appearance-none rounded text-basw h-9 m-0 w-full text-end" />
 						<InputError class="mt-1 text-xs" :message="form.errors.monto" />
 					</div>
