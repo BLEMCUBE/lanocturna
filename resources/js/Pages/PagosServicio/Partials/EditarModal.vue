@@ -12,8 +12,10 @@ import Button from 'primevue/button'
 
 //Variables
 const selectedConcepto = ref();
+const selectedMetodo = ref();
 const toast = useToast();
 const lista_conceptos = ref();
+const lista_metodos = ref();
 const titulo = "Pago"
 const ruta = "pago-servicio"
 const isShowModal = ref(false);
@@ -30,6 +32,7 @@ const form = useForm({
 	nro_factura: '',
 	monto: '',
 	concepto_pago_id: '',
+	metodo_pago_id: '',
 	observacion: ''
 })
 const setMoneda = (e) => {
@@ -52,14 +55,22 @@ const getConceptos = () => {
 			lista_conceptos.value = res.data.conceptos
 		})
 };
+const getMetodos = () => {
+	axios.get(route(ruta + '.metodos'))
+		.then(res => {
+			lista_metodos.value = res.data.metodos
+		})
+};
 const setConcepto = (e) => {
 	form.concepto_pago_id = selectedConcepto.value.code;
 }
-//Funciones
+const setPago = (e) => {
+	form.metodo_pago_id = selectedMetodo.value.code;
+}
 
+//Funciones
 const addCliente = () => {
 	dataEdit(props.itemId);
-
 };
 
 const dataEdit = (id) => {
@@ -73,14 +84,17 @@ const dataEdit = (id) => {
 			form.nro_factura = datos.nro_factura
 			form.monto = datos.monto
 			form.concepto_pago_id = datos.concepto_pago_id
+			form.metodo_pago_id = datos.metodo_pago_id
 			form.observacion = datos.observacion
 			selectedMoneda.value= monedas.value.find(pr => pr.code === datos.moneda);
 			selectedConcepto.value= lista_conceptos.value.find(pr => pr.code === datos.concepto_pago_id);
+			selectedMetodo.value= lista_metodos.value.find(pr => pr.code === datos.metodo_pago_id);
 		})
 };
 
 onMounted(() => {
 	getConceptos();
+	getMetodos();
 })
 
 
@@ -160,6 +174,22 @@ const show = (tipo, titulo, mensaje) => {
 							}" placeholder="Seleccione Moneda" />
 						<InputError class="mt-1 text-xs" :message="form.errors.moneda" />
 					</div>
+
+					<div class="col-span-12">
+						<InputLabel for="metodo" value="Método de pago"
+							class="text-base font-medium leading-1 text-gray-900" />
+
+						<Dropdown v-model="selectedMetodo" @change="setPago" :options="lista_metodos" optionLabel="name"
+							:pt="{
+								root: { class: 'w-full' },
+								trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
+								item: ({ props, state, context }) => ({
+									class: context.selected ? 'text-white bg-primary-900' : context.focused ? 'bg-blue-100' : undefined
+								})
+							}" placeholder="Seleccione Método" />
+						<InputError class="mt-1 text-xs" :message="form.errors.metodo_pago_id" />
+					</div>
+
 					<div class="col-span-12">
 						<InputLabel for="concepto" value="Concepto"
 							class="text-base font-medium leading-1 text-gray-900" />

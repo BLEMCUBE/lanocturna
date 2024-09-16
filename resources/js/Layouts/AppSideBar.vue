@@ -150,6 +150,17 @@ const showDropdown = ref(false)
                         </li>
                     </div>
 
+                    <div class="flex items-center">
+                        <li @click="setMenu('contabilidad')" class="w-full"
+                            v-show="permissions.includes('lista-conceptopago')">
+                            <NavLinkSideBarNotIcon
+                                class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+                                :href="route('metodo-pago.index')" :active="route().current('metodo-pago.index')">
+                                <span class="ml-2 uppercase">Métodos de Pago</span>
+                            </NavLinkSideBarNotIcon>
+                        </li>
+                    </div>
+
 					<div class="flex items-center">
                         <li @click="setMenu('contabilidad')" class="w-full"
                             v-show="permissions.includes('lista-pagoservicio')">

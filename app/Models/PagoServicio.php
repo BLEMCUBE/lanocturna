@@ -15,6 +15,7 @@ class PagoServicio extends Model
         'fecha_pago',
         'moneda',
         'concepto_pago_id',
+        'metodo_pago_id',
         'nro_factura',
         'monto',
         'observacion',
@@ -28,6 +29,10 @@ class PagoServicio extends Model
         return $this->belongsTo(ConceptoPago::class,'concepto_pago_id','id');
     }
 
+	public function metodo_pago()
+    {
+        return $this->belongsTo(MetodoPago::class,'metodo_pago_id','id');
+    }
     public function usuario()
     {
         return $this->belongsTo(User::class,'user_id','id');
