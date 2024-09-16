@@ -20,6 +20,7 @@ class PagoServicioUpdateRequest extends FormRequest
 			'nro_factura' => ['required',Rule::unique('pagos_servicios')->ignore($id)],
 			'moneda' => 'required',
 			'concepto_pago_id' => 'required',
+			'metodo_pago_id' => 'required',
 			'monto' => 'numeric|required',
 			'observacion' => 'nullable',
 
@@ -31,6 +32,7 @@ class PagoServicioUpdateRequest extends FormRequest
 		return [
 			'fecha_pago.required' => 'Este campo es obligatorio.',
 			'concepto_pago_id.required' => 'Este campo es obligatorio.',
+			'metodo_pago_id.required' => 'Este campo es obligatorio.',
 			'nro_factura.required' => 'Este campo es obligatorio.',
 			'monto.required' => 'Este campo es obligatorio.',
 			'nro_factura.unique' => 'El numero de factura ya existe',

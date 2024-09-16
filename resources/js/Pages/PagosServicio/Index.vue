@@ -274,18 +274,18 @@ onMounted(() => {
 						headerTitle: { class: 'text-center' },
 					}">
 					</Column>
-					<!--
-						<Column sortable header="Agregado por" :pt="{
+
+						<Column sortable header="Método Pago" :pt="{
 							bodyCell: { class: 'text-center' },
 							headerTitle: { class: 'text-center' },
 						}">
 						<template #body="slotProps">
 							<span>
-								{{ slotProps.data.usuario }}
+								{{ slotProps.data.tmetodo }}
 							</span>
 						</template>
 					</Column>
-					-->
+
 					<Column field="observacion" header="Observación" :pt="{
 						bodyCell: { class: 'text-center' },
 						headerTitle: { class: 'text-center' },

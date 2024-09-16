@@ -13,6 +13,7 @@ use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
+use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\PagoImportacionController;
 use App\Http\Controllers\PagoServicioController;
@@ -331,11 +332,22 @@ Route::controller(PagoServicioController::class)->prefix('pago-servicio')->name(
 		Route::post('/update/{id}', 'update')->name('update');
 		Route::get('/', 'index')->name('index');
 		Route::get('/conceptos', 'conceptos')->name('conceptos');
+		Route::get('/metodos', 'metodos')->name('metodos');
 		Route::get('/export', 'exportExcel')->name('exportar');
 		Route::get('/{id}', 'show')->name('show');
 		Route::post('/store', 'store')->name('store');
 		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
 
+//MetodoPago
+
+Route::controller(MetodoPagoController::class)->prefix('metodo-pago')->name('metodo-pago.')
+	->middleware('auth')->group(function () {
+		Route::post('/update/{id}', 'update')->name('update');
+		Route::get('/', 'index')->name('index');
+		Route::get('/{id}', 'show')->name('show');
+		Route::post('/store', 'store')->name('store');
+		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 
 require __DIR__ . '/auth.php';
