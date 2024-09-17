@@ -6,6 +6,7 @@
         <th style="background-color: #d9d9d9;text-align:center">moneda</th>
         <th style="background-color: #d9d9d9;text-align:center">monto</th>
 		<th style="background-color: #d9d9d9;text-align:center">concepto</th>
+		<th style="background-color: #d9d9d9;text-align:center">metodo_pago</th>
 		<th style="background-color: #d9d9d9;text-align:center">observacion</th>
     </tr>
     </thead>
@@ -18,6 +19,7 @@
             <td>{{ $importacion->moneda??'' }}</td>
             <td style="text-align:right">{{ $importacion->monto??'' }}</td>
             <td>{{ $importacion->tconcepto??'' }}</td>
+            <td>{{ !is_null($importacion->metodo_pago)?$importacion->metodo_pago->nombre:'' }}</td>
             <td>{{ $importacion->observacion??'' }}</td>
         </tr>
     @endforeach

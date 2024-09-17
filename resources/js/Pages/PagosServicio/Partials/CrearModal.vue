@@ -16,12 +16,14 @@ const isShowModal = ref(false);
 const titulo = "Pago"
 const ruta = "pago-servicio"
 const lista_conceptos = ref();
+const lista_metodos = ref();
 const selectedMoneda = ref({ name: 'Pesos', code: 'Pesos' });
 const monedas = ref([
 	{ name: 'Pesos', code: 'Pesos' },
 	{ name: 'Dólares', code: 'Dólares' },
 ]);
 const selectedConcepto = ref();
+const selectedMetodo = ref();
 
 //funciones
 const addCliente = () => {
@@ -32,6 +34,12 @@ const getConceptos = () => {
 	axios.get(route(ruta + '.conceptos'))
 		.then(res => {
 			lista_conceptos.value = res.data.conceptos
+		})
+};
+const getMetodos = () => {
+	axios.get(route(ruta + '.metodos'))
+		.then(res => {
+			lista_metodos.value = res.data.metodos
 		})
 };
 
@@ -47,6 +55,7 @@ const form = useForm({
 	nro_factura: '',
 	monto: '',
 	concepto_pago_id: '',
+	metodo_pago_id: '',
 	observacion: ''
 })
 
@@ -58,6 +67,9 @@ const setMoneda = (e) => {
 
 const setConcepto = (e) => {
 	form.concepto_pago_id = selectedConcepto.value.code;
+}
+const setPago = (e) => {
+	form.metodo_pago_id = selectedMetodo.value.code;
 }
 
 //envio de formulario
@@ -93,6 +105,7 @@ const show = (tipo, titulo, mensaje) => {
 onMounted(() => {
 	form.moneda = "Pesos"
 	getConceptos();
+	getMetodos();
 })
 
 </script>
@@ -102,8 +115,8 @@ onMounted(() => {
 
 		<Button size="small" @click="addCliente" type="button" :label="'Agregar ' + titulo" severity="success"></Button>
 
-		<Dialog v-model:visible="isShowModal" modal :header="'Crear ' + titulo" @hide="closeModal" :style="{ width: '30vw' }"
-			:breakpoints="{ '1199px': '40vw', '575px': '50vw' }" position="top" :pt="{
+		<Dialog v-model:visible="isShowModal" modal :header="'Crear ' + titulo" @hide="closeModal"
+			:style="{ width: '30vw' }" :breakpoints="{ '1199px': '40vw', '575px': '50vw' }" position="top" :pt="{
 				header: {
 					class: 'mt-5 p-2 '
 				},
@@ -135,6 +148,22 @@ onMounted(() => {
 							}" placeholder="Seleccione Moneda" />
 						<InputError class="mt-1 text-xs" :message="form.errors.moneda" />
 					</div>
+
+					<div class="col-span-12">
+						<InputLabel for="metodo" value="Método de pago"
+							class="text-base font-medium leading-1 text-gray-900" />
+
+						<Dropdown v-model="selectedMetodo" @change="setPago" :options="lista_metodos" optionLabel="name"
+							:pt="{
+								root: { class: 'w-full' },
+								trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
+								item: ({ props, state, context }) => ({
+									class: context.selected ? 'text-white bg-primary-900' : context.focused ? 'bg-blue-100' : undefined
+								})
+							}" placeholder="Seleccione Método" />
+						<InputError class="mt-1 text-xs" :message="form.errors.metodo_pago_id" />
+					</div>
+
 					<div class="col-span-12">
 						<InputLabel for="concepto" value="Concepto"
 							class="text-base font-medium leading-1 text-gray-900" />

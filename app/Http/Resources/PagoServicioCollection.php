@@ -26,6 +26,7 @@ class PagoServicioCollection extends ResourceCollection
 					'monto' => $row->monto,
 					'observacion' => $row->observacion ?? '',
 					"tconcepto"=>$row->tconcepto,
+					"tmetodo"=>!is_null($row->metodo_pago)?$row->metodo_pago->nombre:'',
 					"usuario"=>$row->usuario->name??'',
 					'created_at' => !is_null($row->created_at) ? $row->created_at->format('d/m/Y H:i:s') : '',
 				];

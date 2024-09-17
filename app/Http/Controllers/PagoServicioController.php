@@ -7,6 +7,7 @@ use App\Http\Requests\PagoServicioStoreRequest;
 use App\Http\Requests\PagoServicioUpdateRequest;
 use App\Http\Resources\PagoServicioCollection;
 use App\Models\ConceptoPago;
+use App\Models\MetodoPago;
 use App\Models\PagoServicio;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
@@ -47,11 +48,16 @@ class PagoServicioController extends Controller
 						'pagos_servicios.moneda',
 						'pagos_servicios.nro_factura',
 						'pagos_servicios.observacion',
+						'pagos_servicios.metodo_pago_id',
 						'cp.nombre as tconcepto',
+						//'mp.nombre as tmetodo',
 						DB::raw("DATE_FORMAT(pagos_servicios.fecha_pago,'%d/%m/%y') AS fecha")
 					)
 					->join('concepto_pago as cp', 'cp.id', '=', 'pagos_servicios.concepto_pago_id')
 					->with(['concepto_pago' => function ($query) {
+						$query->select(DB::raw("id,nombre"))->orderBy('nombre', 'ASC');
+					}])
+					->with(['metodo_pago' => function ($query) {
 						$query->select(DB::raw("id,nombre"))->orderBy('nombre', 'ASC');
 					}])
 					->when(Request::input('inicio'), function ($query) {
@@ -64,7 +70,7 @@ class PagoServicioController extends Controller
 						$query->whereHas('concepto_pago', function ($query) {
 							$query->whereIn('id', Request::input('concepto'));
 						});
-					})->get()
+					})->orderBy('id', 'DESC')->get()
 			)
 		]);
 	}
@@ -79,6 +85,7 @@ class PagoServicioController extends Controller
 				'fecha_pago' => $request->fecha_pago ?? '',
 				'moneda' => $request->moneda ?? '',
 				'concepto_pago_id' => $request->concepto_pago_id ?? '',
+				'metodo_pago_id' => $request->metodo_pago_id ?? '',
 				'nro_factura' => $request->nro_factura ?? '',
 				'monto' => $request->monto ?? '',
 				'observacion' => $request->observacion ?? '',
@@ -136,6 +143,22 @@ class PagoServicioController extends Controller
 		]);
 	}
 
+	public function metodos()
+	{
+		$items = MetodoPago::get();
+
+		$lista_metodos = [];
+		foreach ($items as $destino) {
+			array_push($lista_metodos, [
+				'code' => $destino->id,
+				'name' =>  $destino->nombre,
+			]);
+		}
+		return response()->json([
+			"metodos" => $lista_metodos
+		]);
+	}
+
 	public function exportExcel()
 	{
 		$datos = PagoServicio::query()
@@ -144,12 +167,16 @@ class PagoServicioController extends Controller
 				'pagos_servicios.moneda',
 				'pagos_servicios.nro_factura',
 				'pagos_servicios.observacion',
+				'pagos_servicios.metodo_pago_id',
 				'cp.nombre as tconcepto',
 				DB::raw("DATE_FORMAT(pagos_servicios.fecha_pago,'%d/%m/%y') AS fecha")
 			)
 			->join('concepto_pago as cp', 'cp.id', '=', 'pagos_servicios.concepto_pago_id')
 			->with(['concepto_pago' => function ($query) {
 				$query->select(DB::raw("id,nombre"))->orderBy('nombre', 'DESC');
+			}])
+			->with(['metodo_pago' => function ($query) {
+				$query->select(DB::raw("id,nombre"))->orderBy('nombre', 'ASC');
 			}])
 			->when(Request::input('inicio'), function ($query) {
 				$query->whereDate('pagos_servicios.fecha_pago', '>=', Request::input('inicio'));
@@ -161,7 +188,7 @@ class PagoServicioController extends Controller
 				$query->whereHas('concepto_pago', function ($query) {
 					$query->whereIn('id', Request::input('concepto'));
 				});
-			})->get();
+			})->orderBy('pagos_servicios.id', 'DESC')->get();
 
 		return Excel::download(new PagosServiciosExport($datos), 'PagosServicios.xlsx');
 	}
