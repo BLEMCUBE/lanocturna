@@ -116,7 +116,9 @@ class HandleInertiaRequests extends Middleware
         //    dd('f');
 
 
-        return array_merge(parent::share($request), [
+        //return array_merge(parent::share($request), [
+			return [
+				...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
                 'roles' => $request->user() ? $request->user()->roles->pluck('name') : [],
@@ -144,6 +146,7 @@ class HandleInertiaRequests extends Middleware
                 //'nombre'=>$configuracion->nombre_app,
             ],
             'base_url' => url('/') . '/'
-        ]);
+        //]);
+        ];
     }
 }
