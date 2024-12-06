@@ -152,17 +152,14 @@ class RotacionStockController extends Controller
 		$sheet->setCellValue('H' . (string)$f, "STOCK FUTURO");
 		$sheet->setCellValue('I' . (string)$f, "ROTACION DEL STOCK");
 		$sheet->setCellValue('J' . (string)$f, "PRECIO ULTIMA IMPORTACION");
+		$foto = Request::input('foto');
+		if ($foto == "1") {
+			$sheet->setCellValue('K' . (string)$f, "IMAGEN");
+		}
 
-
-		$sheet->getStyle('A' . (string)3 . ':' . 'J' . (string)3)->getFont()->setBold(true);
-		//$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->applyFromArray($styleArray);
-		$sheet->getStyle('A' . (string)3 . ':' . 'J' . (string)3)->getAlignment()->setHorizontal('center');
-		$sheet->getStyle('A' . (string)3 . ':' . 'J' . (string)3)->getAlignment()->setVertical('center');
-		/*$sheet->getStyle('A' . (string)3 . ':' . 'H' . (string)3)->getFill()
-            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            ->getStartColor()->setARGB('FFB8CCE4');*/
-
-
+		$sheet->getStyle('A' . (string)3 . ':' . 'K' . (string)3)->getFont()->setBold(true);
+		$sheet->getStyle('A' . (string)3 . ':' . 'K' . (string)3)->getAlignment()->setHorizontal('center');
+		$sheet->getStyle('A' . (string)3 . ':' . 'K' . (string)3)->getAlignment()->setVertical('center');
 		//datos
 
 		$consulta_ventas = Producto::query()
@@ -170,6 +167,7 @@ class RotacionStockController extends Controller
 			'productos.nombre',
 			'productos.origen',
 			'productos.stock',
+			'productos.imagen',
 			'productos.stock_futuro',
 			'productos.id',
 			'det.producto_validado',
@@ -231,6 +229,7 @@ class RotacionStockController extends Controller
 			"ventas_totales" => $venta->ventas_totales,
 			"stock" => $venta->stock,
 			"stock_futuro" => $venta->stock_futuro,
+			"imagen" => $venta->imagen,
 			"rotacion_stock" => $rotacion_stock,
 			'ult_precio_importacion'=>!empty($ultimo_importacion)?$ultimo_importacion->precio:''
 		]);
@@ -253,6 +252,31 @@ class RotacionStockController extends Controller
 			$sheet->setCellValue('H' . $f, $vent['stock_futuro']);
 			$sheet->setCellValue('I' . $f, $vent['rotacion_stock']);
 			$sheet->setCellValue('J' . $f, $vent['ult_precio_importacion']);
+
+			if ($foto == "1") {
+				$drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+				$url_save = public_path() . $vent['imagen'];
+				if (file_exists($url_save)) {
+					$drawing->setPath($url_save);
+					$drawing->setName($vent['nombre']);
+					$drawing->setDescription($vent['nombre']);
+					$drawing->setCoordinates('K' . $f);
+					$drawing->setOffsetX(18);
+					$drawing->setOffsetY(7);
+					$drawing->setHeight(36);
+					$drawing->setWorksheet($spreadsheet->getActiveSheet());
+				} else {
+					$drawing->setPath(public_path() . '/images/productos/sin_foto.png');
+					$drawing->setName($vent['nombre']);
+					$drawing->setDescription($vent['nombre']);
+					$drawing->setCoordinates('K' . $f);
+					$drawing->setHeight(36);
+					$drawing->setOffsetX(18);
+					$drawing->setOffsetY(7);
+					$drawing->setWorksheet($spreadsheet->getActiveSheet());
+				}
+			}
+			$sheet->getStyle('A' . (string)$f . ':' . 'K' . (string)$f)->getAlignment()->setVertical('center');
 		}
 
 		//$sheet->getStyle('A4:H4' . $sheet->getHighestRow())->getAlignment()->setVertical('center');
@@ -263,7 +287,7 @@ class RotacionStockController extends Controller
 		}
 		//alto de celdas
 		foreach ($sheet->getRowIterator() as $row) {
-			$sheet->getRowDimension($row->getRowIndex())->setRowHeight(20);
+			$sheet->getRowDimension($row->getRowIndex())->setRowHeight(36);
 		}
 		//guardando excel
 		$writer = new Xlsx($spreadsheet);

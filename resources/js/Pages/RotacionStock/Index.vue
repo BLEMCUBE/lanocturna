@@ -9,7 +9,7 @@ import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import Multiselect from '@vueform/multiselect';
-
+const fotos = ref(false)
 const { roles } = usePage().props.auth
 const titulo = "Rotación de Stock"
 const ruta = 'rotacion-stock'
@@ -83,6 +83,7 @@ const descargaExcelProductoVentas = () => {
 		window.open(route('rotacion-stock.exportproductoventas', [
 			{
 				'categoria': categorias.value,
+				'foto':fotos.value,
 				'inicio': date.value[0],
 				'fin': date.value[1]
 			}]), '_blank');
@@ -177,6 +178,12 @@ const filters = ref({
 							}"><i class="fas fa-file-excel text-white text-lg"></i>
 							</Button>
 						</div>
+						<input type="checkbox"
+							class="ml-5 rounded-md border-gray-300 text-xl text-primary-900 bg-primary-900 hover:bg-primary-100 shadow-sm w-5 h-5 cursor-pointer"
+							v-model="fotos" />
+						<label class="mx-2 font-normal text-md text-gray-800 dark:text-white"> Exportar imagenes en
+							excel
+						</label>
 					</div>
 
 					<!--tabla-->
@@ -204,8 +211,8 @@ const filters = ref({
 										<date-picker @change="filtradoVenta" type="date" range value-type="YYYY-MM-DD"
 											format="DD/MM/YYYY"
 											class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
-											v-model:value="date" :shortcuts="shortcuts" lang="es" :clearable = "false" :editable="false"
-											placeholder="Seleccione Fecha"></date-picker>
+											v-model:value="date" :shortcuts="shortcuts" lang="es" :clearable="false"
+											:editable="false" placeholder="Seleccione Fecha"></date-picker>
 									</div>
 								</div>
 
