@@ -422,7 +422,7 @@ class ProductoController extends Controller
 					$drawing->setWorksheet($spreadsheet->getActiveSheet());
 				}
 			}
-			$sheet->getStyle('B' . (string)$f . ':' . 'K' . (string)$f)->getAlignment()->setVertical('center');
+			$sheet->getStyle('A' . (string)$f . ':' . 'K' . (string)$f)->getAlignment()->setVertical('center');
 		}
 		$spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(0);
 		foreach ($sheet->getColumnIterator() as $column) {
