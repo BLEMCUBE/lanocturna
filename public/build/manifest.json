@@ -60,8 +60,8 @@
       "_@heroicons-7e6153ac.js"
     ]
   },
-  "_CheckboxName-fce2b2c9.js": {
-    "file": "assets/CheckboxName-fce2b2c9.js",
+  "_CheckboxName-111f9886.js": {
+    "file": "assets/CheckboxName-111f9886.js",
     "imports": [
       "_@vue-1043e4d5.js"
     ]
@@ -1918,13 +1918,13 @@
     "css": [
       "assets/Create-7e554c67.css"
     ],
-    "file": "assets/Create-201c7dd6.js",
+    "file": "assets/Create-6bdb4674.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-30bee2ca.js",
       "_@inertiajs-ab1bf9dd.js",
       "_primevue-232ee6f7.js",
-      "_CheckboxName-fce2b2c9.js",
+      "_CheckboxName-111f9886.js",
       "_InputError-933cc936.js",
       "_InputLabel-bc304214.js",
       "_@vueform-21ff8afc.js",
@@ -2669,7 +2669,7 @@
     "src": "resources/js/Pages/Producto/Importar.vue"
   },
   "resources/js/Pages/Producto/Index.vue": {
-    "file": "assets/Index-5514dc41.js",
+    "file": "assets/Index-271e18cc.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-30bee2ca.js",
@@ -3472,11 +3472,11 @@
     "src": "resources/js/Pages/Rma/ValidacionShow.vue"
   },
   "resources/js/Pages/Role/Edit.vue": {
-    "file": "assets/Edit-7c5612f8.js",
+    "file": "assets/Edit-78199048.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-30bee2ca.js",
-      "_CheckboxName-fce2b2c9.js",
+      "_CheckboxName-111f9886.js",
       "_PrimaryButton-99c4ce1f.js",
       "_@inertiajs-ab1bf9dd.js",
       "_primevue-232ee6f7.js",
@@ -3538,8 +3538,9 @@
     "src": "resources/js/Pages/Role/Index.vue"
   },
   "resources/js/Pages/RotacionStock/Index.vue": {
-    "file": "assets/Index-51c2d9e6.js",
+    "file": "assets/Index-8325e2e0.js",
     "imports": [
+      "_@vue-1043e4d5.js",
       "_AppLayout-30bee2ca.js",
       "_@inertiajs-ab1bf9dd.js",
       "_vue-datepicker-next-31061510.js",
@@ -3547,7 +3548,6 @@
       "_moment-fbc5633a.js",
       "_@vueform-21ff8afc.js",
       "_date-fns-7c3f4903.js",
-      "_@vue-1043e4d5.js",
       "_logo-e22dfca4.js",
       "_pinia-ff353768.js",
       "_@vueuse-54bafaaf.js",
@@ -4232,7 +4232,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-eccece36.js",
+    "file": "assets/app-84ea8160.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",
