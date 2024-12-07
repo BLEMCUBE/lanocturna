@@ -363,21 +363,21 @@ class ProductoController extends Controller
 		$spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
 		$f = 1;
-
-		$sheet->setCellValue('A' . (string)$f, "origen");
-		$sheet->setCellValue('B' . (string)$f, "nombre");
-		$sheet->setCellValue('C' . (string)$f, "categoria");
-		$sheet->setCellValue('D' . (string)$f, "aduana");
-		$sheet->setCellValue('E' . (string)$f, "codigo_barra");
-		$sheet->setCellValue('F' . (string)$f, "stock");
-		$sheet->setCellValue('G' . (string)$f, "stock_minimo");
-		$sheet->setCellValue('H' . (string)$f, "stock_futuro");
-		$sheet->setCellValue('I' . (string)$f, "arribado");
-		$sheet->setCellValue('J' . (string)$f, "en_camino");
 		$foto = Request::input('foto');
 		if ($foto == "1") {
-			$sheet->setCellValue('K' . (string)$f, "imagen");
+			$sheet->setCellValue('A' . (string)$f, "imagen");
 		}
+		$sheet->setCellValue('B' . (string)$f, "origen");
+		$sheet->setCellValue('C' . (string)$f, "nombre");
+		$sheet->setCellValue('D' . (string)$f, "categoria");
+		$sheet->setCellValue('E' . (string)$f, "aduana");
+		$sheet->setCellValue('F' . (string)$f, "codigo_barra");
+		$sheet->setCellValue('G' . (string)$f, "stock");
+		$sheet->setCellValue('H' . (string)$f, "stock_minimo");
+		$sheet->setCellValue('I' . (string)$f, "stock_futuro");
+		$sheet->setCellValue('J' . (string)$f, "arribado");
+		$sheet->setCellValue('K' . (string)$f, "en_camino");
+
 
 		$sheet->getStyle('A' . (string)1 . ':' . 'K' . (string)1)->getFont()->setBold(true);
 		$sheet->getStyle('A' . (string)1 . ':' . 'K' . (string)1)->getAlignment()->setHorizontal('center');
@@ -386,19 +386,6 @@ class ProductoController extends Controller
 		foreach ($productos as $key => $vent) {
 
 			$f++;
-			$sheet->setCellValueExplicit('A' . $f, $vent['origen'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-			$sheet->setCellValue('B' . $f, $vent['nombre']);
-			$l_cat=$vent->categorias->map(function ($item, int $key) {
-				return $item->name;
-			});
-			$sheet->setCellValue('C' . $f, !is_null($vent->categorias)?implode(", ",$l_cat->all()):'',);
-			$sheet->setCellValue('D' . $f, $vent['aduana']);
-			$sheet->setCellValue('E' . $f, $vent['codigo_barra']);
-			$sheet->setCellValue('F' . $f, $vent['stock']);
-			$sheet->setCellValue('G' . $f, $vent['stock_minimo']);
-			$sheet->setCellValue('H' . $f, $vent['stock_futuro']);
-			$sheet->setCellValue('I' . $f, $vent['arribado']);
-			$sheet->setCellValue('J' . $f, $vent['en_camino']);
 			if ($foto == "1") {
 				$drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
 				$url_save = public_path() . $vent['imagen'];
@@ -406,7 +393,7 @@ class ProductoController extends Controller
 					$drawing->setPath($url_save);
 					$drawing->setName($vent['nombre']);
 					$drawing->setDescription($vent['nombre']);
-					$drawing->setCoordinates('K' . $f);
+					$drawing->setCoordinates('A' . $f);
 					$drawing->setOffsetX(18);
 					$drawing->setOffsetY(7);
 					$drawing->setHeight(36);
@@ -415,13 +402,27 @@ class ProductoController extends Controller
 					$drawing->setPath(public_path() . '/images/productos/sin_foto.png');
 					$drawing->setName($vent['nombre']);
 					$drawing->setDescription($vent['nombre']);
-					$drawing->setCoordinates('K' . $f);
+					$drawing->setCoordinates('A' . $f);
 					$drawing->setHeight(36);
 					$drawing->setOffsetX(18);
 					$drawing->setOffsetY(7);
 					$drawing->setWorksheet($spreadsheet->getActiveSheet());
 				}
 			}
+			$sheet->setCellValueExplicit('B' . $f, $vent['origen'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheet->setCellValue('C' . $f, $vent['nombre']);
+			$l_cat=$vent->categorias->map(function ($item, int $key) {
+				return $item->name;
+			});
+			$sheet->setCellValue('D' . $f, !is_null($vent->categorias)?implode(", ",$l_cat->all()):'',);
+			$sheet->setCellValue('E' . $f, $vent['aduana']);
+			$sheet->setCellValue('F' . $f, $vent['codigo_barra']);
+			$sheet->setCellValue('G' . $f, $vent['stock']);
+			$sheet->setCellValue('H' . $f, $vent['stock_minimo']);
+			$sheet->setCellValue('I' . $f, $vent['stock_futuro']);
+			$sheet->setCellValue('J' . $f, $vent['arribado']);
+			$sheet->setCellValue('K' . $f, $vent['en_camino']);
+
 			$sheet->getStyle('A' . (string)$f . ':' . 'K' . (string)$f)->getAlignment()->setVertical('center');
 		}
 		$spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(0);
