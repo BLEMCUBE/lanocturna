@@ -142,20 +142,21 @@ class RotacionStockController extends Controller
 		$sheet->getStyle('B' . (string)1 . ':' . 'D' . (string)1)->getAlignment()->setVertical('center');
 		$f = 3;
 
-		$sheet->setCellValue('A' . (string)$f, "ORIGEN");
-		$sheet->setCellValue('B' . (string)$f, "NOMBRE");
-		$sheet->setCellValue('C' . (string)$f, "CATEGORIA");
-		$sheet->setCellValue('D' . (string)$f, "FECHA ULTIMA COMPRA");
-		$sheet->setCellValue('E' . (string)$f, "FECHA ULTIMA VENTA");
-		$sheet->setCellValue('F' . (string)$f, "VENTAS TOTALES");
-		$sheet->setCellValue('G' . (string)$f, "STOCK");
-		$sheet->setCellValue('H' . (string)$f, "STOCK FUTURO");
-		$sheet->setCellValue('I' . (string)$f, "ROTACION DEL STOCK");
-		$sheet->setCellValue('J' . (string)$f, "PRECIO ULTIMA IMPORTACION");
 		$foto = Request::input('foto');
 		if ($foto == "1") {
-			$sheet->setCellValue('K' . (string)$f, "IMAGEN");
+			$sheet->setCellValue('A' . (string)$f, "IMAGEN");
 		}
+		$sheet->setCellValue('B' . (string)$f, "ORIGEN");
+		$sheet->setCellValue('C' . (string)$f, "NOMBRE");
+		$sheet->setCellValue('D' . (string)$f, "CATEGORIA");
+		$sheet->setCellValue('E' . (string)$f, "FECHA ULTIMA COMPRA");
+		$sheet->setCellValue('F' . (string)$f, "FECHA ULTIMA VENTA");
+		$sheet->setCellValue('G' . (string)$f, "VENTAS TOTALES");
+		$sheet->setCellValue('H' . (string)$f, "STOCK");
+		$sheet->setCellValue('I' . (string)$f, "STOCK FUTURO");
+		$sheet->setCellValue('J' . (string)$f, "ROTACION DEL STOCK");
+		$sheet->setCellValue('K' . (string)$f, "PRECIO ULTIMA IMPORTACION");
+
 
 		$sheet->getStyle('A' . (string)3 . ':' . 'K' . (string)3)->getFont()->setBold(true);
 		$sheet->getStyle('A' . (string)3 . ':' . 'K' . (string)3)->getAlignment()->setHorizontal('center');
@@ -242,17 +243,6 @@ class RotacionStockController extends Controller
 		foreach ($sorted as $key => $vent) {
 
 			$f++;
-			$sheet->setCellValueExplicit('A' . $f, $vent['origen'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-			$sheet->setCellValue('B' . $f, $vent['nombre']);
-			$sheet->setCellValue('C' . $f, $vent['categorias']);
-			$sheet->setCellValue('D' . $f, $vent['ultima_compra']);
-			$sheet->setCellValue('E' . $f, $vent['ultima_venta']);
-			$sheet->setCellValue('F' . $f, $vent['ventas_totales']);
-			$sheet->setCellValue('G' . $f, $vent['stock']);
-			$sheet->setCellValue('H' . $f, $vent['stock_futuro']);
-			$sheet->setCellValue('I' . $f, $vent['rotacion_stock']);
-			$sheet->setCellValue('J' . $f, $vent['ult_precio_importacion']);
-
 			if ($foto == "1") {
 				$drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
 				$url_save = public_path() . $vent['imagen'];
@@ -260,7 +250,7 @@ class RotacionStockController extends Controller
 					$drawing->setPath($url_save);
 					$drawing->setName($vent['nombre']);
 					$drawing->setDescription($vent['nombre']);
-					$drawing->setCoordinates('K' . $f);
+					$drawing->setCoordinates('A' . $f);
 					$drawing->setOffsetX(18);
 					$drawing->setOffsetY(7);
 					$drawing->setHeight(36);
@@ -269,13 +259,25 @@ class RotacionStockController extends Controller
 					$drawing->setPath(public_path() . '/images/productos/sin_foto.png');
 					$drawing->setName($vent['nombre']);
 					$drawing->setDescription($vent['nombre']);
-					$drawing->setCoordinates('K' . $f);
+					$drawing->setCoordinates('A' . $f);
 					$drawing->setHeight(36);
 					$drawing->setOffsetX(18);
 					$drawing->setOffsetY(7);
 					$drawing->setWorksheet($spreadsheet->getActiveSheet());
 				}
 			}
+			$sheet->setCellValueExplicit('B' . $f, $vent['origen'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheet->setCellValue('C' . $f, $vent['nombre']);
+			$sheet->setCellValue('D' . $f, $vent['categorias']);
+			$sheet->setCellValue('E' . $f, $vent['ultima_compra']);
+			$sheet->setCellValue('F' . $f, $vent['ultima_venta']);
+			$sheet->setCellValue('G' . $f, $vent['ventas_totales']);
+			$sheet->setCellValue('H' . $f, $vent['stock']);
+			$sheet->setCellValue('I' . $f, $vent['stock_futuro']);
+			$sheet->setCellValue('J' . $f, $vent['rotacion_stock']);
+			$sheet->setCellValue('K' . $f, $vent['ult_precio_importacion']);
+
+
 			$sheet->getStyle('A' . (string)$f . ':' . 'K' . (string)$f)->getAlignment()->setVertical('center');
 		}
 
