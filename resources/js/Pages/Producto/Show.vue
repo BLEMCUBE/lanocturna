@@ -14,6 +14,7 @@ const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
 const { roles } = usePage().props.auth
 const { costo_aprox } = usePage().props
+const { costo_real } = usePage().props
 const { productoEnCamino } = usePage().props
 const { ultimo_yang } = usePage().props
 const titulo = "Detalle Producto"
@@ -300,7 +301,7 @@ const clickDetImportacion = (e) => {
 
 					<div class="w-full flex flex-col md:flex-row pt-2">
 						<div class="bg-gray-200 w-full text-center">
-							<h3 class="font-semibold text-gray-800 text-lg">COSTO APROXIMADO</h3>
+							<h3 class="font-semibold text-gray-800 text-lg">COSTO REAL</h3>
 						</div>
 					</div>
 
@@ -309,7 +310,10 @@ const clickDetImportacion = (e) => {
 							<h3 class="font-semibold text-gray-800 text-base"> USD (IVA INC.):</h3>
 						</div>
 						<div class="w-full md:w-2/3">
-							<h3 class="font-normal text-gray-800 text-base">{{ costo_aprox }}</h3>
+							<!--
+								<h3 class="font-normal text-gray-800 text-base">{{ costo_aprox }}</h3>
+								-->
+							<h3 class="font-normal text-gray-800 text-base">{{ costo_real }}</h3>
 						</div>
 					</div>
 
@@ -434,12 +438,23 @@ const clickDetImportacion = (e) => {
 							bodyCell: {
 								class: 'text-center'
 							}
-						}"></Column>
+						}">
+						</Column>
+
+					<!--
 						<Column field="unidad" sortable header="Unidad" :pt="{
 							bodyCell: {
 								class: 'text-center'
 							}
-						}"></Column>
+						}">
+					</Column>
+					-->
+						<Column field="costo_real" sortable header="Costo real" :pt="{
+							bodyCell: {
+								class: 'text-center'
+							}
+						}">
+						</Column>
 						<Column field="pcs_bulto" sortable header="PCS/Bulto" :pt="{
 							bodyCell: {
 								class: 'text-center'
