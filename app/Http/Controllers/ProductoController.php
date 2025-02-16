@@ -228,6 +228,7 @@ class ProductoController extends Controller
 				'det.bultos',
 				'det.pcs_bulto',
 				'det.cantidad_total',
+				'det.costo_real',
 				'det.valor_total',
 				'det.cbm_bulto',
 				'det.cbm_total',
@@ -277,10 +278,14 @@ class ProductoController extends Controller
 			$tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
 		}
 
-		$ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $producto->origen)->latest()->first();
+		$ultimo_importacion = ImportacionDetalle::select('id','precio','costo_real','estado','sku')
+		->where('estado','=','Arribado')
+		->where('sku', $producto->origen)
+		->latest()->first();
 
 		$costo_aprox = 0;
 		$ultimo_yang = 0;
+		$costo_real = 0;
 
 		if (!is_null($ultimo_importacion)) {
 
@@ -292,8 +297,10 @@ class ProductoController extends Controller
 
 			$ultimo_yang = $tipo_cambio_yuan->valor;
 			$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
+			$costo_real=$ultimo_importacion->costo_real;
 		} else {
 			$ultimo_yang = 0;
+			$costo_real = 0;
 		}
 
 
@@ -303,6 +310,7 @@ class ProductoController extends Controller
 			'productoEnCamino' => $productoEnCamino,
 			'cantidad' => $cantidad,
 			'costo_aprox' => number_format($costo_aprox, 2, ','),
+			'costo_real' => number_format($costo_real, 2, ','),
 			'ultimo_yang' => $ultimo_yang,
 			'productoventa' => $productoventa,
 			'cantidad_importacion' => $cantidad_importacion,

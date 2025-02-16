@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ImportacionesExport;
+use App\Exports\ImportacionesExportCostoReal;
+use App\Http\Requests\ImportacionCostoRealStoreRequest;
 use App\Http\Requests\ImportacionStoreRequest;
 use App\Http\Requests\ImportacionUpdateRequest;
 use App\Http\Requests\ProductoImportacionUpdateRequest;
 use App\Http\Resources\ImportacionCollection;
+use App\Imports\CostoRealImport;
 use App\Imports\ImportacionesImport;
 use App\Models\Importacion;
 use App\Models\ImportacionDetalle;
@@ -23,388 +26,450 @@ use Illuminate\Support\Facades\DB;
 
 class ImportacionController extends Controller
 {
-    public function __construct()
-    {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-importaciones'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-importaciones'])->only(['store']);
-        //$this->middleware(['auth', 'permission:editar-importaciones'])->only(['update']);
-        //$this->middleware(['auth', 'permission:eliminar-importaciones'])->only(['destroy']);
-    }
+	public function __construct()
+	{
+		//protegiendo el controlador segun el rol
+		//$this->middleware(['auth', 'permission:lista-importaciones'])->only('index');
+		//$this->middleware(['auth', 'permission:crear-importaciones'])->only(['store']);
+		//$this->middleware(['auth', 'permission:editar-importaciones'])->only(['update']);
+		//$this->middleware(['auth', 'permission:eliminar-importaciones'])->only(['destroy']);
+	}
 
-    public function index()
-    {
-        $ultimo_tipo_cambio = TipoCambioYuan::all()->last();
+	public function index()
+	{
+		$ultimo_tipo_cambio = TipoCambioYuan::all()->last();
 
-        $hoy_tipo_cambio = false;
+		$hoy_tipo_cambio = false;
 
-        $actual = Carbon::now()->format('Y-m-d');
-        if (!empty($ultimo_tipo_cambio)) {
-            $fecha = Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
-            if ($fecha->eq($actual)) {
-                $hoy_tipo_cambio = true;
-                $tipo_cambio = $ultimo_tipo_cambio;
-            } else {
-                $hoy_tipo_cambio = false;
-            }
-        }
-        return Inertia::render('Importacion/Index', [
-            'tipo_cambio' => $hoy_tipo_cambio,
-            'productos' => new ImportacionCollection(
-                Importacion::with(['importaciones_detalles'])->orderBy('fecha_arribado', 'DESC')
-                    ->get()
-            )
-        ]);
-    }
+		$actual = Carbon::now()->format('Y-m-d');
+		if (!empty($ultimo_tipo_cambio)) {
+			$fecha = Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
+			if ($fecha->eq($actual)) {
+				$hoy_tipo_cambio = true;
+				$tipo_cambio = $ultimo_tipo_cambio;
+			} else {
+				$hoy_tipo_cambio = false;
+			}
+		}
+		return Inertia::render('Importacion/Index', [
+			'tipo_cambio' => $hoy_tipo_cambio,
+			'productos' => new ImportacionCollection(
+				Importacion::with(['importaciones_detalles'])->orderBy('fecha_arribado', 'DESC')
+					->get()
+			)
+		]);
+	}
 
-    public function create()
-    {
-        return Inertia::render('Importacion/Create');
-    }
+	public function create()
+	{
+		return Inertia::render('Importacion/Create');
+	}
 
-    public function store(ImportacionStoreRequest $request)
-    {
-        $usuario = auth()->user();
-        $file = $request->file('archivo');
+	public function store(ImportacionStoreRequest $request)
+	{
+		$usuario = auth()->user();
+		$file = $request->file('archivo');
 
-        $no_existe = [];
-        $filas = Excel::toArray([], $file);
+		$no_existe = [];
+		$filas = Excel::toArray([], $file);
 
-        foreach ($filas[0] as $key => $fila) {
-            $prod = Producto::where('origen', '=', $fila[0])->first();
-            if (empty($prod)) {
-                array_push($no_existe, [
-                    'fila' => $key + 1,
-                    'sku' => $fila[0],
-                ]);
-            }
-        }
-        if (count($no_existe) > 1) {
+		foreach ($filas[0] as $key => $fila) {
+			$prod = Producto::where('origen', '=', $fila[0])->first();
+			if (empty($prod)) {
+				array_push($no_existe, [
+					'fila' => $key + 1,
+					'sku' => $fila[0],
+				]);
+			}
+		}
+		if (count($no_existe) > 1) {
 
-            throw ValidationException::withMessages([
-                'filas' => [$no_existe]
-            ]);
-        } else {
-        DB::beginTransaction();
-        try {
+			throw ValidationException::withMessages([
+				'filas' => [$no_existe]
+			]);
+		} else {
+			DB::beginTransaction();
+			try {
 
-            //creando importacion
-            $importacion = Importacion::create([
-                'nro_carpeta' => $request->nro_carpeta ?? '',
-                'nro_contenedor' => $request->nro_contenedor ?? '',
-                'estado' => $request->estado ?? '',
-                'total' => $request->total ?? 0,
-                'fecha_arribado' => $request->fecha_arribado ?? '',
-                'fecha_camino' => $request->fecha_camino ?? '',
-                'costo_cif' => $request->costo_cif ?? 0,
-                'mueve_stock' => $request->mueve_stock ?? false,
-                'user_id' => $usuario->id
+				//creando importacion
+				$importacion = Importacion::create([
+					'nro_carpeta' => $request->nro_carpeta ?? '',
+					'nro_contenedor' => $request->nro_contenedor ?? '',
+					'estado' => $request->estado ?? '',
+					'total' => $request->total ?? 0,
+					'fecha_arribado' => $request->fecha_arribado ?? '',
+					'fecha_camino' => $request->fecha_camino ?? '',
+					'costo_cif' => $request->costo_cif ?? 0,
+					'mueve_stock' => $request->mueve_stock ?? false,
+					'user_id' => $usuario->id
 
-            ]);
+				]);
 
-            //ultimo tipo cambio yuanes
-            $ultimo_tipo_cambio = TipoCambioYuan::all()->last();
-            $yuan_id=$ultimo_tipo_cambio->id;
+				//ultimo tipo cambio yuanes
+				$ultimo_tipo_cambio = TipoCambioYuan::all()->last();
+				$yuan_id = $ultimo_tipo_cambio->id;
 
-            //importando excel
-            Excel::import(new ImportacionesImport($importacion->id, $importacion->estado, $importacion->mueve_stock,$yuan_id), $file);
+				//importando excel
+				Excel::import(new ImportacionesImport($importacion->id, $importacion->estado, $importacion->mueve_stock, $yuan_id), $file);
 
-            //actualizando total
-            $importaci = ImportacionDetalle::where('importacion_id', $importacion->id)->get();
-            $importacion->update([
-                "total" => $importaci->sum('valor_total')
-            ]);
+				//actualizando total
+				$importaci = ImportacionDetalle::where('importacion_id', $importacion->id)->get();
+				$importacion->update([
+					"total" => $importaci->sum('valor_total')
+				]);
 
-            DB::commit();
-            return Redirect::route('importaciones.index')->with([
-                // 'success' =>  $venta->codigo
-            ]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
-        }
-    }
+				DB::commit();
+				return Redirect::route('importaciones.index')->with([
+					// 'success' =>  $venta->codigo
+				]);
+			} catch (Exception $e) {
+				DB::rollBack();
+				return [
+					'success' => false,
+					'message' => $e->getMessage(),
+				];
+			}
+		}
+	}
 
-    public function showModal($id)
-    {
-        $importacion = DB::table('importaciones as impor')
-            ->select(DB::raw("impor.*,DATE_FORMAT(impor.created_at,'%d/%m/%y %H:%i:%s') AS fecha,
+	public function showModal($id)
+	{
+		$importacion = DB::table('importaciones as impor')
+			->select(DB::raw("impor.*,DATE_FORMAT(impor.created_at,'%d/%m/%y %H:%i:%s') AS fecha,
         FORMAT(impor.total, 2, 'en_US') as total"))
-            ->where('id', $id)->first();
-        return response()->json([
-            "importacion" => $importacion
-        ]);
-    }
+			->where('id', $id)->first();
+		return response()->json([
+			"importacion" => $importacion
+		]);
+	}
 
-    public function showProductoModal($id)
-    {
+	public function showProductoModal($id)
+	{
 
-        $importacion_detalle = ImportacionDetalle::with(['importacion' => function ($query) {
-            $query->select('*');
-        }])->with(['producto' => function ($query) {
-            $query->select('id', 'nombre', 'codigo_barra', 'origen');
-        }])->where('id', $id)->first();
-        return response()->json([
-            "importacion_detalle" => $importacion_detalle
-        ]);
-    }
+		$importacion_detalle = ImportacionDetalle::with(['importacion' => function ($query) {
+			$query->select('*');
+		}])->with(['producto' => function ($query) {
+			$query->select('id', 'nombre', 'codigo_barra', 'origen');
+		}])->where('id', $id)->first();
+		return response()->json([
+			"importacion_detalle" => $importacion_detalle
+		]);
+	}
 
-    public function edit($id)
-    {
-        $importacion = DB::table('importaciones as impor')
-            ->select(DB::raw("impor.*,DATE_FORMAT(impor.created_at,'%d/%m/%y %H:%i:%s') AS fecha,
+	public function edit($id)
+	{
+		$importacion = DB::table('importaciones as impor')
+			->select(DB::raw("impor.*,DATE_FORMAT(impor.created_at,'%d/%m/%y %H:%i:%s') AS fecha,
         FORMAT(impor.total, 2, 'en_US') as total"))
-            ->where('id', $id)->first();
-        //return $importacion;
+			->where('id', $id)->first();
+		//return $importacion;
 
-        $importacion_detalle = DB::table('importaciones_detalles as det')
-            ->join('productos as prod', 'prod.origen', '=', 'det.sku')
-            ->select(DB::raw("det.*,prod.nombre,prod.aduana,prod.imagen,prod.id as producto_id"))
-            ->where('importacion_id', $id)->get();
+		$importacion_detalle = DB::table('importaciones_detalles as det')
+			->join('productos as prod', 'prod.origen', '=', 'det.sku')
+			->select(DB::raw("det.*,prod.nombre,prod.aduana,prod.imagen,prod.id as producto_id"))
+			->where('importacion_id', $id)->get();
 
-        return Inertia::render('Importacion/Edit', [
-            'importacion' => $importacion,
-            'importacion_detalle' => $importacion_detalle,
-        ]);
-    }
+		return Inertia::render('Importacion/Edit', [
+			'importacion' => $importacion,
+			'importacion_detalle' => $importacion_detalle,
+		]);
+	}
 
 
 
-    public function updateProducto(ProductoImportacionUpdateRequest $request, $id)
-    {
+	public function updateProducto(ProductoImportacionUpdateRequest $request, $id)
+	{
 
-        $importacion_detalle = ImportacionDetalle::find($id);
-        $producto = Producto::where('origen', '=', $importacion_detalle->sku)->first();
-        $estado = $request->estado;
-        DB::beginTransaction();
-        try {
-            if ($estado == 'Arribado') {
+		$importacion_detalle = ImportacionDetalle::find($id);
+		$producto = Producto::where('origen', '=', $importacion_detalle->sku)->first();
+		$estado = $request->estado;
+		DB::beginTransaction();
+		try {
+			if ($estado == 'Arribado') {
 
-                //quitando cantidad en stock productos
-                $sus_stock = $producto->stock - $importacion_detalle->cantidad_total;
-                $sus_arribado = $producto->arribado - $importacion_detalle->cantidad_total;
+				//quitando cantidad en stock productos
+				$sus_stock = $producto->stock - $importacion_detalle->cantidad_total;
+				$sus_arribado = $producto->arribado - $importacion_detalle->cantidad_total;
 
-                //agregando
-                $add_stock = $sus_stock + $request->cantidad_total;
-                $add_arribado = $sus_arribado + $request->cantidad_total;
+				//agregando
+				$add_stock = $sus_stock + $request->cantidad_total;
+				$add_arribado = $sus_arribado + $request->cantidad_total;
 
-                $producto->update([
+				$producto->update([
 
-                    "stock" => $add_stock,
-                    "arribado" => $add_arribado,
-                    "stock_futuro" => $add_stock + $producto->en_camino,
-                ]);
-                //Guardando producto importacion
-                $importacion_detalle->precio = $request->precio;
-                $importacion_detalle->unidad = $request->unidad;
-                $importacion_detalle->pcs_bulto = $request->pcs_bulto;
-                $importacion_detalle->valor_total = $request->valor_total;
-                $importacion_detalle->cantidad_total = $request->cantidad_total;
-                $importacion_detalle->cbm_bulto = $request->cbm_bulto;
-                $importacion_detalle->cbm_total = $request->cbm_total;
-                $importacion_detalle->estado = $request->estado;
+					"stock" => $add_stock,
+					"arribado" => $add_arribado,
+					"stock_futuro" => $add_stock + $producto->en_camino,
+				]);
+				//Guardando producto importacion
+				$importacion_detalle->precio = $request->precio;
+				$importacion_detalle->unidad = $request->unidad;
+				$importacion_detalle->pcs_bulto = $request->pcs_bulto;
+				$importacion_detalle->valor_total = $request->valor_total;
+				$importacion_detalle->cantidad_total = $request->cantidad_total;
+				$importacion_detalle->cbm_bulto = $request->cbm_bulto;
+				$importacion_detalle->cbm_total = $request->cbm_total;
+				$importacion_detalle->estado = $request->estado;
 
-                $importacion_detalle->save();
-            }
+				$importacion_detalle->save();
+			}
 
-            if ($estado == 'En camino') {
-                //quitando cantidad en stock productos
-                $sus_camino = $producto->en_camino - $importacion_detalle->cantidad_total;
-                //agregando
-                $add_camino = $sus_camino + $request->cantidad_total;
-                $add_stock_futuro =  $producto->stock + $add_camino;
+			if ($estado == 'En camino') {
+				//quitando cantidad en stock productos
+				$sus_camino = $producto->en_camino - $importacion_detalle->cantidad_total;
+				//agregando
+				$add_camino = $sus_camino + $request->cantidad_total;
+				$add_stock_futuro =  $producto->stock + $add_camino;
 
-                $producto->update([
+				$producto->update([
 
-                    "en_camino" => $add_camino,
-                    "stock_futuro" => $add_stock_futuro,
-                ]);
-                //Guardando producto importacion
-                $importacion_detalle->precio = $request->precio;
-                $importacion_detalle->unidad = $request->unidad;
-                $importacion_detalle->pcs_bulto = $request->pcs_bulto;
-                $importacion_detalle->valor_total = $request->valor_total;
-                $importacion_detalle->cantidad_total = $request->cantidad_total;
-                $importacion_detalle->cbm_bulto = $request->cbm_bulto;
-                $importacion_detalle->cbm_total = $request->cbm_total;
-                $importacion_detalle->estado = $request->estado;
+					"en_camino" => $add_camino,
+					"stock_futuro" => $add_stock_futuro,
+				]);
+				//Guardando producto importacion
+				$importacion_detalle->precio = $request->precio;
+				$importacion_detalle->unidad = $request->unidad;
+				$importacion_detalle->pcs_bulto = $request->pcs_bulto;
+				$importacion_detalle->valor_total = $request->valor_total;
+				$importacion_detalle->cantidad_total = $request->cantidad_total;
+				$importacion_detalle->cbm_bulto = $request->cbm_bulto;
+				$importacion_detalle->cbm_total = $request->cbm_total;
+				$importacion_detalle->estado = $request->estado;
 
-                $importacion_detalle->save();
-            }
-            DB::commit();
-            return Redirect::route('importaciones.index')->with([
-                // 'success' =>  $venta->codigo
-            ]);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
-    }
+				$importacion_detalle->save();
+			}
+			DB::commit();
+			return Redirect::route('importaciones.index')->with([
+				// 'success' =>  $venta->codigo
+			]);
+		} catch (Exception $e) {
+			DB::rollBack();
+			return [
+				'success' => false,
+				'message' => $e->getMessage(),
+			];
+		}
+	}
 
-    public function update(ImportacionUpdateRequest $request, $id)
-    {
-        $importacion = Importacion::find($id);
-        $estado = $request->estado;
+	public function update(ImportacionUpdateRequest $request, $id)
+	{
+		$importacion = Importacion::find($id);
+		$estado = $request->estado;
 
-        DB::beginTransaction();
-        try {
-            if ($estado != $importacion->estado) {
-                if ($estado == 'Arribado') {
-                    //creando detalle importacion
-                    foreach ($importacion->importaciones_detalles as $detalle) {
-                        $codigo = $detalle->sku;
-                        $producto = Producto::where('origen', '=', $codigo)
-                            ->first();
-                        $new_encamino = $producto->en_camino - $detalle->cantidad_total;
-                        $new_arribado = $producto->arribado + $detalle->cantidad_total;
-                        $new_stock = $producto->stock + $detalle->cantidad_total;
-                        $new_futuro = $new_stock + $new_encamino;
-                        $producto->update([
-                            "stock" => $new_stock,
-                            "arribado" => $new_arribado,
-                            "en_camino" => $new_encamino,
-                            "stock_futuro" => $new_futuro,
-                        ]);
+		DB::beginTransaction();
+		try {
+			if ($estado != $importacion->estado) {
+				if ($estado == 'Arribado') {
+					//creando detalle importacion
+					foreach ($importacion->importaciones_detalles as $detalle) {
+						$codigo = $detalle->sku;
+						$producto = Producto::where('origen', '=', $codigo)
+							->first();
+						$new_encamino = $producto->en_camino - $detalle->cantidad_total;
+						$new_arribado = $producto->arribado + $detalle->cantidad_total;
+						$new_stock = $producto->stock + $detalle->cantidad_total;
+						$new_futuro = $new_stock + $new_encamino;
+						$producto->update([
+							"stock" => $new_stock,
+							"arribado" => $new_arribado,
+							"en_camino" => $new_encamino,
+							"stock_futuro" => $new_futuro,
+						]);
 
-                        //actualizando importacion detall
-                        $impor_detall = ImportacionDetalle::where('importacion_id', '=', $importacion->id);
-                        $impor_detall->update([
-                            "estado" => $estado,
-                        ]);
+						//actualizando importacion detall
+						$impor_detall = ImportacionDetalle::where('importacion_id', '=', $importacion->id);
+						$impor_detall->update([
+							"estado" => $estado,
+						]);
+					}
+				}
+				if ($estado == 'En camino') {
+					//actualizando stock productos
+					foreach ($importacion->importaciones_detalles as $detalle) {
+						$codigo = $detalle->sku;
+						$producto = Producto::where('origen', '=', $codigo)
+							->first();
 
-                    }
-                }
-                if ($estado == 'En camino') {
-                    //actualizando stock productos
-                    foreach ($importacion->importaciones_detalles as $detalle) {
-                        $codigo = $detalle->sku;
-                        $producto = Producto::where('origen', '=', $codigo)
-                            ->first();
+						$new_arribado = $producto->arribado - $detalle->cantidad_total;
+						$new_encamino = $producto->en_camino + $detalle->cantidad_total;
+						$new_stock = $producto->stock - $detalle->cantidad_total;
+						$new_futuro = $new_stock + $new_encamino;
 
-                        $new_arribado = $producto->arribado - $detalle->cantidad_total;
-                        $new_encamino = $producto->en_camino + $detalle->cantidad_total;
-                        $new_stock = $producto->stock - $detalle->cantidad_total;
-                        $new_futuro = $new_stock + $new_encamino;
+						$producto->update([
+							"en_camino" => $new_encamino,
+							"stock" => $new_stock,
+							"arribado" => $new_arribado,
+							"stock_futuro" => $new_futuro,
+						]);
 
-                        $producto->update([
-                            "en_camino" => $new_encamino,
-                            "stock" => $new_stock,
-                            "arribado" => $new_arribado,
-                            "stock_futuro" => $new_futuro,
-                        ]);
+						//actualizando importacion detall
+						$impor_detall = ImportacionDetalle::where('importacion_id', '=', $importacion->id);
+						$impor_detall->update([
+							"estado" => $estado,
+						]);
+					}
+				}
+			}
 
-                        //actualizando importacion detall
-                        $impor_detall = ImportacionDetalle::where('importacion_id', '=', $importacion->id);
-                        $impor_detall->update([
-                            "estado" => $estado,
-                        ]);
+			$importacion->nro_carpeta = $request->input('nro_carpeta');
+			$importacion->nro_contenedor = $request->input('nro_contenedor');
+			$importacion->estado = $request->input('estado');
+			$importacion->fecha_arribado     = $request->input('fecha_arribado');
+			$importacion->fecha_camino = $request->input('fecha_camino');
+			$importacion->costo_cif = $request->input('costo_cif');
+			$importacion->save();
 
-                    }
-                }
-            }
-
-            $importacion->nro_carpeta = $request->input('nro_carpeta');
-            $importacion->nro_contenedor = $request->input('nro_contenedor');
-            $importacion->estado = $request->input('estado');
-            $importacion->fecha_arribado     = $request->input('fecha_arribado');
-            $importacion->fecha_camino = $request->input('fecha_camino');
-            $importacion->costo_cif = $request->input('costo_cif');
-            $importacion->save();
-
-            DB::commit();
-            /*return Redirect::route('importaciones.index')->with([
+			DB::commit();
+			/*return Redirect::route('importaciones.index')->with([
                 // 'success' =>  $venta->codigo
             ]);*/
-        } catch (Exception $e) {
-            DB::rollBack();
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
-    }
+		} catch (Exception $e) {
+			DB::rollBack();
+			return [
+				'success' => false,
+				'message' => $e->getMessage(),
+			];
+		}
+	}
 
-    public function show($id)
-    {
+	public function show($id)
+	{
 
-        $importacion = DB::table('importaciones as impor')
-            ->select(DB::raw("impor.*,DATE_FORMAT(impor.created_at,'%d/%m/%y %H:%i:%s') AS fecha,
+		$importacion = DB::table('importaciones as impor')
+			->select(DB::raw("impor.*,DATE_FORMAT(impor.created_at,'%d/%m/%y %H:%i:%s') AS fecha,
         FORMAT(impor.total, 2, 'en_US') as total,FORMAT(impor.costo_cif, 2, 'en_US') as costo_cif"))
-            ->where('id', $id)->first();
-        //return $importacion;
+			->where('id', $id)->first();
 
-        $importacion_detalle = DB::table('importaciones_detalles as det')
-            ->join('productos as prod', 'prod.origen', '=', 'det.sku')
-            ->select(DB::raw("det.*,prod.nombre,prod.aduana,prod.imagen,prod.id as producto_id"))
-            ->where('importacion_id', $id)->get();
+		$importacion_detalle = DB::table('importaciones_detalles as det')
+			->join('productos as prod', 'prod.origen', '=', 'det.sku')
+			->select(DB::raw("det.*,prod.nombre,prod.aduana,prod.imagen,prod.id as producto_id"))
+			->where('importacion_id', $id)->get();
 
-        return Inertia::render('Importacion/Show', [
-            'importacion' => $importacion,
-            'importacion_detalle' => $importacion_detalle,
-        ]);
-    }
+		return Inertia::render('Importacion/Show', [
+			'importacion' => $importacion,
+			'importacion_detalle' => $importacion_detalle,
+		]);
+	}
 
-    public function destroy($id)
-    {
-        $importacion = Importacion::find($id);
-        $estado = $importacion->estado;
+	public function destroy($id)
+	{
+		$importacion = Importacion::find($id);
+		$estado = $importacion->estado;
 
-        if ($estado == 'Arribado') {
-            //creando detalle venta
-            foreach ($importacion->importaciones_detalles as $detalle) {
-                $codigo = $detalle->sku;
-                $producto = Producto::where('origen', '=', $codigo)
-                    ->first();
-                if (!is_null($producto)) {
-                    $new_stock = $producto->stock - $detalle->cantidad_total;
-                    $new_arribado = $producto->arribado - $detalle->cantidad_total;
+		if ($estado == 'Arribado') {
+			//creando detalle venta
+			foreach ($importacion->importaciones_detalles as $detalle) {
+				$codigo = $detalle->sku;
+				$producto = Producto::where('origen', '=', $codigo)
+					->first();
+				if (!is_null($producto)) {
+					$new_stock = $producto->stock - $detalle->cantidad_total;
+					$new_arribado = $producto->arribado - $detalle->cantidad_total;
 
-                    $new_futuro = $new_stock + $producto->en_camino;
-                    if ($producto->arribado > 0) {
-                        $producto->update([
-                            "stock" => $new_stock,
-                            "arribado" => $new_arribado,
-                            "stock_futuro" => $new_futuro,
-                        ]);
-                    }
-                }
-            }
-        }
+					$new_futuro = $new_stock + $producto->en_camino;
+					if ($producto->arribado > 0) {
+						$producto->update([
+							"stock" => $new_stock,
+							"arribado" => $new_arribado,
+							"stock_futuro" => $new_futuro,
+						]);
+					}
+				}
+			}
+		}
 
-        if ($estado == 'En camino') {
-            //creando detalle venta
-            foreach ($importacion->importaciones_detalles as $detalle) {
-                $codigo = $detalle->sku;
-                $producto = Producto::where('origen', '=', $codigo)
-                    ->first();
-                if (!is_null($producto)) {
+		if ($estado == 'En camino') {
+			//creando detalle venta
+			foreach ($importacion->importaciones_detalles as $detalle) {
+				$codigo = $detalle->sku;
+				$producto = Producto::where('origen', '=', $codigo)
+					->first();
+				if (!is_null($producto)) {
 
-                    $new_camino = $producto->en_camino - $detalle->cantidad_total;
-                    $new_futuro =  $producto->stock + $new_camino;
-                    if ($producto->en_camino > 0) {
-                        $producto->update([
-                            "en_camino" => $new_camino,
-                            "stock_futuro" => $new_futuro,
-                        ]);
-                    }
-                }
-            }
-        }
+					$new_camino = $producto->en_camino - $detalle->cantidad_total;
+					$new_futuro =  $producto->stock + $new_camino;
+					if ($producto->en_camino > 0) {
+						$producto->update([
+							"en_camino" => $new_camino,
+							"stock_futuro" => $new_futuro,
+						]);
+					}
+				}
+			}
+		}
 
-        $importacion->importaciones_detalles()->delete();
-        $importacion->delete();
-        ProductoYuan::where('importacion_id','=', $id)->delete();
-    }
+		$importacion->importaciones_detalles()->delete();
+		$importacion->delete();
+		ProductoYuan::where('importacion_id', '=', $id)->delete();
+	}
 
-    public function exportExcel($id)
-    {
-        return Excel::download(new ImportacionesExport($id), 'ImportacionExcel.xlsx');
-    }
+	public function exportExcel($id)
+	{
+		return Excel::download(new ImportacionesExport($id), 'ImportacionExcel.xlsx');
+	}
+
+	public function exportExcelCostoReal($id)
+	{
+		return Excel::download(new ImportacionesExportCostoReal($id), 'ImportacionCostoReal.xlsx');
+	}
+
+	public function importCostoReal(ImportacionCostoRealStoreRequest $request)
+	{
+		//dd($request);
+		$file = $request->file('archivo');
+		$no_existe = [];
+		$vacio=[];
+		$filas = Excel::toArray([], $file);
+		$filas_a = array_slice($filas[0], 1);
+		$n_fila = 0;
+		foreach ($filas_a as $col) {
+			$n_fila = $n_fila + 1;
+			if (!empty($col[1])) {
+				$prod = ImportacionDetalle::where('sku', '=', $col[1])
+				->where('importacion_id', '=', $request->importacion_id)
+				->first();
+
+				if (is_null($prod)) {
+					array_push($no_existe, [
+						'fila' => $n_fila,
+						'sku' => $col[1],
+					]);
+				}
+			} else {
+				array_push($vacio, [
+					'fila' => $n_fila,
+					'sku' => "sku no debe estar vacio.",
+				]);
+				/*throw ValidationException::withMessages([
+					//'error_sku' => "SKU no debe estar vacio.",
+					'error_sku' => $vacio
+				]);*/
+			}
+		}
+		if (count($vacio) > 0) {
+			throw ValidationException::withMessages([
+				'error_sku' =>[ $vacio]
+			]);
+		}
+		if (count($no_existe) > 0) {
+			throw ValidationException::withMessages([
+				'filas' => [$no_existe]
+			]);
+		} else {
+
+			DB::beginTransaction();
+			try {
+
+				//importando excel
+				Excel::import(new CostoRealImport($request->importacion_id), $file);
+				DB::commit();
+			} catch (Exception $e) {
+				DB::rollBack();
+				return [
+					'success' => false,
+					'message' => $e->getMessage(),
+				];
+			}
+		}
+	}
 }

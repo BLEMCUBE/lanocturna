@@ -13,6 +13,7 @@ class ImportacionDetalle extends Model
     protected $fillable = [
         'id',
         'sku',
+		'costo_real',
         'precio',
         'unidad',
         'pcs_bulto',
