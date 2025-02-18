@@ -9,7 +9,6 @@
 			<div class="mb-5 px-3 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 			</div>
-			{{ modalImport }}
 			<div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
 				<span
 					v-tooltip.top="{ value: 'Descargar Formato', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"

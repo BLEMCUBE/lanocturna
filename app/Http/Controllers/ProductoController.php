@@ -278,10 +278,25 @@ class ProductoController extends Controller
 			$tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
 		}
 
-		$ultimo_importacion = ImportacionDetalle::select('id','precio','costo_real','estado','sku')
+		/*$ultimo_importacion = ImportacionDetalle::select('id','precio','costo_real','estado','sku')
 		->where('estado','=','Arribado')
 		->where('sku', $producto->origen)
-		->latest()->first();
+		->latest()
+		->first();*/
+		$ultimo_importacion = DB::table('importaciones_detalles as det')
+			->join('importaciones as imp', 'imp.id', '=', 'det.importacion_id')
+			->select(
+				'imp.fecha_arribado',
+				'imp.estado',
+				'det.precio',
+				'det.sku',
+				'det.costo_real',
+			)
+			->where('imp.estado', '=', 'Arribado')
+			->where('det.sku', $producto->origen)
+			->orderBy('imp.fecha_arribado', 'DESC')
+			->limit(1)
+			->first();
 
 		$costo_aprox = 0;
 		$ultimo_yang = 0;
@@ -297,7 +312,7 @@ class ProductoController extends Controller
 
 			$ultimo_yang = $tipo_cambio_yuan->valor;
 			$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
-			$costo_real=$ultimo_importacion->costo_real;
+			$costo_real = $ultimo_importacion ? $ultimo_importacion->costo_real : 0;
 		} else {
 			$ultimo_yang = 0;
 			$costo_real = 0;
@@ -419,10 +434,10 @@ class ProductoController extends Controller
 			}
 			$sheet->setCellValueExplicit('B' . $f, $vent['origen'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 			$sheet->setCellValue('C' . $f, $vent['nombre']);
-			$l_cat=$vent->categorias->map(function ($item, int $key) {
+			$l_cat = $vent->categorias->map(function ($item, int $key) {
 				return $item->name;
 			});
-			$sheet->setCellValue('D' . $f, !is_null($vent->categorias)?implode(", ",$l_cat->all()):'',);
+			$sheet->setCellValue('D' . $f, !is_null($vent->categorias) ? implode(", ", $l_cat->all()) : '',);
 			$sheet->setCellValue('E' . $f, $vent['aduana']);
 			$sheet->setCellValue('F' . $f, $vent['codigo_barra']);
 			$sheet->setCellValue('G' . $f, $vent['stock']);
@@ -605,7 +620,6 @@ class ProductoController extends Controller
 			->join('productos as prod', 'prod.origen', '=', 'det.sku')
 			->select(
 				'imp.nro_carpeta',
-				'imp.nro_contenedor',
 				'imp.nro_contenedor',
 				'imp.fecha_arribado',
 				'det.precio',
