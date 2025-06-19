@@ -3506,11 +3506,12 @@
     "src": "resources/js/Pages/Role/Edit.vue"
   },
   "resources/js/Pages/Role/Index.vue": {
-    "file": "assets/Index-8ac2d7f2.js",
+    "file": "assets/Index-d2833f18.js",
     "imports": [
       "_AppLayout-30bee2ca.js",
       "_@inertiajs-ab1bf9dd.js",
       "_primevue-232ee6f7.js",
+      "resources/js/Pages/Role/Partials/CrearModal.vue",
       "_@vue-1043e4d5.js",
       "_logo-e22dfca4.js",
       "_pinia-ff353768.js",
@@ -3532,10 +3533,66 @@
       "_object-inspect-0f5d75dd.js",
       "_nprogress-a144f12f.js",
       "_lodash.clonedeep-6a476b09.js",
-      "_lodash.isequal-cbdfea98.js"
+      "_lodash.isequal-cbdfea98.js",
+      "_InputError-933cc936.js",
+      "_InputLabel-bc304214.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Role/Index.vue"
+  },
+  "resources/js/Pages/Role/Partials/CrearModal.vue": {
+    "file": "assets/CrearModal-5d269a44.js",
+    "imports": [
+      "_@vue-1043e4d5.js",
+      "_InputError-933cc936.js",
+      "_InputLabel-bc304214.js",
+      "_@inertiajs-ab1bf9dd.js",
+      "_primevue-232ee6f7.js",
+      "_axios-4a70c6fc.js",
+      "_deepmerge-34bd70bf.js",
+      "_apexcharts-f697a6eb.js",
+      "_qs-ba0d1d34.js",
+      "_side-channel-009c6bc3.js",
+      "_get-intrinsic-bd2830fd.js",
+      "_has-symbols-e8f3ca0e.js",
+      "_has-proto-f7d0b240.js",
+      "_function-bind-22e7ee79.js",
+      "_has-26d28e02.js",
+      "_call-bind-e5c1c8b0.js",
+      "_object-inspect-0f5d75dd.js",
+      "_nprogress-a144f12f.js",
+      "_lodash.clonedeep-6a476b09.js",
+      "_lodash.isequal-cbdfea98.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/Pages/Role/Partials/CrearModal.vue"
+  },
+  "resources/js/Pages/Role/Partials/EditarModal.vue": {
+    "file": "assets/EditarModal-5391cf68.js",
+    "imports": [
+      "_@vue-1043e4d5.js",
+      "_InputError-933cc936.js",
+      "_InputLabel-bc304214.js",
+      "_@inertiajs-ab1bf9dd.js",
+      "_axios-4a70c6fc.js",
+      "_primevue-232ee6f7.js",
+      "_deepmerge-34bd70bf.js",
+      "_apexcharts-f697a6eb.js",
+      "_qs-ba0d1d34.js",
+      "_side-channel-009c6bc3.js",
+      "_get-intrinsic-bd2830fd.js",
+      "_has-symbols-e8f3ca0e.js",
+      "_has-proto-f7d0b240.js",
+      "_function-bind-22e7ee79.js",
+      "_has-26d28e02.js",
+      "_call-bind-e5c1c8b0.js",
+      "_object-inspect-0f5d75dd.js",
+      "_nprogress-a144f12f.js",
+      "_lodash.clonedeep-6a476b09.js",
+      "_lodash.isequal-cbdfea98.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/Pages/Role/Partials/EditarModal.vue"
   },
   "resources/js/Pages/RotacionStock/Index.vue": {
     "file": "assets/Index-8325e2e0.js",
@@ -4214,6 +4271,8 @@
       "resources/js/Pages/Rma/ValidacionShow.vue",
       "resources/js/Pages/Role/Edit.vue",
       "resources/js/Pages/Role/Index.vue",
+      "resources/js/Pages/Role/Partials/CrearModal.vue",
+      "resources/js/Pages/Role/Partials/EditarModal.vue",
       "resources/js/Pages/RotacionStock/Index.vue",
       "resources/js/Pages/TipoCambio/Index.vue",
       "resources/js/Pages/TipoCambio/Partials/CrearModal.vue",
@@ -4232,7 +4291,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-7ee7d40a.js",
+    "file": "assets/app-725f5944.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",
