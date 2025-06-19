@@ -3,66 +3,75 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, Link } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
+import CrearModal from '@/Pages/Role/Partials/CrearModal.vue';
+import EditarModal from '@/Pages/Role/Partials/EditarModal.vue';
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
 const tabla_categorias = ref()
 const titulo = "Roles"
 
 onMounted(() => {
-    tabla_categorias.value = usePage().props.roles;
+	tabla_categorias.value = usePage().props.roles;
 });
 
+const show = (tipo, titulo, mensaje) => {
+    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+};
 
 const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    representative: { value: null, matchMode: FilterMatchMode.IN },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
-    verified: { value: null, matchMode: FilterMatchMode.EQUALS }
+	global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+	name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+	'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+	representative: { value: null, matchMode: FilterMatchMode.IN },
+	status: { value: null, matchMode: FilterMatchMode.EQUALS },
+	verified: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
 
 </script>
 <template>
-        <Head title="Roles" />
-        <AppLayout :pagina="[{ 'label': titulo, link: false }]">
 
-            <div
-                class="px-4 mb-4 bg-white col-span-6 py-5 rounded-lg shadow-lg lg:col-span-5 dark:border-gray-700  dark:bg-gray-800">
-                <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
-                    <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-                </div>
-                <div class="align-middle">
+	<Head title="Roles" />
+	<AppLayout :pagina="[{ 'label': titulo, link: false }]">
 
-                    <DataTable  size="small" v-model:filters="filters"
-                        :value="tabla_categorias" :paginator="true" :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"
+		<div
+			class="px-4 py-3 mb-4 bg-white col-span-12  lg:col-span-6 rounded-lg shadow-lg 2xl:col-span-6 dark:border-gray-700  dark:bg-gray-800">
+ <Toast />
+			<div class=" px-5 pb-2 col-span-full flex justify-between items-center">
+				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
+				<CrearModal></CrearModal>
+			</div>
+			<div class="align-middle">
 
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                        tableStyle="width: 100%">
-                        <template #header size="small" class="bg-secondary-900">
-                            <div class="flex justify-content-end text-md">
-                                <InputText v-model="filters['global'].value" placeholder="Buscar" />
-                            </div>
+				<DataTable size="small" v-model:filters="filters" :value="tabla_categorias" :paginator="true" :rows="10"
+					:rowsPerPageOptions="[5, 10, 20, 50]"
+					paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+					tableStyle="width: 100%">
+					<template #header size="small" class="bg-secondary-900">
+						<div class="flex justify-content-end text-md">
+							<InputText v-model="filters['global'].value" placeholder="Buscar" />
+						</div>
 
-                        </template>
-                        <template #empty> No existe Resultado </template>
-                        <template #loading> Cargando... </template>
-                        <Column field="id" header="ID"></Column>
-                        <Column field="name" header="Nombre" sortable></Column>
-                        <Column header="Acciones" style="width:100px">
-                            <template #body="slotProps">
+					</template>
+					<template #empty> No existe Resultado </template>
+					<template #loading> Cargando... </template>
+					<Column field="id" header="ID"></Column>
+					<Column field="name" header="Nombre" sortable></Column>
+					<Column header="Acciones" style="width:100px">
+						<template #body="slotProps">
 
-                                <Link :href="route('roles.edit', slotProps.data.id)"
-                                    class="inline-block rounded bg-primary-900 px-2 py-1 mx-auto text-sm font-medium text-white hover:bg-primary-100">
-                                Permisos
-                                </Link>
-                            </template>
-                        </Column>
-                    </DataTable>
+							<Link :href="route('roles.edit', slotProps.data.id)"
+								class="inline-block rounded bg-primary-900 px-2 py-1 mx-auto text-sm font-medium text-white hover:bg-primary-100">
+							Permisos
+							</Link>
+						</template>
+					</Column>
+				</DataTable>
 
-                </div>
+			</div>
 
-            </div>
+		</div>
 
-        </AppLayout>
+	</AppLayout>
 </template>
 
 
