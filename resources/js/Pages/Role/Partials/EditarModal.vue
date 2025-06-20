@@ -8,14 +8,14 @@ import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
 const titulo = "Rol"
-const ruta = "tipo_cambio"
+const ruta = "roles"
 
 //Variables
 const isShowModal = ref(false);
 
 const form = useForm({
     id: '',
-    valor: '',
+    name: '',
 })
 
 const props = defineProps({
@@ -39,9 +39,9 @@ const dataEdit = (id) => {
     axios.get(route(ruta + '.show', id))
         .then(res => {
             isShowModal.value = true;
-            var datos = res.data.tipo_cambio
+            var datos = res.data.rol
             form.id = datos.id
-            form.valor = datos.valor
+            form.name = datos.name
 
         })
 
@@ -59,7 +59,7 @@ const closeModal = () => {
 const submit = () => {
 
     form.clearErrors()
-    form.post(route(ruta + '.update', form.id), {
+    form.post(route(ruta + '.updateRol', form.id), {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => {
@@ -102,17 +102,14 @@ const show = (tipo, titulo, mensaje) => {
                     <div class="col-span-6 shadow-default xl:col-span-6">
                         <InputLabel for="nombre" value="Nombre"
                             class="block text-base font-medium leading-6 text-gray-900" />
-                            <input type="number"
-                                            v-model="form.valor" min="1" step="0.01"
-
-                                            class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
-
-                        <InputError class="mt-1 text-xs" :message="form.errors.valor" />
+                          <input type="text" v-model="form.name"
+							class="p-inputtext p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1">
+                        <InputError class="mt-1 text-xs" :message="form.errors.name" />
                     </div>
 
                 </div>
                 <div class="flex justify-end py-3">
-                    <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small" @click="closeModal"
+                    <Button label="Cancelar" :pt="{ root: 'mr-3 py-1' }" severity="danger" size="small" @click="closeModal"
                         type="button" />
 
                     <Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"

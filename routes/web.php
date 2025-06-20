@@ -56,10 +56,14 @@ Route::get('/', function () {
 Route::get('/inicio', [InicioController::class, 'index'])->name('inicio')->middleware(['auth', 'verified']);
 
 //Roles
-Route::controller(RoleController::class)->group(function () {
-	Route::get('/roles/{id}', 'edit')->name('roles.edit')->middleware('auth');
-	Route::post('/roles/{id}', 'update')->name('roles.update')->middleware('auth');
-	Route::get('/roles', 'index')->name('roles.index')->middleware('auth');
+Route::controller(RoleController::class)->prefix('roles')->name('roles.')->middleware('auth')->group(function () {
+	Route::get('/{id}', 'edit')->name('edit');
+	Route::post('/store', 'store')->name('store');
+	Route::get('/{id}/show', 'show')->name('show');
+	Route::post('/{id}', 'update')->name('update');
+	Route::post('/updateRol/{id}', 'updateRol')->name('updateRol');
+	Route::get('/', 'index')->name('index');
+	Route::delete('/{id}', 'destroy')->name('destroy');
 });
 
 //opciones
