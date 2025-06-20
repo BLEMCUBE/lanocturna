@@ -863,7 +863,7 @@
     "src": "resources/js/Pages/Cliente/Partials/EditarModal.vue"
   },
   "resources/js/Pages/Compra/Create.vue": {
-    "file": "assets/Create-5f9fe395.js",
+    "file": "assets/Create-65fc068f.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-30bee2ca.js",
@@ -2905,7 +2905,7 @@
     "src": "resources/js/Pages/Reporte/ProductosRma.vue"
   },
   "resources/js/Pages/Reporte/ProductosVendidos.vue": {
-    "file": "assets/ProductosVendidos-b845a874.js",
+    "file": "assets/ProductosVendidos-fa4eddf7.js",
     "imports": [
       "_AppLayout-30bee2ca.js",
       "_@inertiajs-ab1bf9dd.js",
@@ -4292,7 +4292,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-cb6e6a49.js",
+    "file": "assets/app-0edc9c79.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",

@@ -221,63 +221,71 @@ const cancelCrear = () => {
 
             </div>
 
+			<!--Productos-->
+			<div class="p-0 mb-0 col-span-12  lg:col-span-4 px-2">
+				<DataTable :filters="filters" scrollable scrollHeight="550px" :globalFilterFields="['origen', 'nombre']"
+					:value="productos.data"
+					:virtualScrollerOptions="{ itemSize: 46, lazy: true, numToleratedItems: 20 }">
+					<template #header>
+						<div class="flex justify-content-end text-sm">
+							<InputText class="w-full mx-1" v-model="filters['global'].value" placeholder="Buscar" />
+						</div>
+					</template>
+					<template #empty> No existe Resultado </template>
+					<template #loading> Cargando... </template>
 
-            <!--Productos-->
-            <div class="p-0 mb-0 col-span-12  lg:col-span-4 ">
-                <DataTable  :filters="filters" scrollable scrollHeight="550px"
-                    :globalFilterFields="['origen', 'nombre']" :value="productos.data"
-                    :virtualScrollerOptions="{ itemSize: 46 }" size="small">
-                    <template #header>
-                        <div class="flex justify-content-end text-sm">
-                            <InputText v-model="filters['global'].value" placeholder="Buscar" />
-                        </div>
-                    </template>
-                    <template #empty> No existe Resultado </template>
-                    <template #loading> Cargando... </template>
+					<Column field="nombre" header="Productos" :pt="{
+						bodyCell: {
+							class: 'flex justify-start text-center p-0 mx-0'
+						}
+					}">
+						<template #body="slotProps">
+							<div class="w-full my-0">
+								<div class="bg-white border-2 overflow-hidden">
+									<ul>
+										<li class="py-2 px-2">
+											<div class="flex items-center space-x-3">
+												<div class="flex-shrink-0">
+													<img class="w-12 h-12 rounded-full" :src="slotProps.data.imagen"
+														alt="">
+												</div>
+												<div class="flex-1 min-w-0 text-start py-1">
+													<div
+														class="text-xs md:text-[14px] font-medium whitespace-pre-line leading-4 text-gray-900">
+														{{ slotProps.data.nombre }}
+													</div>
+													<div class="font-bold leading-4 text-xs text-gray-800 py-1">
+														Origen:
+														<span class="px-1 py-0 font-normal">{{ slotProps.data.origen
+															}}</span>
+													</div>
+													<div class="font-bold leading-4 text-xs text-gray-800 py-1">
+														Stock:
+														<span class="px-1 py-0 font-normal text-xs">{{
+															slotProps.data.stock }}</span>
+													</div>
 
-                    <Column field="nombre" header="Productos" :pt="{
-                        bodyCell: {
-                            class: 'flex justify-start text-center p-0 mx-0'
-                        }
-                    }">
-                        <template #body="slotProps">
-                            <div class="w-full mx-auto px-1">
-                                <div class="flex flex-col gap-y-1 mx-2 sm:flex-row sm:items-center sm:justify-between">
-                                    <div class="flex items-center">
-                                        <img class="h-10 w-10 rounded-full object-cover" :src="slotProps.data.imagen"
-                                            alt="" />
-                                        <div class="ml-6 w-auto  text-start">
-                                            <p class="text-gray-800 mb-2 text-xs whitespace-pre-line font-bold leading-1">
-                                                {{
-                                                    slotProps.data.nombre }}</p>
-                                            <div class="font-bold leading-none text-xs text-gray-800 pb-1">Origen: <span
-                                                    class="px-1 py-0  font-normal">{{ slotProps.data.origen
-                                                    }}</span></div>
-                                            <div class="font-bold leading-none text-xs text-gray-800">Stock :<span
-                                                    class="px-1 py-0 font-normal">{{ slotProps.data.stock }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div class="px-auto">
-                                        <Button severity="success" aria-label="Add" @click="addToCart(slotProps.data.id)"
-                                            icon="fas fa-cart-plus" :pt="{
-                                                root: {
-                                                    class: 'flex items-center justify-center font-medium w-10'
-                                                },
-                                                label: {
-                                                    class: 'hidden'
-                                                }
-                                            }"
-                                            :disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"></Button>
-                                    </div>
 
-                                </div>
-                            </div>
-                        </template>
-                    </Column>
-                </DataTable>
-            </div>
+												</div>
+												<div
+													class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white pr-2">
+													<button @click="addToCart(slotProps.data.id)"
+														class="bg-green-500 disabled:bg-green-400 disabled:text-gray-500 hover:bg-green-600 text-white rounded px-2 py-1.5"
+														:disabled="form.productos.filter(e => e.producto_id === slotProps.data.id).length > 0"><i
+															class="fas fa-cart-plus"></i></button>
+												</div>
+											</div>
+										</li>
+
+									</ul>
+								</div>
+							</div>
+						</template>
+					</Column>
+				</DataTable>
+			</div>
+
 
         </div>
 
