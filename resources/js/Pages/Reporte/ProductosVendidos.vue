@@ -242,7 +242,7 @@ const filters = ref({
 							<Column field="nombre" header="Nombre" ></Column>
 							<Column field="categorias" header="Categoria" ></Column>
 							<Column field="stock" header="Stock" sortable></Column>
-							<Column field="costo_aprox" header="Costo aprox" sortable></Column>
+							<Column field="costo_real" header="Costo Real" sortable></Column>
 							<Column field="ventas_totales" header="Ventas Totales" sortable :pt="{
 								bodyCell: { class: 'text-center' },
 								headerTitle: { class: 'text-center w-14' },

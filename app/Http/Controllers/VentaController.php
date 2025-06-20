@@ -62,8 +62,9 @@ class VentaController extends Controller
             DB::raw("JSON_UNQUOTE(json_extract(cliente,'$.nombre')) AS cliente")
         )
             ->when(Request::input('buscar'), function ($query) {
-                $query->where(DB::raw('lower(nro_compra)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
-                    ->orWhere(DB::raw('lower(cliente)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%');
+                $query->Where(DB::raw('lower(nro_compra)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
+                    ->orWhere(DB::raw('lower(cliente)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
+					->orWhere(DB::raw('total'), '=', Request::input('buscar'));
             })
             ->when(Request::input('inicio'), function ($query) {
                 $query->whereDate('created_at', '>=', Request::input('inicio') . ' 00:00:00');

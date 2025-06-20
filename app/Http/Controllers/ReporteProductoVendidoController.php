@@ -72,11 +72,13 @@ class ReporteProductoVendidoController extends Controller
         foreach ($query_total_productos as $vent) {
             //calculo
             $costo_aprox = 0;
+            $costo_real = 0;
             $ultimo_yang = 0;
-            $ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $vent->origen)->latest()->first();
+            $ultimo_importacion = ImportacionDetalle::select('precio','costo_real')->where('sku', $vent->origen)->latest()->first();
             if (!is_null($ultimo_importacion)) {
 
-                $ultimo_precio = $ultimo_importacion->precio;
+              //  $ultimo_precio = $ultimo_importacion->precio;
+                $ultimo_precio = $ultimo_importacion->costo_real;
             } else {
                 $ultimo_precio = 0;
             }
@@ -87,7 +89,8 @@ class ReporteProductoVendidoController extends Controller
             if (!is_null($tipo_yuan)) {
 
                 $ultimo_yang = $tipo_cambio_yuan->valor;
-                $costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
+                //$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
+                $costo_real = $ultimo_precio;
             } else {
                 $ultimo_yang = 0;
             }
@@ -101,7 +104,8 @@ class ReporteProductoVendidoController extends Controller
                 "stock" => $vent->stock,
 				"categorias" => !is_null($vent->categorias)?implode(", ",$l_cat->all()):'',
                 "imagen" => $vent->imagen,
-                'costo_aprox' => number_format($costo_aprox, 2, ','),
+                //'costo_aprox' => number_format($costo_aprox, 2, ','),
+                'costo_real' => number_format($costo_real, 2, ','),
                 "ventas_totales" => $vent->ventas_totales,
                 "porcentaje" => round(($vent->ventas_totales / $total_cantidad) * 100, 2),
             ]);

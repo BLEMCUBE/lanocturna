@@ -48,12 +48,18 @@ class CompraController extends Controller
     public function create()
     {
 
+        $productoLista = Producto::
+		with(['importacion_detalles' => function ($query) {
+            $query->select('id', 'sku', 'cantidad_total', 'importacion_id', 'estado');
+        }, 'importacion_detalles.importacion' => function ($query1) {
+            $query1->select('id', 'estado', 'nro_carpeta');
+        }])->select('id','nombre','origen','stock','codigo_barra','imagen')
+            ->orderBy('stock', 'ASC')
+            ->get();
 
+        $resultadoProductoLista = new ProductoVentaCollection($productoLista);
         return Inertia::render('Compra/Create', [
-            'productos' => new ProductoVentaCollection(
-                Producto::orderBy('created_at', 'DESC')
-                    ->get()
-            )
+            'productos' => $resultadoProductoLista
         ]);
     }
     public function edit($id)
