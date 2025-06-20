@@ -3506,22 +3506,23 @@
     "src": "resources/js/Pages/Role/Edit.vue"
   },
   "resources/js/Pages/Role/Index.vue": {
-    "file": "assets/Index-d2833f18.js",
+    "file": "assets/Index-7eed7f86.js",
     "imports": [
+      "_@vue-1043e4d5.js",
       "_AppLayout-30bee2ca.js",
       "_@inertiajs-ab1bf9dd.js",
       "_primevue-232ee6f7.js",
       "resources/js/Pages/Role/Partials/CrearModal.vue",
-      "_@vue-1043e4d5.js",
+      "resources/js/Pages/Role/Partials/EditarModal.vue",
+      "_sweetalert2-c47eda61.js",
       "_logo-e22dfca4.js",
       "_pinia-ff353768.js",
       "_@vueuse-54bafaaf.js",
-      "_sweetalert2-c47eda61.js",
-      "_apexcharts-f697a6eb.js",
       "_@headlessui-edafee9e.js",
       "_@heroicons-7e6153ac.js",
       "_axios-4a70c6fc.js",
       "_deepmerge-34bd70bf.js",
+      "_apexcharts-f697a6eb.js",
       "_qs-ba0d1d34.js",
       "_side-channel-009c6bc3.js",
       "_get-intrinsic-bd2830fd.js",
@@ -3541,7 +3542,7 @@
     "src": "resources/js/Pages/Role/Index.vue"
   },
   "resources/js/Pages/Role/Partials/CrearModal.vue": {
-    "file": "assets/CrearModal-5d269a44.js",
+    "file": "assets/CrearModal-a03bbec0.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_InputError-933cc936.js",
@@ -3568,7 +3569,7 @@
     "src": "resources/js/Pages/Role/Partials/CrearModal.vue"
   },
   "resources/js/Pages/Role/Partials/EditarModal.vue": {
-    "file": "assets/EditarModal-5391cf68.js",
+    "file": "assets/EditarModal-0792c1e9.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_InputError-933cc936.js",
@@ -4291,7 +4292,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-725f5944.js",
+    "file": "assets/app-cb6e6a49.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",
