@@ -9,30 +9,33 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Compra extends Model
 {
-    use  HasFactory;
+	use  HasFactory;
 
-    protected $table = 'compras';
-    protected $fillable = [
-        'id',
-        'nro_factura',
-        'proveedor',
-        'facturador_id',
-        'estado',
-        'fecha_anulacion',
-        'observaciones',
-        'created_at'
-    ];
-
-
-    public function facturador()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function detalles_compras()
-    {
-        return $this->hasMany(CompraDetalle::class);
-    }
+	protected $table = 'compras';
+	protected $fillable = [
+		'id',
+		'nro_factura',
+		'proveedor',
+		'facturador_id',
+		'estado',
+		'fecha_anulacion',
+		'observaciones',
+		'total',
+		'total_sin_iva',
+		'moneda',
+		'tipo_cambio',
+		'comprador_id',
+		'created_at'
+	];
 
 
+	public function facturador()
+	{
+		return $this->belongsTo(User::class);
+	}
+
+	public function detalles_compras()
+	{
+		return $this->hasMany(CompraDetalle::class);
+	}
 }

@@ -13,6 +13,7 @@ import 'vue-datepicker-next/index.css';
 import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
+const { tipo_cambio } = usePage().props
 
 const toast = useToast();
 const tabla_ventas = ref()
@@ -138,9 +139,12 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const BtnCrear = () => {
+    if (tipo_cambio == true) {
 
         router.get(route(ruta + '.create'));
-
+    } else {
+        ok('error', 'No se ha especificado el tipo de cambio para el día')
+    }
 }
 
 const ok = (icono, mensaje) => {

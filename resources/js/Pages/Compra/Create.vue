@@ -13,213 +13,332 @@ const titulo = "Compra en plaza"
 const ruta = 'compras'
 
 const filters = ref({
-    'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
+	'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
-
+const { tipo_cambio } = usePage().props
 const form = useForm({
-    nro_factura: '',
-    proveedor: '',
-    observaciones: '',
-    productos: [],
-
+	nro_factura: '',
+	proveedor: '',
+	total: 0.0,
+	total_sin_iva: 0.0,
+	moneda: 'Pesos',
+	tipo_cambio: '',
+	observaciones: '',
+	productos: [],
+	vendedor_id: '',
 
 })
+
+const prod = useForm({
+	producto_id: '',
+	nombre: '',
+	origen: '',
+	imagen: '',
+	cantidad: '',
+	precio_sin_iva: '',
+	precio: '',
+	total_sin_iva: '',
+	total: '',
+})
+
+const selectedMoneda = ref({ name: 'Pesos', code: 'Pesos' });
+const monedas = ref([
+	{ name: 'Pesos', code: 'Pesos' },
+	{ name: 'Dólares', code: 'Dólares' },
+]);
 const { productos } = usePage().props
 
 onMounted(() => {
-
-    form.moneda = "Pesos"
+	form.tipo_cambio = tipo_cambio
+	form.moneda = "Pesos"
 })
 
 
+const setMoneda = (e) => {
+
+	if (selectedMoneda.value.code == form.moneda)
+		return;
+	if (selectedMoneda.value.code == 'Pesos') {
+		form.productos.forEach((item, index) => {
+			item['precio'] = roundNumber(parseFloat(item['precio'] * tipo_cambio).toFixed(2), 0.5, 'round')
+			item['total'] = item['cantidad'] * item['precio']
+			item['precio_sin_iva'] = (parseFloat(item['precio']) / 1.22).toFixed(2)
+			item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
+		})
+		form.moneda = selectedMoneda.value.code;
+	} else {
+		form.productos.forEach((item, index) => {
+			item['precio'] = parseFloat(item['precio'] / tipo_cambio).toFixed(2)
+			item['total'] = item['cantidad'] * item['precio']
+			item['precio_sin_iva'] = (parseFloat(item['precio']) / 1.22).toFixed(2)
+			item['total_sin_iva'] = item['cantidad'] * item['precio_sin_iva']
+		})
+		form.moneda = selectedMoneda.value.code;
+	}
+	sumaTotal()
+	calculoSinIva()
+}
+
+const roundNumber = (value, step = 1.0, type = 'round') => {
+	step || (step = 1.0);
+	const inv = 1.0 / step;
+	const mathFunc = 'ceil' === type ? Math.ceil : ('floor' === type ? Math.floor : Math.round);
+
+	return mathFunc(value * inv) / inv;
+}
+
 const addToCart = (id) => {
-    form.clearErrors();
-    var produ = productos.data.find(pr => pr.id === id);
-    if (produ.stock >= 0) {
-        form.productos.push(
-            {
-                producto_id: produ.id,
-                nombre: produ.nombre,
-                origen: produ.origen,
-                cantidad: 1,
-                precio: null,
-                stock: produ.stock,
-            }
-        )
+	form.clearErrors();
+	var produ = productos.data.find(pr => pr.id === id);
+	if (produ.stock >= 0) {
+		form.productos.push(
+			{
+				producto_id: produ.id,
+				nombre: produ.nombre,
+				origen: produ.origen,
+				cantidad: 1,
+				precio: null,
+				stock: produ.stock,
+				total: 1
+			}
+		)
+		sumaTotal()
+		calculoSinIva()
 
-
-    } else {
-        alerta('No hay stock disponible', 'error')
-    }
+	} else {
+		alerta('No hay stock disponible', 'error')
+	}
 
 };
 
-
 const removerProducto = (index) => {
-    form.productos.splice(index, 1);
-
-
+	form.productos.splice(index, 1);
+	sumaTotal()
+	calculoSinIva()
 }
-
-
 //envio de formulario
 const submit = () => {
 
-    form.clearErrors()
-    form.post(route(ruta + '.store'), {
-        preserveScroll: true,
-        forceFormData: true,
-        onSuccess: () => {
-            show('success', 'Mensaje', 'Compra creada')
-            setTimeout(() => {
-                router.get(route(ruta + '.create'));
-            }, 1000);
-        },
-        onFinish: () => {
+	form.clearErrors()
+	form.post(route(ruta + '.store'), {
+		preserveScroll: true,
+		forceFormData: true,
+		onSuccess: () => {
+			show('success', 'Mensaje', 'Compra creada')
+			setTimeout(() => {
+				router.get(route(ruta + '.create'));
+			}, 1000);
+		},
+		onFinish: () => {
 
-        },
-        onError: () => {
+		},
+		onError: () => {
 
-        }
-    });
+		}
+	});
 
 
 
 };
+
+const sumaTotal = () => {
+	form.total = (form.productos.reduce((acc, cur) => acc + parseFloat(cur['total']), 0)).toFixed(2)
+	form.total_sin_iva = (form.productos.reduce((acc, cur) => acc + parseFloat(cur['total_sin_iva']), 0)).toFixed(2)
+	calculoSinIva()
+
+}
+
+const sumaTotalProducto = ($event, id) => {
+	var precio_temp = (form.productos[id].precio === null) ? 1 : form.productos[id].precio
+
+	form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
+	form.productos[id].total_sin_iva = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp / 1.22).toFixed(2))
+	form.productos[id].precio_sin_iva = (form.productos[id].precio / 1.22).toFixed(2)
+	sumaTotal()
+	calculoSinIva()
+
+}
+
+const calculoSinIva = () => {
+
+	form.total_sin_iva = (form.total / 1.22).toFixed(2)
+}
+
 //modal advertencia
 const alerta = (mensaje, icono) => {
-    Swal.fire({
-        width: 350,
-        title: mensaje,
-        icon: icono
-    })
+	Swal.fire({
+		width: 350,
+		title: mensaje,
+		icon: icono
+	})
 }
 const show = (tipo, titulo, mensaje) => {
-    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
 
 const cancelCrear = () => {
-    router.get(route(ruta + '.index'))
+	router.get(route(ruta + '.index'))
 };
 
 
 </script>
 <template>
-    <Head :title="titulo" />
-    <AppLayout
-        :pagina="[{ 'label': 'Compras', link: false, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
-        <!--Contenido-->
-        <div
-            class="grid grid-cols-12 p-0 m-0 gap-2 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
-            <Toast />
-            <div class="mt-0 mb-4 col-span-12 lg:col-span-8">
+	<Head :title="titulo" />
+	<AppLayout
+		:pagina="[{ 'label': 'Compras', link: false, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
+		<!--Contenido-->
+		<div
+			class="grid grid-cols-12 p-0 m-0 gap-2 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
-                <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
-                    <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-                </div>
-                <form>
+			<Toast />
+			<div class="mt-0 mb-4 col-span-12 lg:col-span-8">
 
-                    <div class="grid grid-cols-12 gap-1 py-0">
+				<div
+					class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
+					<h5 class="text-2xl font-medium">{{ titulo }}</h5>
+				</div>
+				<form>
 
-                        <!--Tabla-->
+					<div class="grid grid-cols-12 gap-1 py-0">
 
-                        <table class="table-auto mx-2 border border-gray-300 col-span-12">
-                            <thead>
-                                <tr class="p-2 bg-secondary-900 border">
-                                    <th class="border border-gray-300 p-2 w-24">Origen</th>
-                                    <th class="border border-gray-300 ">Producto</th>
-                                    <th class="border border-gray-300 w-24">Cantidad</th>
-                                    <th class="border border-gray-300 w-8"></th>
+						<!--Tabla-->
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(producto, index) in form.productos" :key="index"
-                                    class="font-sans  font-normal text-gray-800 border border-gray-300">
-                                    <td class="border border-gray-300 p-2">{{ producto.origen }}</td>
-                                    <td class="border border-gray-300 p-2">{{ producto.nombre }}</td>
-                                    <td class="border border-gray-300"><input type="number" v-model="producto.cantidad"
-                                            min="1" step="1"
-                                            class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end"
-                                            />
+						<table class="table-auto mx-2 border border-gray-300 col-span-12">
+							<thead>
+								<tr class="p-2 bg-secondary-900 border">
+									<th class="border border-gray-300 p-2 w-24">Origen</th>
+									<th class="border border-gray-300 ">Producto</th>
+									<th class="border border-gray-300 w-24">Cantidad</th>
+									<th class="border border-gray-300 w-24">Precio</th>
+									<th class="border border-gray-300 w-24">Total</th>
+									<th class="border border-gray-300 w-8"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(producto, index) in form.productos" :key="index"
+									class="font-sans  font-normal text-gray-800 border border-gray-300">
+									<td class="border border-gray-300 p-2">{{ producto.origen }}</td>
+									<td class="border border-gray-300 p-2">{{ producto.nombre }}</td>
+									<td class="border border-gray-300"><input type="number" v-model="producto.cantidad"
+											min="1" step="1"
+											class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end"
+											@input="sumaTotalProducto($event, index)"/>
 
-                                    </td>
+									</td>
+									<td class="border border-gray-300"><input type="number" required
+											v-model="producto.precio" min="0" step="1"
+											@input="sumaTotalProducto($event, index)"
+											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
 
-                                    <td class="border-none  border-gray-300 p-1 ">
-                                        <div
-                                            class="rounded-md p-1 flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
-                                            <button type="button" @click.prevent="removerProducto(index)" class="w-6"
-                                                v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"><i
-                                                    class="fas fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="col-span-12  p-2 xl:col-span-12">
-                            <InputError class="mt-1 text-lg w-full " :message="form.errors.productos" />
-                            <InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg" :message="error" />
-                        </div>
-                        <!--Tabla-->
-                        <!--Datos Compras-->
-                        <div
-                            class="px-0 py-1 m-2 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
-                            <h5 class="text-lg font-medium">Datos Compra</h5>
-                        </div>
+									</td>
+									<td class="border border-gray-300 p-2">{{ producto.total }} </td>
+									<td class="border-none  border-gray-300 p-1 ">
+										<div
+											class="rounded-md p-1 flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
+											<button type="button" @click.prevent="removerProducto(index)" class="w-6"
+												v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"><i
+													class="fas fa-trash"></i></button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="4" class="text-end"><b>Total: </b></td>
+									<td class="text-end"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{ form.total
+									}}
+										</b>
+									</td>
+								</tr>
+
+							</tfoot>
+						</table>
+						<div class="col-span-12  p-2 xl:col-span-12">
+							<InputError class="mt-1 text-lg w-full " :message="form.errors.productos" />
+							<InputError v-for="error in form.errors.campos_productos" class="mt-1 mb-0 text-lg"
+								:message="error" />
+						</div>
+						<!--Tabla-->
+						<!--Datos Compras-->
+						<div
+							class="px-0 py-1 m-2 bg-primary-900 text-white  col-span-full  flex justify-center items-center">
+							<h5 class="text-lg font-medium">Datos Compra</h5>
+						</div>
+
+						<div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+							<InputLabel for="tipo_cambio" value="Tipo de cambio"
+								class="text-base font-medium leading-1 text-gray-900" />
+							<InputText type="text" id="tipo_cambio" v-model="tipo_cambio" readonly :pt="{
+								root: { class: 'h-9 w-full' }
+							}" />
+							<InputError class="mt-1 text-xs" :message="form.errors.tipo_cambio" />
+						</div>
+							<div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+							<InputLabel for="moneda" value="Moneda"
+								class="text-base font-medium leading-1 text-gray-900" />
+
+							<Dropdown v-model="selectedMoneda" @change="setMoneda" :options="monedas" optionLabel="name"
+								:pt="{
+									root: { class: 'w-full' },
+									trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
+									item: ({ props, state, context }) => ({
+										class: context.selected ? 'text-white bg-primary-900' : context.focused ? 'bg-blue-100' : undefined
+									})
+								}" placeholder="Seleccione Moneda" />
+							<InputError class="mt-1 text-xs" :message="form.errors.moneda" />
+						</div>
+
+						<div class="col-span-12 mx-2 py-0 shadow-default lg:col-span-6">
+							<InputLabel for="nro_factura" value="Nro Factura"
+								class="text-base font-medium leading-6 text-gray-900" />
+							<InputText type="text" id="nro_factura" v-model="form.nro_factura"
+								placeholder="ingrese nro factura" :pt="{
+									root: { class: 'h-9 w-full' }
+								}" />
+							<InputError class="mt-1 text-xs" :message="form.errors.nro_factura" />
+
+						</div>
 
 
+						<div class="col-span-12 mx-2 py-0 shadow-default lg:col-span-6">
+							<InputLabel for="proveedor" value="Proveedor"
+								class="text-base font-medium leading-6 text-gray-900" />
+							<InputText type="text" id="proveedor" v-model="form.proveedor"
+								placeholder="ingrese proveedor" :pt="{
+									root: { class: 'h-9 w-full' }
+								}" />
+							<InputError class="mt-1 text-xs" :message="form.errors.proveedor" />
 
-                        <div class="col-span-12 mx-2 py-0 shadow-default lg:col-span-6">
-                            <InputLabel for="nro_factura" value="Nro Factura"
-                                class="text-base font-medium leading-6 text-gray-900" />
-                            <InputText type="text" id="nro_factura" v-model="form.nro_factura"
-                                placeholder="ingrese nro factura" :pt="{
-                                    root: { class: 'h-9 w-full' }
-                                }" />
-                            <InputError class="mt-1 text-xs" :message="form.errors.nro_factura" />
+						</div>
+						<div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-12">
+							<InputLabel for="rut" value="Observaciones:"
+								class="text-base font-medium leading-6 text-gray-900" />
 
-                        </div>
+							<Textarea v-model="form.observaciones" :pt="{
+								root: {
+									rows: '2',
+									class: 'w-full'
+								}
+							}" />
 
+						</div>
 
-                        <div class="col-span-12 mx-2 py-0 shadow-default lg:col-span-6">
-                            <InputLabel for="proveedor" value="Proveedor"
-                                class="text-base font-medium leading-6 text-gray-900" />
-                            <InputText type="text" id="proveedor" v-model="form.proveedor" placeholder="ingrese proveedor"
-                                :pt="{
-                                    root: { class: 'h-9 w-full' }
-                                }" />
-                            <InputError class="mt-1 text-xs" :message="form.errors.proveedor" />
+						<!--Datos Compras-->
 
-                        </div>
-                        <div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-12">
-                            <InputLabel for="rut" value="Observaciones:"
-                                class="text-base font-medium leading-6 text-gray-900" />
+					</div>
+					<div class="flex justify-end py-3">
+						<Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small"
+							@click="cancelCrear" type="button" />
 
-                            <Textarea v-model="form.observaciones" :pt="{
-                                root: {
-                                    rows: '2',
-                                    class: 'w-full'
-                                }
-                            }" />
+						<Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
+							:disabled="form.processing" @click.prevent="submit" />
+					</div>
 
-                        </div>
-
-                        <!--Datos Compras-->
-
-                    </div>
-                    <div class="flex justify-end py-3">
-                        <Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small"
-                            @click="cancelCrear" type="button" />
-
-                        <Button label="Guardar" size="small" type="button" :class="{ 'opacity-50': form.processing }"
-                            :disabled="form.processing" @click.prevent="submit" />
-                    </div>
-
-                </form>
+				</form>
 
 
-            </div>
+			</div>
 
 			<!--Productos-->
 			<div class="p-0 mb-0 col-span-12  lg:col-span-4 px-2">
@@ -257,7 +376,7 @@ const cancelCrear = () => {
 													<div class="font-bold leading-4 text-xs text-gray-800 py-1">
 														Origen:
 														<span class="px-1 py-0 font-normal">{{ slotProps.data.origen
-															}}</span>
+														}}</span>
 													</div>
 													<div class="font-bold leading-4 text-xs text-gray-800 py-1">
 														Stock:
@@ -287,11 +406,11 @@ const cancelCrear = () => {
 			</div>
 
 
-        </div>
+		</div>
 
-        <!--Contenido-->
+		<!--Contenido-->
 
-    </AppLayout>
+	</AppLayout>
 </template>
 
 
