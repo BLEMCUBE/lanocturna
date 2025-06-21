@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(PagoServicio::class);
     }
+
+	  public function ventas()
+    {
+        return $this->hasMany(Venta::class,'vendedor_id','id');
+    }
 }

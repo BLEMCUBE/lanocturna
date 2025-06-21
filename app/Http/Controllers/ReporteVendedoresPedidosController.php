@@ -6,6 +6,7 @@ use App\Models\ImportacionDetalle;
 use App\Models\ProductoYuan;
 use App\Models\TipoCambioYuan;
 use App\Models\User;
+use App\Models\Venta;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -19,9 +20,22 @@ class ReporteVendedoresPedidosController extends Controller
 {
     public function index()
     {
-        $query_vendedor = User::role('Vendedor')->select('id')->get()->toArray(); // Returns only users with the role 'writer'
+
         $inicio = Request::input('inicio');
         $final = Request::input('fin');
+		$query_vendedor=DB::table('users as us')
+                    ->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
+                    ->when($inicio, function ($query, $inicio) {
+                        $query->whereDate('ve.fecha_facturacion', '>=', $inicio);
+                    })
+                    ->when($final, function ($query, $final) {
+                        $query->whereDate('ve.fecha_facturacion', '<=', $final)
+						     ->where('ve.destino', '=', 'SALON');
+                    })
+		->select('us.id')
+		->groupBy('us.id')
+		->get()->toArray();
+
 
         if (!is_null($query_vendedor)) {
             $id_vendedores = array_column($query_vendedor, 'id');
@@ -77,7 +91,7 @@ class ReporteVendedoresPedidosController extends Controller
     public function exportVendedoresPedidos()
     {
 
-        $inicio = Carbon::parse(Request::input('fin'));
+        $inicio = Carbon::parse(Request::input('inicio'));
         $final = Carbon::parse(Request::input('fin'));
 
         $styleArray = [
@@ -110,9 +124,19 @@ class ReporteVendedoresPedidosController extends Controller
         $sheet->getStyle('A' . (string)3 . ':' . 'C' . (string)3)->getAlignment()->setVertical('center');
 
         //datos
-        $query_vendedor = User::role('Vendedor')->select('id')->get()->toArray(); // Returns only users with the role 'writer'
-        $inicio = Request::input('inicio');
-        $final = Request::input('fin');
+		$query_vendedor=DB::table('users as us')
+                    ->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
+                    ->when($inicio, function ($query, $inicio) {
+                        $query->whereDate('ve.fecha_facturacion', '>=', $inicio);
+                    })
+                    ->when($final, function ($query, $final) {
+                        $query->whereDate('ve.fecha_facturacion', '<=', $final)
+						     ->where('ve.destino', '=', 'SALON');
+                    })
+		->select('us.id')
+		->groupBy('us.id')
+		->get()->toArray();
+
 
         if (!is_null($query_vendedor)) {
             $id_vendedores = array_column($query_vendedor, 'id');

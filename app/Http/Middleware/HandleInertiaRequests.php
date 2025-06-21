@@ -43,11 +43,13 @@ class HandleInertiaRequests extends Middleware
             $fecha = Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
             if ($fecha->eq($actual)) {
                 $hoy_tipo_cambio = true;
-                $tipo_cambio = $ultimo_tipo_cambio;
+                //$tipo_cambio = $ultimo_tipo_cambio;
             } else {
                 $hoy_tipo_cambio = false;
             }
-        }
+        }else{
+			   $hoy_tipo_cambio = false;
+		}
 
         // cantidad de rmas
         $total_rmas = new VentaCollection(
