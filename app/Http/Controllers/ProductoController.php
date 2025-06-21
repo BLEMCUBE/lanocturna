@@ -278,11 +278,7 @@ class ProductoController extends Controller
 			$tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
 		}
 
-		/*$ultimo_importacion = ImportacionDetalle::select('id','precio','costo_real','estado','sku')
-		->where('estado','=','Arribado')
-		->where('sku', $producto->origen)
-		->latest()
-		->first();*/
+
 		$ultimo_importacion = DB::table('importaciones_detalles as det')
 			->join('importaciones as imp', 'imp.id', '=', 'det.importacion_id')
 			->select(

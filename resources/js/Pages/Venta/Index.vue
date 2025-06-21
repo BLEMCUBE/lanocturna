@@ -3,7 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, watch } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-import { FilterMatchMode } from 'primevue/api';
+
 import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 
@@ -14,14 +14,14 @@ import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import Pagination from '@/Components/Pagination.vue';
 const props = defineProps({
-    ventas: {
-        type: Object,
-        default: () => ({}),
-    },
-    filtro: {
-        type: Object,
-        default: () => ({}),
-    },
+	ventas: {
+		type: Object,
+		default: () => ({}),
+	},
+	filtro: {
+		type: Object,
+		default: () => ({}),
+	},
 });
 
 const toast = useToast();
@@ -31,248 +31,289 @@ const ruta = 'ventas'
 const { tipo_cambio } = usePage().props
 
 const formDelete = useForm({
-    id: '',
+	id: '',
 });
 
 //*datepicker  */
 const shortcuts = [
-    {
-        text: 'Hoy',
-        onClick() {
-            const date = [new Date(), new Date()];
-            return date;
-        },
-    },
-    {
-        text: 'Ayer',
-        onClick() {
-            const date = [subDays(new Date(), 1), subDays(new Date(), 1)];
-            //date.setTime(date.getTime() - 3600 * 1000 * 24);
+	{
+		text: 'Hoy',
+		onClick() {
+			const date = [new Date(), new Date()];
+			return date;
+		},
+	},
+	{
+		text: 'Ayer',
+		onClick() {
+			const date = [subDays(new Date(), 1), subDays(new Date(), 1)];
+			//date.setTime(date.getTime() - 3600 * 1000 * 24);
 
-            return date;
-        },
-    },
-    {
-        text: 'Este mes',
-        onClick() {
-            const date = [startOfMonth(new Date()), endOfMonth(new Date())];
+			return date;
+		},
+	},
+	{
+		text: 'Este mes',
+		onClick() {
+			const date = [startOfMonth(new Date()), endOfMonth(new Date())];
 
-            return date;
-        },
-    },
-    {
-        text: 'Este año',
-        onClick() {
-            const date = [startOfYear(new Date()), endOfYear(new Date())];
+			return date;
+		},
+	},
+	{
+		text: 'Este año',
+		onClick() {
+			const date = [startOfYear(new Date()), endOfYear(new Date())];
 
-            return date;
-        },
-    },
+			return date;
+		},
+	},
 ]
 
 let buscar = ref(props.filtro.buscar);
+let total = ref(props.filtro.total);
+let compra = ref(props.filtro.compra);
+let cliente = ref(props.filtro.cliente||true);
+
 let date = ref([props.filtro.inicio, props.filtro.fin]);
 let inicio = ref(props.filtro.inicio);
 let fin = ref(props.filtro.fin);
 
 
 watch(buscar, (value) => {
-    router.get(
-        route(ruta + '.index'),
-        {
-            buscar: value,
-            inicio: inicio.value,
-            fin: fin.value
-        },
-        {
-            preserveState: true,
-            replace: true,
-        }
-    );
+	setTimeout(function () {
+		router.get(
+			route(ruta + '.index'),
+			{
+				buscar: value,
+				inicio: inicio.value,
+				fin: fin.value,
+				total: total.value,
+				cliente: cliente.value,
+				compra: compra.value
+			},
+			{
+				preserveState: true,
+				replace: true,
+			}
+		);
+	}, 500);
+
 });
 
 
 
 //filtrado
 const filtrado = (value) => {
-    if (value[0] != null && value[1] != null) {
-        date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
-        inicio.value = date.value[0];
-        fin.value = date.value[1];
-    } else {
-        date.value = [];
-        inicio.value = null;
-        fin.value = null;
-    }
-    router.get(
-        route(ruta + '.index'),
-        {
-            buscar: buscar.value,
-            inicio: inicio.value,
-            fin: fin.value
-        },
-        {
-            preserveState: true,
-            replace: true,
-        }
-    );
+	if (value[0] != null && value[1] != null) {
+		date.value = [moment(value[0]).format('YYYY-MM-DD'), moment(value[1]).format('YYYY-MM-DD')];
+		inicio.value = date.value[0];
+		fin.value = date.value[1];
+	} else {
+		date.value = [];
+		inicio.value = null;
+		fin.value = null;
+	}
+	setTimeout(function () {
+		router.get(
+			route(ruta + '.index'),
+			{
+				buscar: buscar.value,
+				inicio: inicio.value,
+				fin: fin.value,
+				total: total.value,
+				cliente: cliente.value,
+				compra: compra.value,
+			},
+			{
+				preserveState: true,
+				replace: true,
+			}
+
+
+		);
+	}, 100);
 
 
 }
 
 const colorEstado = (estado) => {
-    switch (estado) {
-        case 'PENDIENTE DE FACTURACIÓN':
-            return 'text-orange-600'
-        case 'FACTURADO':
-            return 'text-blue-600'
-        case 'COMPLETADO':
-            return 'text-green-600'
-        case 'ANULADO':
-            return 'text-red-600'
-        default:
-            return 'text-black'
-    }
+	switch (estado) {
+		case 'PENDIENTE DE FACTURACIÓN':
+			return 'text-orange-600'
+		case 'FACTURADO':
+			return 'text-blue-600'
+		case 'COMPLETADO':
+			return 'text-green-600'
+		case 'ANULADO':
+			return 'text-red-600'
+		default:
+			return 'text-black'
+	}
 }
 
 const btnVer = (id) => {
-    router.get(route(ruta + '.show', id));
+	router.get(route(ruta + '.show', id));
 
 };
 
 const btnEliminar = (id) => {
 
-    const alerta = Swal.mixin({ buttonsStyling: true });
-    alerta.fire({
-        width: 350,
-        title: "Seguro de Anular ",
-        text: 'Se anulará definitivamente',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Anular',
-        cancelButtonText: 'Cancelar',
-        cancelButtonColor: 'red',
-        confirmButtonColor: '#2563EB',
+	const alerta = Swal.mixin({ buttonsStyling: true });
+	alerta.fire({
+		width: 350,
+		title: "Seguro de Anular ",
+		text: 'Se anulará definitivamente',
+		icon: 'question',
+		showCancelButton: true,
+		confirmButtonText: 'Anular',
+		cancelButtonText: 'Cancelar',
+		cancelButtonColor: 'red',
+		confirmButtonColor: '#2563EB',
 
-    }).then((result) => {
-        if (result.isConfirmed) {
-            formDelete.delete(route(ruta + '.destroy', id),
-                {
-                    preserveScroll: true,
-                    forceFormData: true,
-                    onSuccess: () => {
-                        show('success', 'Eliminado', 'Se ha anulado')
-                        setTimeout(() => {
-                            router.get(route(ruta + '.index'));
-                        }, 1000);
+	}).then((result) => {
+		if (result.isConfirmed) {
+			formDelete.delete(route(ruta + '.destroy', id),
+				{
+					preserveScroll: true,
+					forceFormData: true,
+					onSuccess: () => {
+						show('success', 'Eliminado', 'Se ha anulado')
+						setTimeout(() => {
+							router.get(route(ruta + '.index'));
+						}, 1000);
 
-                    }
-                });
-        }
-    });
+					}
+				});
+		}
+	});
 }
 
 const clickDetalle = (id) => {
-    btnVer(id)
+	btnVer(id)
 }
 
 
 const show = (tipo, titulo, mensaje) => {
-    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
 
 const BtnCrear = () => {
-    if (tipo_cambio == true) {
+	if (tipo_cambio == true) {
 
-        router.get(route(ruta + '.create'));
-    } else {
-        ok('error', 'No se ha especificado el tipo de cambio para el día')
-    }
+		router.get(route(ruta + '.create'));
+	} else {
+		ok('error', 'No se ha especificado el tipo de cambio para el día')
+	}
 }
 
 const ok = (icono, mensaje) => {
 
-    Swal.fire({
-        width: 350,
-        title: mensaje,
-        icon: icono
-    })
+	Swal.fire({
+		width: 350,
+		title: mensaje,
+		icon: icono
+	})
 }
 
 </script>
 
 <template>
 
-    <Head :title="titulo" />
-    <AppLayout :pagina="[{ 'label': titulo, link: false }]">
-        <div class="card p-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12">
-            <!--Contenido-->
-            <Toast />
-            <div class="p-3 col-span-full flex justify-between items-center">
-                <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-                <Button size="small" :label="'Crear Venta'" severity="success" @click="BtnCrear"></Button>
+	<Head :title="titulo" />
+	<AppLayout :pagina="[{ 'label': titulo, link: false }]">
+		<div class="card p-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12">
+			<!--Contenido-->
+			<Toast />
+			<div class="p-3 col-span-full flex justify-between items-center">
+				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
+				<Button size="small" :label="'Crear Venta'" severity="success" @click="BtnCrear"></Button>
 
-            </div>
-            <!--tabla-->
-            <div class="align-middle py-4">
-                <div class="grid grid-cols-6 gap-4 m-1.5">
-                    <InputText v-model="buscar" placeholder="N° Compra o Cliente" :pt="{
-                        root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
-                    }" />
+			</div>
+			<!--tabla-->
+			<div class="align-middle py-4">
+				<div class="grid grid-cols-6 gap-4 m-1.5">
+					<InputText v-model="buscar" placeholder="N° Compra o Cliente" :pt="{
+						root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
+					}" />
 
-                    <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
-                        class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
-                        v-model:value="date" :shortcuts="shortcuts" lang="es" editable="false"
-                        placeholder="Seleccione Fecha"></date-picker>
+					<date-picker @change.="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
+						class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
+						v-model:value="date" :shortcuts="shortcuts" lang="es" editable="false"
+						placeholder="Seleccione Fecha"></date-picker>
 
-                </div>
-                <div style="overflow:auto; max-height: 700px;">
+				</div>
+				<div class="text-xl font-medium ml-5">Filtros:</div>
+				<div class="ml-5 card flex flex-wrap justify-content-center gap-3 pt-2 pb-5">
 
-                    <table class="w-full text-md bg-white shadow-md rounded mb-4">
-                        <thead style="position: sticky;" class="top-0 z-[1]">
-                            <tr class="bg-secondary-100">
-                                <th class="p-1.5">Fecha y Hora</th>
-                                <th>Nº Compra</th>
-                                <th>Cliente</th>
-                                <th>Estado</th>
-                                <th>Total</th>
-                                <th>Observaciones</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
 
-                        <tbody>
-                            <tr v-for="post in ventas.data"
-                                class="border text-center hover:cursor-pointer hover:bg-gray-100">
-                                <td @click="clickDetalle(post.id)">{{ post.fecha ?? "" }}</td>
-                                <td @click="clickDetalle(post.id)">{{ post.nro_compra != "null" ? post.nro_compra : "" }}</td>
-                                <td @click="clickDetalle(post.id)">{{ post.cliente != "null" ? post.cliente : "" }}</td>
-                                <td @click="clickDetalle(post.id)" class="p-1.5"> <span class="font-semibold text-md"
-                                        :class="colorEstado(post.estado)">
-                                        {{ post.estado ?? "" }}
-                                    </span></td>
-                                <td>{{ post.total }}</td>
-                                <td @click="clickDetalle(post.id)">{{ post.observaciones }}</td>
-                                <td>
-                                    <Button v-if="permissions.includes('eliminar-ventas') && post.estado !== 'ANULADO'"
-                                        @click="btnEliminar(post.id)"
-                                        class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 "
-                                        v-tooltip.top="{ value: `Anular`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
-                                            class="fas fa-ban"></i></Button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+					<div class="flex align-items-center">
+						<Checkbox v-model="compra" size="small" @change="filtrado" inputId="compra1" name="compra"
+							binary />
+						<label for="compra1" class="ml-2"> N° Compra </label>
+					</div>
+					<div class="flex align-items-center">
+						<Checkbox v-model="cliente" size="small" @change="filtrado" inputId="cliente1" name="cliente"
+							binary />
+						<label for="cliente1" class="ml-2">Cliente </label>
+					</div>
+					<div class="flex align-items-center">
+						<Checkbox v-model="total" size="small" @change="filtrado" inputId="total1" name="total" binary />
+						<label for="total1" class="ml-2">Total </label>
+					</div>
 
-                <Pagination :elements="ventas"></Pagination>
 
-            </div>
-            <!--tabla-->
 
-            <!--Contenido-->
-        </div>
-    </AppLayout>
+				</div>
+
+				<div style="overflow:auto; max-height: 700px;">
+
+					<table class="w-full text-md bg-white shadow-md rounded mb-4">
+						<thead style="position: sticky;" class="top-0 z-[1]">
+							<tr class="bg-secondary-100">
+								<th class="p-1.5">Fecha y Hora</th>
+								<th>Nº Compra</th>
+								<th>Cliente</th>
+								<th>Estado</th>
+								<th>Total</th>
+								<th>Observaciones</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr v-for="post in ventas.data"
+								class="border text-center hover:cursor-pointer hover:bg-gray-100">
+								<td @click="clickDetalle(post.id)">{{ post.fecha ?? "" }}</td>
+								<td @click="clickDetalle(post.id)">{{ post.nro_compra != "null" ? post.nro_compra : ""
+								}}</td>
+								<td @click="clickDetalle(post.id)">{{ post.cliente != "null" ? post.cliente : "" }}</td>
+								<td @click="clickDetalle(post.id)" class="p-1.5"> <span class="font-semibold text-md"
+										:class="colorEstado(post.estado)">
+										{{ post.estado ?? "" }}
+									</span></td>
+								<td>{{ post.total }}</td>
+								<td @click="clickDetalle(post.id)">{{ post.observaciones }}</td>
+								<td>
+									<Button v-if="permissions.includes('eliminar-ventas') && post.estado !== 'ANULADO'"
+										@click="btnEliminar(post.id)"
+										class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 "
+										v-tooltip.top="{ value: `Anular`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+											class="fas fa-ban"></i></Button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<Pagination :elements="ventas"></Pagination>
+
+			</div>
+			<!--tabla-->
+
+			<!--Contenido-->
+		</div>
+	</AppLayout>
 </template>
 
 

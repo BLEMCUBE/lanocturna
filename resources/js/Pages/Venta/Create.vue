@@ -426,7 +426,7 @@ const cancelCrear = () => {
 			<div class="p-0 mb-0 col-span-12  lg:col-span-4 px-2">
 				<DataTable :filters="filters" scrollable scrollHeight="550px" :globalFilterFields="['origen', 'nombre']"
 					:value="productos.data"
-					:virtualScrollerOptions="{ itemSize: 46, lazy: 'true', numToleratedItems: 20 }">
+					:virtualScrollerOptions="{ itemSize: 46, lazy: true, numToleratedItems: 20 }">
 					<template #header>
 						<div class="flex justify-content-end text-sm">
 							<InputText class="w-full mx-1" v-model="filters['global'].value" placeholder="Buscar" />
