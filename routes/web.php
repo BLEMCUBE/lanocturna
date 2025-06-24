@@ -15,6 +15,7 @@ use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\OpcionesController;
+use App\Http\Controllers\PagoCompraController;
 use App\Http\Controllers\PagoImportacionController;
 use App\Http\Controllers\PagoServicioController;
 use App\Http\Controllers\PlantillaController;
@@ -355,5 +356,16 @@ Route::controller(MetodoPagoController::class)->prefix('metodo-pago')->name('met
 		Route::post('/store', 'store')->name('store');
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
+
+	//Pagos Compras
+Route::controller(PagoCompraController::class)->prefix('pagos-compras')->name('pagos-compras.')
+	->middleware('auth')->group(function () {
+		Route::delete('/{id}', 'destroy')->name('destroy');
+		Route::get('/export', 'exportExcel')->name('exportar');
+		Route::get('/{id}/showdetalle', 'showDetalle')->name('showdetalle');
+		Route::get('/', 'index')->name('index');
+		Route::post('/store', 'store')->name('store');
+	});
+
 
 require __DIR__ . '/auth.php';

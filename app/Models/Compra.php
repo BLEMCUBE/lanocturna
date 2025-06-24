@@ -23,6 +23,7 @@ class Compra extends Model
 		'total',
 		'total_sin_iva',
 		'moneda',
+		'pagado',
 		'tipo_cambio',
 		'comprador_id',
 		'created_at'
@@ -38,4 +39,8 @@ class Compra extends Model
 	{
 		return $this->hasMany(CompraDetalle::class);
 	}
+	public function compra_pagos()
+    {
+        return $this->hasMany(PagoCompra::class);
+    }
 }
