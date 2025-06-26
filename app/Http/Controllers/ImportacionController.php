@@ -415,7 +415,8 @@ class ImportacionController extends Controller
 
 	public function importCostoReal(ImportacionCostoRealStoreRequest $request)
 	{
-		//dd($request);
+		$usuario = auth()->user();
+		$hoy=Carbon::now()->format('Y-m-d');
 		$file = $request->file('archivo');
 		$no_existe = [];
 		$vacio=[];
@@ -461,7 +462,7 @@ class ImportacionController extends Controller
 			try {
 
 				//importando excel
-				Excel::import(new CostoRealImport($request->importacion_id), $file);
+				Excel::import(new CostoRealImport($request->importacion_id,$hoy,$usuario->id), $file);
 				DB::commit();
 			} catch (Exception $e) {
 				DB::rollBack();

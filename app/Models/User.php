@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Venta::class,'vendedor_id','id');
     }
+
+	  public function reales_costos()
+    {
+        return $this->hasMany(CostoReal::class,'creador_id','id');
+    }
 }

@@ -11,6 +11,8 @@ use App\Http\Requests\ProductoUpdateRequest;
 use App\Imports\ProductoMasivoImport;
 use App\Imports\ProductoStockImport;
 use App\Models\Categoria;
+use App\Models\CostoReal;
+use App\Models\Importacion;
 use Illuminate\Validation\ValidationException;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
@@ -213,29 +215,56 @@ class ProductoController extends Controller
 				}]);
 		}])->with(['categorias' => function ($query) {
 			$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
-		}])->select(DB::raw("productos.*"))
+		}])
+
+			->select(DB::raw("productos.*"))
 			->orderBy('id', 'ASC')->findOrFail($id);
 
-
+		/*
 		$productoImportacion = DB::table('importaciones as imp')
 			->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
 			->join('productos as prod', 'prod.origen', '=', 'det.sku')
+			->join('costos_reales as cr', 'det.id', '=', 'cr.importaciones_detalle_id')
 			->select(
 				'imp.nro_carpeta',
 				'imp.nro_contenedor',
 				'det.precio',
 				'det.pcs_bulto',
 				'det.bultos',
-				'det.pcs_bulto',
+				'det.estado',
 				'det.cantidad_total',
-				'det.costo_real',
 				'det.valor_total',
 				'det.cbm_bulto',
 				'det.cbm_total',
+				'cr.monto',
 				'det.importacion_id',
 				DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado")
-			)->where('prod.id', '=', $id)
+			)
+			->where('imp.estado','=','Arribado')
+			->where('prod.id', '=', $id)
 			->orderBy('imp.fecha_arribado', 'DESC')->get();
+			*/
+		$sku = Producto::select('origen')->find($id);
+
+		$productoImportacion = ImportacionDetalle::with([
+			'importacion' => function ($query) use ($id) {
+				$query->select(DB::raw("id,nro_carpeta,nro_contenedor,
+                DATE_FORMAT(fecha_arribado ,'%d/%m/%Y') AS fecha"));
+			},
+			'real_costo' => function ($query) {
+				$query->select("monto", 'importaciones_detalle_id', 'fecha', 'importacion_id')
+				//->whereNot('monto','=',0)
+				->orderBy('fecha', 'DESC');
+			}
+
+		])
+			->selectRaw('id,sku,precio,pcs_bulto,bultos,estado,cantidad_total,valor_total,cbm_bulto,cbm_total,importacion_id')
+			->where('sku', '=', $sku->origen)
+			->orderBy('importacion_id', 'DESC')->get();
+
+
+		//		return response()->json($productoImportacion);
+
 
 		$productoEnCamino = DB::table('importaciones as imp')
 			->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
@@ -278,7 +307,9 @@ class ProductoController extends Controller
 			$tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
 		}
 
+		$ultimo_yang = 0;
 
+		/*
 		$ultimo_importacion = DB::table('importaciones_detalles as det')
 			->join('importaciones as imp', 'imp.id', '=', 'det.importacion_id')
 			->select(
@@ -292,41 +323,41 @@ class ProductoController extends Controller
 			->where('det.sku', $producto->origen)
 			->orderBy('imp.fecha_arribado', 'DESC')
 			->limit(1)
-			->first();
+			->first();*/
 
-		$costo_aprox = 0;
-		$ultimo_yang = 0;
-		$costo_real = 0;
-
-		if (!is_null($ultimo_importacion)) {
+		/*if (!is_null($ultimo_importacion)) {
 
 			$ultimo_precio = $ultimo_importacion->precio;
 		} else {
 			$ultimo_precio = 0;
-		}
+		}*/
 		if (!is_null($tipo_yuan)) {
 
 			$ultimo_yang = $tipo_cambio_yuan->valor;
-			$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
-			$costo_real = $ultimo_importacion ? $ultimo_importacion->costo_real : 0;
+			//	$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
+
 		} else {
 			$ultimo_yang = 0;
-			$costo_real = 0;
+			//$costo_real = 0;
 		}
 
+
+		$costo_real = CostoReal::where('producto_id', '=', $id)
+			->whereNot('monto', '=', 0)->orderBy('fecha', 'DESC')->limit(1)->first();
+		$c_real = $costo_real != null ? $costo_real->monto : 0.00;
 
 		return Inertia::render('Producto/Show', [
 			'producto' => $producto,
 			'productoImportacion' => $productoImportacion,
 			'productoEnCamino' => $productoEnCamino,
 			'cantidad' => $cantidad,
-			'costo_aprox' => number_format($costo_aprox, 2, ','),
-			'costo_real' => number_format($costo_real, 2, ','),
+			'costo_real' => number_format($c_real, 2, ',', '.'),
 			'ultimo_yang' => $ultimo_yang,
 			'productoventa' => $productoventa,
 			'cantidad_importacion' => $cantidad_importacion,
 		]);
 	}
+
 
 	public function destroy($id)
 	{
@@ -607,44 +638,6 @@ class ProductoController extends Controller
 		]);
 	}
 
-	public function productoImportacion($id, $inicio, $fin)
-	{
-
-
-		$producto = DB::table('importaciones as imp')
-			->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
-			->join('productos as prod', 'prod.origen', '=', 'det.sku')
-			->select(
-				'imp.nro_carpeta',
-				'imp.nro_contenedor',
-				'imp.fecha_arribado',
-				'det.precio',
-				'det.sku',
-				'det.unidad',
-				'det.pcs_bulto',
-				'det.bultos',
-				'det.pcs_bulto',
-				'det.cantidad_total',
-				'det.valor_total',
-				'det.cbm_bulto',
-				'det.cbm_total',
-				'det.importacion_id',
-				DB::raw("DATE_FORMAT(imp.fecha_arribado ,'%d/%m/%Y') AS fecha_arribado"),
-				'prod.origen',
-				'prod.id'
-			)
-			->whereDate('imp.fecha_arribado', '>=', $inicio)
-			->whereDate('imp.fecha_arribado', '<=', $fin)
-			->where('prod.id', '=', $id)
-			->orderBy('id', 'ASC')->get();
-		$origen = Producto::findOrFail($id);
-
-		$cantidad_importacion = $producto->where('sku', $origen->origen)->sum('cantidad_total');
-		return response()->json([
-			'producto' => $producto,
-			'cantidad_importacion' => $cantidad_importacion,
-		]);
-	}
 
 	public function exportProductoVentas($id)
 	{

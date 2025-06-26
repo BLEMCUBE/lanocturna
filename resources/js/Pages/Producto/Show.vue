@@ -13,7 +13,6 @@ import axios from 'axios';
 const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
 const { roles } = usePage().props.auth
-const { costo_aprox } = usePage().props
 const { costo_real } = usePage().props
 const { productoEnCamino } = usePage().props
 const { ultimo_yang } = usePage().props
@@ -176,6 +175,7 @@ onMounted(() => {
 const filters = ref({
 	'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
+
 const filters_importacion = ref({
 	'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -310,9 +310,7 @@ const clickDetImportacion = (e) => {
 							<h3 class="font-semibold text-gray-800 text-base"> USD (IVA INC.):</h3>
 						</div>
 						<div class="w-full md:w-2/3">
-							<!--
-								<h3 class="font-normal text-gray-800 text-base">{{ costo_aprox }}</h3>
-								-->
+
 							<h3 class="font-normal text-gray-800 text-base">{{ costo_real }}</h3>
 						</div>
 					</div>
@@ -339,7 +337,6 @@ const clickDetImportacion = (e) => {
 				<div class="bg-gradient-to-r from-primary-900 to-primary-100  h-1 mb-4"></div>
 				<!-- Línea con gradiente -->
 				<div class="align-middle p-2">
-
 					<DataTable :filters="filters" @row-click="clickDetalle" :value="tabla_vendidos" :pt="{
 						bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100 hover:text-black' },
 						root: { class: 'w-auto' }
@@ -424,16 +421,38 @@ const clickDetImportacion = (e) => {
 						<template #empty> No existe Resultado </template>
 						<template #loading> Cargando... </template>
 
-						<Column field="nro_carpeta" header="No. de Carpeta" sortable :pt="{
+						<Column field="importacion.nro_carpeta" header="No. de Carpeta" sortable :pt="{
 							bodyCell: {
 								class: 'text-center'
 							}
-						}"></Column>
-						<Column field="fecha_arribado" header="Fecha Arribo" sortable :pt="{
+						}">
+						  <template #loading>
+                        </template>
+                        <template #body="slotProps">
+                            <span class="text-md">
+                                {{ slotProps.data.importacion.nro_carpeta }}
+                            </span>
+                        </template></Column>
+						<Column field="importacion.fecha" header="Fecha Arribo" sortable :pt="{
 							bodyCell: {
 								class: 'text-center'
 							}
-						}"></Column>
+						}">
+						 <template #body="slotProps">
+                            <span class="text-md">
+                                {{ slotProps.data.importacion.fecha }}
+                            </span>
+                        </template></Column>
+						<Column  header="Costo Real" sortable :pt="{
+							bodyCell: {
+								class: 'text-center'
+							}
+						}">
+						 <template #body="slotProps">
+                            <span class="text-md">
+                                {{ slotProps.data.real_costo.length>0?slotProps.data.real_costo[0].monto:'0.00' }}
+                            </span>
+                        </template></Column>
 						<Column field="precio" sortable header="EXW Precio" :pt="{
 							bodyCell: {
 								class: 'text-center'
@@ -441,20 +460,7 @@ const clickDetImportacion = (e) => {
 						}">
 						</Column>
 
-					<!--
-						<Column field="unidad" sortable header="Unidad" :pt="{
-							bodyCell: {
-								class: 'text-center'
-							}
-						}">
-					</Column>
-					-->
-						<Column field="costo_real" sortable header="Costo real" :pt="{
-							bodyCell: {
-								class: 'text-center'
-							}
-						}">
-						</Column>
+
 						<Column field="pcs_bulto" sortable header="PCS/Bulto" :pt="{
 							bodyCell: {
 								class: 'text-center'

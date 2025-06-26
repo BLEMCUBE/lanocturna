@@ -25,7 +25,7 @@ class ImportacionCostoRealStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'archivo.required' => 'Este campo es obligatorio.',
+            'archivo.required' => 'Debe de seleccionar un archivo.',
         ];
     }
 }
