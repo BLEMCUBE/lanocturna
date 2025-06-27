@@ -43,4 +43,8 @@ class CostoReal extends Model
 		return $this->orderBy($column, 'desc');
 	}
 
+		public function deposito_detalles()
+	{
+		return $this->belongsTo(DepositoDetalle::class, 'sku', 'sku');
+	}
 }

@@ -38,7 +38,7 @@ const proxyChecked = computed({
     />
      <label
       :for="fieldId"
-      class="mx-2 font-normal text-md text-gray-800 dark:text-white"
+      class="mx-2 font-normal text-[15px] text-gray-800 dark:text-white"
     >  {{ label }}
     </label>
 

@@ -16,6 +16,7 @@ return new class extends Migration
 			$table->date('fecha')->nullable();
 			$table->string('sku')->nullable();
 			$table->string('origen')->nullable();
+			$table->string('moneda')->nullable();
 			$table->decimal('monto', 20, 2)->default(0);
 			$table->unsignedBigInteger('producto_id')->nullable();
 			$table->unsignedBigInteger('compra_detalle_id')->nullable();
