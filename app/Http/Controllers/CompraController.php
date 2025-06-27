@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CompraResource;
+use App\Models\CostoReal;
 use App\Models\TipoCambio;
 use Illuminate\Support\Facades\Request;
 
@@ -124,6 +125,7 @@ class CompraController extends Controller
 
 		$usuario = auth()->user();
 		$comprador = auth()->user();
+		$hoy = Carbon::now()->format('Y-m-d');
 		DB::beginTransaction();
 		try {
 
@@ -145,7 +147,7 @@ class CompraController extends Controller
 			//creando detalle compra
 			foreach ($request->productos as $producto) {
 
-				$compra->detalles_compras()->create(
+				$det = $compra->detalles_compras()->create(
 					[
 						"producto_id" => $producto['producto_id'],
 						"precio" => $producto['precio'],
@@ -156,6 +158,33 @@ class CompraController extends Controller
 
 					]
 				);
+
+				$costo_real_reg = CostoReal::select('*')
+					->where('producto_id', '=', $producto['producto_id'])
+					->where('compra_id', '=', $compra->id)
+					->where('compra_detalle_id', '=', $det->id)
+					->whereDate('fecha', '=', $hoy)->first();
+
+				if (!is_null($costo_real_reg)) {
+					$costo_real_reg->update([
+						"monto" => $producto['costo_real'],
+						"creador_id" => $usuario->id,
+
+					]);
+				} else {
+					$produc = Producto::select('id', 'origen')->where('id', '=', $producto['producto_id'])
+						->first();
+					CostoReal::create([
+						"fecha" => $hoy,
+						"sku" => $produc->origen,
+						"origen" => 'COMPRA',
+						"monto" => $producto['costo_real'],
+						"producto_id" => $producto['producto_id'],
+						"compra_id" =>  $compra->id,
+						"compra_detalle_id" =>$det->id,
+						"creador_id" => $usuario->id,
+					]);
+				}
 			}
 
 			//actualizando stock producto

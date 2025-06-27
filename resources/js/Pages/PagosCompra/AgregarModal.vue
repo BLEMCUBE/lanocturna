@@ -4,22 +4,39 @@ import InputLabel from '@/Components/InputLabel.vue';
 import { useForm, router } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import 'vue-datepicker-next/locale/es.es.js';
 
-const ruta = "pagos-importaciones"
+
+const ruta = "pagos-compras"
 const emit = defineEmits(['pass-info']);
+const selectedMoneda = ref({ name: 'Pesos', code: 'Pesos' });
+const monedas = ref([
+	{ name: 'Pesos', code: 'Pesos' },
+	{ name: 'Dólares', code: 'Dólares' },
+]);
+const setMoneda = (e) => {
+	if (selectedMoneda.value.code == form.moneda)
+		return;
+	form.moneda = selectedMoneda.value.code;
+}
 const store = ref('CANCELAR')
 //Variables
 const isShowModal = ref(false);
 const form = useForm({
 	id: '',
-	nro_carpeta: '',
+	nro_factura: '',
 	banco: '',
+	moneda: '',
 	fecha_pago: '',
 	nro_transaccion: '',
 	monto: '',
+	saldo: 0,
+	tpagado: ''
+
+
 })
 const props = defineProps({
 	importacionId: {
@@ -45,6 +62,7 @@ const setBanco = (e) => {
 }
 
 onMounted(() => {
+
 	dataEdit(props.importacionId)
 });
 
@@ -61,7 +79,11 @@ const dataEdit = (id) => {
 		.then(res => {
 			var datos = res.data.importacion
 			form.id = datos.id
-			form.nro_carpeta = datos.nro_carpeta
+			form.moneda = datos.moneda
+			form.tpagado = (datos.compra_pagos.reduce((acc, cur) => acc + parseFloat(cur['monto']), 0)).toFixed(2)
+			form.saldo =  datos.total-form.tpagado
+			selectedMoneda.value = monedas.value.find(pr => pr.code === datos.moneda);
+			form.nro_factura = datos.nro_factura
 			isShowModal.value = true;
 
 		})
@@ -96,13 +118,15 @@ const submit = () => {
 
 };
 
-
+/*const show = (tipo, titulo, mensaje) => {
+	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+};*/
 </script>
 
 <template>
 	<section>
 		<Dialog v-model:visible="isShowModal" @hide="passInfo" modal
-			:header="`Agregar pago a importación: ${form.nro_carpeta}`" :style="{ width: '20vw' }" position="top" :pt="{
+			:header="`Agregar pago a compra: ${form.nro_factura}`" :style="{ width: '20vw' }" position="top" :pt="{
 				header: {
 					class: 'mt-4 p-2'
 				},
@@ -112,7 +136,6 @@ const submit = () => {
 			}">
 			<form>
 				<div class="px-2 pt-0 pb-0 grid grid-cols-12 gap-2 mb-2">
-
 					<div class="col-span-12 shadow-default my-auto ">
 						<InputLabel for="fecha_pago" value="Fecha"
 							class="block text-base font-medium leading-6 text-gray-900" />
@@ -121,6 +144,18 @@ const submit = () => {
 							class="p-component col-span-6  text-gray-700  bg-white  transition-colors duration-200 border-0 px-0 py-0"
 							v-model:value="form.fecha_pago" lang="es" placeholder="Seleccione Fecha"></date-picker>
 						<InputError class="mt-1 text-xs" :message="form.errors.fecha_pago" />
+					</div>
+					<div class="col-span-12">
+						<InputLabel for="moneda" value="Moneda" class="text-base font-medium leading-1 text-gray-900" />
+						<Dropdown v-model="selectedMoneda" @change="setMoneda" disabled :options="monedas" optionLabel="name"
+							:pt="{
+								root: { class: 'w-full' },
+								trigger: { class: 'fas fa-caret-down text-gray-200 my-auto' },
+								item: ({ props, state, context }) => ({
+									class: context.selected ? 'text-white bg-primary-900' : context.focused ? 'bg-blue-100' : undefined
+								})
+							}" placeholder="Seleccione Moneda" />
+						<InputError class="mt-1 text-xs" :message="form.errors.moneda" />
 					</div>
 					<div class="col-span-12 shadow-default">
 						<InputLabel for="banco" value="Banco"

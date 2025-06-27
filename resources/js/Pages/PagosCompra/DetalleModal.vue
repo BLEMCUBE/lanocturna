@@ -12,14 +12,14 @@ const formDelete = useForm({
 	id: '',
 });
 const emit = defineEmits(['pass-info']);
-const ruta = "pagos-importaciones"
+const ruta = "pagos-compras"
 //Variables
 const isShowModal = ref(false);
 const store = ref('CANCELAR')
 const form = useForm({
 	id: '',
-	nro_carpeta: '',
-	costo_cif: '',
+	nro_factura: '',
+	total: '',
 	pagos: [],
 	pagado: '',
 	saldo: ''
@@ -68,11 +68,11 @@ const dataEdit = (id) => {
 		.then(res => {
 			var datos = res.data.importacion
 			form.id = datos.id
-			form.nro_carpeta = datos.nro_carpeta
-			form.costo_cif = datos.costo_cif
-			form.pagos = datos.importaciones_pagos
-			form.pagado = (datos.importaciones_pagos.reduce((acc, cur) => acc + parseFloat(cur['monto']), 0)).toFixed(2)
-			form.saldo = datos.costo_cif - form.pagado;
+			form.nro_factura = datos.nro_factura
+			form.total = datos.total
+			form.pagos = datos.compra_pagos
+			form.pagado = (datos.compra_pagos.reduce((acc, cur) => acc + parseFloat(cur['monto']), 0)).toFixed(2)
+			form.saldo = datos.total - form.pagado;
 			isShowModal.value = true;
 		})
 };
@@ -89,8 +89,7 @@ const closeModal = () => {
 
 <template>
 	<section>
-
-		<Dialog v-model:visible="isShowModal" @hide="passInfo" modal :header="`Pagos importación: ${form.nro_carpeta}`"
+		<Dialog v-model:visible="isShowModal" @hide="passInfo" modal :header="`Pagos Compra: ${form.nro_factura}`"
 			:style="{ width: '40vw' }" position="top" :pt="{
 				header: {
 					class: 'mt-4 p-2'
@@ -103,7 +102,7 @@ const closeModal = () => {
 				<div class="px-2 pt-0 pb-0 grid grid-cols-12 gap-2 mb-2">
 
 					<div class="col-span-12">
-						<p><b>Costo CIF: </b> {{ $numberFormat(form.costo_cif) }}</p>
+						<p><b>Total Compra: </b> {{ $numberFormat(form.total) }}</p>
 					</div>
 					<div class="col-span-12">
 						<p><b>Pagos Ingresados: </b></p>

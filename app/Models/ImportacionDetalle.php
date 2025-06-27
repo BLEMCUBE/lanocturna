@@ -42,4 +42,9 @@ class ImportacionDetalle extends Model
         return $this->belongsTo(Producto::class,'sku','origen');
 
     }
+
+		public function real_costo()
+	{
+		return $this->hasMany(CostoReal::class, 'importaciones_detalle_id', 'id');
+	}
 }
