@@ -8,6 +8,7 @@ import CambiarProductosDepositoModal from '@/Pages/Deposito/Partials/CambiarProd
 
 import { FilterMatchMode } from 'primevue/api';
 const { roles } = usePage().props.auth
+const { permissions } = usePage().props.auth;
 const expandedRows = ref([]);
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
@@ -238,7 +239,7 @@ const filters = ref({
                         <template #body="slotProps" >
                             <div class="flex justify-center items-center mx-2">
 
-                                <div v-if="roles.includes('Super Administrador') || roles.includes('Administrador')"
+                                <div v-if="permissions.includes('exportar-depositos')"
                                 v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                 class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
                                 <a :href="route('depositos.exportar', slotProps.data.id)" target="_blank"
@@ -252,7 +253,7 @@ const filters = ref({
                                     @click.prevent="btnEliminarDeposito(slotProps.data.id)"><i class="fas fa-trash-alt w-6 h-4"></i></Button>
                                 </div>
                             </div>
-                                
+
                         </template>
                     </Column>
                     <template #expansion="slotProps">

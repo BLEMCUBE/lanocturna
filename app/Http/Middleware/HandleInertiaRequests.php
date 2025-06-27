@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
 use App\Http\Resources\VentaCollection;
+use App\Models\Compra;
 use App\Models\Venta;
 
 class HandleInertiaRequests extends Middleware
@@ -50,7 +51,7 @@ class HandleInertiaRequests extends Middleware
         }else{
 			   $hoy_tipo_cambio = false;
 		}
-
+		$pagos_compra=Compra::where('pagado','=',0)->count();
         // cantidad de rmas
         $total_rmas = new VentaCollection(
             Venta::where(function ($query) {
@@ -93,7 +94,6 @@ class HandleInertiaRequests extends Middleware
         $total_cadeteria = 0;
 
         foreach ($envios as $key => $envio) {
-            //var_dump($envio->destino);
 
             switch ($envio->destino) {
                 case 'UES':
@@ -115,10 +115,6 @@ class HandleInertiaRequests extends Middleware
             }
         }
 
-        //    dd('f');
-
-
-        //return array_merge(parent::share($request), [
 			return [
 				...parent::share($request),
             'auth' => [
@@ -131,6 +127,7 @@ class HandleInertiaRequests extends Middleware
                 'total_flex' => $total_flex,
                 'total_dac' => $total_dac,
                 'total_cadeteria' => $total_cadeteria,
+				'pagos_compras'=>$pagos_compra
                 //'notificaciones' => !empty(auth()->user()->unreadNotifications) ?auth()->user()->unreadNotifications: [],
             ],
             //'csrf_token' => csrf_token(),

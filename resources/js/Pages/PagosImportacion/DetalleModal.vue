@@ -89,7 +89,7 @@ const closeModal = () => {
 
 <template>
 	<section>
-		<Toast />
+
 		<Dialog v-model:visible="isShowModal" @hide="passInfo" modal :header="`Pagos importación: ${form.nro_carpeta}`"
 			:style="{ width: '40vw' }" position="top" :pt="{
 				header: {

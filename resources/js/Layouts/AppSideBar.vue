@@ -29,6 +29,7 @@ const { total_ues } = usePage().props.auth
 const { total_flex } = usePage().props.auth
 const { total_dac } = usePage().props.auth
 const { total_cadeteria } = usePage().props.auth
+const { pagos_compras } = usePage().props.auth
 const configStore = useConfigStore();
 const classes = computed(() => props.isOpen ? 'sm:translate-x-0' : 'sm:hidden sm:translate-x-0');
 const setMenu = (menu) => {
@@ -150,6 +151,32 @@ const showDropdown = ref(false)
 							</NavLinkSideBarNotIcon>
 						</li>
 					</div>
+						<div class="flex items-center">
+						<li @click="setMenu('contabilidad')" class="w-full"
+							v-show="permissions.includes('lista-pagos')">
+							<NavLinkSideBarNotIcon
+								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+								:href="route('pagos-compras.index')"
+								:active="route().current('pagos-compras.index')">
+								<span class="ml-2 uppercase text-base font-medium">Pagos Compras en plaza
+									<Badge v-if="pagos_compras > 0"
+										class="ml-2 px-0.5 text-[12px]" severity="danger"
+										:value="pagos_compras" />
+								</span>
+							</NavLinkSideBarNotIcon>
+						</li>
+					</div>
+
+					<div class="flex items-center">
+						<li @click="setMenu('contabilidad')" class="w-full"
+							v-show="permissions.includes('lista-pagoservicio')">
+							<NavLinkSideBarNotIcon
+								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+								:href="route('pago-servicio.index')" :active="route().current('pago-servicio.index')">
+								<span class="ml-2 uppercase">Pagos Servicios</span>
+							</NavLinkSideBarNotIcon>
+						</li>
+					</div>
 
 					<div class="flex items-center">
 						<li @click="setMenu('contabilidad')" class="w-full"
@@ -173,16 +200,7 @@ const showDropdown = ref(false)
 						</li>
 					</div>
 
-					<div class="flex items-center">
-						<li @click="setMenu('contabilidad')" class="w-full"
-							v-show="permissions.includes('lista-pagoservicio')">
-							<NavLinkSideBarNotIcon
-								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-								:href="route('pago-servicio.index')" :active="route().current('pago-servicio.index')">
-								<span class="ml-2 uppercase">Pagos</span>
-							</NavLinkSideBarNotIcon>
-						</li>
-					</div>
+
 				</DisclosurePanel>
 			</Disclosure>
 			<!--Contabilidad-->
@@ -695,7 +713,7 @@ const showDropdown = ref(false)
 								class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
 								<i class="fa-solid fa-warehouse mr-3 ml-1"></i>
 								RMA
-								<Badge v-show="total_rmas.length > 0"
+								<Badge v-if="total_rmas > 0"
 									class="ml-4 px-0.5 mr-auto text-[12px] font-normal" severity="danger"
 									:value="total_rmas" />
 								<div class="pr-2 py-4 absolute right-0 z-50 ">
@@ -765,7 +783,7 @@ const showDropdown = ref(false)
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rmas.validacion')" :active="route().current('rmas.validacion')">
 								<span class="ml-2 uppercase">VALIDACIÓN RMA
-									<Badge v-show="total_rmas.length > 0"
+									<Badge v-if="total_rmas > 0"
 										class="ml-4 px-0.5 mr-auto text-[12px] font-normal" severity="danger"
 										:value="total_rmas" />
 								</span>

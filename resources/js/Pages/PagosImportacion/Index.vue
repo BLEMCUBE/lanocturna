@@ -7,14 +7,14 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import DetalleModal from '@/Pages/PagosImportacion/DetalleModal.vue';
 import AgregarModal from '@/Pages/PagosImportacion/AgregarModal.vue';
-
+import { useToast } from "primevue/usetoast";
 const tabla_productos = ref([])
 const importacionId = ref(null)
 const isShowModalDetalle = ref(false);
 const isShowModalAgregar = ref(false);
 const titulo = "Pagos Importaciones"
 const ruta = 'pagos-importaciones'
-
+const toast = useToast();
 onMounted(() => {
 	tabla_productos.value = usePage().props.productos.data;
 
@@ -27,11 +27,11 @@ const clickDetalle = (e) => {
 
 //descarga excel
 const btnDescargar = () => {
-
-
 		window.open(route(ruta+'.exportar'), '_blank');
 
 }
+
+
 
 const filters = ref({
 	'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -48,6 +48,7 @@ const getInfoDetalle = (obj) => {
 			isShowModalAgregar.value = true;
 			break;
 		case 'ELIMINADO':
+			show('success', 'Mensaje', 'Pago eliminado')
 			setTimeout(() => {
 				router.get(route(ruta + '.index'));
 			}, 1000);
@@ -64,6 +65,7 @@ const getInfoAgregar = (obj) => {
 			isShowModalAgregar.value = false;
 			break;
 		case 'AGREGAR':
+			show('success', 'Mensaje', 'Pago Agregado')
 			break;
 		case 'ELIMINADO':
 			setTimeout(() => {
@@ -76,6 +78,9 @@ const getInfoAgregar = (obj) => {
 
 
 }
+const show = (tipo, titulo, mensaje) => {
+	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+};
 </script>
 <template>
 

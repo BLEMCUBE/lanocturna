@@ -4,12 +4,10 @@ import InputLabel from '@/Components/InputLabel.vue';
 import { useForm, router } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { useToast } from "primevue/usetoast";
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import 'vue-datepicker-next/locale/es.es.js';
 
-const toast = useToast();
 const ruta = "pagos-importaciones"
 const emit = defineEmits(['pass-info']);
 const store = ref('CANCELAR')
@@ -84,7 +82,7 @@ const submit = () => {
 		forceFormData: true,
 		onSuccess: () => {
 			isShowModal.value = false;
-			show('success', 'Mensaje', 'Pago Agregado')
+			store.value = "AGREGAR"
 			setTimeout(() => {
 				router.get(route(ruta + '.index'));
 			}, 1000);
@@ -98,16 +96,13 @@ const submit = () => {
 
 };
 
-const show = (tipo, titulo, mensaje) => {
-	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
-};
+
 </script>
 
 <template>
 	<section>
-		<Toast />
-		<Dialog v-model:visible="isShowModal"  @hide="passInfo"  modal :header="`Agregar pago a importación: ${form.nro_carpeta}`"
-			:style="{ width: '20vw' }" position="top" :pt="{
+		<Dialog v-model:visible="isShowModal" @hide="passInfo" modal
+			:header="`Agregar pago a importación: ${form.nro_carpeta}`" :style="{ width: '20vw' }" position="top" :pt="{
 				header: {
 					class: 'mt-4 p-2'
 				},

@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Swal from 'sweetalert2';
 import { FilterMatchMode } from 'primevue/api';
+const { permissions } = usePage().props.auth;
 const toast = useToast();
 const titulo = "Compra en plaza"
 const ruta = 'compras'
@@ -99,6 +100,7 @@ const addToCart = (id) => {
 				cantidad: 1,
 				precio: null,
 				stock: produ.stock,
+				costo_real: 0,
 				total: 1
 			}
 		)
@@ -211,6 +213,8 @@ const cancelCrear = () => {
 									<th class="border border-gray-300 ">Producto</th>
 									<th class="border border-gray-300 w-24">Cantidad</th>
 									<th class="border border-gray-300 w-24">Precio</th>
+									<th v-if="permissions.includes('costoreal-productos')"
+										class="border border-gray-300 w-24">Costo real</th>
 									<th class="border border-gray-300 w-24">Total</th>
 									<th class="border border-gray-300 w-8"></th>
 								</tr>
@@ -223,12 +227,18 @@ const cancelCrear = () => {
 									<td class="border border-gray-300"><input type="number" v-model="producto.cantidad"
 											min="1" step="1"
 											class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end"
-											@input="sumaTotalProducto($event, index)"/>
+											@input="sumaTotalProducto($event, index)" />
 
 									</td>
 									<td class="border border-gray-300"><input type="number" required
 											v-model="producto.precio" min="0" step="1"
 											@input="sumaTotalProducto($event, index)"
+											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
+
+									</td>
+
+									<td v-if="permissions.includes('costoreal-productos')" class="border border-gray-300"><input type="number" required
+											v-model="producto.costo_real" min="0" step="1"
 											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
 
 									</td>
@@ -247,7 +257,7 @@ const cancelCrear = () => {
 								<tr>
 									<td colspan="4" class="text-end"><b>Total: </b></td>
 									<td class="text-end"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{ form.total
-									}}
+											}}
 										</b>
 									</td>
 								</tr>
@@ -274,7 +284,7 @@ const cancelCrear = () => {
 							}" />
 							<InputError class="mt-1 text-xs" :message="form.errors.tipo_cambio" />
 						</div>
-							<div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
+						<div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-6">
 							<InputLabel for="moneda" value="Moneda"
 								class="text-base font-medium leading-1 text-gray-900" />
 

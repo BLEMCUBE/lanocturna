@@ -33,4 +33,10 @@ class DepositoProducto extends Model
         return $this->belongsTo(Producto::class,'sku','origen');
 
     }
+
+	   public function costos_reales()
+    {
+        return $this->hasOne(CostoReal::class,'sku','sku');
+
+    }
 }
