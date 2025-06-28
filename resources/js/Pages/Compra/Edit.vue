@@ -64,6 +64,10 @@ onMounted(() => {
 		var produ2 = productos.data.find(pr => pr.id === el.producto_id);
 		if (produ2 != undefined) {
 			var monto=el.costo_reales!==null?el.costo_reales.monto:0;
+			var costo_origen=el.costo_reales!==null?el.costo_reales.costo_origen:null;
+			var costo_id=el.costo_reales!==null?el.costo_reales.id:null;
+			var costo_fecha=el.costo_reales!==null?el.costo_reales.fecha:null;
+
 			form.productos.push(
 				{
 					producto_id: el.producto_id,
@@ -76,7 +80,9 @@ onMounted(() => {
 					total_sin_iva: el.total_sin_iva,
 					stock: produ2.stock,
 					costo_real: monto,
-					costo_origen:'COMPRA',
+					costo_origen:costo_origen,
+					costo_fecha:costo_fecha,
+					costo_id:costo_id,
 
 				}
 			)
@@ -99,7 +105,9 @@ const addToCart = (id) => {
 				cantidad: 1,
 				stock: produ.stock,
 				costo_real: 0,
-				costo_origen:'COMPRA',
+				costo_origen:null,
+				costo_fecha:null,
+				costo_id:null,
 			}
 		)
 
@@ -235,7 +243,7 @@ const calculoSinIva = () => {
 					<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 				</div>
 				<form>
-
+{{ form.productos }}
 					<div class="grid grid-cols-12 gap-1 py-0">
 						<!--Tabla-->
 						<table class="table-auto mx-2 border border-gray-300 col-span-12">

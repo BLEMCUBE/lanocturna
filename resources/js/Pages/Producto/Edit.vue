@@ -25,7 +25,9 @@ const form = useForm({
     imagen: '',
     photo: '',
 	costo_origen:null,
+	costo_fecha:null,
 	costo_real:0,
+	costo_id:null,
     categorias:[]
 })
 
@@ -42,6 +44,9 @@ onMounted(() => {
     form.stock_futuro = datos.stock_futuro
 	form.costo_real=datos.costos_reales!==null?datos.costos_reales[0].monto:0
 	form.costo_origen=datos.costos_reales!==null?datos.costos_reales[0].origen:null
+	form.costo_id=datos.costos_reales!==null?datos.costos_reales[0].id:null
+	form.costo_fecha=datos.costos_reales!==null?datos.costos_reales[0].fecha:null
+
     if(datos.categorias.length>0){
         datos.categorias.forEach((ele)=>{
             form.categorias.push(ele.id)
@@ -120,14 +125,14 @@ const pickFile = (e) => {
         :pagina="[{ 'label': 'Productos', link: true, url: route(ruta + '.index') }, { 'label': titulo, link: false }]">
         <div
             class="card px-4  mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
-
             <!--Contenido-->
             <Toast />
             <div class=" px-3 col-span-full flex justify-between items-center">
-                <h5 class="text-2xl font-medium">{{ titulo }}</h5>
+				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
 
             <div class="align-middle">
+				{{ form }}
 
 				<form @submit.prevent="submit">
                     <div class="px-2 pt-4 pb-0 grid grid-cols-12 gap-4 mb-2">
