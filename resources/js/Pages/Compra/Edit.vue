@@ -14,6 +14,7 @@ const ruta = 'compras'
 
 const { productos } = usePage().props
 const { tipo_cambio } = usePage().props
+const { permissions } = usePage().props.auth;
 const filters = ref({
 	'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
@@ -62,6 +63,7 @@ onMounted(() => {
 	dato.detalles_compras.forEach(el => {
 		var produ2 = productos.data.find(pr => pr.id === el.producto_id);
 		if (produ2 != undefined) {
+			var monto=el.costo_reales!==null?el.costo_reales.monto:0;
 			form.productos.push(
 				{
 					producto_id: el.producto_id,
@@ -73,6 +75,8 @@ onMounted(() => {
 					precio_sin_iva: el.precio_sin_iva,
 					total_sin_iva: el.total_sin_iva,
 					stock: produ2.stock,
+					costo_real: monto,
+					costo_origen:'COMPRA',
 
 				}
 			)
@@ -94,6 +98,8 @@ const addToCart = (id) => {
 				origen: produ.origen,
 				cantidad: 1,
 				stock: produ.stock,
+				costo_real: 0,
+				costo_origen:'COMPRA',
 			}
 		)
 
@@ -232,7 +238,6 @@ const calculoSinIva = () => {
 
 					<div class="grid grid-cols-12 gap-1 py-0">
 						<!--Tabla-->
-
 						<table class="table-auto mx-2 border border-gray-300 col-span-12">
 							<thead>
 								<tr class="p-2 bg-secondary-900 border">
@@ -240,6 +245,8 @@ const calculoSinIva = () => {
 									<th class="border border-gray-300 ">Producto</th>
 									<th class="border border-gray-300 w-24">Cantidad</th>
 									<th class="border border-gray-300 w-24">Precio</th>
+										<th v-if="permissions.includes('costoreal-productos')"
+										class="border border-gray-300 w-24">Costo real</th>
 									<th class="border border-gray-300 w-24">Total</th>
 									<th class="border border-gray-300 w-8"></th>
 								</tr>
@@ -259,6 +266,11 @@ const calculoSinIva = () => {
 											v-model="producto.precio" min="0" step="1"
 											@input="sumaTotalProducto($event, index)"
 											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
+
+									</td>
+									<td v-if="permissions.includes('costoreal-productos')" class="border border-gray-300"><input type="number" required
+											v-model="producto.costo_real" min="0" step="1"
+											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
 
 									</td>
 									<td class="border border-gray-300 p-2">{{ producto.total }} </td>

@@ -9,7 +9,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Multiselect from '@vueform/multiselect';
 const previewImage = ref('/images/productos/sin_foto.png');
 const toast = useToast();
-
+const { permissions } = usePage().props.auth;
 const titulo = "Editar Producto"
 const ruta = 'productos'
 
@@ -24,6 +24,8 @@ const form = useForm({
     //stock_futuro:'',
     imagen: '',
     photo: '',
+	costo_origen:null,
+	costo_real:0,
     categorias:[]
 })
 
@@ -38,6 +40,8 @@ onMounted(() => {
     form.stock = datos.stock
     form.stock_minimo = datos.stock_minimo
     form.stock_futuro = datos.stock_futuro
+	form.costo_real=datos.costos_reales!==null?datos.costos_reales[0].monto:0
+	form.costo_origen=datos.costos_reales!==null?datos.costos_reales[0].origen:null
     if(datos.categorias.length>0){
         datos.categorias.forEach((ele)=>{
             form.categorias.push(ele.id)
@@ -125,7 +129,7 @@ const pickFile = (e) => {
 
             <div class="align-middle">
 
-                <form @submit.prevent="submit">
+				<form @submit.prevent="submit">
                     <div class="px-2 pt-4 pb-0 grid grid-cols-12 gap-4 mb-2">
 
                         <div class="col-span-12 shadow-default xl:col-span-3">
@@ -172,7 +176,7 @@ const pickFile = (e) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.codigo_barra" />
                         </div>
 
-                        <div class="col-span-12 shadow-default xl:col-span-3">
+                        <div class="col-span-12 shadow-default xl:col-span-2">
                             <InputLabel for="stock" value="Stock"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <input type="number" required
@@ -182,13 +186,21 @@ const pickFile = (e) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.stock" />
                         </div>
 
-                        <div class="col-span-12 shadow-default xl:col-span-3">
+                        <div class="col-span-12 shadow-default xl:col-span-2">
                             <InputLabel for="stock_minimo" value="Stock Minimo"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                                 <input type="number" required
                                 v-model="form.stock_minimo" step="1" min="0"
                                 class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
                             <InputError class="mt-1 text-xs" :message="form.errors.stock_minimo" />
+                        </div>
+                        <div v-if="permissions.includes('costoreal-productos')" class="col-span-12 shadow-default xl:col-span-2">
+                            <InputLabel for="costo_real" value="Costo Real"
+                                class="block text-base font-medium leading-6 text-gray-900" />
+                                <input type="number" required
+                                v-model="form.costo_real" step="0.1" min="0"
+                                class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
+                            <InputError class="mt-1 text-xs" :message="form.errors.costo_real" />
                         </div>
                         <input type="hidden" id="stock_futuro" v-model="form.stock_futuro">
                         <div class="col-span-12 shadow-default xl:col-span-6">

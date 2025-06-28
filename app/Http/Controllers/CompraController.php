@@ -98,9 +98,11 @@ class CompraController extends Controller
 		$compra = Compra::with(['detalles_compras' => function ($query) {
 			$query->select('*')->with(['producto' => function ($query) {
 				$query->select('id', 'nombre', 'codigo_barra', 'origen');
-			}]);
+			},'costo_reales'=>function($query){
+				$query->select('origen','monto','producto_id');
+			}])
+			;
 		}])
-
 			->with(['facturador' => function ($query) {
 				$query->select('id', 'name');
 			}])->select('*')
@@ -112,6 +114,7 @@ class CompraController extends Controller
 		}])->select('id', 'nombre', 'origen', 'stock', 'codigo_barra', 'imagen')
 			->orderBy('stock', 'ASC')
 			->get();
+				//return response()->json($compra);
 
 		$resultadoProductoLista = new ProductoVentaCollection($productoLista);
 		return Inertia::render('Compra/Edit', [
@@ -124,7 +127,6 @@ class CompraController extends Controller
 	{
 
 		$usuario = auth()->user();
-		$comprador = auth()->user();
 		$hoy = Carbon::now()->format('Y-m-d');
 		DB::beginTransaction();
 		try {
@@ -140,7 +142,7 @@ class CompraController extends Controller
 				//'estado' => $request->estado,
 				'moneda' => $request->moneda,
 				'tipo_cambio' => $request->tipo_cambio,
-				'comprador_id' => $comprador->id,
+				'comprador_id' => $usuario->id,
 
 			]);
 
@@ -162,12 +164,14 @@ class CompraController extends Controller
 				$costo_real_reg = CostoReal::select('*')
 					->where('producto_id', '=', $producto['producto_id'])
 					->where('compra_id', '=', $compra->id)
+					->where('origen', '=','COMPRA')
 					->where('compra_detalle_id', '=', $det->id)
 					->whereDate('fecha', '=', $hoy)->first();
 
 				if (!is_null($costo_real_reg)) {
 					$costo_real_reg->update([
 						"monto" => $producto['costo_real'],
+						"origen" => 'COMPRA',
 						"creador_id" => $usuario->id,
 
 					]);
@@ -211,7 +215,8 @@ class CompraController extends Controller
 	public function update(CompraUpdateRequest $request, $id)
 	{
 		$venta = Compra::find($id);
-
+		$hoy = Carbon::now()->format('Y-m-d');
+		$usuario = auth()->user();
 		DB::beginTransaction();
 		try {
 			$venta->nro_factura = $request->nro_factura;
@@ -240,7 +245,7 @@ class CompraController extends Controller
 			//creando detalle compra
 			foreach ($request->productos as $producto) {
 
-				$venta->detalles_compras()->create(
+				$det = $venta->detalles_compras()->create(
 					[
 						"producto_id" => $producto['producto_id'],
 						"precio" => $producto['precio'],
@@ -250,6 +255,37 @@ class CompraController extends Controller
 						"total_sin_iva" => $producto['total_sin_iva'],
 					]
 				);
+
+					$costo_real_reg = CostoReal::select('*')
+					->where('producto_id', '=', $producto['producto_id'])
+					->where('compra_id', '=', $venta->id)
+					->where('origen', '=','COMPRA')
+					->where('compra_detalle_id', '=', $det->id)
+					->whereDate('fecha', '=', $hoy)->first();
+
+					if (!is_null($costo_real_reg)) {
+					$costo_real_reg->update([
+						"monto" => $producto['costo_real'],
+						"origen" => 'COMPRA',
+						"creador_id" => $usuario->id,
+						"compra_id" =>  $venta->id,
+						"compra_detalle_id" =>$det->id,
+
+					]);
+				} else {
+					$produc = Producto::select('id', 'origen')->where('id', '=', $producto['producto_id'])
+						->first();
+					CostoReal::create([
+						"fecha" => $hoy,
+						"sku" => $produc->origen,
+						"origen" => 'COMPRA',
+						"monto" => $producto['costo_real'],
+						"producto_id" => $producto['producto_id'],
+						"compra_id" =>  $venta->id,
+						"compra_detalle_id" =>$det->id,
+						"creador_id" => $usuario->id,
+					]);
+				}
 			}
 
 			//actualizando stock producto

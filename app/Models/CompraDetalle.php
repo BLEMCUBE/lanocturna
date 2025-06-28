@@ -34,5 +34,10 @@ class CompraDetalle extends Model
         return $this->belongsTo(Producto::class);
 
     }
+	 public function costo_reales()
+    {
+        return $this->belongsTo(CostoReal::class,'producto_id','producto_id');
+
+    }
 
 }
