@@ -3,11 +3,13 @@
 namespace App\Imports;
 
 use App\Models\CostoReal;
+use App\Models\Importacion;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
 class CostoRealImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
@@ -29,6 +31,11 @@ class CostoRealImport implements ToCollection, WithHeadingRow, WithCalculatedFor
 	public function collection(Collection $rows)
 	{
 
+		//$actual = Carbon::now()->format('Y-m-d');
+		$f_arribo=Importacion::selectRaw("DATE_FORMAT(fecha_arribado ,'%Y-%m-%d') AS fecha")
+		->where('id','=',$this->importacion_id)
+		->first();
+
 		foreach ($rows as $row) {
 			if (!empty($row['sku'])) {
 
@@ -40,11 +47,12 @@ class CostoRealImport implements ToCollection, WithHeadingRow, WithCalculatedFor
 				$idDet=ImportacionDetalle::where('sku','=',$row['sku'])
 				->where('importacion_id','=',$this->importacion_id)
 				->select('id')->first();
+
 				$costo_real_reg = CostoReal::select('*')
 				->where('sku','=',$row['sku'])
 				->where('importacion_id','=',$this->importacion_id)
 				->where('importaciones_detalle_id','=',$idDet->id)
-				->whereDate('fecha', '=', $this->hoy)->first();
+				->whereDate('fecha', '=', $f_arribo->fecha);
 
 				if (!is_null($costo_real_reg)) {
 					$costo_real_reg->update([
@@ -56,7 +64,7 @@ class CostoRealImport implements ToCollection, WithHeadingRow, WithCalculatedFor
 					$producto = Producto::select('id', 'origen')->where('origen', '=', $row['sku'])
 						->first();
 					CostoReal::create([
-						"fecha" => $this->hoy,
+						"fecha" =>  $f_arribo->fecha,
 						"sku" => $row['sku'],
 						"origen" => 'IMPORTACION',
 						"monto" => $costo_real,
@@ -69,27 +77,5 @@ class CostoRealImport implements ToCollection, WithHeadingRow, WithCalculatedFor
 			}
 		}
 	}
-	/*
-	public function collection(Collection $rows)
-    {
 
-        foreach ($rows as $row) {
-            if (!empty($row['sku'])) {
-                if (!is_null($row['costo_real'])) {
-                    $costo_real =  $row['costo_real'];
-                } else {
-                    $costo_real = 0;
-                }
-				$producto = ImportacionDetalle::where('sku', '=', $row['sku'])
-				->where('importacion_id', '=', $this->importacion_id)
-				->first();
-                if (!is_null($producto)) {
-                    $producto->update([
-                        "costo_real" => $costo_real,
-
-                    ]);
-                }
-            }
-        }
-    }*/
 }
