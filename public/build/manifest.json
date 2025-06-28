@@ -863,7 +863,7 @@
     "src": "resources/js/Pages/Cliente/Partials/EditarModal.vue"
   },
   "resources/js/Pages/Compra/Create.vue": {
-    "file": "assets/Create-c6f4774e.js",
+    "file": "assets/Create-682d486d.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-842afc1b.js",
@@ -897,7 +897,7 @@
     "src": "resources/js/Pages/Compra/Create.vue"
   },
   "resources/js/Pages/Compra/Edit.vue": {
-    "file": "assets/Edit-b5d47b7a.js",
+    "file": "assets/Edit-f59553a4.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-842afc1b.js",
@@ -2677,14 +2677,14 @@
     "src": "resources/js/Pages/Producto/Create.vue"
   },
   "resources/js/Pages/Producto/Edit.css": {
-    "file": "assets/Edit-fef8d8bd.css",
+    "file": "assets/Edit-f94bf8d0.css",
     "src": "resources/js/Pages/Producto/Edit.css"
   },
   "resources/js/Pages/Producto/Edit.vue": {
     "css": [
-      "assets/Edit-fef8d8bd.css"
+      "assets/Edit-f94bf8d0.css"
     ],
-    "file": "assets/Edit-33c46d15.js",
+    "file": "assets/Edit-2a355afd.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-842afc1b.js",
@@ -4248,7 +4248,7 @@
     "src": "resources/js/Pages/Welcome.vue"
   },
   "resources/js/app.css": {
-    "file": "assets/app-2222f126.css",
+    "file": "assets/app-9b818721.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.js": {
@@ -4265,7 +4265,7 @@
       "assets/Inter-Bold-3e242080.woff"
     ],
     "css": [
-      "assets/app-2222f126.css",
+      "assets/app-9b818721.css",
       "assets/primeicons-ae9a42f0.css"
     ],
     "dynamicImports": [
@@ -4388,7 +4388,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-3ab5edce.js",
+    "file": "assets/app-6a724a9d.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",
