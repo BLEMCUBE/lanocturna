@@ -41,25 +41,26 @@ return new class extends Migration
 			$table->foreign('compra_detalle_id')
 				->references('id')
 				->on('compra_detalles')
-				->onDelete('set null')
-				->onUpdate('set null');
+				->onDelete('CASCADE')
+				->onUpdate('CASCADE');
+
 			$table->foreign('compra_id')
 				->references('id')
 				->on('compras')
-				->onDelete('set null')
-				->onUpdate('set null');
+				->onDelete('CASCADE')
+				->onUpdate('CASCADE');
 
 			$table->foreign('importaciones_detalle_id')
 				->references('id')
 				->on('importaciones_detalles')
-				->onDelete('set null')
-				->onUpdate('set null');
+				->onDelete('CASCADE')
+				->onUpdate('CASCADE');
 
 			$table->foreign('importacion_id')
 				->references('id')
 				->on('importaciones')
-				->onDelete('set null')
-				->onUpdate('set null');
+				->onDelete('CASCADE')
+				->onUpdate('CASCADE');
 		});
 	}
 

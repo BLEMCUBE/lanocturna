@@ -101,6 +101,7 @@ const addToCart = (id) => {
 				precio: null,
 				stock: produ.stock,
 				costo_real: 0,
+				costo_origen:'COMPRA',
 				total: 1
 			}
 		)

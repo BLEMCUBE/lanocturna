@@ -12,7 +12,7 @@ use App\Imports\ProductoMasivoImport;
 use App\Imports\ProductoStockImport;
 use App\Models\Categoria;
 use App\Models\CostoReal;
-use App\Models\Importacion;
+use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 use App\Models\ImportacionDetalle;
 use App\Models\Producto;
@@ -151,7 +151,12 @@ class ProductoController extends Controller
 		}
 		$producto = Producto::with(['categorias' => function ($query) {
 			$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
-		}])->findOrFail($id);
+		}])->with(['costos_reales'=>function($query){
+				$query->select('origen','monto','producto_id','id')->orderBy('id','DESC')->first();
+			}])
+
+		->findOrFail($id);
+
 		return Inertia::render('Producto/Edit', [
 			'lista_categorias' => $lista_categorias,
 			'producto' => $producto
@@ -160,6 +165,8 @@ class ProductoController extends Controller
 
 	public function update(ProductoUpdateRequest $request, $id)
 	{
+		$hoy = Carbon::now()->format('Y-m-d');
+		$usuario = auth()->user();
 		$producto = Producto::find($id);
 		$old_photo = $producto->imagen;
 		$producto->origen = $request->input('origen');
@@ -170,6 +177,35 @@ class ProductoController extends Controller
 		$producto->stock_minimo = $request->input('stock_minimo');
 		$producto->stock_futuro = $producto->en_camino + $request->input('stock');
 		$producto->save();
+
+			$costo_real_reg = CostoReal::select('*')
+					->where('producto_id', '=', $request->input('id'))
+					//->where('compra_id', '=', $venta->id)
+					//->where('origen', '=','COMPRA')
+					//->where('compra_detalle_id', '=', $det->id)
+					->whereDate('fecha', '=', $hoy)->first();
+
+					if (!is_null($costo_real_reg)) {
+					$costo_real_reg->update([
+						"monto" => $request->input('costo_real'),
+						"origen" => $request->input('costo_origen'),
+						"creador_id" => $usuario->id,
+
+
+					]);
+				} else {
+
+					CostoReal::create([
+						"fecha" => $hoy,
+						"sku" =>  $request->input('origen'),
+						"origen" => $request->input('costo_origen'),
+						"monto" =>  $request->input('costo_real'),
+						"producto_id" =>  $request->input('id'),
+						//"compra_id" =>  $venta->id,
+						//"compra_detalle_id" =>$det->id,
+						"creador_id" => $usuario->id,
+					]);
+				}
 
 		//imagen
 		if ($request->hasFile('photo')) {
@@ -343,7 +379,7 @@ class ProductoController extends Controller
 
 
 		$costo_real = CostoReal::where('producto_id', '=', $id)
-			->whereNot('monto', '=', 0)->orderBy('fecha', 'DESC')->limit(1)->first();
+			->whereNot('monto', '=', 0)->orderBy('id', 'DESC')->limit(1)->first();
 		$c_real = $costo_real != null ? $costo_real->monto : 0.00;
 
 		return Inertia::render('Producto/Show', [

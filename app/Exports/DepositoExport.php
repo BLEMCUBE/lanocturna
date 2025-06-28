@@ -22,10 +22,7 @@ class DepositoExport implements FromView, ShouldAutoSize
 
 		$invoices = DepositoProducto::with(['producto' => function ($query) {
 			$query
-				/*->with(['costo_real' => function ($query) {
-					$query->whereNot('monto', '=', 0)
-						->select('monto', 'producto_id','fecha')->latest('fecha')->get();
-				}])*/
+
 				->select('id', 'nombre',  'origen');
 		}])
 		->with(['deposito_lista' => function ($query) {

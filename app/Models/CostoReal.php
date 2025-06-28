@@ -27,13 +27,13 @@ class CostoReal extends Model
 
 	public function producto()
 	{
-		return $this->belongsTo(Producto::class,'producto_id','id');
+		return $this->belongsTo(Producto::class, 'producto_id', 'id');
 	}
 	public function creador()
 	{
 		return $this->belongsTo(User::class, 'creador_id', 'id');
 	}
-		public function importacion_detalles()
+	public function importacion_detalles()
 	{
 		return $this->belongsTo(ImportacionDetalle::class, 'importaciones_detalle_id', 'id');
 	}
@@ -43,8 +43,14 @@ class CostoReal extends Model
 		return $this->orderBy($column, 'desc');
 	}
 
-		public function deposito_detalles()
+	public function deposito_detalles()
 	{
 		return $this->belongsTo(DepositoDetalle::class, 'sku', 'sku');
+	}
+
+	public function compra_detalles()
+	{
+		return $this->hasMany(CompraDetalle::class, 'producto_id', 'producto_id');
+
 	}
 }
