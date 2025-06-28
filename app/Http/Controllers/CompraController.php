@@ -95,11 +95,17 @@ class CompraController extends Controller
 	}
 	public function edit($id)
 	{
-		$compra = Compra::with(['detalles_compras' => function ($query) {
-			$query->select('*')->with(['producto' => function ($query) {
+		$hoy = Carbon::now()->format('Y-m-d');
+		$compra = Compra::with(['detalles_compras' => function ($query)use($hoy) {
+			$query->select('*')->with(['producto' => function ($query){
 				$query->select('id', 'nombre', 'codigo_barra', 'origen');
-			},'costo_reales'=>function($query){
-				$query->select('origen','monto','producto_id');
+			},'costo_reales'=>function($query)use($hoy){
+				$query
+				->orderBy('fecha', 'DESC')
+				//->whereNot('monto', '=', 0)
+			->whereDate('fecha','<=',$hoy)
+			->select('origen','monto','producto_id','id','fecha')
+			->limit(1)->first();
 			}])
 			;
 		}])
@@ -114,7 +120,7 @@ class CompraController extends Controller
 		}])->select('id', 'nombre', 'origen', 'stock', 'codigo_barra', 'imagen')
 			->orderBy('stock', 'ASC')
 			->get();
-				//return response()->json($compra);
+			//return response()->json($compra);
 
 		$resultadoProductoLista = new ProductoVentaCollection($productoLista);
 		return Inertia::render('Compra/Edit', [
@@ -161,7 +167,7 @@ class CompraController extends Controller
 					]
 				);
 
-				$costo_real_reg = CostoReal::select('*')
+				/*$costo_real_reg = CostoReal::select('*')
 					->where('producto_id', '=', $producto['producto_id'])
 					->where('compra_id', '=', $compra->id)
 					->where('origen', '=','COMPRA')
@@ -175,11 +181,11 @@ class CompraController extends Controller
 						"creador_id" => $usuario->id,
 
 					]);
-				} else {
+				} else {*/
 					$produc = Producto::select('id', 'origen')->where('id', '=', $producto['producto_id'])
 						->first();
 					CostoReal::create([
-						"fecha" => $hoy,
+						"fecha" => $compra->created_at->format('Y-m-d'),
 						"sku" => $produc->origen,
 						"origen" => 'COMPRA',
 						"monto" => $producto['costo_real'],
@@ -188,7 +194,7 @@ class CompraController extends Controller
 						"compra_detalle_id" =>$det->id,
 						"creador_id" => $usuario->id,
 					]);
-				}
+				//}
 			}
 
 			//actualizando stock producto
@@ -214,7 +220,7 @@ class CompraController extends Controller
 	}
 	public function update(CompraUpdateRequest $request, $id)
 	{
-		$venta = Compra::find($id);
+		$venta = Compra::findOrFail($id);
 		$hoy = Carbon::now()->format('Y-m-d');
 		$usuario = auth()->user();
 		DB::beginTransaction();
@@ -227,6 +233,7 @@ class CompraController extends Controller
 			$venta->moneda = $request->moneda;
 			$venta->tipo_cambio = $request->tipo_cambio;
 			$venta->comprador_id = $request->vendedor_id;
+
 			$venta->save();
 
 			//actualizando stock producto
@@ -245,6 +252,7 @@ class CompraController extends Controller
 			//creando detalle compra
 			foreach ($request->productos as $producto) {
 
+
 				$det = $venta->detalles_compras()->create(
 					[
 						"producto_id" => $producto['producto_id'],
@@ -256,17 +264,22 @@ class CompraController extends Controller
 					]
 				);
 
-					$costo_real_reg = CostoReal::select('*')
+					/*$costo_real_reg = CostoReal::select('*')
 					->where('producto_id', '=', $producto['producto_id'])
 					->where('compra_id', '=', $venta->id)
 					->where('origen', '=','COMPRA')
 					->where('compra_detalle_id', '=', $det->id)
-					->whereDate('fecha', '=', $hoy)->first();
+					->whereDate('fecha', '=', $hoy)->first();*/
+
+					$costo_real_reg = CostoReal::select('*')
+							->where('producto_id', '=', $request->input('id'))
+					->where('id', '=', $request->input('costo_id'))
+					->first();
 
 					if (!is_null($costo_real_reg)) {
 					$costo_real_reg->update([
 						"monto" => $producto['costo_real'],
-						"origen" => 'COMPRA',
+						"origen" => $producto['costo_fecha'],
 						"creador_id" => $usuario->id,
 						"compra_id" =>  $venta->id,
 						"compra_detalle_id" =>$det->id,
@@ -276,7 +289,7 @@ class CompraController extends Controller
 					$produc = Producto::select('id', 'origen')->where('id', '=', $producto['producto_id'])
 						->first();
 					CostoReal::create([
-						"fecha" => $hoy,
+						"fecha" => $venta->created_at->format('Y-m-d'),
 						"sku" => $produc->origen,
 						"origen" => 'COMPRA',
 						"monto" => $producto['costo_real'],
