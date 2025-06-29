@@ -269,6 +269,7 @@ class ProductoController extends Controller
 			'real_costo' => function ($query) {
 				$query->select("monto", 'importaciones_detalle_id', 'fecha', 'importacion_id')
 				//->whereNot('monto','=',0)
+
 				->orderBy('fecha', 'DESC');
 			}
 
@@ -336,7 +337,9 @@ class ProductoController extends Controller
 		$hoy = Carbon::now()->format('Y-m-d');
 		$costo_real = CostoReal::where('producto_id', '=', $id)
 			->whereNot('monto', '=', 0)->orderBy('fecha', 'DESC')
+			->whereNotNull('importacion_id')
 			->whereDate('fecha','<=',$hoy)
+
 			->limit(1)->first();
 		$c_real = $costo_real != null ? $costo_real->monto : 0.00;
 

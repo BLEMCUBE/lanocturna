@@ -51,7 +51,7 @@ class HandleInertiaRequests extends Middleware
         }else{
 			   $hoy_tipo_cambio = false;
 		}
-		$pagos_compra=Compra::where('pagado','=',0)->count();
+		$pagos_compra=Compra::where('pagado','=',0)	->whereNull('fecha_anulacion')->count();
         // cantidad de rmas
         $total_rmas = new VentaCollection(
             Venta::where(function ($query) {

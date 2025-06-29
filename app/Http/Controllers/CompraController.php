@@ -188,7 +188,8 @@ class CompraController extends Controller
 						"fecha" => $compra->created_at->format('Y-m-d'),
 						"sku" => $produc->origen,
 						"origen" => 'COMPRA',
-						"monto" => $producto['costo_real'],
+						//"monto" => $producto['costo_real'],
+						"monto" => $producto['precio'],
 						"producto_id" => $producto['producto_id'],
 						"compra_id" =>  $compra->id,
 						"compra_detalle_id" =>$det->id,
@@ -278,7 +279,8 @@ class CompraController extends Controller
 
 					if (!is_null($costo_real_reg)) {
 					$costo_real_reg->update([
-						"monto" => $producto['costo_real'],
+						"monto" => $producto['precio'],
+						//"monto" => $producto['costo_real'],
 						"origen" => $producto['costo_fecha'],
 						"creador_id" => $usuario->id,
 						"compra_id" =>  $venta->id,
@@ -292,7 +294,8 @@ class CompraController extends Controller
 						"fecha" => $venta->created_at->format('Y-m-d'),
 						"sku" => $produc->origen,
 						"origen" => 'COMPRA',
-						"monto" => $producto['costo_real'],
+						//"monto" => $producto['costo_real'],
+						"monto" => $producto['precio'],
 						"producto_id" => $producto['producto_id'],
 						"compra_id" =>  $venta->id,
 						"compra_detalle_id" =>$det->id,
