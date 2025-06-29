@@ -228,6 +228,17 @@ const filters = ref({
                         }
                     }"></Column>
 
+<Column header="Pagado" style="width:100px" :pt="{
+                        bodyCell: {
+                            class: 'text-center p-0'
+                        }
+                    }">
+                        <template #body="slotProps">
+
+                           {{ slotProps.data.pagado }}
+
+                        </template>
+                    </Column>
                     <Column header="Acciones" style="width:100px" :pt="{
                         bodyCell: {
                             class: 'text-center p-0'

@@ -214,8 +214,10 @@ const cancelCrear = () => {
 									<th class="border border-gray-300 ">Producto</th>
 									<th class="border border-gray-300 w-24">Cantidad</th>
 									<th class="border border-gray-300 w-24">Precio</th>
-									<th v-if="permissions.includes('costoreal-productos')"
+									<!--
+										<th v-if="permissions.includes('costoreal-productos')"
 										class="border border-gray-300 w-24">Costo real</th>
+										-->
 									<th class="border border-gray-300 w-24">Total</th>
 									<th class="border border-gray-300 w-8"></th>
 								</tr>
@@ -237,12 +239,13 @@ const cancelCrear = () => {
 											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
 
 									</td>
+<!--Contenido--
+<td v-if="permissions.includes('costoreal-productos')" class="border border-gray-300"><input type="number" required
+	v-model="producto.costo_real" min="0" step="1"
+	class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
 
-									<td v-if="permissions.includes('costoreal-productos')" class="border border-gray-300"><input type="number" required
-											v-model="producto.costo_real" min="0" step="1"
-											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
-
-									</td>
+</td>
+-->
 									<td class="border border-gray-300 p-2">{{ producto.total }} </td>
 									<td class="border-none  border-gray-300 p-1 ">
 										<div

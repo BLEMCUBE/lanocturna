@@ -21,6 +21,7 @@ class CompraCollection extends ResourceCollection
                     'nro_factura' => $row->nro_factura??'',
                     'proveedor' => $row->proveedor??'',
                     'estado' => $row->estado??'',
+                    'pagado' => $row->pagado==1?'SI':'NO',
                     'facturador' => $row->facturador->name??'',
                     'fecha'=>Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at)->format('d/m/Y H:i:s'),
                 ];

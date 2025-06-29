@@ -132,7 +132,6 @@ const pickFile = (e) => {
             </div>
 
             <div class="align-middle">
-				{{ form }}
 
 				<form @submit.prevent="submit">
                     <div class="px-2 pt-4 pb-0 grid grid-cols-12 gap-4 mb-2">
@@ -181,7 +180,7 @@ const pickFile = (e) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.codigo_barra" />
                         </div>
 
-                        <div class="col-span-12 shadow-default xl:col-span-2">
+                        <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock" value="Stock"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                             <input type="number" required
@@ -191,7 +190,7 @@ const pickFile = (e) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.stock" />
                         </div>
 
-                        <div class="col-span-12 shadow-default xl:col-span-2">
+                        <div class="col-span-12 shadow-default xl:col-span-3">
                             <InputLabel for="stock_minimo" value="Stock Minimo"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                                 <input type="number" required
@@ -199,14 +198,16 @@ const pickFile = (e) => {
                                 class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
                             <InputError class="mt-1 text-xs" :message="form.errors.stock_minimo" />
                         </div>
-                        <div v-if="permissions.includes('costoreal-productos')" class="col-span-12 shadow-default xl:col-span-2">
-                            <InputLabel for="costo_real" value="Costo Real"
+						<!--
+							<div v-if="permissions.includes('costoreal-productos')" class="col-span-12 shadow-default xl:col-span-2">
+								<InputLabel for="costo_real" value="Costo Real"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                                 <input type="number" required
                                 v-model="form.costo_real" step="0.1" min="0"
                                 class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
-                            <InputError class="mt-1 text-xs" :message="form.errors.costo_real" />
-                        </div>
+								<InputError class="mt-1 text-xs" :message="form.errors.costo_real" />
+							</div>
+							-->
                         <input type="hidden" id="stock_futuro" v-model="form.stock_futuro">
                         <div class="col-span-12 shadow-default xl:col-span-6">
                             <InputLabel for="file_input1" value="Imagen"

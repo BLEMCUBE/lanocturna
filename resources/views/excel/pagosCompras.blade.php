@@ -14,9 +14,9 @@
         <tr>
             <td>{{ strval( $importacion->nro_factura)??'' }}</td>
             <td>{{ $importacion->fecha??'' }}</td>
-            <td style="text-align:right">{{ $importacion->monto??'' }}</td>
-            <td style="text-align:right">{{ $importacion->banco ??'' }}</td>
             <td>{{ strval($importacion->nro_transaccion)??'' }}</td>
+            <td style="text-align:right">{{ $importacion->banco ??'' }}</td>
+            <td style="text-align:right">{{ $importacion->monto??'' }}</td>
         </tr>
     @endforeach
     </tbody>
