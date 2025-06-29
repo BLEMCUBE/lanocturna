@@ -35,6 +35,8 @@ class PagoCompraController extends Controller
 
 			'productos' => new PagoCompraCollection(
 				Compra::with(['compra_pagos'])->orderBy('id', 'DESC')
+				->where('pagado','=',0)
+				->whereNull('fecha_anulacion')
 					->get()
 			)
 		]);
@@ -126,15 +128,19 @@ class PagoCompraController extends Controller
 	{
 		$datos = DB::table('pagos_compras as pa')
 			->join('compras as im', 'im.id', '=', 'pa.compra_id')
+			->where('im.pagado','=',1)
 			->select(
 				'im.nro_factura',
 				'pa.monto',
 				'pa.banco',
+				'im.pagado',
 				'pa.nro_transaccion',
 				DB::raw("DATE_FORMAT(pa.fecha_pago,'%d/%m/%y') AS fecha")
 			)
+
 			->orderByRaw('pa.fecha_pago - im.nro_factura desc')
 			->get();
+			//dd($datos);
 		return Excel::download(new PagosComprasExport($datos), 'PagosCompras.xlsx');
 	}
 }

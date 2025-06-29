@@ -243,7 +243,7 @@ const calculoSinIva = () => {
 					<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 				</div>
 				<form>
-{{ form.productos }}
+
 					<div class="grid grid-cols-12 gap-1 py-0">
 						<!--Tabla-->
 						<table class="table-auto mx-2 border border-gray-300 col-span-12">
@@ -253,8 +253,10 @@ const calculoSinIva = () => {
 									<th class="border border-gray-300 ">Producto</th>
 									<th class="border border-gray-300 w-24">Cantidad</th>
 									<th class="border border-gray-300 w-24">Precio</th>
+									<!--
 										<th v-if="permissions.includes('costoreal-productos')"
 										class="border border-gray-300 w-24">Costo real</th>
+										-->
 									<th class="border border-gray-300 w-24">Total</th>
 									<th class="border border-gray-300 w-8"></th>
 								</tr>
@@ -276,11 +278,13 @@ const calculoSinIva = () => {
 											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
 
 									</td>
+								<!--
 									<td v-if="permissions.includes('costoreal-productos')" class="border border-gray-300"><input type="number" required
-											v-model="producto.costo_real" min="0" step="1"
-											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
+										v-model="producto.costo_real" min="0" step="1"
+										class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
 
 									</td>
+									-->
 									<td class="border border-gray-300 p-2">{{ producto.total }} </td>
 									<td class="border-none  border-gray-300 p-1 ">
 										<div
