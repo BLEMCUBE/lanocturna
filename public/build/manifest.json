@@ -863,7 +863,7 @@
     "src": "resources/js/Pages/Cliente/Partials/EditarModal.vue"
   },
   "resources/js/Pages/Compra/Create.vue": {
-    "file": "assets/Create-682d486d.js",
+    "file": "assets/Create-58310237.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-842afc1b.js",
@@ -897,7 +897,7 @@
     "src": "resources/js/Pages/Compra/Create.vue"
   },
   "resources/js/Pages/Compra/Edit.vue": {
-    "file": "assets/Edit-59a51ae4.js",
+    "file": "assets/Edit-62e510f4.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-842afc1b.js",
@@ -931,7 +931,7 @@
     "src": "resources/js/Pages/Compra/Edit.vue"
   },
   "resources/js/Pages/Compra/Index.vue": {
-    "file": "assets/Index-3baeb2c6.js",
+    "file": "assets/Index-15dec555.js",
     "imports": [
       "_AppLayout-842afc1b.js",
       "_@inertiajs-ab1bf9dd.js",
@@ -2308,14 +2308,14 @@
     "src": "resources/js/Pages/PagosCompra/DetalleModal.vue"
   },
   "resources/js/Pages/PagosCompra/Index.vue": {
-    "file": "assets/Index-41f2500f.js",
+    "file": "assets/Index-e61d4c70.js",
     "imports": [
-      "_@vue-1043e4d5.js",
       "_AppLayout-842afc1b.js",
       "_@inertiajs-ab1bf9dd.js",
       "_primevue-232ee6f7.js",
       "resources/js/Pages/PagosCompra/DetalleModal.vue",
       "resources/js/Pages/PagosCompra/AgregarModal.vue",
+      "_@vue-1043e4d5.js",
       "_logo-e22dfca4.js",
       "_pinia-ff353768.js",
       "_@vueuse-54bafaaf.js",
@@ -2677,14 +2677,14 @@
     "src": "resources/js/Pages/Producto/Create.vue"
   },
   "resources/js/Pages/Producto/Edit.css": {
-    "file": "assets/Edit-23f3fba6.css",
+    "file": "assets/Edit-ad5a4e38.css",
     "src": "resources/js/Pages/Producto/Edit.css"
   },
   "resources/js/Pages/Producto/Edit.vue": {
     "css": [
-      "assets/Edit-23f3fba6.css"
+      "assets/Edit-ad5a4e38.css"
     ],
-    "file": "assets/Edit-450a59f8.js",
+    "file": "assets/Edit-11b7be02.js",
     "imports": [
       "_@vue-1043e4d5.js",
       "_AppLayout-842afc1b.js",
@@ -4388,7 +4388,7 @@
       "resources/js/Pages/Venta/Show.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-1f2e12b7.js",
+    "file": "assets/app-02659f8d.js",
     "imports": [
       "_axios-4a70c6fc.js",
       "_@vue-1043e4d5.js",
