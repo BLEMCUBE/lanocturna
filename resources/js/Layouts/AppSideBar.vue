@@ -29,6 +29,7 @@ const { total_ues } = usePage().props.auth
 const { total_flex } = usePage().props.auth
 const { total_dac } = usePage().props.auth
 const { total_cadeteria } = usePage().props.auth
+const { total_flash } = usePage().props.auth
 const { pagos_compras } = usePage().props.auth
 const configStore = useConfigStore();
 const classes = computed(() => props.isOpen ? 'sm:translate-x-0' : 'sm:hidden sm:translate-x-0');
@@ -85,7 +86,7 @@ const showDropdown = ref(false)
 <template>
 	<div class="layout-menu">
 
-
+{{ total_flash }}
 		<!-- Productos Link -->
 
 		<ul>
@@ -548,7 +549,7 @@ const showDropdown = ref(false)
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.index')" :active="route().current('envios.index')">
 								<span class="ml-2 uppercase ">Envios Ues
-									<Badge v-show="total_ues.length > 0" class="ml-4 px-1 mr-auto text-[12px] font-base"
+									<Badge v-if="total_ues > 0" class="ml-4 px-1 mr-auto text-[12px] font-base"
 										severity="danger" :value="total_ues" />
 								</span>
 
@@ -562,7 +563,7 @@ const showDropdown = ref(false)
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.flex')" :active="route().current('envios.flex')">
 								<span class="ml-2 uppercase ">Envios Flex
-									<Badge v-show="total_flex.length > 0"
+									<Badge v-if="total_flex > 0"
 										class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
 										:value="total_flex" />
 								</span>
@@ -576,7 +577,7 @@ const showDropdown = ref(false)
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.dac')" :active="route().current('envios.dac')">
 								<span class="ml-2 uppercase ">Envios UES WEB
-									<Badge v-show="total_dac.length > 0" class="ml-4 px-1 mr-auto text-[12px] font-base"
+									<Badge v-if="total_dac > 0" class="ml-4 px-1 mr-auto text-[12px] font-base"
 										severity="danger" :value="total_dac" />
 								</span>
 							</NavLinkSideBarNotIcon>
@@ -589,13 +590,30 @@ const showDropdown = ref(false)
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.cadeteria')" :active="route().current('envios.cadeteria')">
 								<span class="ml-2 uppercase ">Envios cadeteria
-									<Badge v-show="total_cadeteria.length > 0"
+									<Badge v-if="total_cadeteria > 0"
 										class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
 										:value="total_cadeteria" />
 								</span>
 							</NavLinkSideBarNotIcon>
 						</li>
+
 					</div>
+
+					<div class="flex items-center">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+							<NavLinkSideBarNotIcon
+								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+								:href="route('envios.flash')" :active="route().current('envios.flash')">
+								<span class="ml-2 uppercase ">Envios flash
+									<Badge v-if="total_flash > 0" class="bg-orange-500 ml-4 px-1 mr-auto text-[12px] font-base"
+
+										:value="total_flash" />
+								</span>
+							</NavLinkSideBarNotIcon>
+						</li>
+
+					</div>
+
 
 					<div class="flex items-center">
 						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('historial-envios')">

@@ -184,21 +184,21 @@ Route::controller(ExpedicionController::class)->group(function () {
 });
 
 //Envio
-Route::controller(EnvioController::class)->group(function () {
-	Route::post('/envios/maestro', 'verificarCodigoMaestro')->name('envios.maestro')->middleware('auth');
-	Route::post('/envios/uploadexcel', 'uploadExcel')->name('envios.uploadexcel')->middleware('auth');
-	Route::get('/envios/create', 'create')->name('envios.create')->middleware('auth');
-	Route::get('/envios/historial', 'historialEnvios')->name('envios.historial')->middleware('auth');
-	Route::post('/envios/store', 'store')->name('envios.store')->middleware('auth');
-	Route::post('/envios/update/{id}', 'validarProductos')->name('envios.update')->middleware('auth');
-	Route::get('/envios/detalle/{id}', 'detalle')->name('envios.detalle')->middleware('auth');
-	Route::get('/envios/ues', 'index')->name('envios.index')->middleware('auth');
-	Route::get('/envios/flex', 'indexFlex')->name('envios.flex')->middleware('auth');
-	Route::get('/envios/dac', 'indexDac')->name('envios.dac')->middleware('auth');
-	Route::get('/envios/cadeteria', 'indexCadeteria')->name('envios.cadeteria')->middleware('auth');
-	Route::get('/envios/ticket/{id}', 'generarTicket')->name('envios.generar_ticket')->middleware('auth');
-	//Route::get('/envios/{id}', 'show')->name('envios.show')->middleware('auth');
-	Route::get('/envios/{id}/{tipo}', 'show')->name('envios.show')->middleware('auth');
+Route::controller(EnvioController::class)->prefix('envios')->name('envios.')->middleware('auth')->group(function () {
+	Route::post('/maestro', 'verificarCodigoMaestro')->name('maestro');
+	Route::post('/uploadexcel', 'uploadExcel')->name('uploadexcel');
+	Route::get('/create', 'create')->name('create');
+	Route::get('/historial', 'historialEnvios')->name('historial');
+	Route::post('/store', 'store')->name('store');
+	Route::post('/update/{id}', 'validarProductos')->name('update');
+	Route::get('/detalle/{id}', 'detalle')->name('detalle');
+	Route::get('/ues', 'index')->name('index');
+	Route::get('/flex', 'indexFlex')->name('flex');
+	Route::get('/dac', 'indexDac')->name('dac');
+	Route::get('/cadeteria', 'indexCadeteria')->name('cadeteria');
+	Route::get('/flash', 'indexFlash')->name('flash');
+	Route::get('/ticket/{id}', 'generarTicket')->name('generar_ticket');
+	Route::get('/{id}/{tipo}', 'show')->name('show');
 });
 
 //DepositoLista
@@ -366,6 +366,7 @@ Route::controller(PagoCompraController::class)->prefix('pagos-compras')->name('p
 		Route::get('/', 'index')->name('index');
 		Route::post('/store', 'store')->name('store');
 	});
+
 
 
 require __DIR__ . '/auth.php';
