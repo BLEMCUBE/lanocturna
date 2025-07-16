@@ -9,6 +9,7 @@ use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
 use App\Http\Resources\VentaCollection;
 use App\Models\Compra;
+use App\Models\Configuracion;
 use App\Models\Venta;
 
 class HandleInertiaRequests extends Middleware
@@ -73,11 +74,14 @@ class HandleInertiaRequests extends Middleware
                 ->orderBy('created_at', 'DESC')->get()
         );
 
+		//configuracion
+		$configuracion=Configuracion::get();
         //total envios
         $envios =  Venta::where(function ($query) {
             $query->where('destino', "CADETERIA")
                 ->orWhere('destino', "FLEX")
                 ->orWhere('destino', "UES")
+                ->orWhere('destino', "ENVIO FLASH")
                 ->orWhere('destino', "DAC");
         })->where(function ($query) {
             $query->where('estado', "PENDIENTE DE FACTURACIÓN")
@@ -85,13 +89,14 @@ class HandleInertiaRequests extends Middleware
                 ->orWhere('estado', "VALIDADO")
                 ->orWhere('estado', "FACTURADO");
         })
-            ->select('*')
+            ->select('id','destino','created_at')
             ->orderBy('created_at', 'DESC')->get();
 
         $total_ues = 0;
         $total_flex = 0;
         $total_dac = 0;
         $total_cadeteria = 0;
+		$total_flash=0;
 
         foreach ($envios as $key => $envio) {
 
@@ -107,6 +112,9 @@ class HandleInertiaRequests extends Middleware
                     break;
                 case 'CADETERIA':
                     $total_cadeteria += 1;
+                    break;
+                case 'ENVIO FLASH':
+                    $total_flash += 1;
                     break;
 
                 default:
@@ -127,7 +135,12 @@ class HandleInertiaRequests extends Middleware
                 'total_flex' => $total_flex,
                 'total_dac' => $total_dac,
                 'total_cadeteria' => $total_cadeteria,
-				'pagos_compras'=>$pagos_compra
+                'total_flash' => $total_flash,
+				'pagos_compras'=>$pagos_compra,
+				 'configuracion' =>
+                //'nombre'=>$configuracion->nombre_app,
+				$configuracion
+            ,
                 //'notificaciones' => !empty(auth()->user()->unreadNotifications) ?auth()->user()->unreadNotifications: [],
             ],
             //'csrf_token' => csrf_token(),
@@ -141,9 +154,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => session('error'),
                 'success' => session('success')
             ],
-            'configuracion' => [
-                //'nombre'=>$configuracion->nombre_app,
-            ],
+
             'base_url' => url('/') . '/'
         //]);
         ];

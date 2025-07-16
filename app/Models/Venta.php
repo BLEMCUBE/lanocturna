@@ -31,6 +31,7 @@ class Venta extends Model
         'cliente',
         'tipo',
         'nro_compra',
+        'nro_orden',
         'parametro',
         'vendedor_id',
         'facturador_id',

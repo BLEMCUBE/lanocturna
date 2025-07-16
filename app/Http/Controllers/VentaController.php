@@ -468,10 +468,10 @@ class VentaController extends Controller
 		try {
 			$venta->estado = "ANULADO";
 			$venta->facturado = 0;
+			$venta->validado = 0;
+			$venta->nro_orden =null;
 			$venta->fecha_anulacion =  now();
 			$venta->save();
-
-
 
 			if ($old_estado != 'PENDIENTE DE FACTURACIÓN') {
 

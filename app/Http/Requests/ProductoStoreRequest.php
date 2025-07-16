@@ -16,9 +16,9 @@ class ProductoStoreRequest extends FormRequest
         return [
 
             'origen' => 'required|unique:productos',
-            'nombre' => 'required',
+            'nombre' => 'required|unique:productos',
             'aduana' => 'required',
-            'codigo_barra' => 'required',
+            'codigo_barra' => 'required|unique:productos',
             'imagen' => 'image|max:2048|nullable',
             'stock' => 'required',
             'stock_minimo' => 'required',
@@ -34,11 +34,12 @@ class ProductoStoreRequest extends FormRequest
             'origen.required' => 'Este campo es obligatorio.',
             'origen.unique' => 'Origen ya existe',
             'nombre.required' => 'Este campo es obligatorio.',
+			'nombre.unique' => 'Nombre ya existe',
             'aduana.required' => 'Este campo es obligatorio.',
             'codigo_barra.required' => 'Este campo es obligatorio.',
+			'codigo_barra.unique' => 'Codigo barra ya existe',
             'stock.required' => 'Este campo es obligatorio.',
             'stock_minimo.required' => 'Este campo es obligatorio.',
-          //  //'photo.image' => 'Foto debe ser una imagen.',
         ];
     }
 }

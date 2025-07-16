@@ -99,6 +99,11 @@ const submit = () => {
     });
 
 };
+const deleteSpaces = (e) => {
+    e.target.value = e.target.value.replace(/[^a-z0-9]/gi, '');
+    e.target.value = ("" + e.target.value).replace(/\s+/g, '');
+	e.target.value=e.target.value.toLowerCase();
+};
 
 </script>
 

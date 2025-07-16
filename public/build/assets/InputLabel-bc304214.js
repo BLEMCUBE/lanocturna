@@ -1,1 +1,0 @@
-import{f as e,g as t,A as n,x as o}from"./@vue-1043e4d5.js";const l={class:"mb-1 text-gray-900 dark:text-white"},r={key:0},c={key:1},p={__name:"InputLabel",props:{value:{type:String}},setup(a){return(s,_)=>(e(),t("label",l,[a.value?(e(),t("span",r,n(a.value),1)):(e(),t("span",c,[o(s.$slots,"default")]))]))}};export{p as _};
