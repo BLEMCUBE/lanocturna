@@ -32,29 +32,29 @@ class CostoRealImport implements ToCollection, WithHeadingRow, WithCalculatedFor
 	{
 
 		//$actual = Carbon::now()->format('Y-m-d');
-		$f_arribo=Importacion::selectRaw("DATE_FORMAT(fecha_arribado ,'%Y-%m-%d') AS fecha")
+		$f_arribo=Importacion::selectRaw("id,DATE_FORMAT(fecha_arribado ,'%Y-%m-%d') AS fecha")
 		->where('id','=',$this->importacion_id)
 		->first();
 
 		foreach ($rows as $row) {
 			if (!empty($row['sku'])) {
 
-				if (!is_null($row['costo_real'])) {
-					$costo_real =  $row['costo_real'];
+				if (!empty($row['costo_real'])) {
+					$costo_real = round( $row['costo_real'],2);
 				} else {
 					$costo_real = 0;
 				}
 				$idDet=ImportacionDetalle::where('sku','=',$row['sku'])
 				->where('importacion_id','=',$this->importacion_id)
-				->select('id')->first();
+				->select('id','sku')->first();
 
 				$costo_real_reg = CostoReal::select('*')
 				->where('sku','=',$row['sku'])
 				->where('importacion_id','=',$this->importacion_id)
-				->where('importaciones_detalle_id','=',$idDet->id)
-				->whereDate('fecha', '=', $f_arribo->fecha);
+				->where('importaciones_detalle_id','=',$idDet->id);
+				//->whereDate('fecha', '=', $f_arribo->fecha);
 
-				if (!is_null($costo_real_reg)) {
+				if (!empty($costo_real_reg)) {
 					$costo_real_reg->update([
 						"monto" => $costo_real,
 						"creador_id" => $this->creador_id,
