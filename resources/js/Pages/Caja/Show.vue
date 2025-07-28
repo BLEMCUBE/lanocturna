@@ -74,6 +74,8 @@ onMounted(() => {
     form.moneda = datos.moneda
     form.estado = datos.estado
     form.productos = datos.productos
+    form.nro_compra = datos.nro_compra
+    form.nro_orden = datos.nro_orden
     form.total_sin_iva = datos.total_sin_iva
     form.total = datos.total
     form.codigo = datos.codigo
@@ -165,6 +167,13 @@ onMounted(() => {
                             Rut:
                         </b>
                         {{ form.rut }}
+                    </p>
+                </div>
+                <div v-if="form.nro_orden" class="col-span-1">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Nro. Orden:
+                        </b>
+                        {{ form.nro_orden }}
                     </p>
                 </div>
 
