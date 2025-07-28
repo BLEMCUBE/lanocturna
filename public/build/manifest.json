@@ -633,7 +633,7 @@
     ]
   },
   "resources/js/Pages/Caja/Show.vue": {
-    "file": "assets/Show-BY3EKFfo.js",
+    "file": "assets/Show-CqasFkq9.js",
     "name": "Show",
     "src": "resources/js/Pages/Caja/Show.vue",
     "isDynamicEntry": true,
@@ -1821,7 +1821,7 @@
     ]
   },
   "resources/js/Pages/Envio/IndexDac.vue": {
-    "file": "assets/IndexDac-Dj3skJx8.js",
+    "file": "assets/IndexDac-pKHoaFo5.js",
     "name": "IndexDac",
     "src": "resources/js/Pages/Envio/IndexDac.vue",
     "isDynamicEntry": true,
@@ -1920,7 +1920,7 @@
     ]
   },
   "resources/js/Pages/Envio/Show.vue": {
-    "file": "assets/Show-T0WSUdry.js",
+    "file": "assets/Show-CS8kldhU.js",
     "name": "Show",
     "src": "resources/js/Pages/Envio/Show.vue",
     "isDynamicEntry": true,
@@ -4389,7 +4389,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-DHeYHnZ0.js",
+    "file": "assets/app-DuM1IrSi.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
