@@ -24,7 +24,7 @@ class VentaUpdateRequest extends FormRequest
             'productos.*.cantidad' => 'required',
             'productos.*.precio' => 'required',
             'productos.*.total' => 'required',
-            'cliente.direccion' => 'required_if:destino,CADETERIA|required_if:destino,DAC',
+            'cliente.direccion' => 'required_if:destino,CADETERIA|required_if:destino,UES WEB',
 
         ];
     }

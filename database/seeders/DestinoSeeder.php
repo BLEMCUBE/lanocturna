@@ -16,7 +16,7 @@ class DestinoSeeder extends Seeder
     {
         $destinos =  [
             ["nombre" => "CADETERIA"],
-            ["nombre" => "DAC"],
+            ["nombre" => "UES WEB"],
             ["nombre" => "FLEX"],
             ["nombre" => "MERCADOLIBRE"],
             ["nombre" => "SALON"],

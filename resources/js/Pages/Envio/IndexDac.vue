@@ -12,7 +12,7 @@ import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_ventas = ref()
 const { permissions } = usePage().props.auth
-const titulo = "Envios Dac"
+const titulo = "Envios UES WEB"
 const ruta = 'envios'
 
 //actualizar pagina

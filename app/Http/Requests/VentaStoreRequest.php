@@ -24,7 +24,7 @@ class VentaStoreRequest extends FormRequest
             'productos.*.cantidad' => 'required',
             'productos.*.precio' => 'required',
             'productos.*.total' => 'required',
-            'cliente.direccion' => 'required_if:destino,CADETERIA|required_if:destino,DAC',
+            'cliente.direccion' => 'required_if:destino,CADETERIA|required_if:destino,UES WEB',
             //'metodos_pago.*.metodo_pago_id' => 'required',
 
         ];
