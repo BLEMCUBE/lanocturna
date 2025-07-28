@@ -59,7 +59,7 @@ class HandleInertiaRequests extends Middleware
                 $query->where('destino', "CADETERIA")
                     ->orWhere('destino', "FLEX")
                     ->orWhere('destino', "UES")
-                    ->orWhere('destino', "DAC")
+                    ->orWhere('destino', "UES WEB")
                     ->orWhere('destino', "WEB")
                     ->orWhere('destino', "MERCADOLIBRE")
                     ->orWhere('destino', "SALON");
@@ -82,7 +82,7 @@ class HandleInertiaRequests extends Middleware
                 ->orWhere('destino', "FLEX")
                 ->orWhere('destino', "UES")
                 ->orWhere('destino', "ENVIO FLASH")
-                ->orWhere('destino', "DAC");
+                ->orWhere('destino', "UES WEB");
         })->where(function ($query) {
             $query->where('estado', "PENDIENTE DE FACTURACIÓN")
                 ->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
@@ -107,7 +107,7 @@ class HandleInertiaRequests extends Middleware
                 case 'FLEX':
                     $total_flex += 1;
                     break;
-                case 'DAC':
+                case 'UES WEB':
                     $total_dac += 1;
                     break;
                 case 'CADETERIA':

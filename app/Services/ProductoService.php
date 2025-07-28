@@ -27,7 +27,7 @@ class ProductoService
 	{
 
 		switch ($tipo_envio) {
-			case 'envio_flash':
+			case 'Envío Flash':
 				$code = 102;
 
 				$envio = Producto::where('origen', $code)->first();
@@ -41,7 +41,29 @@ class ProductoService
 						'aduana' => 'envio flash',
 						'codigo_barra' => $code,
 						'imagen' => '/images/productos/sin_foto.png',
-						'stock' => 99999999,
+						'stock' => 999999999,
+						'stock_minimo' => 9999
+					]);
+					$id = $pr;
+				}
+				return $id;
+
+				break;
+			case 'Entrega Pick Up Interior - Xpres':
+				$code = 103;
+
+				$envio = Producto::where('origen', $code)->first();
+
+				if (!is_null($envio)) {
+					$id = $envio;
+				} else {
+					$pr = Producto::create([
+						'origen' => $code,
+						'nombre' => 'ENTREGA PICK UP INTERIOR - XPRES',
+						'aduana' => 'ENTREGA PICK UP INTERIOR - XPRES',
+						'codigo_barra' => $code,
+						'imagen' => '/images/productos/sin_foto.png',
+						'stock' => 999999999,
 						'stock_minimo' => 9999
 					]);
 					$id = $pr;

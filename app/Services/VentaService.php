@@ -39,12 +39,14 @@ class VentaService
 		}
 
 		$tipo_envio = $request->envio['id'];
+		$titulo_envio = $request->envio['titulo'];
+		$zona_envio = $request->envio['zona'];
 		$last_cambio = TipoCambio::orderBy('id', 'desc')->first();
 		$productos = [];
 
-		$nro_orden =Venta::where(function ($query) use($request) {
-				$query->where('nro_orden', $request->id);
-			})
+		$nro_orden = Venta::where(function ($query) use ($request) {
+			$query->where('nro_orden', $request->id);
+		})
 			/*->where(function ($query) {
 				$query->whereNot('estado', "COMPLETADO")
 					->orWhereNot('estado', "ANULADO");
@@ -52,128 +54,135 @@ class VentaService
 			})*/
 			->first();
 
-	//dd($nro_orden);
+		//dd($nro_orden);
+		/*	const  TITULOS_ENVIOS = [
+		"Envío por UES",
+		"Envío gratuito",
+		"UES Domicilio - 48 Horas Interior",
+		"Entrega Pick Up Interior - Xpres",
+		"UES Estandar - 24 Horas",
+		"Entrega en Pick Up",
+		"Recogida local",
+		"Envío Flash",
+		//"Envío",
+	];*/
 		if (is_null($nro_orden)) {
 
-		$destino = '';
+			$destino = '';
 
-		switch ($tipo_envio) {
-			case 'envio_flash':
-				$destino = 'ENVIO FLASH';
-				break;
+			switch ($titulo_envio) {
+				case 'Envío Flash':
+					$destino = 'ENVIO FLASH';
+					break;
 
-			default:
-				# code...
-				break;
-		}
-
-
-		$cliente = [
-			'nombre' => $request->cliente['envio']['nombre'] ?? '',
-			'direccion' => $request->cliente['envio']['direccion'] ?? '',
-			'telefono' => $request->cliente['envio']['telefono'] ?? '',
-			'empresa' => $request->cliente['envio']['empresa'] ?? null,
-			'rut' => $request->cliente['envio']['rut'] ?? null,
-			'localidad' => $request->cliente['envio']['rut'] ?? null,
-
-		];
-
-		foreach ($request->productos as $producto) {
-			$pr = $this->productoService->ProductoBySku($producto['sku']);
-
-			if (!is_null($pr)) {
-
-				array_push($productos, [
-					"producto_id" => $pr['id'],
-					"precio" => $producto['precio'],
-					"precio_sin_iva" => round($producto['precio_sin_iva']),
-					"cantidad" => $producto['cantidad'],
-					"total" => $producto['total'],
-					"total_sin_iva" => $producto['total_sin_iva'],
-				]);
+				default:
+					# code...
+					break;
 			}
-		}
-
-		//envio
-		$envio=$this->productoService->ProductoEnvio($tipo_envio);
-		if(!is_null($envio)){
 
 
-		array_push($productos, [
-					"producto_id" => $envio['id'],
-					"precio" => $request->envio['monto'],
-					"precio_sin_iva" => round( $request->envio['monto_sin_iva']),
-					"cantidad" => 1,
-					"total"  =>$request->envio['monto'],
-					"total_sin_iva" => $request->envio['monto_sin_iva'],
-				]);
+			$cliente = [
+				'nombre' => $request->cliente['envio']['nombre'] ?? '',
+				'direccion' => $request->cliente['envio']['direccion'] ?? '',
+				'telefono' => $request->cliente['envio']['telefono'] ?? '',
+				'empresa' => $request->cliente['envio']['empresa'] ?? null,
+				'rut' => $request->cliente['envio']['rut'] ?? null,
+				'localidad' => $request->cliente['envio']['rut'] ?? null,
 
-	}
-		DB::beginTransaction();
-		try {
+			];
 
-			//creando venta
-			$venta = Venta::create([
-				'estado' => 'PENDIENTE DE FACTURACIÓN',
-				'moneda' => 'Pesos',
-				'destino' => $destino,
-				'nro_orden' => $request->id,
-				'nro_compra' => $request->id,
-				'tipo_cambio' => $last_cambio->valor,
-				'observaciones' => $request->observacion,
-				'cliente' => json_encode($cliente),
-				//'parametro' => json_encode($request->all()),
-				'vendedor_id' => $usu_id,
-				'total_sin_iva' => $request->total_sin_iva ?? 0,
-				'total' => $request->total ?? 0,
+			foreach ($request->productos as $producto) {
+				$pr = $this->productoService->ProductoBySku($producto['sku']);
 
-			]);
-			$venta->update([
-				"codigo" => zero_fill($venta->id, 8)
-			]);
+				if (!is_null($pr)) {
 
-			//creando detalle venta
-			foreach ($productos as $producto) {
-
-				$venta->detalles_ventas()->create(
-					[
-						"producto_id" => $producto['producto_id'],
+					array_push($productos, [
+						"producto_id" => $pr['id'],
 						"precio" => $producto['precio'],
 						"precio_sin_iva" => round($producto['precio_sin_iva']),
 						"cantidad" => $producto['cantidad'],
 						"total" => $producto['total'],
 						"total_sin_iva" => $producto['total_sin_iva'],
-					]
-				);
+					]);
+				}
 			}
 
-			DB::commit();
+			//envio
+			$envio = $this->productoService->ProductoEnvio($titulo_envio);
+			if (!is_null($envio)) {
+
+
+				array_push($productos, [
+					"producto_id" => $envio['id'],
+					"precio" => $request->envio['monto'],
+					"precio_sin_iva" => round($request->envio['monto_sin_iva']),
+					"cantidad" => 1,
+					"total"  => $request->envio['monto'],
+					"total_sin_iva" => $request->envio['monto_sin_iva'],
+				]);
+			}
+			DB::beginTransaction();
+			try {
+
+				//creando venta
+				$venta = Venta::create([
+					'estado' => 'PENDIENTE DE FACTURACIÓN',
+					'moneda' => 'Pesos',
+					'destino' => $destino,
+					'nro_orden' => $request->id,
+					'nro_compra' => $request->id,
+					'tipo_cambio' => $last_cambio->valor,
+					'observaciones' => $request->observacion,
+					'cliente' => json_encode($cliente),
+					//'parametro' => json_encode($request->all()),
+					'vendedor_id' => $usu_id,
+					'total_sin_iva' => $request->total_sin_iva ?? 0,
+					'total' => $request->total ?? 0,
+
+				]);
+				$venta->update([
+					"codigo" => zero_fill($venta->id, 8)
+				]);
+
+				//creando detalle venta
+				foreach ($productos as $producto) {
+
+					$venta->detalles_ventas()->create(
+						[
+							"producto_id" => $producto['producto_id'],
+							"precio" => $producto['precio'],
+							"precio_sin_iva" => round($producto['precio_sin_iva']),
+							"cantidad" => $producto['cantidad'],
+							"total" => $producto['total'],
+							"total_sin_iva" => $producto['total_sin_iva'],
+						]
+					);
+				}
+
+				DB::commit();
+				return [
+					'nro_orden' => $request->id,
+					'estado' => true,
+					'mensaje' => "Venta Creada",
+					'datos' => []
+				];
+			} catch (Exception $e) {
+				DB::rollBack();
+				return [
+					//'message' => $e->getMessage(),
+					'nro_orden' => '',
+					'estado' => false,
+					'mensaje' => "Nro de orden ya existe",
+					'datos' => [],
+				];
+			}
+		} else {
 			return [
 				'nro_orden' => $request->id,
-				'estado' => true,
-				'mensaje' => "Venta Creada",
-				'datos' => []
-			];
-		} catch (Exception $e) {
-			DB::rollBack();
-			return [
-				//'message' => $e->getMessage(),
-				'nro_orden' => '',
 				'estado' => false,
 				'mensaje' => "Nro de orden ya existe",
 				'datos' => [],
 			];
 		}
-
-			} else {
-			return [
-				'nro_orden' => $request->id,
-				'estado' => false,
-				'mensaje' => "Nro de orden ya existe",
-				'datos' => [],
-			];
-		}
-
-
 	}
 }

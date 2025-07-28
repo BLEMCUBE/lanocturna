@@ -166,12 +166,12 @@ Route::controller(VentaController::class)->group(function () {
 });
 
 //Caja
-Route::controller(CajaController::class)->group(function () {
-	Route::post('/cajas/update/{id}', 'update')->name('cajas.update')->middleware('auth');
-	Route::get('/cajas/edit/{id}', 'edit')->name('cajas.edit')->middleware('auth');
-	Route::get('/cajas/facturar/{id}', 'facturar')->name('cajas.facturar')->middleware('auth');
-	Route::get('/cajas', 'index')->name('cajas.index')->middleware('auth');
-	Route::get('/cajas/{id}', 'show')->name('cajas.show')->middleware('auth');
+Route::controller(CajaController::class)->prefix('cajas')->name('cajas.')->middleware('auth')->group(function () {
+	Route::post('/update/{id}', 'update')->name('update');
+	Route::get('/edit/{id}', 'edit')->name('edit');
+	Route::get('/facturar/{id}', 'facturar')->name('facturar');
+	Route::get('/', 'index')->name('index');
+	Route::get('//{id}', 'show')->name('show');
 });
 
 //Expedicion

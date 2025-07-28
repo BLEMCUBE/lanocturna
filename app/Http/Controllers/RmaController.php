@@ -320,7 +320,7 @@ class RmaController extends Controller
 		$id_rma=zero_fill($request->parametro['rma']['id'],5);
 		//$id_rma= zero_fill("920", 5);
 
-	
+
 			$qq="select rma from (SELECT (JSON_UNQUOTE(json_extract(parametro, '$.rma.id'))) as rma
 			from  `ventas`) AS vv where vv.rma = $id_rma";
 			$venta_query =  DB::select($qq);
@@ -399,7 +399,7 @@ class RmaController extends Controller
 				$query->where('destino', "CADETERIA")
 					->orWhere('destino', "FLEX")
 					->orWhere('destino', "UES")
-					->orWhere('destino', "DAC");
+					->orWhere('destino', "UES WEB");
 			})->select('*')->when(Request::input('inicio'), function ($query, $search) {
 				$query->whereDate('created_at', '>=', $search);
 			})
@@ -560,7 +560,7 @@ class RmaController extends Controller
 				$query->where('destino', "CADETERIA")
 					->orWhere('destino', "FLEX")
 					->orWhere('destino', "UES")
-					->orWhere('destino', "DAC")
+					->orWhere('destino', "UES WEB")
 					->orWhere('destino', "WEB")
 					->orWhere('destino', "MERCADOLIBRE")
 					->orWhere('destino', "SALON");

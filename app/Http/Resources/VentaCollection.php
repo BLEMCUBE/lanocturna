@@ -36,6 +36,7 @@ class VentaCollection extends ResourceCollection
                     'estado' => $row->estado??'',
                     'tipo' => $row->tipo??'',
                     'nro_compra' => $row->nro_compra??'',
+                    'nro_orden' => $row->nro_orden??'',
                     'observaciones' => $row->observaciones??'',
                     'total' => number_format($row->total,2)??'',
                     'parametro' => $parametro??[],

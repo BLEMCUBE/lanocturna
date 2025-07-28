@@ -96,13 +96,13 @@ class EnvioController extends Controller
 		]);
 	}
 
-	//DAC
+	//UES WEB
 
 	public function indexDac()
 	{
 		$expedidiones = new VentaCollection(
 			Venta::where(function ($query) {
-				$query->where('destino', "DAC");
+				$query->where('destino', "UES WEB");
 			})->where(function ($query) {
 				$query->where('estado', "PENDIENTE DE FACTURACIÓN")
 					->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
@@ -309,7 +309,7 @@ class EnvioController extends Controller
 					->orWhere('destino', "FLEX")
 					->orWhere('destino', "ENVIO FLASH")
 					->orWhere('destino', "UES")
-					->orWhere('destino', "DAC");
+					->orWhere('destino', "UES WEB");
 			})
 			->when(Req::input('buscar'), function ($query) {
 				$query->where(DB::raw('lower(nro_compra)'), 'LIKE', '%' . strtolower(Req::input('buscar')) . '%')
