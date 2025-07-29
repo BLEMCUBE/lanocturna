@@ -23,6 +23,7 @@ const form = useForm({
     productos: [],
     cliente: '',
 	mp_id:'',
+	nro_casa:'',
     direccion:'',
     localidad : '',
     telefono :'',
@@ -50,6 +51,7 @@ onMounted(() => {
     form.total_sin_iva = datos.total_sin_iva
     form.total = datos.total
     form.codigo = datos.codigo
+    form.nro_casa = datos.nro_casa
     form.mp_id = datos.mp_id
 
 });
@@ -139,7 +141,7 @@ onMounted(() => {
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Dirección:
                         </b>
-                        {{ form.direccion }}
+                        {{ form.direccion }} <span v-if="form.nro_casa!==''">Nro Casa: {{ form.nro_casa }} </span>
                     </p>
                 </div>
                 <div class="col-span-1">

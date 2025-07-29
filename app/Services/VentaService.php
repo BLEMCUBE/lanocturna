@@ -63,7 +63,7 @@ class VentaService
 					case 'RECOGIDA LOCAL':
 						$destino = 'RETIROS WEB';
 						break;
-					case 'Envío gratuito':
+					case 'ENVÍO GRATUITO':
 						$destino = 'CADETERIA';
 						break;
 					case 'Envío por UES':
