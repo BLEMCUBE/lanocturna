@@ -163,7 +163,7 @@ class EnvioController extends Controller
 	{
 		$expedidiones = new VentaCollection(
 			Venta::where(function ($query) {
-				$query->where('destino', "ENVIO FLASH");
+				$query->where('destino', "RETIROS WEB");
 			})->where(function ($query) {
 				$query->where('estado', "PENDIENTE DE FACTURACIÓN")
 					->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
