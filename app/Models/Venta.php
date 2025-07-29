@@ -36,6 +36,7 @@ class Venta extends Model
         'vendedor_id',
         'facturador_id',
         'validador_id',
+        'mp_id',
         'created_at'
     ];
 

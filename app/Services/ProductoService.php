@@ -47,11 +47,10 @@ class ProductoService
 					$id = $pr;
 				}
 				return $id;
-
 				break;
+
 			case 'Entrega Pick Up Interior - Xpres':
 				$code = 103;
-
 				$envio = Producto::where('origen', $code)->first();
 
 				if (!is_null($envio)) {
@@ -69,7 +68,90 @@ class ProductoService
 					$id = $pr;
 				}
 				return $id;
+				break;
 
+			case 'UES Domicilio - 48 Horas Interior':
+				$code = 104;
+				$envio = Producto::where('origen', $code)->first();
+
+				if (!is_null($envio)) {
+					$id = $envio;
+				} else {
+					$pr = Producto::create([
+						'origen' => $code,
+						'nombre' => 'UES DOMICILIO - 48 HORAS INTERIOR',
+						'aduana' => 'UES DOMICILIO - 48 HORAS INTERIOR',
+						'codigo_barra' => $code,
+						'imagen' => '/images/productos/sin_foto.png',
+						'stock' => 999999999,
+						'stock_minimo' => 9999
+					]);
+					$id = $pr;
+				}
+				return $id;
+				break;
+
+			case 'RECOGIDA LOCAL':
+				$code = 105;
+				$envio = Producto::where('origen', $code)->first();
+
+				if (!is_null($envio)) {
+					$id = $envio;
+				} else {
+					$pr = Producto::create([
+						'origen' => $code,
+						'nombre' => 'RECOGIDA LOCAL',
+						'aduana' => 'RECOGIDA LOCAL',
+						'codigo_barra' => $code,
+						'imagen' => '/images/productos/sin_foto.png',
+						'stock' => 999999999,
+						'stock_minimo' => 9999
+					]);
+					$id = $pr;
+				}
+				return $id;
+				break;
+
+			case 'Envío gratuito':
+				$code = 106;
+				$envio = Producto::where('origen', $code)->first();
+
+				if (!is_null($envio)) {
+					$id = $envio;
+				} else {
+					$pr = Producto::create([
+						'origen' => $code,
+						'nombre' => 'ENVÍO GRATUITO',
+						'aduana' => 'ENVÍO GRATUITO',
+						'codigo_barra' => $code,
+						'imagen' => '/images/productos/sin_foto.png',
+						'stock' => 999999999,
+						'stock_minimo' => 9999
+					]);
+					$id = $pr;
+				}
+				return $id;
+				break;
+
+			case 'Entrega en Pick Up':
+				$code = 107;
+				$envio = Producto::where('origen', $code)->first();
+
+				if (!is_null($envio)) {
+					$id = $envio;
+				} else {
+					$pr = Producto::create([
+						'origen' => $code,
+						'nombre' => 'ENTREGA EN PICK UP',
+						'aduana' => 'ENTREGA EN PICK UP',
+						'codigo_barra' => $code,
+						'imagen' => '/images/productos/sin_foto.png',
+						'stock' => 999999999,
+						'stock_minimo' => 9999
+					]);
+					$id = $pr;
+				}
+				return $id;
 				break;
 
 			default:

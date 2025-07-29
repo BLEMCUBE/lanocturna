@@ -140,7 +140,7 @@ class PagoCompraController extends Controller
 
 			->orderByRaw('pa.fecha_pago - im.nro_factura desc')
 			->get();
-			//dd($datos);
+
 		return Excel::download(new PagosComprasExport($datos), 'PagosCompras.xlsx');
 	}
 }

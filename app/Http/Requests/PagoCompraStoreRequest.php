@@ -14,7 +14,6 @@ class PagoCompraStoreRequest extends FormRequest
     {
 
 			$saldo = $this->input('saldo');
-//			dd($saldo);
         return [
             'fecha_pago' => 'required',
             'nro_factura' => 'required|unique:pagos_compras',

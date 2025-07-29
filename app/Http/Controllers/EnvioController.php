@@ -158,10 +158,29 @@ class EnvioController extends Controller
 			'ventas' => $expedidiones
 		]);
 	}
+
+	public function indexRetiro()
+	{
+		$expedidiones = new VentaCollection(
+			Venta::where(function ($query) {
+				$query->where('destino', "ENVIO FLASH");
+			})->where(function ($query) {
+				$query->where('estado', "PENDIENTE DE FACTURACIÓN")
+					->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
+					->orWhere('estado', "VALIDADO")
+					->orWhere('estado', "FACTURADO");
+			})
+				->select('*')
+				->orderBy('created_at', 'DESC')->get()
+
+		);
+		return Inertia::render('Envio/IndexRetiros', [
+			'ventas' => $expedidiones
+		]);
+	}
+
 	public function create()
 	{
-
-
 		$last = Venta::latest()->first();
 		$vendedor = auth()->user();
 
@@ -345,7 +364,7 @@ class EnvioController extends Controller
 			$query->select('venta_detalles.*')->with(['producto' => function ($query) {
 				$query->select('id', 'nombre', 'codigo_barra', 'origen');
 			}]);
-		}])
+		}])->select('ventas.*')
 			->with(['vendedor' => function ($query) {
 				$query->select('users.id', 'users.name');
 			}])
@@ -381,6 +400,7 @@ class EnvioController extends Controller
 				$query->select('id', 'nombre', 'codigo_barra', 'origen');
 			}]);
 		}])
+			//->select('ventas.*')
 			->with(['vendedor' => function ($query) {
 				$query->select('users.id', 'users.name');
 			}])
@@ -462,7 +482,6 @@ class EnvioController extends Controller
 				} else {
 					echo "Respuesta: " . $response;
 				}*/
-
 				curl_close($ch);
 			}
 			DB::commit();
