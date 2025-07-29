@@ -30,6 +30,7 @@ const { total_flex } = usePage().props.auth
 const { total_dac } = usePage().props.auth
 const { total_cadeteria } = usePage().props.auth
 const { total_flash } = usePage().props.auth
+const { total_retiro } = usePage().props.auth
 const { pagos_compras } = usePage().props.auth
 const configStore = useConfigStore();
 const classes = computed(() => props.isOpen ? 'sm:translate-x-0' : 'sm:hidden sm:translate-x-0');
@@ -86,7 +87,6 @@ const showDropdown = ref(false)
 <template>
 	<div class="layout-menu">
 
-{{ total_flash }}
 		<!-- Productos Link -->
 
 		<ul>
@@ -241,7 +241,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('reportes')" class="w-full"
-							v-show="permissions.includes('reporte-productos-vendidos')">
+							v-show="permissions.includes('reporte-stock')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('reportes.stockproductos')"
@@ -263,7 +263,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('reportes')" class="w-full"
-							v-show="permissions.includes('reporte-productos-vendidos')">
+							v-show="permissions.includes('reporte-vendedores-pedidos')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('reportes.vendedorespedidos')"
@@ -608,6 +608,20 @@ const showDropdown = ref(false)
 									<Badge v-if="total_flash > 0" class="bg-orange-500 ml-4 px-1 mr-auto text-[12px] font-base"
 
 										:value="total_flash" />
+								</span>
+							</NavLinkSideBarNotIcon>
+						</li>
+
+					</div>
+					<div class="flex items-center">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+							<NavLinkSideBarNotIcon
+								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+								:href="route('envios.retiro')" :active="route().current('envios.retiro')">
+								<span class="ml-2 uppercase ">RETIROS WEB
+									<Badge v-if="total_retiro > 0" class="bg-orange-500 ml-4 px-1 mr-auto text-[12px] font-base"
+
+										:value="total_retiro" />
 								</span>
 							</NavLinkSideBarNotIcon>
 						</li>

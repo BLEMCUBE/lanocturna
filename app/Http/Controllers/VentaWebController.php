@@ -48,15 +48,13 @@ class VentaWebController extends Controller
 			$options
 		);
 
-		//$data['message'] = 'hello world';
-		if($venta['estado']===true){
-
-			$pusher->trigger('venta', 'envio', $venta);
+		if ($venta['estado'] === true) {
+			if ($venta['destino'] === 'ENVIO FLASH') {
+				$pusher->trigger('venta', 'envio', $venta);
+			}
 		}
 		return response()->json(
 			$venta
 		);
 	}
-
-
 }
