@@ -112,7 +112,7 @@ class ProductoService
 				return $id;
 				break;
 
-			case 'Envío gratuito':
+			case 'ENVÍO GRATUITO':
 				$code = 106;
 				$envio = Producto::where('origen', $code)->first();
 

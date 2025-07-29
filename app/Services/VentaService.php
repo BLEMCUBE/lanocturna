@@ -171,6 +171,7 @@ class VentaService
 				return [
 					'nro_orden' => $request->id,
 					'estado' => true,
+					'destino'=>$destino,
 					'mensaje' => "Venta Creada",
 					'datos' => []
 				];
