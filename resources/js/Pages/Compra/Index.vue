@@ -247,7 +247,7 @@ const filters = ref({
                         <template #body="slotProps">
 
                             <Button
-                                v-if="permissions.includes('eliminar-ventas') && slotProps.data.estado !== 'ANULADO'"
+                                v-if="permissions.includes('ventas-eliminar') && slotProps.data.estado !== 'ANULADO'"
                                 @click="btnEliminar(slotProps.data.id)"
                                 class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 "
                                 v-tooltip.top="{ value: `Anular`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i

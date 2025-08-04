@@ -21,10 +21,10 @@ class ContabilidadPermissionsSeeder extends Seeder
 
            //GRUPO Contabilidad
 		   ['name' => 'menu-contabilidad', 'description' => 'Menú Contabilidad'],
-		   ['name' => 'lista-pagos', 'description' => 'Listado Pagos importaciones'],
-		   ['name' => 'crear-pagos', 'description' => 'Agregar Pago Importación'],
-		   ['name' => 'editar-pagos', 'description' => 'Editar Pago Importación'],
-		   ['name' => 'eliminar-pagos', 'description' => 'Eliminar Pago Importación'],
+		   ['name' => 'pagoimportacion.lista', 'description' => 'Listado Pagos importaciones'],
+		   ['name' => 'pagoimportacion-crear', 'description' => 'Agregar Pago Importación'],
+		   ['name' => 'pagoimportacion.editar', 'description' => 'Editar Pago Importación'],
+		   ['name' => 'pagoimportacion-eliminar', 'description' => 'Eliminar Pago Importación'],
 		   ['name' => 'exportar-pagos', 'description' => 'Exportar Pago Importacion'],
         ];
     }

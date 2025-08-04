@@ -40,7 +40,7 @@ const formatDate = (dat) => {
                 </span>
 
 
-                    <Button label="Editar" v-if="permissions.includes('editar-rma') && editable ==true"
+                    <Button label="Editar" v-if="permissions.includes('rma-editar') && editable ==true"
                     @click="btnEditar(form.id)" :pt="{
                         root: {
                             class: 'flex items-center  bg-primary-900 justify-center font-medium w-10'

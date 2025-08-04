@@ -14,10 +14,7 @@ class ClienteController extends Controller
 {
     public function __construct()
     {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-clientes'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-clientes'])->only(['store']);
-        //$this->middleware(['auth', 'permission:editar-clientes'])->only(['update']);
+
     }
 
     public function index()

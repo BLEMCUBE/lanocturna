@@ -10,7 +10,6 @@ import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_productos = ref([])
-const { permissions } = usePage().props.auth
 const titulo = "Importaciones"
 const ruta = 'importaciones'
 const { tipo_cambio } = usePage().props

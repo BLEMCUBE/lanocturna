@@ -24,11 +24,7 @@ class VentaController extends Controller
 {
 	public function __construct()
 	{
-		//protegiendo el controlador segun el rol
-		//$this->middleware(['auth', 'permission:lista-ventas'])->only('index');
-		//$this->middleware(['auth', 'permission:crear-ventas'])->only(['store','create']);
-		//$this->middleware(['auth', 'permission:editar-ventas'])->only(['update']);
-		//$this->middleware(['auth', 'permission:eliminar-ventas'])->only(['destroy']);
+
 	}
 
 	public function index()

@@ -144,7 +144,7 @@ const closeModal = () => {
 										{{ $numberFormat(item.monto) }}
 									</td>
 									<td class="text-center border text-[14px]">
-										<Button v-if="permissions.includes('eliminar-pagos')"
+										<Button v-if="permissions.includes('pagoimportacion-eliminar')"
 											class="w-8 h-8 rounded bg-red-700 border-0 flex justify-center text-center text-base font-normal text-white hover:bg-red-600"
 											v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
 											@click.prevent="btnEliminar(item.id)"><i

@@ -10,7 +10,6 @@ import Button from 'primevue/button';
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_productos = ref()
-const { permissions } = usePage().props.auth
 const titulo = "Bultos importados"
 const ruta = 'depositos'
 
@@ -157,16 +156,7 @@ const filters = ref({
 
                             <div class="py-3 text-white flex justify-center items-center"
                             v-if="slotProps.data.estado=='En camino'">
-                                <!--
-                                <span
-                                    v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-                                    class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
-                                    <a :href="route('depositos.exportar', slotProps.data.id)" target="_blank"
-                                    class="py-auto"><i
-                                            class="fas fa-file-excel text-white"></i>
-                                    </a>
-                                </span>
-                                -->
+
                                 <Button
                                 class="w-8 h-8 rounded bg-red-700 border-0 px-2  text-base font-normal text-white m-1 hover:bg-red-600"
                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"

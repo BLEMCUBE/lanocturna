@@ -54,7 +54,7 @@ onMounted(() => {
 
 
 			<div class="px-0 py-1 m-2 mt-0 text-white  col-span-full  flex justify-end items-center">
-				<Button label="Editar" v-if="permissions.includes('editar-ventas') && form.estado !== 'ANULADO'"
+				<Button label="Editar" v-if="permissions.includes('ventas-editar') && form.estado !== 'ANULADO'"
 					@click="btnEditar(form.id)" :pt="{
 						root: {
 							class: 'flex items-center  bg-primary-900 justify-center font-medium w-10'

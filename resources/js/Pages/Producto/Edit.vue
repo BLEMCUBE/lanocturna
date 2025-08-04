@@ -199,7 +199,7 @@ const pickFile = (e) => {
                             <InputError class="mt-1 text-xs" :message="form.errors.stock_minimo" />
                         </div>
 						<!--
-							<div v-if="permissions.includes('costoreal-productos')" class="col-span-12 shadow-default xl:col-span-2">
+							<div v-if="permissions.includes('productos-costoreal')" class="col-span-12 shadow-default xl:col-span-2">
 								<InputLabel for="costo_real" value="Costo Real"
                                 class="block text-base font-medium leading-6 text-gray-900" />
                                 <input type="number" required

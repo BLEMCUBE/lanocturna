@@ -7,30 +7,29 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * The model to policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
-    protected $policies = [
-        //
-    ];
+	/**
+	 * The model to policy mappings for the application.
+	 *
+	 * @var array<class-string, class-string>
+	 */
+	protected $policies = [
+		//
+	];
 
-    /**
-     * Register any authentication / authorization services.
-     */
-    public function boot()
-    {
-        $this->registerPolicies();
+	/**
+	 * Register any authentication / authorization services.
+	 */
+	public function boot()
+	{
 
-        // Implicitly grant "Super Admin" role all permissions
-        // This works in the app by using gate-related functions like auth()->user->can() and @can()
-        Gate::before(function ($user, $ability) {
-            return $user->hasRole('Super Administrador') ? true : null;
-        });
+		$this->registerPolicies();
 
-        Gate::after(function ($user, $ability) {
-            return $user->hasRole('Super Administrador'); // note this returns boolean
-        });
-    }
+		Gate::before(function ($user, $ability) {
+			return $user->hasRole('Super Administrador') ? true : null;
+		});
+
+		Gate::after(function ($user, $ability) {
+			return $user->hasRole('Super Administrador'); // note this returns boolean
+		});
+	}
 }

@@ -1,9 +1,8 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { usePage, Link, router } from '@inertiajs/vue3';
+import { usePage, router } from '@inertiajs/vue3';
 import { Head } from '@inertiajs/vue3';
-import { ref, onMounted, reactive } from 'vue';
-const { permissions } = usePage().props.auth
+import { ref, onMounted } from 'vue';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';

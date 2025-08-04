@@ -15,10 +15,7 @@ class TipoCambioController extends Controller
 {
     public function __construct()
     {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-tipocambio'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-tipocambio'])->only(['store']);
-        //$this->middleware(['auth', 'permission:editar-tipocambio'])->only(['update']);
+
     }
 
     public function index()

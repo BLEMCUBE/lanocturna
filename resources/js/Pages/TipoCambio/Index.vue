@@ -10,7 +10,6 @@ import EditarModal from '@/Pages/TipoCambio/Partials/EditarModal.vue';
 
 import { FilterMatchMode } from 'primevue/api';
 const tabla_clientes = ref()
-const { permissions } = usePage().props.auth
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const titulo = "Tipo de Cambio"

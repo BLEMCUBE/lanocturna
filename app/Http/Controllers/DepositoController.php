@@ -29,9 +29,7 @@ class DepositoController extends Controller
 {
 	public function __construct()
 	{
-		//protegiendo el controlador segun el rol
-		//$this->middleware(['auth', 'permission:lista-depositos'])->only('index');
-		//$this->middleware(['auth', 'permission:editar-depositos'])->only(['update']);
+
 	}
 
 	public function index()
@@ -401,9 +399,7 @@ class DepositoController extends Controller
 
 
 			DB::commit();
-			//return Redirect::route('depositos.bultos')->with([
-			// 'success' =>  $venta->codigo
-			//]);
+
 		} catch (Exception $e) {
 			DB::rollBack();
 			return [

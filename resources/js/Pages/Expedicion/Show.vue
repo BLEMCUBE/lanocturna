@@ -6,7 +6,6 @@ import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import { useToast } from "primevue/usetoast";
 import Swal from 'sweetalert2';
 import InputLabel from '@/Components/InputLabel.vue';
-const { permissions } = usePage().props.auth
 const toast = useToast();
 const titulo = "Detalle"
 const ruta = 'expediciones'

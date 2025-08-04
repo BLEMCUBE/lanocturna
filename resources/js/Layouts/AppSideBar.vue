@@ -33,7 +33,6 @@ const { total_flash } = usePage().props.auth
 const { total_retiro } = usePage().props.auth
 const { pagos_compras } = usePage().props.auth
 const configStore = useConfigStore();
-const classes = computed(() => props.isOpen ? 'sm:translate-x-0' : 'sm:hidden sm:translate-x-0');
 const setMenu = (menu) => {
 	configStore.showMenu(menu);
 }
@@ -80,8 +79,6 @@ const ok = (icono, mensaje) => {
 	})
 }
 
-const showDropdown = ref(false)
-
 </script>
 
 <template>
@@ -100,7 +97,7 @@ const showDropdown = ref(false)
 				</NavLinkSideBar>
 			</li>
 
-			<li @click="setMenu('productos')" v-show="permissions.includes('lista-productos')">
+			<li @click="setMenu('productos')" v-show="permissions.includes('menu-productos')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('productos.index')" :active="route().current('productos.index')">
@@ -143,7 +140,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('contabilidad')" class="w-full"
-							v-show="permissions.includes('lista-pagos')">
+							v-show="permissions.includes('contabilidad-pagoImportacion')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('pagos-importaciones.index')"
@@ -154,7 +151,7 @@ const showDropdown = ref(false)
 					</div>
 						<div class="flex items-center">
 						<li @click="setMenu('contabilidad')" class="w-full"
-							v-show="permissions.includes('lista-pagos')">
+							v-show="permissions.includes('contabilidad-pagoEnPlaza')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('pagos-compras.index')"
@@ -170,7 +167,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('contabilidad')" class="w-full"
-							v-show="permissions.includes('lista-pagoservicio')">
+							v-show="permissions.includes('contabilidad-pagoServicio')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('pago-servicio.index')" :active="route().current('pago-servicio.index')">
@@ -181,7 +178,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('contabilidad')" class="w-full"
-							v-show="permissions.includes('lista-conceptopago')">
+							v-show="permissions.includes('contabilidad-pagoConcepto')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('concepto-pago.index')" :active="route().current('concepto-pago.index')">
@@ -192,7 +189,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('contabilidad')" class="w-full"
-							v-show="permissions.includes('lista-conceptopago')">
+							v-show="permissions.includes('contabilidad-pagoMetodo')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('metodo-pago.index')" :active="route().current('metodo-pago.index')">
@@ -231,7 +228,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('reportes')" class="w-full"
-							v-show="permissions.includes('reporte-grafico-ventas')">
+							v-show="permissions.includes('reportes-graficoVenta')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('reportes.ventas')" :active="route().current('reportes.ventas')">
@@ -241,7 +238,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('reportes')" class="w-full"
-							v-show="permissions.includes('reporte-stock')">
+							v-show="permissions.includes('reportes-stockFecha')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('reportes.stockproductos')"
@@ -252,7 +249,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('reportes')" class="w-full"
-							v-show="permissions.includes('reporte-productos-vendidos')">
+							v-show="permissions.includes('reportes-productosVendidos')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('reportes.productosvendidos')"
@@ -263,7 +260,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('reportes')" class="w-full"
-							v-show="permissions.includes('reporte-vendedores-pedidos')">
+							v-show="permissions.includes('reportes-vendedoresPedidos')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('reportes.vendedorespedidos')"
@@ -274,7 +271,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('reportes')" class="w-full"
-							v-show="permissions.includes('reporte-productos-rma')">
+							v-show="permissions.includes('reportes-productoRma')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('reportes.productosrma')"
@@ -287,7 +284,6 @@ const showDropdown = ref(false)
 				</DisclosurePanel>
 			</Disclosure>
 			<!--Reportes-->
-
 			<!--Configuraciones-->
 			<Disclosure as="div" class="p-0" v-slot="{ open }"
 				:default-open="configStore.getCurrentMenu == 'configuraciones'"
@@ -316,7 +312,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('configuraciones')" class="w-full"
-							v-show="permissions.includes('lista-usuarios')">
+							v-show="permissions.includes('configuraciones-usuarios')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('usuarios.index')" :active="route().current('usuarios.index')">
@@ -326,7 +322,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('configuraciones')" class="w-full"
-							v-show="permissions.includes('ver-roles')">
+							v-show="permissions.includes('configuraciones-roles')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('roles.index')" :active="route().current('roles.index')">
@@ -337,7 +333,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('configuraciones')" class="w-full"
-							v-show="permissions.includes('lista-tipocambio')">
+							v-show="permissions.includes('configuraciones-tipoCambio')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('tipo_cambio.index')" :active="route().current('tipo_cambio.index')">
@@ -347,7 +343,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('configuraciones')" class="w-full"
-							v-show="permissions.includes('lista-tipocambio-yuanes')">
+							v-show="permissions.includes('configuraciones-tipoCambioYuanes')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('tipo_cambio_yuan.index')"
@@ -358,7 +354,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('configuraciones')" class="w-full"
-							v-show="permissions.includes('configuraciones')">
+							v-show="permissions.includes('configuraciones-ajusteStock')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('productos.ajuste-stock')"
@@ -370,7 +366,7 @@ const showDropdown = ref(false)
 					<div class="flex items-center">
 
 						<li @click="setMenu('configuraciones')" class="w-full"
-							v-show="permissions.includes('configuraciones')">
+							v-show="permissions.includes('configuraciones-datosWeb')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('configuraciones.web')" :active="route().current('configuraciones.web')">
@@ -381,7 +377,7 @@ const showDropdown = ref(false)
 					<div class="flex items-center">
 
 						<li @click="setMenu('configuraciones')" class="w-full"
-							v-show="permissions.includes('configuraciones')">
+							v-show="permissions.includes('configuraciones-categorias')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('categorias.index')" :active="route().current('categorias.index')">
@@ -392,7 +388,7 @@ const showDropdown = ref(false)
 					<div class="flex items-center">
 
 						<li @click="setMenu('configuraciones')" class="w-full"
-							v-show="permissions.includes('configuraciones')">
+							v-show="permissions.includes('configuraciones-codigoMaestro')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('configuraciones.index')"
@@ -433,7 +429,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('compras')" class="w-full"
-							v-show="permissions.includes('lista-importaciones')">
+							v-show="permissions.includes('compras-importaciones')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('importaciones.index')" :active="route().current('importaciones.index')">
@@ -445,7 +441,7 @@ const showDropdown = ref(false)
 					<div class="flex items-center">
 
 						<li @click=" btnCompra(); setMenu('compras')" class="w-full"
-							v-show="permissions.includes('crear-compras')">
+							v-show="permissions.includes('compras-lista')">
 							<NavLinkSideBarNotIcon :href="linkCompra"
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:active="route().current('compras.create')">
@@ -455,7 +451,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('lista-ventas')">
+						<li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('compras-historial')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('compras.index')" :active="route().current('compras.index')">
@@ -464,7 +460,7 @@ const showDropdown = ref(false)
 						</li>
 					</div>
 					<div class="flex items-center">
-						<li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('rotacion-stock')">
+						<li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('compras-rotacionStock')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rotacion-stock.index')" :active="route().current('rotacion-stock.index')">
@@ -504,7 +500,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('ventas'); btnCrear()" class="w-full"
-							v-show="permissions.includes('crear-ventas')">
+							v-show="permissions.includes('ventas-crear')">
 							<NavLinkSideBarNotIcon :href="linkCrear"
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:active="route().current('ventas.create')">
@@ -514,7 +510,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-cajas')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-caja')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('cajas.index')" :active="route().current('cajas.index')">
@@ -524,7 +520,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('subir-envios')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-mercadoLibre')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.create')" :active="route().current('envios.create')">
@@ -534,7 +530,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('ventas')" class="w-full"
-							v-show="permissions.includes('lista-expediciones')">
+							v-show="permissions.includes('ventas-expediciones')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('expediciones.index')" :active="route().current('expediciones.index')">
@@ -544,7 +540,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-ues')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.index')" :active="route().current('envios.index')">
@@ -558,7 +554,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-flex')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.flex')" :active="route().current('envios.flex')">
@@ -572,7 +568,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-uesweb')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.dac')" :active="route().current('envios.dac')">
@@ -585,7 +581,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-cadeteria')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.cadeteria')" :active="route().current('envios.cadeteria')">
@@ -600,7 +596,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-flash')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.flash')" :active="route().current('envios.flash')">
@@ -614,7 +610,7 @@ const showDropdown = ref(false)
 
 					</div>
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-envios')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-retiros')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.retiro')" :active="route().current('envios.retiro')">
@@ -630,7 +626,7 @@ const showDropdown = ref(false)
 
 
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('historial-envios')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-historial')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.historial')" :active="route().current('envios.historial')">
@@ -639,7 +635,7 @@ const showDropdown = ref(false)
 						</li>
 					</div>
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('lista-ventas')">
+						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-lista')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('ventas.index')" :active="route().current('ventas.index')">
@@ -654,7 +650,7 @@ const showDropdown = ref(false)
 			<!--Deposito-->
 			<Disclosure as="div" class="py-1  hover:text-primary-900" v-slot="{ open }"
 				:default-open="configStore.getCurrentMenu == 'depositos'"
-				v-show="permissions.includes('menu-depositos')">
+				v-show="permissions.includes('menu-deposito')">
 				<h3 class="text-white hover:text-primary-900">
 					<DisclosureButton
 						class="flex w-full items-center p-2 mx-1 justify-between bg-primary-900  hover:bg-secondary-100  text-sm text-white hover:text-primary-900">
@@ -679,7 +675,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('depositos')" class="w-full"
-							v-show="permissions.includes('lista-depositos')">
+							v-show="permissions.includes('depositos-lista')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('depositos.index')" :active="route().current('depositos.index')">
@@ -690,7 +686,7 @@ const showDropdown = ref(false)
 
 					<div class="flex items-center">
 						<li @click="setMenu('depositos')" class="w-full"
-							v-show="permissions.includes('subir-depositos')">
+							v-show="permissions.includes('depositos-subir')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('depositos.create')" :active="route().current('depositos.create')">
@@ -700,7 +696,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('depositos')" class="w-full"
-							v-show="permissions.includes('bultos-depositos')">
+							v-show="permissions.includes('depositos-bultos')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('depositos.bultos')" :active="route().current('depositos.bultos')">
@@ -710,7 +706,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('depositos')" class="w-full"
-							v-show="permissions.includes('historial-depositos')">
+							v-show="permissions.includes('depositos-historial')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('depositos.historial')" :active="route().current('depositos.historial')">
@@ -720,7 +716,7 @@ const showDropdown = ref(false)
 					</div>
 					<div class="flex items-center">
 						<li @click="setMenu('depositos')" class="w-full"
-							v-show="permissions.includes('nombre-depositos')">
+							v-show="permissions.includes('depositos-nombre')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('depositoslista.index')" :active="route().current('depositoslista.index')">
@@ -762,7 +758,7 @@ const showDropdown = ref(false)
 				<DisclosurePanel class="pt-1" as="div">
 
 					<div class="flex items-center">
-						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('lista-rma')">
+						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('rma-lista')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rmas.index')" :active="route().current('rmas.index')">
@@ -771,7 +767,7 @@ const showDropdown = ref(false)
 						</li>
 					</div>
 					<div class="flex items-center">
-						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('historial-rma')">
+						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('rma-historial')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rmas.historial')" :active="route().current('rmas.historial')">
@@ -780,7 +776,7 @@ const showDropdown = ref(false)
 						</li>
 					</div>
 					<div class="flex items-center">
-						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('subir-rma')">
+						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('rma-subir')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rmas.subir')" :active="route().current('rmas.subir')">
@@ -789,7 +785,7 @@ const showDropdown = ref(false)
 						</li>
 					</div>
 					<div class="flex items-center">
-						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('historial-rma-envio')">
+						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('rma-historialEnvio')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rmas.historial-envios')"
@@ -800,7 +796,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('stock-rma')">
+						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('rma-stock')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rmas.rma-stock')" :active="route().current('rmas.rma-stock')">
@@ -810,7 +806,7 @@ const showDropdown = ref(false)
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('stock-rma')">
+						<li @click="setMenu('rma')" class="w-full" v-show="permissions.includes('rma-validacion')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rmas.validacion')" :active="route().current('rmas.validacion')">

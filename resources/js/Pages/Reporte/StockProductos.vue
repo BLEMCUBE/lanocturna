@@ -1,9 +1,8 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { usePage, Link, router } from '@inertiajs/vue3';
+import { usePage, router } from '@inertiajs/vue3';
 import { Head } from '@inertiajs/vue3';
-import { ref, onMounted, reactive } from 'vue';
-const { permissions } = usePage().props.auth
+import { ref, onMounted } from 'vue';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
@@ -13,7 +12,6 @@ import { FilterMatchMode } from 'primevue/api';
 
 const { roles } = usePage().props.auth
 const total_productos = ref([]);
-const total_cantidad = ref();
 const cargando = ref(false)
 const date = ref();
 const titulo = "Stock por Fecha"
@@ -138,9 +136,9 @@ const btnVer = (id) => {
                     <b>TOTAL CANTIDADES : {{ total_cantidad }}
                     </b>
                     -->
-                        
-                    <DataTable size="small" 
-                
+
+                    <DataTable size="small"
+
                     sortField="resultado_final" :sortOrder="1" :loading="cargando"
                     v-model:filters="filters" :value="total_productos" :paginator="true" :rows="20"
                         :rowsPerPageOptions="[20, 40, 100, 200]"
@@ -153,9 +151,9 @@ const btnVer = (id) => {
                         >
                         <template #header size="small" class="bg-secondary-900">
                             <div class="flex justify-content-end text-md">
-                            
+
                                 <InputText v-model="filters['global'].value" placeholder="Buscar" />
-                            
+
                                 <div v-if="roles.includes('Super Administrador') || roles.includes('Administrador')"
                                 v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 text-xs text-white rounded' } }"
                                 class=" w-10 h-8  ml-5 rounded flex justify-center items-center text-base font-semibold text-white mr-1">
@@ -180,7 +178,7 @@ const btnVer = (id) => {
                                     {{ slotProps.data.resultado_final }}
                                 </div>
                             </template></Column>
-                      
+
                     </DataTable>
                 </div>
 

@@ -23,17 +23,13 @@ class UsuarioController extends Controller
 {
     public function __construct()
     {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-usuarios'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-usuarios'])->only(['store']);
-        //$this->middleware(['auth', 'permission:editar-usuarios'])->only(['update']);
-        //$this->middleware(['auth', 'permission:eliminar-usuarios'])->only(['destroy']);
+
     }
 
     public function index()
     {
 
-        $rol = auth()->user()->roles->pluck('name')[0];
+        $rol = auth()->user()->roles->pluck('name')[0]??'';
 
         $roles=Role::where("id","!=",1)->get();
         $lista_roles = [];
@@ -66,7 +62,7 @@ class UsuarioController extends Controller
     }
     public function show($id)
     {
-        $rol = auth()->user()->roles->pluck('name')[0];
+        $rol = auth()->user()->roles->pluck('name')[0]??'';
 
         $roles=Role::where("id","!=",1)->get();
         $lista_roles = [];

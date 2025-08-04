@@ -13,10 +13,7 @@ class MetodoPagoController extends Controller
 {
     public function __construct()
     {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-metodopago'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-metodopago'])->only(['store']);
-        //$this->middleware(['auth', 'permission:editar-metodopago'])->only(['update']);
+
     }
 
     public function index()

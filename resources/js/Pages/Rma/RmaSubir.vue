@@ -213,7 +213,7 @@ const cancelCrear = () => {
                             <InputLabel for="stock" value="Mueve Stock?"
                                 class="text-base font-medium leading-1 text-gray-900" />
 
-                            <Dropdown v-model="selectedMueveStock" id="stock" :disabled="form.parametro.rma.stock == 0"
+                            <Dropdown v-model="selectedMueveStock" id="stock" :disabled="form.parametro.rma-stock == 0"
                                 @change="setMueveStock" filter :options="mueveStock" optionLabel="name" :pt="{
                                     root: { class: 'w-full' },
                                     trigger: { class: 'fas fa-caret-down text-gray-400 my-auto' },
@@ -222,7 +222,7 @@ const cancelCrear = () => {
                                     })
                                 }" placeholder="Seleccione" />
                             <InputError class="mt-1 text-xs" message="No existe stock"
-                                v-if="form.parametro.rma.stock == 0" />
+                                v-if="form.parametro.rma-stock == 0" />
 
                         </div>
 

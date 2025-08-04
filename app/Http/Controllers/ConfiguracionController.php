@@ -15,12 +15,12 @@ class ConfiguracionController extends Controller
     public function __construct()
     {
     //protegiendo el controlador segun el rol
-    $this->middleware(['auth', 'permission:ver-configuraciones'])->only('index','update');
+    $this->middleware(['auth', 'permission:menu-configuraciones'])->only('index','update');
 
     }
     public function index()
     {
-     
+
         $codigo_maestro=Configuracion::where('slug','codigo-maestro')->first();
         return Inertia::render('Configuracion/EditarCodigoMaestro', [
             'codigo_maestro' => $codigo_maestro
@@ -43,12 +43,12 @@ class ConfiguracionController extends Controller
         select('id','slug','key','value')
         ->whereNot('id',1)
         ->orderBy('slug')
-        ->get()        
+        ->get()
         ;
         return Inertia::render('Configuracion/Index', [
-            'lista_configuracion' => 
+            'lista_configuracion' =>
                 $configuraciones
-                
+
         ]);
 
     }

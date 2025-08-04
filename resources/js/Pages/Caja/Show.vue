@@ -4,7 +4,6 @@ import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import { useToast } from "primevue/usetoast";
 
-const { permissions } = usePage().props.auth
 const toast = useToast();
 const titulo = "Detalle Venta"
 const ruta = 'cajas'
