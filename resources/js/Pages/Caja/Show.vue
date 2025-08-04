@@ -4,7 +4,6 @@ import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import { useToast } from "primevue/usetoast";
 
-const { permissions } = usePage().props.auth
 const toast = useToast();
 const titulo = "Detalle Venta"
 const ruta = 'cajas'
@@ -25,6 +24,7 @@ const form = useForm({
 	cliente: '',
 	direccion: '',
 	localidad: '',
+	nro_casa: '',
 	telefono: '',
 	mp_id: ''
 
@@ -81,6 +81,7 @@ onMounted(() => {
 	form.total = datos.total
 	form.codigo = datos.codigo
 	form.mp_id = datos.mp_id
+	form.nro_casa = datos.nro_casa
 	form.tipo_cambio = datos.tipo_cambio.toFixed(2)
 
 });
@@ -171,6 +172,20 @@ onMounted(() => {
 							Rut:
 						</b>
 						{{ form.rut }}
+					</p>
+				</div>
+				<div class="col-span-1">
+					<p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+							Localidad:
+						</b>
+						{{ form.localidad }}
+					</p>
+				</div>
+				<div class="col-span-1">
+					<p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+							Direccion:
+						</b>
+						{{ form.direccion }} {{ form.nro_casa }}
 					</p>
 				</div>
 				<div v-if="form.nro_orden" class="col-span-1">

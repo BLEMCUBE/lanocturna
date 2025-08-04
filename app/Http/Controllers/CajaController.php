@@ -2,31 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\VentaStoreRequest;
 use App\Http\Requests\VentaUpdateRequest;
 use App\Http\Resources\ProductoVentaCollection;
 use App\Http\Resources\VentaCollection;
 use App\Models\Cliente;
 use Exception;
 use App\Models\Producto;
-use Carbon\Carbon;
 use App\Models\Venta;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\VentaResource;
 use App\Models\Destino;
-use App\Models\TipoCambio;
 
 
 class CajaController extends Controller
 {
     public function __construct()
     {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-cajas'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-cajas'])->only(['store','create']);
-        //$this->middleware(['auth', 'permission:editar-cajas'])->only(['update']);
-        //$this->middleware(['auth', 'permission:eliminar-cajas'])->only(['destroy']);
+
     }
 
     public function index()

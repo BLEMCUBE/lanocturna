@@ -11,7 +11,6 @@ import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
 const tabla_ventas = ref()
-const { permissions } = usePage().props.auth
 const titulo = "Envios UES"
 const ruta = 'envios'
 

@@ -10,12 +10,10 @@ import EditarModal from '@/Pages/Cliente/Partials/EditarModal.vue';
 
 import { FilterMatchMode } from 'primevue/api';
 const tabla_clientes = ref()
-const { permissions } = usePage().props.auth
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const titulo = "Clientes"
 const ruta = 'clientes'
-
 
 const formDelete = useForm({
     id: '',
@@ -72,12 +70,12 @@ const filters = ref({
         <Head :title="titulo" />
         <AppLayout :pagina="[{ 'label': titulo, link: false }]">
             <div
-            class="px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="px-4 py-3 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
             <Toast />
                 <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
                     <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-                    <CrearModal v-if="permissions.includes('crear-clientes')"></CrearModal>
+                    <CrearModal ></CrearModal>
                 </div>
                     <div class="align-middle">
                                 <DataTable  size="small" v-model:filters="filters"
@@ -103,11 +101,11 @@ const filters = ref({
                                     <Column header="Acciones" style="width:100px">
                                         <template #body="slotProps">
 
-                                            <span v-if="permissions.includes('editar-clientes')"
+                                            <span
                                                 class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
                                                 <EditarModal :cliente-id="slotProps.data.id"></EditarModal>
                                             </span>
-                                            <span v-if="permissions.includes('eliminar-clientes')"
+                                            <span
                                                 class="inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-red-600">
                                                 <button @click.prevent="eliminar(slotProps.data.id, slotProps.data.name)"><i
                                                         class="fas fa-trash-alt"></i></button>

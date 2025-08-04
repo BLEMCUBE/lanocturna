@@ -295,7 +295,7 @@ const ok = (icono, mensaje) => {
 								<td>{{ post.total }}</td>
 								<td @click="clickDetalle(post.id)">{{ post.observaciones }}</td>
 								<td>
-									<Button v-if="permissions.includes('eliminar-ventas') && post.estado !== 'ANULADO'"
+									<Button v-if="permissions.includes('ventas-eliminar') && post.estado !== 'ANULADO'"
 										@click="btnEliminar(post.id)"
 										class="w-8 h-8 rounded border-red-700 bg-red-700 px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600 "
 										v-tooltip.top="{ value: `Anular`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i

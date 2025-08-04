@@ -31,11 +31,7 @@ class RmaController extends Controller
 {
 	public function __construct()
 	{
-		//protegiendo el controlador segun el rol
-		//$this->middleware(['auth', 'permission:lista-rma'])->only('index');
-		//$this->middleware(['auth', 'permission:crear-rma'])->only(['store','create']);
-		//$this->middleware(['auth', 'permission:editar-rma'])->only(['update']);
-		//$this->middleware(['auth', 'permission:eliminar-rma'])->only(['destroy']);
+
 	}
 
 	public function index()

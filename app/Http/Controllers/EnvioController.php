@@ -36,11 +36,7 @@ class EnvioController extends Controller
 	public function __construct(
 		private ConfiguracionService $configuracionService
 	) {
-		//protegiendo el controlador segun el rol
-		//$this->middleware(['auth', 'permission:lista-envios'])->only('index');
-		//$this->middleware(['auth', 'permission:crear-envios'])->only(['store','create']);
-		//$this->middleware(['auth', 'permission:editar-envios'])->only(['update']);
-		//$this->middleware(['auth', 'permission:eliminar-envios'])->only(['destroy']);
+
 	}
 
 	//lista UES
@@ -511,6 +507,7 @@ class EnvioController extends Controller
 				'localidad' => $cliente->localidad ?? '',
 				'direccion' => $cliente->direccion ?? '',
 				'telefono' => $cliente->telefono ?? '',
+				'nro_casa' => $cliente->nro_casa ?? '',
 				'fecha' => (now())->format('d/m/Y H:i:s')
 			];
 

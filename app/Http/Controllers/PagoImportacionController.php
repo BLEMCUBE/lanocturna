@@ -17,11 +17,7 @@ class PagoImportacionController extends Controller
 {
 	public function __construct()
 	{
-		//protegiendo el controlador segun el rol
-		//$this->middleware(['auth', 'permission:lista-importaciones'])->only('index');
-		//$this->middleware(['auth', 'permission:crear-importaciones'])->only(['store']);
-		//$this->middleware(['auth', 'permission:editar-importaciones'])->only(['update']);
-		//$this->middleware(['auth', 'permission:eliminar-importaciones'])->only(['destroy']);
+
 	}
 
 	public function index()

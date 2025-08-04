@@ -4,12 +4,9 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
-
 import { FilterMatchMode } from 'primevue/api';
-//const { permissions } = usePage().props.auth
-
-
 import { useToast } from "primevue/usetoast";
+
 const toast = useToast();
 const titulo = "Depósitos Historial"
 const ruta = 'depositos'

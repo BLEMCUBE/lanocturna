@@ -10,7 +10,7 @@ import EditarModal from '@/Pages/Categoria/Partials/EditarModal.vue';
 
 import { FilterMatchMode } from 'primevue/api';
 const tabla_clientes = ref()
-const { permissions } = usePage().props.auth
+
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const titulo = "Categorías"
@@ -114,7 +114,7 @@ const filters = ref({
 
                    <Column header="Acciones" style="width:100px">
                         <template #body="slotProps">
-                            <span 
+                            <span
                                 class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
                                 <EditarModal :cliente-id="slotProps.data.id"></EditarModal>
                             </span>

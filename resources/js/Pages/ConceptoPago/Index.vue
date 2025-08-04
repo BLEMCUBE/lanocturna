@@ -8,7 +8,6 @@ import EditarModal from '@/Pages/ConceptoPago/Partials/EditarModal.vue';
 
 import { FilterMatchMode } from 'primevue/api';
 const tabla_items = ref()
-const { permissions } = usePage().props.auth
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const titulo = "Conceptos de Pago"

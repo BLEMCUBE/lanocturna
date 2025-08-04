@@ -79,7 +79,7 @@ const show = (tipo, titulo, mensaje) => {
             <div class="px-5 pb-2 col-span-full flex justify-between items-center">
 
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
-                <CrearModal v-if="permissions.includes('crear-usuarios')"></CrearModal>
+                <CrearModal v-if="permissions.includes('usuarios-crear')"></CrearModal>
             </div>
 
             <div class="align-middle">
@@ -101,11 +101,11 @@ const show = (tipo, titulo, mensaje) => {
                     <Column field="roles" header="Rol" sortable></Column>
                     <Column header="Acciones" style="width:100px">
                         <template #body="slotProps">
-                            <span v-if="permissions.includes('editar-usuarios')"
+                            <span v-if="permissions.includes('usuarios-editar')"
                                 class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
                                 <EditarModal :cliente-id="slotProps.data.id"></EditarModal>
                             </span>
-                            <span v-if="permissions.includes('eliminar-usuarios')"
+                            <span v-if="permissions.includes('usuarios-eliminar')"
                                 class="inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-red-600">
                                 <button @click.prevent="eliminar(slotProps.data.id, slotProps.data.name)"><i
                                         class="fas fa-trash-alt"></i></button>

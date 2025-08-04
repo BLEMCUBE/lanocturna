@@ -146,7 +146,7 @@ const show = (tipo, titulo, mensaje) => {
 								<td> {{ post.categorias.map(entry => entry.name).join(', ') }}</td>
 								<td>{{ post.codigo_barra }}</td>
 								<td>
-									<div v-if="permissions.includes('imagen-catalogo')">
+									<div v-if="permissions.includes('catalogo-imagen')">
 										<span
 											class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
 											<EditarModal :producto-id="post.id" :nombre="post.nombre"></EditarModal>

@@ -128,7 +128,8 @@ class HandleInertiaRequests extends Middleware
             }
         }
 
-			return [
+
+			$dato= [
 				...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
@@ -142,6 +143,7 @@ class HandleInertiaRequests extends Middleware
                 'total_cadeteria' => $total_cadeteria,
                 'total_flash' => $total_flash,
 				'pagos_compras'=>$pagos_compra,
+				'total_retiro'=>$total_retiro,
 				 'configuracion' =>
                 //'nombre'=>$configuracion->nombre_app,
 				$configuracion
@@ -163,5 +165,6 @@ class HandleInertiaRequests extends Middleware
             'base_url' => url('/') . '/'
         //]);
         ];
+		return $dato;
     }
 }

@@ -20,8 +20,8 @@ class Permissions260625 extends Seeder
         $this->permissions =  [
 
             //Productos
-            ['name' => 'costoreal-productos', 'description' => 'Agregar/Editar costo real producto'],
-            ['name' => 'exportar-depositos', 'description' => 'Descargar Excel en depósito'],
+            ['name' => 'productos-costoreal', 'description' => 'Agregar/Editar costo real producto'],
+            ['name' => 'depositos-exportar', 'description' => 'Descargar Excel en depósito'],
 
 
 

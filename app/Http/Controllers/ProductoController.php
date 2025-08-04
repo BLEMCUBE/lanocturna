@@ -34,10 +34,10 @@ class ProductoController extends Controller
 	public function __construct()
 	{
 		//protegiendo el controlador segun el rol
-		$this->middleware(['auth', 'permission:lista-productos'])->only('index');
-		$this->middleware(['auth', 'permission:crear-productos'])->only(['store']);
-		$this->middleware(['auth', 'permission:editar-productos'])->only(['update']);
-		$this->middleware(['auth', 'permission:eliminar-productos'])->only(['destroy']);
+		$this->middleware(['auth', 'permission:menu-productos'])->only('index');
+		$this->middleware(['auth', 'permission:productos-crear'])->only(['store']);
+		$this->middleware(['auth', 'permission:productos-editar'])->only(['update']);
+		$this->middleware(['auth', 'permission:productos-eliminar'])->only(['destroy']);
 	}
 
 	public function index()
