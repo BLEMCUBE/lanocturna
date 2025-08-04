@@ -31,6 +31,7 @@ const form = useForm({
 	localidad: '',
 	telefono: '',
 	nro_orden: '',
+	nro_casa: '',
 
 })
 const cod_maestro = useForm({
@@ -160,6 +161,7 @@ onMounted(() => {
 	form.telefono = datos.telefono
 	form.observaciones = datos.observaciones
 	form.nro_orden = datos.nro_orden
+	form.nro_casa = datos.nro_casa
 	form.estado = datos.estado
 	datos.productos.forEach(el => {
 		form.productos.push(
@@ -256,7 +258,7 @@ onMounted(() => {
 					<p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
 							Dirección:
 						</b>
-						{{ form.direccion }}
+						{{ form.direccion }} {{ form.nro_casa }}
 					</p>
 				</div>
 

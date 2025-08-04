@@ -616,7 +616,6 @@ const ok = (icono, mensaje) => {
 								:href="route('envios.retiro')" :active="route().current('envios.retiro')">
 								<span class="ml-2 uppercase ">RETIROS WEB
 									<Badge v-if="total_retiro > 0" class="bg-orange-500 ml-4 px-1 mr-auto text-[12px] font-base"
-
 										:value="total_retiro" />
 								</span>
 							</NavLinkSideBarNotIcon>

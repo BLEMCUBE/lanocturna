@@ -66,7 +66,7 @@ class VentaService
 					case 'ENVÍO GRATUITO':
 						$destino = 'CADETERIA';
 						break;
-					case 'Envío por UES':
+					case 'UES Estandar - 24 Horas':
 						$destino = 'CADETERIA';
 						break;
 				}
@@ -94,7 +94,7 @@ class VentaService
 				'telefono' => $request->cliente['envio']['telefono'] ?? '',
 				'empresa' => $request->cliente['envio']['empresa'] ?? null,
 				'rut' => $request->cliente['envio']['rut'] ?? null,
-				'localidad' => $request->cliente['envio']['rut'] ?? null,
+				'localidad' => $request->cliente['envio']['localidad'] ?? null,
 
 			];
 

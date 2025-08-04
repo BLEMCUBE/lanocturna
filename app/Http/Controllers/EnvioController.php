@@ -507,6 +507,7 @@ class EnvioController extends Controller
 				'localidad' => $cliente->localidad ?? '',
 				'direccion' => $cliente->direccion ?? '',
 				'telefono' => $cliente->telefono ?? '',
+				'nro_casa' => $cliente->nro_casa ?? '',
 				'fecha' => (now())->format('d/m/Y H:i:s')
 			];
 

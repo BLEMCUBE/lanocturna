@@ -154,6 +154,26 @@ class ProductoService
 				return $id;
 				break;
 
+			case 'UES Estandar - 24 Horas':
+				$code = 108;
+				$envio = Producto::where('origen', $code)->first();
+
+				if (!is_null($envio)) {
+					$id = $envio;
+				} else {
+					$pr = Producto::create([
+						'origen' => $code,
+						'nombre' => 'UES ESTANDAR - 24 HORAS',
+						'aduana' => 'UES ESTANDAR - 24 HORAS',
+						'codigo_barra' => $code,
+						'imagen' => '/images/productos/sin_foto.png',
+						'stock' => 999999999,
+						'stock_minimo' => 9999
+					]);
+					$id = $pr;
+				}
+				return $id;
+				break;
 			default:
 				# code...
 				break;

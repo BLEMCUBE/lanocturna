@@ -141,7 +141,7 @@ onMounted(() => {
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Dirección:
                         </b>
-                        {{ form.direccion }} <span v-if="form.nro_casa!==''">Nro Casa: {{ form.nro_casa }} </span>
+                        {{ form.direccion }}  {{ form.nro_casa }}
                     </p>
                 </div>
                 <div class="col-span-1">
