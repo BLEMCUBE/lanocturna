@@ -21,11 +21,7 @@ class PagoCompraController extends Controller
 {
 	public function __construct()
 	{
-		//protegiendo el controlador segun el rol
-		//$this->middleware(['auth', 'permission:lista-pagocompra'])->only('index'); pagocompra
-		//$this->middleware(['auth', 'permission:crear-pagocompra'])->only(['store']);
-		//$this->middleware(['auth', 'permission:editar-pagocompra'])->only(['update']);
-		//$this->middleware(['auth', 'permission:eliminar-pagocompra'])->only(['destroy']);
+
 	}
 
 	public function index()
@@ -140,7 +136,7 @@ class PagoCompraController extends Controller
 
 			->orderByRaw('pa.fecha_pago - im.nro_factura desc')
 			->get();
-			//dd($datos);
+
 		return Excel::download(new PagosComprasExport($datos), 'PagosCompras.xlsx');
 	}
 }

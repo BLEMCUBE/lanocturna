@@ -21,22 +21,11 @@ class RolesSeeder extends Seeder
         // Reset cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
 
-        /*// create permissions
-        foreach ($this->permissions as $permission) {
-            Permission::create($permission);
-        }*/
-
         // create the admin role and set all default permissions
         $sup = Role::create(['name' => 'Super Administrador']);
 
-        /*foreach ($this->permissions as $value) {
-            $sup->givePermissionTo($value['name']);
-        }*/
-
         $adm = Role::create(['name' => 'Administrador']);
-        /*foreach ($this->permissions as $key => $value) {
-            $adm->givePermissionTo($this->permissions[$key]['name']);
-        }*/
+
         $enc = Role::create(['name' => 'Encargado']);
         $ven = Role::create(['name' => 'Vendedor']);
         $caj = Role::create(['name' => 'Caja']);

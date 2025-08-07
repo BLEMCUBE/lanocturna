@@ -11,53 +11,62 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable,HasRoles;
+	use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'username',
-        'photo',
-        'email',
-        'password',
-    ];
+	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array<int, string>
+	 */
+	protected $fillable = [
+		'name',
+		'username',
+		'photo',
+		'email',
+		'password',
+	];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+	/**
+	 * The attributes that should be hidden for serialization.
+	 *
+	 * @var array<int, string>
+	 */
+	protected $hidden = [
+		'password',
+		'remember_token',
+	];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+	/**
+	 * The attributes that should be cast.
+	 *
+	 * @var array<string, string>
+	 */
+	protected $casts = [
+		'email_verified_at' => 'datetime',
+		'password' => 'hashed',
+	];
 
 	public function pago_servicios()
-    {
-        return $this->hasMany(PagoServicio::class);
-    }
+	{
+		return $this->hasMany(PagoServicio::class);
+	}
 
-	  public function ventas()
-    {
-        return $this->hasMany(Venta::class,'vendedor_id','id');
-    }
+	public function ventas()
+	{
+		return $this->hasMany(Venta::class, 'vendedor_id', 'id');
+	}
 
-	  public function reales_costos()
-    {
-        return $this->hasMany(CostoReal::class,'creador_id','id');
-    }
+	public function reales_costos()
+	{
+		return $this->hasMany(CostoReal::class, 'creador_id', 'id');
+	}
+
+	/*public function before(User $user, string $ability): bool|null
+	{
+		if ($user->hasRole('Super Administrador')) {
+			return true;
+		}
+
+		return null; // see the note above in Gate::before about why null must be returned here.
+	}*/
 }

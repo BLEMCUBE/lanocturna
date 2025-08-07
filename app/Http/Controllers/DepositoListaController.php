@@ -14,9 +14,7 @@ class DepositoListaController extends Controller
 {
     public function __construct()
     {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-depositoslista'])->only('index');
-        //$this->middleware(['auth', 'permission:editar-depositoslista'])->only(['update']);
+
     }
 
     public function index()

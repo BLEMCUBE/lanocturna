@@ -34,7 +34,6 @@ class DepositoExport implements FromView, ShouldAutoSize
 		}])
 		->select('*')->where('deposito_lista_id', $this->id)
 			->where('bultos', '>', 0)->get();
-			//dd($invoices);
 
 		return view('excel.deposito', [
 			'invoices' => $invoices

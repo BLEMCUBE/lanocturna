@@ -22,6 +22,8 @@ const form = useForm({
     observaciones: '',
     productos: [],
     cliente: '',
+	mp_id:'',
+	nro_casa:'',
     direccion:'',
     localidad : '',
     telefono :'',
@@ -49,6 +51,8 @@ onMounted(() => {
     form.total_sin_iva = datos.total_sin_iva
     form.total = datos.total
     form.codigo = datos.codigo
+    form.nro_casa = datos.nro_casa
+    form.mp_id = datos.mp_id
 
 });
 
@@ -137,7 +141,7 @@ onMounted(() => {
                     <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
                             Dirección:
                         </b>
-                        {{ form.direccion }}
+                        {{ form.direccion }}  {{ form.nro_casa }}
                     </p>
                 </div>
                 <div class="col-span-1">
@@ -145,6 +149,13 @@ onMounted(() => {
                             Télefono:
                         </b>
                         {{ form.telefono }}
+                    </p>
+                </div>
+                <div class="col-span-1" v-if="form.mp_id!==''">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            MP:
+                        </b>
+                        {{ form.mp_id }}
                     </p>
                 </div>
                 <div class="col-span-2">

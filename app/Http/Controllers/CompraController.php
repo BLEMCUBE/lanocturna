@@ -22,11 +22,7 @@ class CompraController extends Controller
 {
 	public function __construct()
 	{
-		//protegiendo el controlador segun el rol
-		//$this->middleware(['auth', 'permission:lista-compras'])->only('index');
-		//$this->middleware(['auth', 'permission:crear-compras'])->only(['store','create']);
-		//$this->middleware(['auth', 'permission:editar-compras'])->only(['update']);
-		//$this->middleware(['auth', 'permission:eliminar-compras'])->only(['destroy']);
+
 	}
 
 	public function index()

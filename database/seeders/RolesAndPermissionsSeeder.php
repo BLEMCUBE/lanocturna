@@ -20,10 +20,10 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->permissions =  [
 
             //Productos
-            ['name' => 'lista-productos', 'description' => 'Lista Productos'],
-            ['name' => 'crear-productos', 'description' => 'Crear Producto'],
-            ['name' => 'editar-productos', 'description' => 'Editar Producto'],
-            ['name' => 'eliminar-productos', 'description' => 'Eliminar Producto'],
+            ['name' => 'productos-lista', 'description' => 'Lista Productos'],
+            ['name' => 'productos-crear', 'description' => 'Crear Producto'],
+            ['name' => 'productos-editar', 'description' => 'Editar Producto'],
+            ['name' => 'productos-eliminar', 'description' => 'Eliminar Producto'],
 
             //Grupo configuraciones
             ['name' => 'menu-reportes', 'description' => 'Menú Reportes'],
@@ -38,12 +38,12 @@ class RolesAndPermissionsSeeder extends Seeder
             //Grupo configuraciones
             ['name' => 'menu-configuraciones', 'description' => 'Menú configuraciones'],
             //Usuarios
-            ['name' => 'lista-usuarios', 'description' => 'Lista Usuarios'],
-            ['name' => 'crear-usuarios', 'description' => 'Crear Usuario'],
-            ['name' => 'editar-usuarios', 'description' => 'Editar Usuario'],
-            ['name' => 'eliminar-usuarios', 'description' => 'Eliminar Usuario'],
+            ['name' => 'usuarios-lista', 'description' => 'Lista Usuarios'],
+            ['name' => 'usuarios-crear', 'description' => 'Crear Usuario'],
+            ['name' => 'usuarios-editar', 'description' => 'Editar Usuario'],
+            ['name' => 'usuarios-eliminar', 'description' => 'Eliminar Usuario'],
             //Roles y permisos
-            ['name' => 'ver-roles', 'description' => 'Roles y permisos'],
+            ['name' => 'configuraciones-roles', 'description' => 'Roles y permisos'],
             //codigo
             ['name' => 'configuraciones', 'description' => 'Código Maestro'],
             //Tipo de cambio
@@ -57,15 +57,15 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'menu-compras', 'description' => 'Menú Compras'],
             //Compras
             ['name' => 'lista-compras', 'description' => 'Historial de Compras'],
-            ['name' => 'crear-compras', 'description' => 'Crear Compra'],
-            ['name' => 'editar-compras', 'description' => 'Editar Compra'],
-            ['name' => 'eliminar-compras', 'description' => 'Anular Compra'],
+            ['name' => 'compras-crear', 'description' => 'Crear Compra'],
+            ['name' => 'compras-editar', 'description' => 'Editar Compra'],
+            ['name' => 'compras-eliminar', 'description' => 'Anular Compra'],
             //Importaciones
-            ['name' => 'lista-importaciones', 'description' => 'Lista Importaciones'],
-            ['name' => 'excel-importaciones', 'description' => 'Importar Excel'],
-            ['name' => 'detalle-importaciones', 'description' => 'Detalle Importación'],
-            ['name' => 'editar-importaciones', 'description' => 'Editar Importación'],
-            ['name' => 'eliminar-importaciones', 'description' => 'Eliminar Importación'],
+            ['name' => 'importaciones-lista', 'description' => 'Lista Importaciones'],
+            ['name' => 'importaciones-importarExcel', 'description' => 'Importar Excel'],
+            ['name' => 'importaciones-detalle', 'description' => 'Detalle Importación'],
+            ['name' => 'importaciones-editar', 'description' => 'Editar Importación'],
+            ['name' => 'importaciones-eliminar', 'description' => 'Eliminar Importación'],
             //Rotación de Stock
             ['name' => 'rotacion-stock', 'description' => 'Rotación de Stock'],
 
@@ -73,11 +73,11 @@ class RolesAndPermissionsSeeder extends Seeder
             //GRUPO VENTAS
             ['name' => 'menu-ventas', 'description' => 'Menú Ventas'],
             //Ventas
-            ['name' => 'lista-ventas', 'description' => 'Historial de Ventas'],
-            ['name' => 'crear-ventas', 'description' => 'Crear Venta'],
-            ['name' => 'facturar-ventas', 'description' => 'Facturar Venta'],
-            ['name' => 'editar-ventas', 'description' => 'Editar Venta'],
-            ['name' => 'eliminar-ventas', 'description' => 'Anular Venta'],
+            ['name' => 'ventas-lista', 'description' => 'Historial de Ventas'],
+            ['name' => 'ventas-crear', 'description' => 'Crear Venta'],
+            ['name' => 'ventas-facturar', 'description' => 'Facturar Venta'],
+            ['name' => 'ventas-editar', 'description' => 'Editar Venta'],
+            ['name' => 'ventas-eliminar', 'description' => 'Anular Venta'],
             //Caja
             ['name' => 'lista-cajas', 'description' => 'Caja'],
             //Expedición
@@ -91,23 +91,23 @@ class RolesAndPermissionsSeeder extends Seeder
             //GRUPO DEPOSITOS
             ['name' => 'menu-depositos', 'description' => 'Menú Depósitos'],
             //Deposito
-            ['name' => 'lista-depositos', 'description' => 'Depósitos'],
-            ['name' => 'subir-depositos', 'description' => 'Subir Bultos Depósito'],
-            ['name' => 'bultos-depositos', 'description' => 'Bultos Importados'],
-            ['name' => 'historial-depositos', 'description' => 'Historial De Depósito'],
-            ['name' => 'nombre-depositos', 'description' => 'Nombre Depósito'],
+            ['name' => 'depositos-lista', 'description' => 'Depósitos'],
+            ['name' => 'depositos-subir', 'description' => 'Subir Bultos Depósito'],
+            ['name' => 'depositos-bultos', 'description' => 'Bultos Importados'],
+            ['name' => 'depositos-historial', 'description' => 'Historial De Depósito'],
+            ['name' => 'depositos-nombre', 'description' => 'Nombre Depósito'],
 
 
             //GRUPO RMA
             ['name' => 'menu-rma', 'description' => 'Menú Rma'],
-            ['name' => 'lista-rma', 'description' => 'Listado Rma'],
-            ['name' => 'crear-rma', 'description' => 'Crear Rma'],
-            ['name' => 'editar-rma', 'description' => 'Editar Rma'],
-            ['name' => 'eliminar-rma', 'description' => 'Eliminar Rma'],
-            ['name' => 'historial-rma', 'description' => 'Historial Rma'],
-            ['name' => 'subir-rma', 'description' => 'Subir Envio Rma'],
-            ['name' => 'historial-rma-envio', 'description' => 'Historial Envios RMA'],
-            ['name' => 'stock-rma', 'description' => 'Stock RMA'],
+            ['name' => 'rma-lista', 'description' => 'Listado Rma'],
+            ['name' => 'rma-crear', 'description' => 'Crear Rma'],
+            ['name' => 'rma-editar', 'description' => 'Editar Rma'],
+            ['name' => 'rma-eliminar', 'description' => 'Eliminar Rma'],
+            ['name' => 'rma-historial', 'description' => 'Historial Rma'],
+            ['name' => 'rma-subir', 'description' => 'Subir Envio Rma'],
+            ['name' => 'rma-historialEnvio', 'description' => 'Historial Envios RMA'],
+            ['name' => 'rma-stock', 'description' => 'Stock RMA'],
 
              //lista vendedores - pedidos
              ['name' => 'reporte-vendedor-pedidos', 'description' => 'Reporte Vendedores con mas pedidos'],
@@ -142,6 +142,5 @@ class RolesAndPermissionsSeeder extends Seeder
         $env = Role::create(['name' => 'Envio']);
         $dep = Role::create(['name' => 'Deposito']);
         $ser = Role::create(['name' => 'Servicio Tecnico']);
-        //$rep->givePermissionTo($this->permissions[0]['name']);
     }
 }

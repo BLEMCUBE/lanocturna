@@ -175,12 +175,12 @@ Route::controller(CajaController::class)->prefix('cajas')->name('cajas.')->middl
 });
 
 //Expedicion
-Route::controller(ExpedicionController::class)->group(function () {
-	Route::post('/expediciones/maestro', 'verificarCodigoMaestro')->name('expediciones.maestro')->middleware('auth');
-	Route::post('/expediciones/update/{id}', 'validarProductos')->name('expediciones.update')->middleware('auth');
-	Route::get('/expediciones', 'index')->name('expediciones.index')->middleware('auth');
-	Route::get('/expediciones/{id}', 'show')->name('expediciones.show')->middleware('auth');
-	Route::get('/expediciones/pdf/{id}', 'generarPdf')->name('expediciones.pdf')->middleware('auth');
+Route::controller(ExpedicionController::class)->prefix('expediciones')->name('expediciones.')->middleware('auth')->group(function () {
+	Route::post('/maestro', 'verificarCodigoMaestro')->name('maestro');
+	Route::post('/update/{id}', 'validarProductos')->name('update');
+	Route::get('/', 'index')->name('index');
+	Route::get('/{id}', 'show')->name('show');
+	Route::get('/pdf/{id}', 'generarPdf')->name('pdf');
 });
 
 //Envio
@@ -197,6 +197,7 @@ Route::controller(EnvioController::class)->prefix('envios')->name('envios.')->mi
 	Route::get('/dac', 'indexDac')->name('dac');
 	Route::get('/cadeteria', 'indexCadeteria')->name('cadeteria');
 	Route::get('/flash', 'indexFlash')->name('flash');
+	Route::get('/retiro', 'indexRetiro')->name('retiro');
 	Route::get('/ticket/{id}', 'generarTicket')->name('generar_ticket');
 	Route::get('/{id}/{tipo}', 'show')->name('show');
 });

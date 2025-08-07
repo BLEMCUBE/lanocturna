@@ -20,7 +20,7 @@ class ValidacionRmaSeeder extends Seeder
         $this->permissions =  [
 
             //GRUPO RMA
-            ['name' => 'validacion-rma', 'description' => 'Validación Rma'],
+            ['name' => 'rma-validacion', 'description' => 'Validación Rma'],
         ];
     }
 

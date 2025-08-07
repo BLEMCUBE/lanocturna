@@ -298,11 +298,11 @@ onMounted(() => {
 					}">
 						<template #body="slotProps">
 							<div class="flex justify-end justify-items-center">
-								<div v-if="permissions.includes('editar-pagoservicio')"
+								<div v-if="permissions.includes('pagoservicio-editar')"
 									class="h-8 inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-primary-100">
 									<EditarModal :item-id="slotProps.data.id"></EditarModal>
 								</div>
-								<div v-if="permissions.includes('eliminar-pagoservicio')"
+								<div v-if="permissions.includes('pagoservicio-eliminar')"
 									class="h-8 inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mr-1 mb-1 hover:bg-red-600">
 									<button @click.prevent="eliminar(slotProps.data.id, slotProps.data.nro_factura)"><i
 											class="fas fa-trash-alt"></i></button>

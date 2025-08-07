@@ -21,7 +21,7 @@ class CatalogoPermissionsSeeder extends Seeder
 
             //GRUPO Catalogo
 			['name' => 'menu-catalogo', 'description' => 'Menú Catálogo'],
-			['name' => 'imagen-catalogo', 'description' => 'Cambiar Imagen Catálogo'],
+			['name' => 'catalogo-imagen', 'description' => 'Cambiar Imagen Catálogo'],
         ];
     }
 

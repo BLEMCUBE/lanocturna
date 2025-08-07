@@ -20,16 +20,16 @@ class PagoServiciosPermissionsSeeder extends Seeder
         $this->permissions =  [
 
            //GRUPO Concepto Pago
-		   ['name' => 'lista-conceptopago', 'description' => 'Listado Conceptos de Pago'],
-		   ['name' => 'crear-conceptopago', 'description' => 'Agregar Concepto de Pago'],
-		   ['name' => 'editar-conceptopago', 'description' => 'Editar Concepto de Pago'],
-		   ['name' => 'eliminar-conceptopago', 'description' => 'Eliminar Concepto de Pago'],
+		   ['name' => 'conceptopago-lista', 'description' => 'Listado Conceptos de Pago'],
+		   ['name' => 'conceptopago-crear', 'description' => 'Agregar Concepto de Pago'],
+		   ['name' => 'conceptopago-editar', 'description' => 'Editar Concepto de Pago'],
+		   ['name' => 'conceptopago-eliminar', 'description' => 'Eliminar Concepto de Pago'],
 
            //GRUPO Pagos servicios
-		   ['name' => 'lista-pagoservicio', 'description' => 'Listado Pagos'],
-		   ['name' => 'crear-pagoservicio', 'description' => 'Agregar Pago'],
-		   ['name' => 'editar-pagoservicio', 'description' => 'Editar Pago'],
-		   ['name' => 'eliminar-pagoservicio', 'description' => 'Eliminar Pago'],
+		   ['name' => 'pagoservicio-lista', 'description' => 'Listado Pagos'],
+		   ['name' => 'pagoservicio-crear', 'description' => 'Agregar Pago'],
+		   ['name' => 'pagoservicio-editar', 'description' => 'Editar Pago'],
+		   ['name' => 'pagoservicio-eliminar', 'description' => 'Eliminar Pago'],
 		   ['name' => 'exportar-pagoservicio', 'description' => 'Exportar Pagos'],
         ];
     }

@@ -175,13 +175,13 @@ const filters = ref({
                         <template #body="slotProps">
                             <!--
 
-                                <button v-if="permissions.includes('editar-productos')"
+                                <button v-if="permissions.includes('productos-editar')"
                                 class="w-8 h-8 rounded bg-yellow-500  px-2 py-1 text-base font-normal text-black m-1 hover:bg-yellow-400"
                                 v-tooltip.top="{ value: `Ver`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"
                                 @click.prevent="btnVer(slotProps.data.id)"><i class="fas fa-eye"></i></button>
                             -->
 
-                            <button v-if="permissions.includes('eliminar-productos')"
+                            <button v-if="permissions.includes('productos-eliminar')"
                                 class="w-8 h-8 rounded bg-red-700  border border-white px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
                                 v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                 @click.prevent="btnEliminar(slotProps.data.id, slotProps.data.nombre)"><i
@@ -195,6 +195,6 @@ const filters = ref({
             <!--Contenido-->
 
         </div>
- 
+
     </AppLayout>
 </template>

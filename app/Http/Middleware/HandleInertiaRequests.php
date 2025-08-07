@@ -81,6 +81,7 @@ class HandleInertiaRequests extends Middleware
             $query->where('destino', "CADETERIA")
                 ->orWhere('destino', "FLEX")
                 ->orWhere('destino', "UES")
+                ->orWhere('destino', "RETIROS WEB")
                 ->orWhere('destino', "ENVIO FLASH")
                 ->orWhere('destino', "UES WEB");
         })->where(function ($query) {
@@ -97,6 +98,7 @@ class HandleInertiaRequests extends Middleware
         $total_dac = 0;
         $total_cadeteria = 0;
 		$total_flash=0;
+		$total_retiro=0;
 
         foreach ($envios as $key => $envio) {
 
@@ -116,6 +118,9 @@ class HandleInertiaRequests extends Middleware
                 case 'ENVIO FLASH':
                     $total_flash += 1;
                     break;
+                case 'RETIROS WEB':
+                    $total_retiro += 1;
+                    break;
 
                 default:
                     # code...
@@ -123,7 +128,8 @@ class HandleInertiaRequests extends Middleware
             }
         }
 
-			return [
+
+			$dato= [
 				...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
@@ -137,6 +143,7 @@ class HandleInertiaRequests extends Middleware
                 'total_cadeteria' => $total_cadeteria,
                 'total_flash' => $total_flash,
 				'pagos_compras'=>$pagos_compra,
+				'total_retiro'=>$total_retiro,
 				 'configuracion' =>
                 //'nombre'=>$configuracion->nombre_app,
 				$configuracion
@@ -158,5 +165,6 @@ class HandleInertiaRequests extends Middleware
             'base_url' => url('/') . '/'
         //]);
         ];
+		return $dato;
     }
 }

@@ -16,7 +16,6 @@ import 'vue-datepicker-next/locale/es.es.js';
 
 const toast = useToast();
 const tabla_ventas = ref()
-const { permissions } = usePage().props.auth
 const titulo = "Historial de RMA"
 const ruta = 'rmas'
 

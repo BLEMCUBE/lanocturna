@@ -15,7 +15,7 @@ class CatalogoController extends Controller
 	{
 		//protegiendo el controlador segun el rol
 		$this->middleware(['auth', 'permission:menu-catalogo'])->only('index');
-		$this->middleware(['auth', 'permission:imagen-catalogo'])->only(['update']);
+		$this->middleware(['auth', 'permission:catalogo-imagen'])->only(['update']);
 	}
 
 	public function index()

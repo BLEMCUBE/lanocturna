@@ -14,10 +14,7 @@ class TipoCambioYuanController extends Controller
 {
     public function __construct()
     {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-tipocambioyuan'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-tipocambioyuan'])->only(['store']);
-        //$this->middleware(['auth', 'permission:editar-tipocambioyuan'])->only(['update']);
+
     }
 
     public function index()

@@ -239,7 +239,7 @@ const filters = ref({
                         <template #body="slotProps" >
                             <div class="flex justify-center items-center mx-2">
 
-                                <div v-if="permissions.includes('exportar-depositos')"
+                                <div v-if="permissions.includes('depositos-exportar')"
                                 v-tooltip.top="{ value: 'Descargar Excel', pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
                                 class=" w-8 h-8 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
                                 <a :href="route('depositos.exportar', slotProps.data.id)" target="_blank"

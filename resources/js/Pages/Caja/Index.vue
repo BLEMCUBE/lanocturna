@@ -8,7 +8,6 @@ import Column from 'primevue/column';
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const tabla_ventas = ref()
-const { permissions } = usePage().props.auth
 const titulo = "Caja"
 const ruta = 'cajas'
 

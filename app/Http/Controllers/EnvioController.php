@@ -36,11 +36,7 @@ class EnvioController extends Controller
 	public function __construct(
 		private ConfiguracionService $configuracionService
 	) {
-		//protegiendo el controlador segun el rol
-		//$this->middleware(['auth', 'permission:lista-envios'])->only('index');
-		//$this->middleware(['auth', 'permission:crear-envios'])->only(['store','create']);
-		//$this->middleware(['auth', 'permission:editar-envios'])->only(['update']);
-		//$this->middleware(['auth', 'permission:eliminar-envios'])->only(['destroy']);
+
 	}
 
 	//lista UES
@@ -158,10 +154,29 @@ class EnvioController extends Controller
 			'ventas' => $expedidiones
 		]);
 	}
+
+	public function indexRetiro()
+	{
+		$expedidiones = new VentaCollection(
+			Venta::where(function ($query) {
+				$query->where('destino', "RETIROS WEB");
+			})->where(function ($query) {
+				$query->where('estado', "PENDIENTE DE FACTURACIÓN")
+					->orWhere('estado', "PENDIENTE DE VALIDACIÓN")
+					->orWhere('estado', "VALIDADO")
+					->orWhere('estado', "FACTURADO");
+			})
+				->select('*')
+				->orderBy('created_at', 'DESC')->get()
+
+		);
+		return Inertia::render('Envio/IndexRetiros', [
+			'ventas' => $expedidiones
+		]);
+	}
+
 	public function create()
 	{
-
-
 		$last = Venta::latest()->first();
 		$vendedor = auth()->user();
 
@@ -345,7 +360,7 @@ class EnvioController extends Controller
 			$query->select('venta_detalles.*')->with(['producto' => function ($query) {
 				$query->select('id', 'nombre', 'codigo_barra', 'origen');
 			}]);
-		}])
+		}])->select('ventas.*')
 			->with(['vendedor' => function ($query) {
 				$query->select('users.id', 'users.name');
 			}])
@@ -381,6 +396,7 @@ class EnvioController extends Controller
 				$query->select('id', 'nombre', 'codigo_barra', 'origen');
 			}]);
 		}])
+			//->select('ventas.*')
 			->with(['vendedor' => function ($query) {
 				$query->select('users.id', 'users.name');
 			}])
@@ -462,7 +478,6 @@ class EnvioController extends Controller
 				} else {
 					echo "Respuesta: " . $response;
 				}*/
-
 				curl_close($ch);
 			}
 			DB::commit();
@@ -492,6 +507,7 @@ class EnvioController extends Controller
 				'localidad' => $cliente->localidad ?? '',
 				'direccion' => $cliente->direccion ?? '',
 				'telefono' => $cliente->telefono ?? '',
+				'nro_casa' => $cliente->nro_casa ?? '',
 				'fecha' => (now())->format('d/m/Y H:i:s')
 			];
 

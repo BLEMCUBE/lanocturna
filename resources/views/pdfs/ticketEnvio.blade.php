@@ -14,7 +14,7 @@
 
         body {
             font-family: Helvetica, sans-serif;
-            font-size: 16px;
+            font-size: 13px;
             /*margin: 26px;*/
             margin: 0 auto;
         }
@@ -75,7 +75,7 @@
             </tr>
             <tr>
                 <th class="w-40 derecha">Dirección:</th>
-                <td class="izquierda">{{$data['direccion']}}</td>
+                <td class="izquierda">{{$data['direccion']}} {{$data['nro_casa']}} </td>
             </tr>
             <tr>
                 <th class="w-40 derecha">Télefono:</th>

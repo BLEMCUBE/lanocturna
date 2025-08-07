@@ -10,7 +10,6 @@ import EditarModal from '@/Pages/DepositoLista/Partials/EditarModal.vue';
 
 import { FilterMatchMode } from 'primevue/api';
 const tabla_clientes = ref()
-const { permissions } = usePage().props.auth
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const titulo = "Nombre Depósito"
@@ -72,7 +71,7 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="px-4 py-3 mb-4 bg-white col-span-12  lg:col-span-6 py-5 rounded-lg shadow-lg lg:col-span-6">
+            class="px-4 py-3 mb-4 bg-white col-span-12  rounded-lg shadow-lg lg:col-span-6">
             <!--Contenido-->
             <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">

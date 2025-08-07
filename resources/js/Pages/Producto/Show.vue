@@ -206,7 +206,7 @@ const clickDetImportacion = (e) => {
 					<h5 class="text-xl font-medium">{{ titulo }}</h5>
 				</div>
 				<div class="px-0 py-0 m-2 mt-0 text-white col-span-2 flex justify-end items-center">
-					<Button label="Editar" v-if="permissions.includes('editar-productos')" @click="btnEditar(form.id)"
+					<Button label="Editar" v-if="permissions.includes('productos-editar')" @click="btnEditar(form.id)"
 						:pt="{
 							root: {
 								class: 'flex items-center bg-primary-900 justify-center font-medium w-10'

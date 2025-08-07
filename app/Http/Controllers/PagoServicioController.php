@@ -20,11 +20,7 @@ class PagoServicioController extends Controller
 {
 	public function __construct()
 	{
-		//protegiendo el controlador segun el rol
-		//$this->middleware(['auth', 'permission:lista-pagoservicio'])->only('index'); pagoservicio
-		//$this->middleware(['auth', 'permission:crear-pagoservicio'])->only(['store']);
-		//$this->middleware(['auth', 'permission:editar-pagoservicio'])->only(['update']);
-		//$this->middleware(['auth', 'permission:eliminar-pagoservicio'])->only(['destroy']);
+
 	}
 
 	public function index()

@@ -22,8 +22,7 @@ class ExpedicionController extends Controller
 {
     public function __construct()
     {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-expediciones'])->only('index');
+
     }
 
     public function index()
@@ -79,9 +78,9 @@ class ExpedicionController extends Controller
         ]);
 
         if (Hash::check($request->codigo, $codigo->value)) {
-            
+
         } else {
-            
+
             throw ValidationException::withMessages([
                 'codigo' => __('Código maestro inválido'),
             ]);
@@ -144,7 +143,7 @@ class ExpedicionController extends Controller
     }
 
     public function generarPdf($id){
-        
+
         $venta = Venta::with(['detalles_ventas' => function ($query) {
             $query->select('venta_detalles.*')->with(['producto' => function ($query) {
                 $query->select('id', 'nombre', 'codigo_barra', 'origen');

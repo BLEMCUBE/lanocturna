@@ -10,53 +10,57 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-
+use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
 	public function __construct()
 	{
 		//protegiendo el controlador segun el rol
-		$this->middleware(['auth', 'permission:ver-roles'])->only('index');
+		//$this->middleware('permission:configuraciones-roles')->only('index');
 	}
 	public function index()
 	{
-		$roles = Role::select('id','name')->whereNotIn('id', [1])
-		->with(['users','permissions'])
-		->orderBy('name')->get();
+		$roles = Role::select('id', 'name')->whereNotIn('id', [1])
+			->with(['users', 'permissions'])
+			->orderBy('name')->get();
 		return Inertia::render('Role/Index', [
 			'roles' =>  new RoleCollection(
-                $roles
-            )
+				$roles
+			)
 		]);
 	}
 	public function store(RoleStoreRequest $request)
 	{
 
 		Role::create(['name' => $request->name]);
-
 	}
 
-	   public function show($id)
-    {
-        $cliente = Role::findOrFail($id);
-        return response()->json([
-            "rol" => $cliente
-        ]);
-    }
-	  public function updateRol(RoleUpdateRequest $request, $id)
-    {
-        $tipo_cambio = Role::findOrFail($id);
-        $tipo_cambio->update($request->all());
-    }
+	public function show($id)
+	{
+		$cliente = Role::findOrFail($id);
+		return response()->json([
+			"rol" => $cliente
+		]);
+	}
+	public function updateRol(RoleUpdateRequest $request, $id)
+	{
+		$tipo_cambio = Role::findOrFail($id);
+		$tipo_cambio->update($request->all());
+	}
 
 	public function edit($id)
 	{
 		if ($id == 1) {
 			return redirect('roles');
 		}
-
+		$groupNames = [
+			'menu' => 'Menú',
+			'productos' => 'Productos',
+			'pagoservicio' => 'Pago Servicio',
+			'pagoimportacion' => 'Pago Importacion',
+			'conceptopago' => 'Concepto Pago',
+		];
 		$permissions = Permission::all();
 		$roles = Role::find($id);
 
@@ -70,10 +74,58 @@ class RoleController extends Controller
 				"name" => $permiso->description,
 			]);
 		}
+
+
+		// Mapear permisos con display_name
+		$permissions2 = Permission::all()->map(function ($perm) {
+			$parts = explode('-', $perm->name);
+			$action = $parts[1] ?? '';
+			$target = $parts[0] ?? '';
+
+			$actionsMap = [
+				'create' => 'Crear',
+				'edit'   => 'Editar',
+				'delete' => 'Eliminar',
+				'view'   => 'Ver',
+				'list'   => 'Listar',
+			];
+
+			$displayAction = $actionsMap[$action] ?? Str::ucfirst($action);
+			$displayTarget = Str::ucfirst(str_replace('_', ' ', $target));
+
+			return [
+				'id' => $perm->id,
+				'original_name' => $perm->name,
+				'description' => $perm->description,
+				//'display_name' => "$displayAction $displayTarget",
+				'group' => $target,
+			];
+		});
+
+		// Agrupar por grupo
+		$grouped = $permissions2->groupBy('group');
+
+		// Construir grupos con nombre legible y permisos ordenados
+		$result = collect($grouped)->map(function ($items, $key) use ($groupNames) {
+			return [
+				'key' => $key,
+				'name' => $groupNames[$key] ?? ucfirst($key),
+				'permissions' => $items->sortBy('description')->values()->map(fn($p) => [
+					'id' => $p['id'],
+					//'name' => $p['display_name'], // ya puedes usarlo directamente en Vue
+					'description' => $p['description'], // ya puedes usarlo directamente en Vue
+				]),
+			];
+		});
+
+		// Ordenar los grupos por nombre legible
+		$sorted = $result->sortBy('name')->values();
+
 		return Inertia::render('Role/Edit', [
 			'role' => $roles,
 			'rolePermissions' => $rolePermissions,
 			'permissions' => $lista_permisos,
+			'namedGroups' => $sorted,
 		]);
 	}
 
@@ -85,10 +137,9 @@ class RoleController extends Controller
 		//return Redirect::route('roles.index');
 	}
 
-    public function destroy($id)
-    {
-        $cliente = Role::find($id);
-        $cliente->delete();
-
-    }
+	public function destroy($id)
+	{
+		$cliente = Role::find($id);
+		$cliente->delete();
+	}
 }

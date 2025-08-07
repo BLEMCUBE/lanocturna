@@ -13,10 +13,7 @@ class ConceptoPagoController extends Controller
 {
     public function __construct()
     {
-        //protegiendo el controlador segun el rol
-        //$this->middleware(['auth', 'permission:lista-conceptopago'])->only('index');
-        //$this->middleware(['auth', 'permission:crear-conceptopago'])->only(['store']);
-        //$this->middleware(['auth', 'permission:editar-conceptopago'])->only(['update']);
+
     }
 
     public function index()
