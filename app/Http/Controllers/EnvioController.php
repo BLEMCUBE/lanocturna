@@ -35,9 +35,7 @@ class EnvioController extends Controller
 {
 	public function __construct(
 		private ConfiguracionService $configuracionService
-	) {
-
-	}
+	) {}
 
 	//lista UES
 	public function index()
@@ -460,7 +458,10 @@ class EnvioController extends Controller
 
 			//actualizar web
 			$destinos = [
-				'ENVIO FLASH'
+				'ENVIO FLASH',
+				'RETIROS WEB',
+				'CADETERIA',
+				'UES WEB'
 			];
 			$as_method = in_array($venta->destino, $destinos);
 
