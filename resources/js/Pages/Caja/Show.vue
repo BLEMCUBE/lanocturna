@@ -235,8 +235,8 @@ onMounted(() => {
 							<td class="border border-gray-300 p-1">{{ item.producto.origen }}</td>
 							<td class="border border-gray-300 p-1">{{ item.producto.nombre }}</td>
 							<td class="border border-gray-300 p-1">{{ item.producto.codigo_barra }}</td>
-							<td class="border border-gray-300 p-1">{{ item.precio.toFixed(2) }}</td>
-							<td class="border border-gray-300 p-1">{{ item.total.toFixed(2) }}</td>
+							<td class="border border-gray-300 p-1">{{ item.precio_sin_iva.toFixed(2) }}</td>
+							<td class="border border-gray-300 p-1">{{ item.total_sin_iva.toFixed(2) }}</td>
 
 						</tr>
 					</tbody>
