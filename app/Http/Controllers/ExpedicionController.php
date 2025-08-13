@@ -30,8 +30,7 @@ class ExpedicionController extends Controller
 
         $expedidiones = new VentaCollection(
             Venta::where(function ($query) {
-                $query->where('destino', "WEB")
-                    ->orWhere('destino', "MERCADOLIBRE")
+                $query->where('destino', "MERCADOLIBRE")
                     ->orWhere('destino', "SALON");
             })->where(function ($query) {
                 $query->where('estado', "PENDIENTE DE FACTURACIÓN")

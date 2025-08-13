@@ -22,7 +22,7 @@ class DestinoSeeder extends Seeder
             ["nombre" => "SALON"],
             ["nombre" => "UES"],
             ["nombre" => "UES WEB"],
-            ["nombre" => "WEB"],
+            ["nombre" => "ENVIO FLASH"],
         ];
 
         foreach ($destinos as $destino) {

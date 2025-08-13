@@ -37,7 +37,8 @@ class ReporteVendedoresPedidosController extends Controller
 				})
 				->when($final, function ($query, $final) {
 					$query->whereDate('ve.fecha_facturacion', '<=', $final)
-						->where('ve.destino', '=', 'SALON');
+						//->where('ve.destino', '=', 'SALON')
+						;
 				})
 				->select('us.id')
 				->groupBy('us.id')
@@ -57,7 +58,7 @@ class ReporteVendedoresPedidosController extends Controller
 							$query->whereDate('ve.fecha_facturacion', '<=', $final);
 						})
 						->where('ve.facturado', '=', '1')
-						->where('ve.destino', '=', 'SALON')
+						//W->where('ve.destino', '=', 'SALON')
 						->where('us.id', '=', $vend)
 						->select(
 							'us.name',
@@ -97,8 +98,8 @@ class ReporteVendedoresPedidosController extends Controller
 					$query->whereDate('ve.fecha_facturacion', '>=', $inicio);
 				})
 				->when($final, function ($query, $final) {
-					$query->whereDate('ve.fecha_facturacion', '<=', $final)
-						->where('ve.destino', '=', 'SALON');
+					$query->whereDate('ve.fecha_facturacion', '<=', $final);
+						//->where('ve.destino', '=', 'SALON');
 				})
 				->select('us.id')
 				->where('us.id','=',auth()->user()->id)
@@ -119,7 +120,7 @@ class ReporteVendedoresPedidosController extends Controller
 							$query->whereDate('ve.fecha_facturacion', '<=', $final);
 						})
 						->where('ve.facturado', '=', '1')
-						->where('ve.destino', '=', 'SALON')
+						//->where('ve.destino', '=', 'SALON')
 						->where('us.id', '=', $vend)
 						->select(
 							'us.name',
@@ -205,7 +206,8 @@ class ReporteVendedoresPedidosController extends Controller
 			})
 			->when($final, function ($query, $final) {
 				$query->whereDate('ve.fecha_facturacion', '<=', $final)
-					->where('ve.destino', '=', 'SALON');
+					//->where('ve.destino', '=', 'SALON')
+					;
 			})
 			->select('us.id')
 			->groupBy('us.id')
@@ -225,7 +227,7 @@ class ReporteVendedoresPedidosController extends Controller
 						$query->whereDate('ve.fecha_facturacion', '<=', $final);
 					})
 					->where('ve.facturado', '=', '1')
-					->where('ve.destino', '=', 'SALON')
+					//->where('ve.destino', '=', 'SALON')
 					->where('us.id', '=', $vend)
 					->select(
 						'us.name',
