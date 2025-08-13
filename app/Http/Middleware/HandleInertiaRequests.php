@@ -54,7 +54,7 @@ class HandleInertiaRequests extends Middleware
 		}
 		$pagos_compra=Compra::where('pagado','=',0)	->whereNull('fecha_anulacion')->count();
         // cantidad de rmas
-        $total_rmas = new VentaCollection(
+     /*   $total_rmas = new VentaCollection(
             Venta::where(function ($query) {
                 $query->where('destino', "CADETERIA")
                     ->orWhere('destino', "FLEX")
@@ -72,7 +72,7 @@ class HandleInertiaRequests extends Middleware
                 ->where("tipo", '=', "RMA")
                 ->where("facturado", '=', "0")
                 ->orderBy('created_at', 'DESC')->get()
-        );
+        );*/
 
 		//configuracion
 		$configuracion=Configuracion::get();
@@ -82,6 +82,7 @@ class HandleInertiaRequests extends Middleware
                 ->orWhere('destino', "FLEX")
                 ->orWhere('destino', "UES")
                 ->orWhere('destino', "RETIROS WEB")
+                ->orWhere('destino', "SALON")
                 ->orWhere('destino', "ENVIO FLASH")
                 ->orWhere('destino', "UES WEB");
         })->where(function ($query) {
@@ -98,6 +99,7 @@ class HandleInertiaRequests extends Middleware
         $total_dac = 0;
         $total_cadeteria = 0;
 		$total_flash=0;
+		$total_expedicion=0;
 		$total_retiro=0;
 
         foreach ($envios as $key => $envio) {
@@ -121,6 +123,9 @@ class HandleInertiaRequests extends Middleware
                 case 'RETIROS WEB':
                     $total_retiro += 1;
                     break;
+                case 'SALON':
+                    $total_expedicion += 1;
+                    break;
 
                 default:
                     # code...
@@ -136,12 +141,12 @@ class HandleInertiaRequests extends Middleware
                 'roles' => $request->user() ? $request->user()->roles->pluck('name') : [],
                 'permissions' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : [],
                 'hoy_tipo_cambio' => $hoy_tipo_cambio,
-                'total_rmas' => $total_rmas->count(),
                 'total_ues' => $total_ues,
                 'total_flex' => $total_flex,
                 'total_dac' => $total_dac,
                 'total_cadeteria' => $total_cadeteria,
                 'total_flash' => $total_flash,
+                'total_expedicion' => $total_expedicion,
 				'pagos_compras'=>$pagos_compra,
 				'total_retiro'=>$total_retiro,
 				 'configuracion' =>
