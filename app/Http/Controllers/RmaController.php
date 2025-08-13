@@ -557,7 +557,7 @@ class RmaController extends Controller
 					->orWhere('destino', "FLEX")
 					->orWhere('destino', "UES")
 					->orWhere('destino', "UES WEB")
-					->orWhere('destino', "WEB")
+					->orWhere('destino', "RETIROS WEB")
 					->orWhere('destino', "MERCADOLIBRE")
 					->orWhere('destino', "SALON");
 			})->select('*')->when(Request::input('inicio'), function ($query, $search) {

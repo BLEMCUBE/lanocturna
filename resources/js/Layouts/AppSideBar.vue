@@ -24,10 +24,10 @@ const props = defineProps({
 
 const { permissions } = usePage().props.auth
 const { hoy_tipo_cambio } = usePage().props.auth
-const { total_rmas } = usePage().props.auth
 const { total_ues } = usePage().props.auth
 const { total_flex } = usePage().props.auth
 const { total_dac } = usePage().props.auth
+const { total_expedicion } = usePage().props.auth
 const { total_cadeteria } = usePage().props.auth
 const { total_flash } = usePage().props.auth
 const { total_retiro } = usePage().props.auth
@@ -534,7 +534,10 @@ const ok = (icono, mensaje) => {
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('expediciones.index')" :active="route().current('expediciones.index')">
-								<span class="ml-2 uppercase">Expedición</span>
+								<span class="ml-2 uppercase ">Expedición
+									<Badge v-if="total_expedicion > 0" class="ml-4 px-1 mr-auto text-[12px] font-base"
+										severity="danger" :value="total_expedicion" />
+								</span>
 							</NavLinkSideBarNotIcon>
 						</li>
 					</div>
@@ -740,9 +743,6 @@ const ok = (icono, mensaje) => {
 								class="font-medium  absolute right-0  uppercase tracking-wide flex hover:bg-secondary-100 justify-start items-center  text-base w-full px-2 py-2 text-white hover:text-primary-900">
 								<i class="fa-solid fa-warehouse mr-3 ml-1"></i>
 								RMA
-								<Badge v-if="total_rmas > 0"
-									class="ml-4 px-0.5 mr-auto text-[12px] font-normal" severity="danger"
-									:value="total_rmas" />
 								<div class="pr-2 py-4 absolute right-0 z-50 ">
 									<ChevronDownIcon v-if="!open" class="h-8 w-8" aria-hidden="true" />
 									<ChevronUpIcon v-else class="h-8 w-8" aria-hidden="true" />
