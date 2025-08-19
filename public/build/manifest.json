@@ -1985,6 +1985,41 @@
       "_lodash.isequal-BY8B19Vp.js"
     ]
   },
+  "resources/js/Pages/Envio/ShowRetiro.vue": {
+    "file": "assets/ShowRetiro-BwWa2lGY.js",
+    "name": "ShowRetiro",
+    "src": "resources/js/Pages/Envio/ShowRetiro.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_@vue-BLfC86mR.js",
+      "_AppLayout-Cr2Tt5WN.js",
+      "_InputError-DdpGOVhM.js",
+      "_@inertiajs-B6DOW0KO.js",
+      "_primevue-B_pu_EB_.js",
+      "_sweetalert2-DQJME8_f.js",
+      "_InputLabel-CkCrW4zf.js",
+      "_pusher-js-Ck_2Ecjm.js",
+      "_logo-C8Jea0Rc.js",
+      "_pinia-DeiM1QY_.js",
+      "_@vueuse-BEDuuF1-.js",
+      "_@headlessui-CeD_lX9I.js",
+      "_@heroicons-CatyAbtO.js",
+      "_axios-Dq7h7Pqt.js",
+      "_deepmerge-Bh_OW9zV.js",
+      "_qs-Dzj_DFKn.js",
+      "_side-channel-DZFSYYHh.js",
+      "_get-intrinsic-gH0OeWJ1.js",
+      "_has-symbols-CABd5qHC.js",
+      "_has-proto-CpIZBmUT.js",
+      "_function-bind-C4RYm_-a.js",
+      "_has-D2ofp1JE.js",
+      "_call-bind-7ir4MDz-.js",
+      "_object-inspect-ronoqz_t.js",
+      "_nprogress-Di1940OM.js",
+      "_lodash.clonedeep-D_Ud3gdH.js",
+      "_lodash.isequal-BY8B19Vp.js"
+    ]
+  },
   "resources/js/Pages/Expedicion/Index.vue": {
     "file": "assets/Index-CKrH9d1l.js",
     "name": "Index",
@@ -4420,7 +4455,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-DK76TYSR.js",
+    "file": "assets/app-DoNswtdc.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -4499,6 +4534,7 @@
       "resources/js/Pages/Envio/IndexFlex.vue",
       "resources/js/Pages/Envio/IndexRetiros.vue",
       "resources/js/Pages/Envio/Show.vue",
+      "resources/js/Pages/Envio/ShowRetiro.vue",
       "resources/js/Pages/Expedicion/Index.vue",
       "resources/js/Pages/Expedicion/Show.vue",
       "resources/js/Pages/Importacion/Create.vue",
