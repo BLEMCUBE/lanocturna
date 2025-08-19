@@ -365,10 +365,22 @@ class EnvioController extends Controller
 			->orderBy('id', 'DESC')->findOrFail($id);
 
 		$venta = new VentaResource($subtema);
-		return Inertia::render('Envio/Show', [
-			'venta' => $venta,
-			'tipo' => $tipo
-		]);
+
+		switch ($tipo) {
+			case 'retiro':
+				return Inertia::render('Envio/ShowRetiro', [
+					'venta' => $venta,
+					'tipo' => $tipo
+				]);
+				break;
+
+			default:
+				return Inertia::render('Envio/Show', [
+					'venta' => $venta,
+					'tipo' => $tipo
+				]);
+				break;
+		}
 	}
 
 	public function verificarCodigoMaestro(Request $request)
@@ -594,6 +606,41 @@ class EnvioController extends Controller
 					'message' => $e->getMessage(),
 				];
 			}
+		}
+	}
+
+	public function generarPdf($id)
+	{
+
+		$venta = Venta::with(['detalles_ventas' => function ($query) {
+			$query->select('venta_detalles.*')->with(['producto' => function ($query) {
+				$query->select('id', 'nombre', 'codigo_barra', 'origen');
+			}]);
+		}])->where("id", "=", $id)->get()[0];
+		$lugar = Configuracion::select('value')
+			->where('slug', "direccion-tienda")
+			->get()[0];
+		if (!empty($venta)) {
+			$cliente = json_decode($venta->cliente);
+			$customPaper = array(0, 0, 419.5, 595.4);
+			$data = [
+				'codigo' => $venta->codigo,
+				'cliente_nombre' => $cliente->nombre ?? "",
+				'cliente_telefono' => $cliente->telefono ?? "",
+				'detalle' => $venta->detalles_ventas,
+				'nro_compra' => is_null($venta->nro_compra) ? $venta->codigo : $venta->nro_compra,
+				'lugar' => $lugar->value ?? '',
+				'fecha' => (now())->format('d/m/Y H:i:s'),
+				'localidad' => $cliente->localidad ?? '',
+				'direccion' => $cliente->direccion ?? '',
+				'nro_casa' => $cliente->nro_casa ?? ''
+			];
+
+			$pdf = Pdf::loadView('pdfs.boletaRetiro', ['data' => $data]);
+			$pdf->setPaper($customPaper);
+			return $pdf->stream('boleta_' . $data['codigo'] . '.pdf');
+		} else {
+			return Redirect::route('envios.index');
 		}
 	}
 }
