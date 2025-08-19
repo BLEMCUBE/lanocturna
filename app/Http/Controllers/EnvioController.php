@@ -626,6 +626,7 @@ class EnvioController extends Controller
 			$data = [
 				'codigo' => $venta->codigo,
 				'cliente_nombre' => $cliente->nombre ?? "",
+				'cliente_ci' => $cliente->ci ?? "",
 				'cliente_telefono' => $cliente->telefono ?? "",
 				'detalle' => $venta->detalles_ventas,
 				'nro_compra' => is_null($venta->nro_compra) ? $venta->codigo : $venta->nro_compra,
