@@ -208,7 +208,7 @@
                 <td colspan="5" class="ba fs-10">Nombre completo: <b class="fs-14">{{$data["cliente_nombre"]}}</b> </td>
             </tr>
             <tr class="fs-10">
-                <td class="ba tg-left" colspan="3">Cédula de identidad: <b class="fs-12">{{$data["direccion"]}} {{$data["nro_casa"]}}</b></td>
+                <td class="ba tg-left" colspan="3">Cédula de identidad: <b class="fs-12">{{$data["cliente_ci"]}} {{$data["nro_casa"]}}</b></td>
                 <td class="ba" colspan="2">Teléfono: <b class="fs-12">{{$data["cliente_telefono"]}}</td>
             </tr>
 
