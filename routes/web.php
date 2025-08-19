@@ -199,6 +199,7 @@ Route::controller(EnvioController::class)->prefix('envios')->name('envios.')->mi
 	Route::get('/flash', 'indexFlash')->name('flash');
 	Route::get('/retiro', 'indexRetiro')->name('retiro');
 	Route::get('/ticket/{id}', 'generarTicket')->name('generar_ticket');
+	Route::get('/pdf/{id}', 'generarPdf')->name('pdf');
 	Route::get('/{id}/{tipo}', 'show')->name('show');
 });
 
