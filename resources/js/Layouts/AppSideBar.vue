@@ -32,6 +32,7 @@ const { total_cadeteria } = usePage().props.auth
 const { total_flash } = usePage().props.auth
 const { total_retiro } = usePage().props.auth
 const { pagos_compras } = usePage().props.auth
+const { total_rmas } = usePage().props.auth
 const configStore = useConfigStore();
 const setMenu = (menu) => {
 	configStore.showMenu(menu);
