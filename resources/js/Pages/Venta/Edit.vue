@@ -15,17 +15,7 @@ const ruta = 'ventas'
 
 const { lista_destinos } = usePage().props
 const { productos } = usePage().props
-const prod = useForm({
-    producto_id: '',
-    nombre: '',
-    origen: '',
-    imagen: '',
-    cantidad: '',
-    precio_sin_iva: '',
-    precio: '',
-    total_sin_iva: '',
-    total: '',
-})
+
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
@@ -39,7 +29,7 @@ if (selectedMoneda.value.code == form.moneda)
     return;
 if (selectedMoneda.value.code == 'Pesos') {
     form.productos.forEach((item, index) => {
-        item['precio'] = roundNumber(parseFloat(item['precio'] * form.tipo_cambio).toFixed(2), 0.5, 'round')
+        item['precio'] = roundNumber(parseFloat(item['precio'] * form.tipo_cambio).toFixed(2), 0.25, 'ceil')
         item['total'] = (item['cantidad'] * item['precio']).toFixed(2)
         item['precio_sin_iva'] = (parseFloat(item['precio'] ) / 1.22).toFixed(2)
         item['total_sin_iva'] = (item['cantidad'] * item['precio_sin_iva']).toFixed(2)
@@ -47,7 +37,8 @@ if (selectedMoneda.value.code == 'Pesos') {
     form.moneda = selectedMoneda.value.code;
 } else {
     form.productos.forEach((item, index) => {
-        item['precio'] = parseFloat(item['precio'] / form.tipo_cambio).toFixed(2)
+        //item['precio'] = parseFloat(item['precio'] / form.tipo_cambio).toFixed(2)
+		item['precio'] = roundNumber(parseFloat(item['precio'] / form.tipo_cambio).toFixed(2), 0.05, 'ceil')
         item['total'] = (item['cantidad'] * item['precio']).toFixed(2)
         item['precio_sin_iva'] = (parseFloat(item['precio'] ) / 1.22).toFixed(2)
         item['total_sin_iva'] = (item['cantidad'] * item['precio_sin_iva']).toFixed(2)
