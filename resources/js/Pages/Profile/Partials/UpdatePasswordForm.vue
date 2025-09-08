@@ -53,7 +53,7 @@ const updatePassword = () => {
                     v-model="form.current_password"
                     type="password"
                     class="mt-1 block w-full"
-                    autocomplete="current-password"
+
                 />
 
                 <InputError :message="form.errors.current_password" class="mt-2" />
