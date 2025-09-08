@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Inertia\Inertia;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Arr;
 use Exception;
@@ -41,7 +40,7 @@ class ReporteVendedoresPedidosController extends Controller
 			foreach ($id_vendedores as $key => $vend) {
 
 				$query_total_ventas = $this->ventaService->ventasByUser($vend, $inicio, $final, 1, 'VENTA');
-
+				//dump($query_total_ventas);
 				if (!is_null($query_total_ventas)) {
 
 					array_push($ultimas_ventas, [
@@ -59,12 +58,11 @@ class ReporteVendedoresPedidosController extends Controller
 					]);
 				}
 			}
+
+			$total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
+				return $value['total'];
+			}));
 		}
-		$total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
-			return $value['total'];
-		}));
-
-
 
 		return Inertia::render('Reporte/VendedoresPedidos', [
 			'total_ventas' => $total_productos ?? []
@@ -80,8 +78,6 @@ class ReporteVendedoresPedidosController extends Controller
 		$permite = in_array($rol, $roles);
 		$inicio = Carbon::parse(Request::input('inicio'));
 		$final = Carbon::parse(Request::input('fin'));
-
-
 
 		$filename = "VENDEDORES_PEDIDOS_" . $inicio->format('d_m_Y') . "_AL_" . $final->format('d_m_Y') . ".xlsx";
 
@@ -161,11 +157,6 @@ class ReporteVendedoresPedidosController extends Controller
 		sleep(2);
 		$url_save = public_path() . "/reportes/" . $filename;
 		$name_file_header = "filename=" . $filename . "";
-		$headers = [
-			'Content-Type' => 'application/pdf',
-			'Content-Disposition' => $name_file_header,
-		];
-
 
 		//descargar excel
 		try {
