@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ImportacionDetalle;
-use App\Models\ProductoYuan;
-use App\Models\TipoCambioYuan;
 use App\Models\User;
-use App\Models\Venta;
 use Inertia\Inertia;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Arr;
 use Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Services\VentaService;
 
 class ReporteVendedoresPedidosController extends Controller
 {
+	public function __construct(
+		private VentaService $ventaService,
+
+	) {}
+
 	public function index()
 	{
 		$roles = ['Super Administrador', 'Administrador'];
@@ -27,136 +28,41 @@ class ReporteVendedoresPedidosController extends Controller
 		$inicio = Request::input('inicio');
 		$final = Request::input('fin');
 
-
 		if ($permite) {
-
-			$query_vendedor = DB::table('users as us')
-				->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
-				->when($inicio, function ($query, $inicio) {
-					$query->whereDate('ve.fecha_facturacion', '>=', $inicio);
-				})
-				->when($final, function ($query, $final) {
-					$query->whereDate('ve.fecha_facturacion', '<=', $final)
-						//->where('ve.destino', '=', 'SALON')
-						;
-				})
-				->select('us.id')
-				->groupBy('us.id')
-				->get()->toArray();
-
-
-			if (!is_null($query_vendedor)) {
-				$id_vendedores = array_column($query_vendedor, 'id');
-				$ultimas_ventas = [];
-				foreach ($id_vendedores as $key => $vend) {
-					$query_total_ventas = DB::table('users as us')
-						->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
-						->when($inicio, function ($query, $inicio) {
-							$query->whereDate('ve.fecha_facturacion', '>=', $inicio);
-						})
-						->when($final, function ($query, $final) {
-							$query->whereDate('ve.fecha_facturacion', '<=', $final);
-						})
-						->where('ve.facturado', '=', '1')
-						//W->where('ve.destino', '=', 'SALON')
-						->where('us.id', '=', $vend)
-						->select(
-							'us.name',
-							've.vendedor_id',
-							've.id',
-							DB::raw("sum(ve.total) as ventas_totales,COUNT(ve.id) AS pedidos")
-						)
-						->groupBy('us.id')
-						->orderBy('pedidos', 'ASC')
-						->first();
-
-					if (!is_null($query_total_ventas)) {
-						array_push($ultimas_ventas, [
-							'nombre' => $query_total_ventas->name,
-							'pedidos' => number_format($query_total_ventas->pedidos, 2, ','),
-							"total" => round(($query_total_ventas->ventas_totales), 2),
-						]);
-					} else {
-						$vendor = User::where('id', '=', $vend)->first();
-						array_push($ultimas_ventas, [
-							'nombre' => $vendor->name,
-							'pedidos' => 0,
-							"total" => 0,
-
-						]);
-					}
-				}
-			}
-			$total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
-				return $value['total'];
-			}));
+			$query_vendedor = $this->ventaService->userId(null, $inicio, $final);
 		} else {
-
-			$query_vendedor = DB::table('users as us')
-				->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
-				->when($inicio, function ($query, $inicio) {
-					$query->whereDate('ve.fecha_facturacion', '>=', $inicio);
-				})
-				->when($final, function ($query, $final) {
-					$query->whereDate('ve.fecha_facturacion', '<=', $final);
-						//->where('ve.destino', '=', 'SALON');
-				})
-				->select('us.id')
-				->where('us.id','=',auth()->user()->id)
-				->groupBy('us.id')
-				->get()->toArray();
-
-
-			if (!is_null($query_vendedor)) {
-				$id_vendedores = array_column($query_vendedor, 'id');
-				$ultimas_ventas = [];
-				foreach ($id_vendedores as $key => $vend) {
-					$query_total_ventas = DB::table('users as us')
-						->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
-						->when($inicio, function ($query, $inicio) {
-							$query->whereDate('ve.fecha_facturacion', '>=', $inicio);
-						})
-						->when($final, function ($query, $final) {
-							$query->whereDate('ve.fecha_facturacion', '<=', $final);
-						})
-						->where('ve.facturado', '=', '1')
-						//->where('ve.destino', '=', 'SALON')
-						->where('us.id', '=', $vend)
-						->select(
-							'us.name',
-							've.vendedor_id',
-							've.id',
-							DB::raw("sum(ve.total) as ventas_totales,COUNT(ve.id) AS pedidos")
-						)
-						->groupBy('us.id')
-						->orderBy('pedidos', 'ASC')
-						->first();
-
-					if (!is_null($query_total_ventas)) {
-						array_push($ultimas_ventas, [
-							'nombre' => $query_total_ventas->name,
-							'pedidos' => number_format($query_total_ventas->pedidos, 2, ','),
-							"total" => round(($query_total_ventas->ventas_totales), 2),
-						]);
-					} else {
-						$vendor = User::where('id', '=', $vend)->first();
-						array_push($ultimas_ventas, [
-							'nombre' => $vendor->name,
-							'pedidos' => 0,
-							"total" => 0,
-
-						]);
-					}
-				}
-			}
-			$total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
-				return $value['total'];
-			}));
-
-
+			$query_vendedor = $this->ventaService->userId(auth()->user()->id, $inicio, $final);
 		}
 
+		if (!is_null($query_vendedor)) {
+			$id_vendedores = array_column($query_vendedor, 'id');
+			$ultimas_ventas = [];
+			foreach ($id_vendedores as $key => $vend) {
 
+				$query_total_ventas = $this->ventaService->ventasByUser($vend, $inicio, $final, 1, 'VENTA');
+				//dump($query_total_ventas);
+				if (!is_null($query_total_ventas)) {
+
+					array_push($ultimas_ventas, [
+						'nombre' => $query_total_ventas->name,
+						'pedidos' => roundHalfNearest($query_total_ventas->pedidos),
+						"total" => roundHalfNearest($query_total_ventas->ventas_totales, 2, '.', ''),
+					]);
+				} else {
+					$vendor = User::where('id', '=', $vend)->first();
+					array_push($ultimas_ventas, [
+						'nombre' => $vendor->name,
+						'pedidos' => 0,
+						"total" => 0,
+
+					]);
+				}
+			}
+
+			$total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
+				return $value['total'];
+			}));
+		}
 
 		return Inertia::render('Reporte/VendedoresPedidos', [
 			'total_ventas' => $total_productos ?? []
@@ -166,18 +72,13 @@ class ReporteVendedoresPedidosController extends Controller
 	public function exportVendedoresPedidos()
 	{
 
+		$roles = ['Super Administrador', 'Administrador'];
+		$rol = auth()->user()->roles->pluck('name')[0];
+
+		$permite = in_array($rol, $roles);
 		$inicio = Carbon::parse(Request::input('inicio'));
 		$final = Carbon::parse(Request::input('fin'));
 
-		$styleArray = [
-			'borders' => [
-				'allBorders' => [
-					'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-					'color' => ['argb' => '00000000'],
-				],
-			]
-
-		];
 		$filename = "VENDEDORES_PEDIDOS_" . $inicio->format('d_m_Y') . "_AL_" . $final->format('d_m_Y') . ".xlsx";
 
 		$spreadsheet = new Spreadsheet();
@@ -199,51 +100,25 @@ class ReporteVendedoresPedidosController extends Controller
 		$sheet->getStyle('A' . (string)3 . ':' . 'C' . (string)3)->getAlignment()->setVertical('center');
 
 		//datos
-		$query_vendedor = DB::table('users as us')
-			->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
-			->when($inicio, function ($query, $inicio) {
-				$query->whereDate('ve.fecha_facturacion', '>=', $inicio);
-			})
-			->when($final, function ($query, $final) {
-				$query->whereDate('ve.fecha_facturacion', '<=', $final)
-					//->where('ve.destino', '=', 'SALON')
-					;
-			})
-			->select('us.id')
-			->groupBy('us.id')
-			->get()->toArray();
-
+		if ($permite) {
+			$query_vendedor = $this->ventaService->userId(null, $inicio, $final);
+		} else {
+			$query_vendedor = $this->ventaService->userId(auth()->user()->id, $inicio, $final);
+		}
 
 		if (!is_null($query_vendedor)) {
 			$id_vendedores = array_column($query_vendedor, 'id');
 			$ultimas_ventas = [];
 			foreach ($id_vendedores as $key => $vend) {
-				$query_total_ventas = DB::table('users as us')
-					->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
-					->when($inicio, function ($query, $inicio) {
-						$query->whereDate('ve.fecha_facturacion', '>=', $inicio);
-					})
-					->when($final, function ($query, $final) {
-						$query->whereDate('ve.fecha_facturacion', '<=', $final);
-					})
-					->where('ve.facturado', '=', '1')
-					//->where('ve.destino', '=', 'SALON')
-					->where('us.id', '=', $vend)
-					->select(
-						'us.name',
-						've.vendedor_id',
-						've.id',
-						DB::raw("sum(ve.total) as ventas_totales,COUNT(ve.id) AS pedidos")
-					)
-					->groupBy('us.id')
-					->orderBy('pedidos', 'ASC')
-					->first();
+
+				$query_total_ventas = $this->ventaService->ventasByUser($vend, $inicio, $final, 1, 'VENTA');
 
 				if (!is_null($query_total_ventas)) {
+
 					array_push($ultimas_ventas, [
 						'nombre' => $query_total_ventas->name,
-						'pedidos' =>  round(($query_total_ventas->pedidos), 2),
-						"total" => round(($query_total_ventas->ventas_totales), 2),
+						'pedidos' => roundHalfNearest($query_total_ventas->pedidos),
+						"total" => roundHalfNearest($query_total_ventas->ventas_totales, 2, '.', ''),
 					]);
 				} else {
 					$vendor = User::where('id', '=', $vend)->first();
@@ -282,11 +157,6 @@ class ReporteVendedoresPedidosController extends Controller
 		sleep(2);
 		$url_save = public_path() . "/reportes/" . $filename;
 		$name_file_header = "filename=" . $filename . "";
-		$headers = [
-			'Content-Type' => 'application/pdf',
-			'Content-Disposition' => $name_file_header,
-		];
-
 
 		//descargar excel
 		try {

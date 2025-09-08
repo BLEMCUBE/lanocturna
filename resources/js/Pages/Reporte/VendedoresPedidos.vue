@@ -159,7 +159,9 @@ const btnVer = (id) => {
 							bodyCell: {
 								class: 'text-end'
 							}
-						}" header="TOTAL" sortable></Column>
+						}" header="TOTAL" sortable>
+
+						</Column>
 
 					</DataTable>
 				</div>

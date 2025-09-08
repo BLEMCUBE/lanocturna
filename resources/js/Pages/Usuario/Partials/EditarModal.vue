@@ -121,7 +121,7 @@ const deleteSpaces = (e) => {
 
                 <form @submit.prevent="submit">
                     <div class="px-2 grid grid-cols-6 gap-4 md:gap-3 2xl:gap-6 mb-2">
-
+{{ form }}
                         <div class="col-span-6 shadow-default xl:col-span-3">
                             <InputLabel for="name" value="Nombre"
                                 class="block text-base font-normal leading-6 text-gray-900" />

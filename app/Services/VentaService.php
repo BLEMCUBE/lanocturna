@@ -171,7 +171,7 @@ class VentaService
 				return [
 					'nro_orden' => $request->id,
 					'estado' => true,
-					'destino'=>$destino,
+					'destino' => $destino,
 					'mensaje' => "Venta Creada",
 					'datos' => []
 				];
@@ -193,5 +193,56 @@ class VentaService
 				'datos' => [],
 			];
 		}
+	}
+
+	public function userId($userId = null, $f_inicio = null, $f_final = null): array
+	{
+		$query_data = DB::table('users as us')
+			->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
+			->when($f_inicio, function ($query, $f_inicio) {
+				$query->whereDate('ve.fecha_facturacion', '>=', $f_inicio . ' 00:00:00');
+			})
+			->when($f_final, function ($query, $f_final) {
+				$query->whereDate('ve.fecha_facturacion', '<=', $f_final . ' 23:59:59');
+			})
+			->when($userId, function ($query, $userId) {
+				$query->where('us.id', '=', $userId);
+			})
+			->select('us.id')
+			->groupBy('us.id')
+			->get()->toArray();
+		return $query_data;
+	}
+
+	public function ventasByUser($userId = null, $f_inicio = null, $f_final = null, $facturado = 1, $tipo = 'VENTA', $estado = ['COMPLETADO'])
+	{
+
+		$query_data = DB::table('users as us')
+			->join('ventas as ve', 'us.id', '=', 've.vendedor_id')
+			->when($f_inicio, function ($query, $f_inicio) {
+				$query->whereDate('ve.fecha_facturacion', '>=', $f_inicio . ' 00:00:00');
+			})
+			->when($f_final, function ($query, $f_final) {
+				$query->whereDate('ve.fecha_facturacion', '<=', $f_final . ' 23:59:59');
+			})
+
+			->where('ve.facturado', '=', $facturado)
+			->where('ve.tipo', '=', $tipo)
+			->whereIn('ve.estado', $estado)
+			->when($userId, function ($query, $userId) {
+				$query->where('us.id', '=', $userId);
+			})
+			->select(
+				'us.name',
+				'us.id',
+				've.id',
+				DB::raw("SUM(IF(ve.moneda = 'Pesos', ve.total, ve.total * ve.tipo_cambio)) AS ventas_totales"),
+				DB::raw("COUNT(ve.id) AS pedidos")
+			)
+			->groupBy('us.id')
+			->orderBy('pedidos', 'ASC')
+			->first();
+
+		return $query_data;
 	}
 }
