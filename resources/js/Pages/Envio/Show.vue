@@ -170,6 +170,7 @@ onMounted(() => {
 				cantidad: el.cantidad,
 				producto_id: el.producto_id,
 				origen: el.producto.origen,
+				imagen: el.producto.imagen,
 				nombre: el.producto.nombre,
 				codigo_barra: el.producto.codigo_barra,
 				producto_validado: el.producto.producto_validado,
@@ -278,6 +279,7 @@ onMounted(() => {
 						<tr class="p-2 bg-secondary-900 border">
 							<th class="border border-gray-300">Cantidad</th>
 							<th class="border border-gray-300">Origen</th>
+							<th class="border border-gray-300">Imagen</th>
 							<th class="border border-gray-300 ">Producto</th>
 							<th class="border border-gray-300 w-48">Validacion</th>
 							<th class="border border-gray-300 w-16 text-xs font-medium">Código maestro</th>
@@ -288,6 +290,10 @@ onMounted(() => {
 							class="font-sans  text-center font-normal text-gray-800 border border-gray-300">
 							<td class="border border-gray-300 p-2">{{ item.cantidad }}</td>
 							<td class="border border-gray-300 p-2">{{ item.origen }}</td>
+							<td class="flex justify-center items-center pt-1">
+								<img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
+									:src="usePage().props.base_url + item.imagen" alt="image">
+							</td>
 							<td class="border border-gray-300 p-2">{{ item.nombre }}</td>
 							<td class="border border-gray-300 p-2">
 								<input type="password"

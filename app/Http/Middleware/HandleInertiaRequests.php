@@ -167,7 +167,7 @@ class HandleInertiaRequests extends Middleware
 				'success' => session('success')
 			],
 
-			'base_url' => url('/') . '/'
+			'base_url' => url('/')
 			//]);
 		];
 		return $dato;
