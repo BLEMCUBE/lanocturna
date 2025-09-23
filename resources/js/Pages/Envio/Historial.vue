@@ -1,12 +1,10 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted,watch } from 'vue'
-import { Head, usePage, useForm, router } from '@inertiajs/vue3';
+import { ref, watch } from 'vue'
+import { Head, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 
-import { FilterMatchMode } from 'primevue/api';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
+
 import { useToast } from "primevue/usetoast";
 
 import DatePicker from 'vue-datepicker-next';
@@ -26,7 +24,7 @@ const props = defineProps({
     },
 });
 const toast = useToast();
-const tabla_ventas = ref()
+
 const titulo = "Historial de Envios"
 const ruta = 'envios'
 
@@ -77,11 +75,12 @@ let inicio = ref(props.filtro.inicio);
 let fin = ref(props.filtro.fin);
 
 
-watch(buscar, (value) => {
-    router.get(
+
+const funcBuscar = () => {
+	   router.get(
         route(ruta + '.historial'),
         {
-            buscar: value,
+            buscar: buscar.value,
             inicio: inicio.value,
             fin: fin.value
         },
@@ -90,10 +89,7 @@ watch(buscar, (value) => {
             replace: true,
         }
     );
-});
-
-
-
+}
 
 //filtrado
 const filtrado = (value) => {
@@ -218,7 +214,7 @@ const ok = (icono, mensaje) => {
              <!--tabla-->
              <div class="align-middle py-4">
                 <div class="grid grid-cols-6 gap-4 m-1.5">
-                    <InputText v-model="buscar" placeholder="N° Compra, Cliente, Destino" :pt="{
+                    <InputText v-model="buscar"  v-debounce:500ms="funcBuscar" :debounce-events="['keyup']" placeholder="N° Compra, Cliente, Destino" :pt="{
                         root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
                     }" />
 
