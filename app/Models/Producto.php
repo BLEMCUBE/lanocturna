@@ -18,6 +18,7 @@ class Producto extends Model
 		'codigo_barra',
 		'imagen',
 		'stock',
+		'precio',
 		'stock_minimo',
 		'stock_futuro',
 		'en_camino',

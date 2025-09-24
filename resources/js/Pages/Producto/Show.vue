@@ -14,6 +14,7 @@ const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
 const { roles } = usePage().props.auth
 const { costo_real } = usePage().props
+const { costo_aprox } = usePage().props
 const { productoEnCamino } = usePage().props
 const { ultimo_yang } = usePage().props
 const titulo = "Detalle Producto"
@@ -315,6 +316,15 @@ const clickDetImportacion = (e) => {
 						</div>
 					</div>
 
+					<div class="w-full flex flex-col md:flex-row py-1">
+						<div class="w-full md:w-1/3 xl:w-1/3 mr-2">
+							<h3 class="font-semibold text-gray-800 text-base"> Precio Aprox:</h3>
+						</div>
+						<div class="w-full md:w-2/3">
+							<h3 class="font-normal text-gray-800 text-base">{{ costo_aprox  ?? '-' }}
+							</h3>
+						</div>
+					</div>
 					<div class="w-full flex flex-col md:flex-row py-1">
 						<div class="w-full md:w-1/3 xl:w-1/3 mr-2">
 							<h3 class="font-semibold text-gray-800 text-base"> Cotización Yuanes:</h3>

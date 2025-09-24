@@ -170,12 +170,13 @@ class ProductoController extends Controller
 
 	public function update(ProductoUpdateRequest $request, $id)
 	{
-		$hoy=Carbon::now()->format('Y-m-d');
+		$hoy = Carbon::now()->format('Y-m-d');
 		$usuario = auth()->user();
 		$producto = Producto::find($id);
 		$old_photo = $producto->imagen;
 		$producto->origen = $request->input('origen');
 		$producto->nombre = $request->input('nombre');
+		$producto->precio = $request->input('precio');
 		$producto->aduana = $request->input('aduana');
 		$producto->codigo_barra     = $request->input('codigo_barra');
 		$producto->stock = $request->input('stock');
@@ -199,15 +200,15 @@ class ProductoController extends Controller
 		} else {
 
 			CostoReal::create([
-						"fecha" => $hoy,
-						"sku" =>  $request->input('origen'),
-						"origen" => $request->input('costo_origen'),
-						"monto" =>  $request->input('costo_real'),
-						"producto_id" =>  $request->input('id'),
-						//"compra_id" =>  $venta->id,
-						//"compra_detalle_id" =>$det->id,
-						"creador_id" => $usuario->id,
-					]);
+				"fecha" => $hoy,
+				"sku" =>  $request->input('origen'),
+				"origen" => $request->input('costo_origen'),
+				"monto" =>  $request->input('costo_real'),
+				"producto_id" =>  $request->input('id'),
+				//"compra_id" =>  $venta->id,
+				//"compra_detalle_id" =>$det->id,
+				"creador_id" => $usuario->id,
+			]);
 		}
 
 		//imagen
@@ -322,22 +323,27 @@ class ProductoController extends Controller
 			$tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
 		}
 
-		$ultimo_yang = 0;
+		$ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $producto->origen)->latest()->first();
 
 
-		if (!is_null($tipo_yuan)) {
+		if (!is_null($ultimo_importacion)) {
+
+			$ultimo_precio = $ultimo_importacion->precio;
+		} else {
+			$ultimo_precio = 0;
+		}
+
+		if (!is_null($tipo_cambio_yuan)) {
 
 			$ultimo_yang = $tipo_cambio_yuan->valor;
-			//	$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
-
+			$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
 		} else {
 			$ultimo_yang = 0;
-			//$costo_real = 0;
 		}
 
 		$hoy = Carbon::now()->format('Y-m-d');
 		$costo_real = CostoReal::where('producto_id', '=', $id)
-//			->whereNot('monto', '=', 0)
+			//			->whereNot('monto', '=', 0)
 			->orderBy('fecha', 'DESC')
 			//->whereNotNull('importacion_id')
 			->whereDate('fecha', '<=', $hoy)
@@ -351,6 +357,7 @@ class ProductoController extends Controller
 			'productoEnCamino' => $productoEnCamino,
 			'cantidad' => $cantidad,
 			'costo_real' => number_format($c_real, 2, ',', '.'),
+			'costo_aprox' => number_format($costo_aprox, 2, ','),
 			'ultimo_yang' => $ultimo_yang,
 			'productoventa' => $productoventa,
 			'cantidad_importacion' => $cantidad_importacion,
@@ -508,6 +515,7 @@ class ProductoController extends Controller
 			'origen',
 			'nombre',
 			'aduana',
+			'precio',
 			'codigo_barra',
 			'imagen',
 			'stock',

@@ -20,6 +20,7 @@ const form = useForm({
 	aduana: '',
 	codigo_barra: '',
 	stock: 0,
+	precio: 0,
 	stock_minimo: 0,
 	//stock_futuro:'',
 	imagen: '',
@@ -40,6 +41,7 @@ onMounted(() => {
 	form.origen = datos.origen
 	form.aduana = datos.aduana
 	form.codigo_barra = datos.codigo_barra
+	form.precio = datos.precio
 	form.stock = datos.stock
 	form.stock_minimo = datos.stock_minimo
 	form.stock_futuro = datos.stock_futuro
@@ -134,7 +136,6 @@ const pickFile = (e) => {
 			</div>
 
 			<div class="align-middle">
-				{{ form }}
 				<form @submit.prevent="submit">
 					<div class="px-2 pt-4 pb-0 grid grid-cols-12 gap-4 mb-2">
 
@@ -201,15 +202,31 @@ const pickFile = (e) => {
 							<InputError class="mt-1 text-xs" :message="form.errors.stock_minimo" />
 						</div>
 
+						<div v-if="permissions.includes('productos-editar_precio') == false"
+							class="col-span-12 shadow-default xl:col-span-3">
+							<InputLabel for="costo_real" value="Precio"
+								class="block text-base font-medium leading-6 text-gray-900" />
+							<h3 class="font-normal text-gray-800 text-base">{{ form.precio }}</h3>
+						</div>
+
+						<div v-if="permissions.includes('productos-editar_precio')"
+							class="col-span-12 shadow-default xl:col-span-3">
+							<InputLabel for="costo_real" value="Precio"
+								class="block text-base font-medium leading-6 text-gray-900" />
+							<input type="number" required v-model="form.precio" step="0.02" min="0"
+								class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1" />
+							<InputError class="mt-1 text-xs" :message="form.errors.precio" />
+						</div>
+
 						<div v-if="permissions.includes('productos-costoreal') == false"
-							class="col-span-12 shadow-default xl:col-span-2">
+							class="col-span-12 shadow-default xl:col-span-3">
 							<InputLabel for="costo_real" value="Costo Real"
 								class="block text-base font-medium leading-6 text-gray-900" />
 							<h3 class="font-normal text-gray-800 text-base">{{ form.costo_real }}</h3>
 						</div>
 
 						<div v-if="permissions.includes('productos-costoreal')"
-							class="col-span-12 shadow-default xl:col-span-2">
+							class="col-span-12 shadow-default xl:col-span-3">
 							<InputLabel for="costo_real" value="Costo Real"
 								class="block text-base font-medium leading-6 text-gray-900" />
 							<input type="number" required v-model="form.costo_real" step="0.02" min="0"
