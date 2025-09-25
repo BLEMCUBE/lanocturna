@@ -14,8 +14,7 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import PrimeVue from 'primevue/config';
 import Tailwind_PT from "@/passthrough/tailwind";
-//import MyDesignSystem from "@/passthrough/designsystem";
-//import Tailwind from "primevue/passthrough/tailwind";
+import vueDebounce from 'vue-debounce'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -249,6 +248,7 @@ createInertiaApp({
 			.component('TriStateCheckbox', TriStateCheckbox)
 			.component('VirtualScroller', VirtualScroller)
 			.component("font-awesome-icon", FontAwesomeIcon)
+			.directive('debounce', vueDebounce({ lock: true }))
 			.mount(el);
 
 	},

@@ -151,16 +151,16 @@ class ProductoController extends Controller
 				'label' =>  $value->name,
 			]);
 		}
-		$producto = Producto::with(['categorias' => function ($query){
+		$producto = Producto::with(['categorias' => function ($query) {
 			$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
-		}])->with(['costos_reales'=>function($query)use($hoy) {
-				$query->select('origen','monto','producto_id','id','fecha')
-				->whereNot('monto', '=', 0)->orderBy('fecha', 'DESC')
-			->whereDate('fecha','<=',$hoy)
-			->limit(1)->first();
-			}])
-
-		->findOrFail($id);
+		}])->with(['costos_reales' => function ($query) use ($hoy) {
+			$query->select('origen', 'monto', 'producto_id', 'id', 'fecha')
+				//->whereNot('monto', '=', 0)
+				->orderBy('fecha', 'DESC')
+				->whereDate('fecha', '<=', $hoy)
+				->limit(1)->first();
+		}])
+			->findOrFail($id);
 
 		return Inertia::render('Producto/Edit', [
 			'lista_categorias' => $lista_categorias,
@@ -170,11 +170,13 @@ class ProductoController extends Controller
 
 	public function update(ProductoUpdateRequest $request, $id)
 	{
+		$hoy = Carbon::now()->format('Y-m-d');
 		$usuario = auth()->user();
 		$producto = Producto::find($id);
 		$old_photo = $producto->imagen;
 		$producto->origen = $request->input('origen');
 		$producto->nombre = $request->input('nombre');
+		$producto->precio = $request->input('precio');
 		$producto->aduana = $request->input('aduana');
 		$producto->codigo_barra     = $request->input('codigo_barra');
 		$producto->stock = $request->input('stock');
@@ -182,32 +184,32 @@ class ProductoController extends Controller
 		$producto->stock_futuro = $producto->en_camino + $request->input('stock');
 		$producto->save();
 
-			$costo_real_reg = CostoReal::select('*')
-					->where('producto_id', '=', $request->input('id'))
-					->where('id', '=', $request->input('costo_id'))
-					//->where('origen', '=','COMPRA')
-					//->where('compra_detalle_id', '=', $det->id)
-					->first();
-					if (!is_null($costo_real_reg)) {
-					$costo_real_reg->update([
-						"monto" => $request->input('costo_real'),
-						"origen" => $request->input('costo_origen'),
-						"creador_id" => $usuario->id,
+		$costo_real_reg = CostoReal::select('*')
+			->where('producto_id', '=', $request->input('id'))
+			->where('id', '=', $request->input('costo_id'))
+			//->where('origen', '=','COMPRA')
+			//->where('compra_detalle_id', '=', $det->id)
+			->first();
+		if (!is_null($costo_real_reg)) {
+			$costo_real_reg->update([
+				"monto" => $request->input('costo_real'),
+				"origen" => $request->input('costo_origen'),
+				"creador_id" => $usuario->id,
 
-					]);
-				} else {
+			]);
+		} else {
 
-					/*CostoReal::create([
-						"fecha" => $hoy,
-						"sku" =>  $request->input('origen'),
-						"origen" => $request->input('costo_origen'),
-						"monto" =>  $request->input('costo_real'),
-						"producto_id" =>  $request->input('id'),
-						//"compra_id" =>  $venta->id,
-						//"compra_detalle_id" =>$det->id,
-						"creador_id" => $usuario->id,
-					]);*/
-				}
+			CostoReal::create([
+				"fecha" => $hoy,
+				"sku" =>  $request->input('origen'),
+				"origen" => $request->input('costo_origen'),
+				"monto" =>  $request->input('costo_real'),
+				"producto_id" =>  $request->input('id'),
+				//"compra_id" =>  $venta->id,
+				//"compra_detalle_id" =>$det->id,
+				"creador_id" => $usuario->id,
+			]);
+		}
 
 		//imagen
 		if ($request->hasFile('photo')) {
@@ -262,15 +264,15 @@ class ProductoController extends Controller
 		$sku = Producto::select('origen')->find($id);
 
 		$productoImportacion = ImportacionDetalle::with([
-			'importacion' => function ($query)  {
+			'importacion' => function ($query) {
 				$query->select(DB::raw("id,nro_carpeta,nro_contenedor,
                 DATE_FORMAT(fecha_arribado ,'%d/%m/%Y') AS fecha"));
 			},
 			'real_costo' => function ($query) {
 				$query->select("monto", 'importaciones_detalle_id', 'fecha', 'importacion_id')
-				//->whereNot('monto','=',0)
+					//->whereNot('monto','=',0)
 
-				->orderBy('fecha', 'DESC');
+					->orderBy('fecha', 'DESC');
 			}
 
 		])
@@ -321,24 +323,30 @@ class ProductoController extends Controller
 			$tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
 		}
 
-		$ultimo_yang = 0;
+		$ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $producto->origen)->latest()->first();
 
 
-		if (!is_null($tipo_yuan)) {
+		if (!is_null($ultimo_importacion)) {
+
+			$ultimo_precio = $ultimo_importacion->precio;
+		} else {
+			$ultimo_precio = 0;
+		}
+
+		if (!is_null($tipo_cambio_yuan)) {
 
 			$ultimo_yang = $tipo_cambio_yuan->valor;
-			//	$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
-
+			$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
 		} else {
 			$ultimo_yang = 0;
-			//$costo_real = 0;
 		}
 
 		$hoy = Carbon::now()->format('Y-m-d');
 		$costo_real = CostoReal::where('producto_id', '=', $id)
-			->whereNot('monto', '=', 0)->orderBy('fecha', 'DESC')
-			->whereNotNull('importacion_id')
-			->whereDate('fecha','<=',$hoy)
+			//			->whereNot('monto', '=', 0)
+			->orderBy('fecha', 'DESC')
+			//->whereNotNull('importacion_id')
+			->whereDate('fecha', '<=', $hoy)
 
 			->limit(1)->first();
 		$c_real = $costo_real != null ? $costo_real->monto : 0.00;
@@ -349,6 +357,7 @@ class ProductoController extends Controller
 			'productoEnCamino' => $productoEnCamino,
 			'cantidad' => $cantidad,
 			'costo_real' => number_format($c_real, 2, ',', '.'),
+			'costo_aprox' => number_format($costo_aprox, 2, ','),
 			'ultimo_yang' => $ultimo_yang,
 			'productoventa' => $productoventa,
 			'cantidad_importacion' => $cantidad_importacion,
@@ -506,6 +515,7 @@ class ProductoController extends Controller
 			'origen',
 			'nombre',
 			'aduana',
+			'precio',
 			'codigo_barra',
 			'imagen',
 			'stock',

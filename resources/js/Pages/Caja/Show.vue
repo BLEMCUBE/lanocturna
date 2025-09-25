@@ -221,6 +221,7 @@ onMounted(() => {
 						<tr class="p-2 bg-secondary-900 border">
 							<th class="border border-gray-300 p-1">Cantidad</th>
 							<th class="border border-gray-300">Origen</th>
+							<th class="border border-gray-300">Imagen</th>
 							<th class="border border-gray-300 ">Producto</th>
 							<th class="border border-gray-300">Código de Barras</th>
 							<th class="border border-gray-300 ">Precio</th>
@@ -233,6 +234,10 @@ onMounted(() => {
 							class="font-sans  text-center font-normal text-gray-800 border border-gray-300">
 							<td class="border border-gray-300 p-1">{{ item.cantidad }}</td>
 							<td class="border border-gray-300 p-1">{{ item.producto.origen }}</td>
+							<td class="flex justify-center items-center pt-1">
+								<img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
+									:src="usePage().props.base_url + item.producto.imagen" alt="image">
+							</td>
 							<td class="border border-gray-300 p-1">{{ item.producto.nombre }}</td>
 							<td class="border border-gray-300 p-1">{{ item.producto.codigo_barra }}</td>
 							<td class="border border-gray-300 p-1">{{ item.precio_sin_iva.toFixed(2) }}</td>

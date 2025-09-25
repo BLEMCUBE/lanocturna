@@ -19,6 +19,7 @@ const form = useForm({
     aduana: '',
     codigo_barra: '',
     stock: 0,
+    precio: 0,
     stock_minimo: 0,
     stock_futuro: 0,
     imagen: '',
@@ -182,6 +183,15 @@ const pickFile = (e) => {
                                 class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1"/>
                             <InputError class="mt-1 text-xs" :message="form.errors.stock_minimo" />
                         </div>
+						<div
+							class="col-span-12 shadow-default xl:col-span-3">
+							<InputLabel for="costo_real" value="Precio"
+								class="block text-base font-medium leading-6 text-gray-900" />
+							<input type="number" required v-model="form.precio" step="0.02" min="0"
+								class="p-inputtext text-end p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1" />
+							<InputError class="mt-1 text-xs" :message="form.errors.precio" />
+						</div>
+
                         <input type="hidden" id="stock_futuro" v-model="form.stock_futuro">
                         <div class="col-span-12 shadow-default xl:col-span-6">
                             <InputLabel for="file_input1" value="Imagen"
