@@ -21,6 +21,8 @@ class Permissions240925 extends Seeder
 
             //Productos
             ['name' => 'productos-editar_precio', 'description' => 'Editar precio del producto'],
+            ['name' => 'ventas-editar_precio', 'description' => 'Editar precio del producto'],
+
 
 
         ];
@@ -30,6 +32,11 @@ class Permissions240925 extends Seeder
     {
         // Reset cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
+
+  		//eliminando permisos
+        foreach ($this->permissions as $permission) {
+            Permission::where('name', $permission['name'])->delete();
+        }
 
         // create permissions
         foreach ($this->permissions as $permission) {

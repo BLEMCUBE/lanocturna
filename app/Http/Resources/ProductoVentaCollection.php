@@ -20,6 +20,7 @@ class ProductoVentaCollection extends ResourceCollection
                     'id' => $row->id,
                     'origen' => $row->origen,
                     'nombre' => $row->nombre,
+                    'precio' => $row->precio,
                     'imagen'=>$row->imagen??'',
                     'stock' => $row->stock??'',
                     'importacion_detalles' => count($row->importacion_detalles)>0? $row->importacion_detalles:[],

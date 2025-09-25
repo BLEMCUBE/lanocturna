@@ -9,23 +9,14 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Multiselect from '@vueform/multiselect';
 import Swal from 'sweetalert2';
 import { FilterMatchMode } from 'primevue/api';
+const { permissions } = usePage().props.auth;
 const toast = useToast();
 const titulo = "Nueva Venta"
 const ruta = 'ventas'
 const { vendedor } = usePage().props
 const { tipo_cambio } = usePage().props
 const { lista_destinos } = usePage().props
-const prod = useForm({
-	producto_id: '',
-	nombre: '',
-	origen: '',
-	imagen: '',
-	cantidad: '',
-	precio_sin_iva: '',
-	precio: '',
-	total_sin_iva: '',
-	total: '',
-})
+
 const filters = ref({
 	'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
@@ -104,13 +95,14 @@ const addToCart = (id) => {
 				nombre: produ.nombre,
 				origen: produ.origen,
 				cantidad: 1,
-				precio: null,
+				precio: produ.precio,
 				stock: produ.stock,
 				total: 1
 			}
 		)
-		sumaTotal()
-		calculoSinIva()
+		sumTotalProducto(id)
+		//sumaTotal()
+		//calculoSinIva()
 
 	} else {
 		alerta('No hay stock disponible', 'error')
@@ -146,24 +138,46 @@ const calculoSinIva = () => {
 }
 
 const sumaTotalProducto = ($event, id) => {
-	var precio_temp = (form.productos[id].precio === null) ? 1 : form.productos[id].precio
+	const productFind = form.productos.find(prod => prod.producto_id === id);
+	var precio_temp = (productFind.precio === null) ? 0 : productFind.precio
+
 	if ($event.target.value > -1) {
 
-		if (form.productos[id].stock >= form.productos[id].cantidad) {
-			form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
-			form.productos[id].total_sin_iva = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp / 1.22).toFixed(2))
-			form.productos[id].precio_sin_iva = (form.productos[id].precio / 1.22).toFixed(2)
+		if (productFind.stock >= productFind.cantidad) {
+			productFind.total = (parseFloat(productFind.cantidad) * parseFloat(precio_temp).toFixed(2))
+			productFind.total_sin_iva = (parseFloat(productFind.cantidad) * parseFloat(precio_temp / 1.22).toFixed(2))
+			productFind.precio_sin_iva = (productFind.precio / 1.22).toFixed(2)
 			sumaTotal()
 			calculoSinIva()
 		} else {
-			form.productos[id].cantidad = 1
-			form.productos[id].precio_sin_iva = form.productos[id].precio / 1.22
-			form.productos[id].total = (parseFloat(form.productos[id].cantidad) * parseFloat(precio_temp).toFixed(2))
+			productFind.cantidad = 1
+			productFind.precio_sin_iva = productFind.precio / 1.22
+			productFind.total = (parseFloat(productFind.cantidad) * parseFloat(precio_temp).toFixed(2))
 			alerta('La cantidad supera el Stock', 'error')
 		}
 	} else {
 		return;
 	}
+}
+
+const sumTotalProducto = (id) => {
+
+	const productFind = form.productos.find(prod => prod.producto_id === id);
+	var precio_temp = (productFind.precio === null) ? 0 : productFind.precio
+
+	if (productFind.stock >= productFind.cantidad) {
+		productFind.total = (parseFloat(productFind.cantidad) * parseFloat(precio_temp).toFixed(2))
+		productFind.total_sin_iva = (parseFloat(productFind.cantidad) * parseFloat(precio_temp / 1.22).toFixed(2))
+		productFind.precio_sin_iva = (productFind.precio / 1.22).toFixed(2)
+		sumaTotal()
+		calculoSinIva()
+	} else {
+		productFind.cantidad = 1
+		productFind.precio_sin_iva = productFind.precio / 1.22
+		productFind.total = (parseFloat(productFind.cantidad) * parseFloat(precio_temp).toFixed(2))
+		alerta('La cantidad supera el Stock', 'error')
+	}
+
 }
 const selectedMoneda = ref({ name: 'Pesos', code: 'Pesos' });
 const monedas = ref([
@@ -255,14 +269,19 @@ const cancelCrear = () => {
 									<td class="border border-gray-300"><input type="number" v-model="producto.cantidad"
 											min="1" step="1"
 											class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end"
-											@input.prevent="sumaTotalProducto($event, index)" />
+											@input.prevent="sumaTotalProducto($event, producto.producto_id)" />
 
 									</td>
-									<td class="border border-gray-300"><input type="number" required
-											v-model="producto.precio" min="0" step="1"
-											@input="sumaTotalProducto($event, index)"
-											class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
+									<td class="border border-gray-300">
+										<div v-if="permissions.includes('ventas-editar_precio')">
+											<input type="number" required v-model="producto.precio" min="1" step="1"
+												@input="sumaTotalProducto($event, producto.producto_id)"
+												class="p-inputtext pr-2 p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none text-sm px-2 py-0 p-inputnumber-input h-9 m-0 w-full text-end" />
+										</div>
+										<div v-else class="col-span-12 shadow-default xl:col-span-3">
 
+											<h3 class="font-normal text-gray-800 text-base">{{ producto.precio }}</h3>
+										</div>
 									</td>
 									<td class="border border-gray-300 p-2">{{ producto.total }} </td>
 									<td class="border-none  border-gray-300 p-1 ">
@@ -279,7 +298,7 @@ const cancelCrear = () => {
 								<tr>
 									<td colspan="4" class="text-end"><b>Total: </b></td>
 									<td class="text-end"><b> {{ form.moneda == 'Pesos' ? '$ ' : 'USD ' }} {{ form.total
-											}}
+									}}
 										</b>
 									</td>
 								</tr>
@@ -458,12 +477,17 @@ const cancelCrear = () => {
 													<div class="font-bold leading-4 text-xs text-gray-800 py-1">
 														Origen:
 														<span class="px-1 py-0 font-normal">{{ slotProps.data.origen
-															}}</span>
+														}}</span>
 													</div>
 													<div class="font-bold leading-4 text-xs text-gray-800 py-1">
 														Stock:
 														<span class="px-1 py-0 font-normal text-xs">{{
 															slotProps.data.stock }}</span>
+													</div>
+													<div class="font-bold leading-4 text-xs text-gray-800 py-1">
+														Precio:
+														<span class="px-1 py-0 font-normal text-xs">{{
+															slotProps.data.precio }}</span>
 													</div>
 
 													<div class="leading-none mt-1 text-xs text-gray-800"
