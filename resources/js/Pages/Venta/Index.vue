@@ -73,13 +73,13 @@ const shortcuts = [
 let buscar = ref(props.filtro.buscar);
 let total = ref(props.filtro.total);
 let compra = ref(props.filtro.compra);
-let cliente = ref(props.filtro.cliente||true);
+let cliente = ref(props.filtro.cliente || true);
 
 let date = ref([props.filtro.inicio, props.filtro.fin]);
 let inicio = ref(props.filtro.inicio);
 let fin = ref(props.filtro.fin);
 
-
+/*
 watch(buscar, (value) => {
 	setTimeout(function () {
 		router.get(
@@ -99,8 +99,25 @@ watch(buscar, (value) => {
 		);
 	}, 500);
 
-});
+});*/
 
+const funcBuscar = () => {
+	router.get(
+		route(ruta + '.index'),
+		{
+			buscar: buscar.value,
+			inicio: inicio.value,
+			fin: fin.value,
+			total: total.value,
+			cliente: cliente.value,
+			compra: compra.value
+		},
+		{
+			preserveState: true,
+			replace: true,
+		}
+	);
+}
 
 
 //filtrado
@@ -233,9 +250,10 @@ const ok = (icono, mensaje) => {
 			<!--tabla-->
 			<div class="align-middle py-4">
 				<div class="grid grid-cols-6 gap-4 m-1.5">
-					<InputText v-model="buscar" placeholder="N° Compra o Cliente" :pt="{
-						root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
-					}" />
+					<InputText v-model="buscar" v-debounce:500ms="funcBuscar" :debounce-events="['keyup']"
+						placeholder="N° Compra o Cliente" :pt="{
+							root: { class: 'col-span-6 lg:col-span-2 m-1.5' }
+						}" />
 
 					<date-picker @change.="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
 						class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
@@ -258,7 +276,8 @@ const ok = (icono, mensaje) => {
 						<label for="cliente1" class="ml-2">Cliente </label>
 					</div>
 					<div class="flex align-items-center">
-						<Checkbox v-model="total" size="small" @change="filtrado" inputId="total1" name="total" binary />
+						<Checkbox v-model="total" size="small" @change="filtrado" inputId="total1" name="total"
+							binary />
 						<label for="total1" class="ml-2">Total </label>
 					</div>
 

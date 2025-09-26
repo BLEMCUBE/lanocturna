@@ -8,7 +8,7 @@ import { useToast } from "primevue/usetoast";
 import Multiselect from '@vueform/multiselect';
 import Pagination from '@/Components/Pagination.vue';
 import CrearMasivoModal from '@/Pages/Producto/CrearMasivoModal.vue';
-import CheckboxName from '@/Components/CheckboxName.vue';
+
 const props = defineProps({
 	productos: {
 		type: Object,
@@ -32,7 +32,7 @@ const formDelete = useForm({
 let categorias = ref([props.filtro.categoria])
 let buscar = ref(props.filtro.buscar);
 
-watch(buscar, (value) => {
+/*watch(buscar, (value) => {
 	router.get(
 		route(ruta + '.index'),
 		{
@@ -44,7 +44,21 @@ watch(buscar, (value) => {
 			replace: true,
 		}
 	);
-});
+});*/
+
+const funcBuscar=()=>{
+	router.get(
+		route(ruta + '.index'),
+		{
+			buscar: buscar.value,
+			categoria: categorias.value
+		},
+		{
+			preserveState: true,
+			replace: true,
+		}
+	);
+}
 
 
 watch(categorias, (value) => {
@@ -181,7 +195,7 @@ const clickDetalle = (id) => {
 				<div class="grid grid-cols-12 gap-4  m-3">
 
 					<div class="flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-3">
-						<InputText class="w-full" v-model="buscar" placeholder="Buscar" />
+						<InputText v-debounce:500ms="funcBuscar" :debounce-events="['keyup']" class="w-full" v-model="buscar" placeholder="Buscar" />
 					</div>
 					<div class="flex justify-content-end text-md col-span-12 lg:col-span-8 2xl:col-span-9">
 						<Multiselect id="categorias" v-model="categorias" class="w-full" v-bind="lista_categorias">
