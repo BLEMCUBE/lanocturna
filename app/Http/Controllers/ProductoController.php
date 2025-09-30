@@ -26,6 +26,7 @@ use Exception;
 use Illuminate\Support\Facades\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Str;
 
 
 class ProductoController extends Controller
@@ -187,8 +188,6 @@ class ProductoController extends Controller
 		$costo_real_reg = CostoReal::select('*')
 			->where('producto_id', '=', $request->input('id'))
 			->where('id', '=', $request->input('costo_id'))
-			//->where('origen', '=','COMPRA')
-			//->where('compra_detalle_id', '=', $det->id)
 			->first();
 		if (!is_null($costo_real_reg)) {
 			$costo_real_reg->update([
@@ -205,8 +204,6 @@ class ProductoController extends Controller
 				"origen" => $request->input('costo_origen'),
 				"monto" =>  $request->input('costo_real'),
 				"producto_id" =>  $request->input('id'),
-				//"compra_id" =>  $venta->id,
-				//"compra_detalle_id" =>$det->id,
 				"creador_id" => $usuario->id,
 			]);
 		}
@@ -321,6 +318,8 @@ class ProductoController extends Controller
 		$tipo_yuan = ProductoYuan::where('producto_id', '=', $producto->id)->latest()->first();
 		if (!is_null($tipo_yuan)) {
 			$tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
+		}else{
+			$tipo_cambio_yuan=null;
 		}
 
 		$ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $producto->origen)->latest()->first();
@@ -339,15 +338,14 @@ class ProductoController extends Controller
 			$costo_aprox = $ultimo_precio * 1.70 / $ultimo_yang;
 		} else {
 			$ultimo_yang = 0;
+			$costo_aprox = 0;
 		}
 
 		$hoy = Carbon::now()->format('Y-m-d');
 		$costo_real = CostoReal::where('producto_id', '=', $id)
 			//			->whereNot('monto', '=', 0)
 			->orderBy('fecha', 'DESC')
-			//->whereNotNull('importacion_id')
 			->whereDate('fecha', '<=', $hoy)
-
 			->limit(1)->first();
 		$c_real = $costo_real != null ? $costo_real->monto : 0.00;
 
@@ -739,5 +737,58 @@ class ProductoController extends Controller
 				];
 			}
 		}
+	}
+
+	public function duplicar($id)
+	{
+		$code = generateUniqueDigitCode(6);
+		// 1. Buscar el producto original
+		$product = Producto::findOrFail($id);
+
+		// 2. Replicar el producto (clona todos los atributos menos id, created_at, updated_at)
+		$newProduct = $product->replicate();
+
+		// 3. Si quieres, cambia algunos valores (ej. nombre o slug)
+		$newProduct->nombre = $product->nombre . '-' . $code;
+		$newProduct->origen = $product->origen . '-' . $code;
+		$newProduct->stock=0;
+
+		// 4. Guardar la copia en la base de datos
+		$newProduct->save();
+
+		// 5. (Opcional) Si el producto tiene relaciones, también se pueden clonar
+
+		// Ejemplo: duplicar categorías relacionadas
+		$newProduct->categorias()->sync($product->categorias->pluck('id'));
+		// Ejemplo: duplicar variaciones o atributos
+		/*foreach ($product->variations as $variation) {
+        $newVariation = $variation->replicate();
+        $newVariation->product_id = $newProduct->id;
+        $newVariation->save();
+    }*/
+
+		$hoy = Carbon::now()->format('Y-m-d');
+		$categorias = Categoria::orderBy('name', 'ASC')->get();
+		$lista_categorias = [];
+		foreach ($categorias as $value) {
+			array_push($lista_categorias, [
+				'value' => $value->id,
+				'label' =>  $value->name,
+			]);
+		}
+		$producto = Producto::with(['categorias' => function ($query) {
+			$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
+		}])->with(['costos_reales' => function ($query) use ($hoy) {
+			$query->select('origen', 'monto', 'producto_id', 'id', 'fecha')
+				->orderBy('fecha', 'DESC')
+				->whereDate('fecha', '<=', $hoy)
+				->limit(1)->first();
+		}])
+			->findOrFail($newProduct->id);
+
+		return Inertia::render('Producto/Edit', [
+			'lista_categorias' => $lista_categorias,
+			'producto' => $producto
+		]);
 	}
 }

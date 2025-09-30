@@ -45,18 +45,7 @@ onMounted(() => {
 lista_categorias.value.options = usePage().props.lista_categorias
 
 });
-//funcion solo numero
-const NumbersOnly = (evt) => {
 
-    //return $numbersOnly(evt);
-    /*evt = (evt) ? evt : window.e;
-    var charCode = (evt.which) ? evt.which : evt.keyCode;
-    if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-      evt.preventDefault();;
-    } else {
-      return true;
-    }*/
-}
 //envio de formulario
 const submit = () => {
     form.clearErrors()

@@ -90,9 +90,7 @@ const submit = () => {
 				isShowModal.value = false
 				show('success', 'Mensaje', 'Se ha editado')
 				setTimeout(() => {
-					//router.get(route(ruta + '.index'));
-					//dataEdit(props.itemId);
-				}, 500);
+					}, 500);
 			},
 			onFinish: () => {
 				loader.hide()

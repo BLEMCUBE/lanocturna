@@ -48,7 +48,6 @@ watch(conceptos, (value) => {
 		},
 		{
 			preserveState: true,
-			//replace: true,
 			onSuccess: () => {
 				tabla_items.value = usePage().props.items.data;
 
@@ -174,7 +173,6 @@ const filtrado = (value) => {
 		},
 		{
 			preserveState: true,
-			//replace: true,
 			onSuccess: () => {
 				conceptos.value = usePage().props.filtro.concepto
 				tabla_items.value = usePage().props.items.data;

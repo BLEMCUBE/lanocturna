@@ -21,18 +21,8 @@ class VentaCollection extends ResourceCollection
 				$parametro = json_decode($row->parametro);
 				return [
 					'id' => $row->id,
-					//'codigo' => $row->codigo??'',
 					'cliente' => $dat->nombre ?? '',
-					//'empresa'=>$dat->empresa??'',
-					//'rut'=>$dat->rut??'',
 					'destino' => $row->destino ?? '',
-					//'localidad' => $dat->localidad??'',
-					//'direccion' => $dat->direccion??'',
-					//'telefono' => $dat->telefono??'',
-					//'total_sin_iva' => number_format($row->total_sin_iva,2)??'',
-					//'vendedor' => $row->vendedor->name??'',
-					//'facturador' => $row->facturador->name??'',
-					//'validador' => $row->validador->name??'',
 					'facturado' => $row->facturado ?? '',
 					'estado' => $row->estado ?? '',
 					'tipo' => $row->tipo ?? '',
@@ -43,8 +33,6 @@ class VentaCollection extends ResourceCollection
 					'observaciones' => $row->observaciones ?? '',
 					'total' => number_format($row->total, 2) ?? '',
 					'parametro' => $parametro ?? [],
-					//'fecha_facturacion'=>!is_null($row->fecha_facturacion)?Carbon::createFromFormat('Y-m-d H:i:s', $row->fecha_facturacion)->format('d/m/Y H:i:s'):'',
-					//'fecha_validacion'=>!is_null($row->fecha_validacion)?Carbon::createFromFormat('Y-m-d H:i:s', $row->fecha_validacion)->format('d/m/Y H:i:s'):'',
 					'fecha' => Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at)->format('d/m/Y H:i:s'),
 				];
 			}),

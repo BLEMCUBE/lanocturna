@@ -163,21 +163,7 @@ class CompraController extends Controller
 					]
 				);
 
-				/*$costo_real_reg = CostoReal::select('*')
-					->where('producto_id', '=', $producto['producto_id'])
-					->where('compra_id', '=', $compra->id)
-					->where('origen', '=','COMPRA')
-					->where('compra_detalle_id', '=', $det->id)
-					->whereDate('fecha', '=', $hoy)->first();
 
-				if (!is_null($costo_real_reg)) {
-					$costo_real_reg->update([
-						"monto" => $producto['costo_real'],
-						"origen" => 'COMPRA',
-						"creador_id" => $usuario->id,
-
-					]);
-				} else {*/
 					$produc = Producto::select('id', 'origen')->where('id', '=', $producto['producto_id'])
 						->first();
 					CostoReal::create([
@@ -260,13 +246,6 @@ class CompraController extends Controller
 						"total_sin_iva" => $producto['total_sin_iva'],
 					]
 				);
-
-					/*$costo_real_reg = CostoReal::select('*')
-					->where('producto_id', '=', $producto['producto_id'])
-					->where('compra_id', '=', $venta->id)
-					->where('origen', '=','COMPRA')
-					->where('compra_detalle_id', '=', $det->id)
-					->whereDate('fecha', '=', $hoy)->first();*/
 
 					$costo_real_reg = CostoReal::select('*')
 							->where('producto_id', '=', $request->input('id'))

@@ -43,9 +43,6 @@ const submit = () => {
 		forceFormData: true,
 		onSuccess: () => {
 			show('success', 'Confirmado', 'Rol Editado');
-			/*window.setTimeout(function () {
-				router.get(route('roles.index'));
-			}, 1000);*/
 		},
 		onFinish: () => {
 		},

@@ -113,8 +113,7 @@ class ReporteProductoVendidoController extends Controller
         $total_productos = array_values(Arr::sortDesc($ultimas_ventas, function (array $value) {
             return $value['porcentaje'];
         }));
-		/*$datos = $this->paginate($total_productos, 100);
-		$datos->withPath('/reportes-productos-vendidos')->withQueryString();*/
+
         return Inertia::render('Reporte/ProductosVendidos', [
             'total_cantidad' => $total_cantidad,
 			'filtro' => Request::only(['categoria', 'inicio', 'fin']),

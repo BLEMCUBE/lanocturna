@@ -40,7 +40,6 @@ watch(categorias, (value) => {
 		},
 		{
 			preserveState: true,
-			//replace: true,
 			onSuccess: () => {
 				mes.value = usePage().props.meses;
 				tabla_vendidos.value = usePage().props.productos;
@@ -65,7 +64,6 @@ const filtradoVenta = (value) => {
 		},
 		{
 			preserveState: true,
-			//replace: true,
 			onSuccess: () => {
 				tabla_vendidos.value = usePage().props.productos;
 				mes.value = usePage().props.meses;

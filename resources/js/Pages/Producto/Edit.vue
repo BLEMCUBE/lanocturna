@@ -82,9 +82,8 @@ const submit = () => {
 		}
 	});
 
-
-
 };
+
 const lista_categorias = ref({
 	value: '',
 	closeOnSelect: true,

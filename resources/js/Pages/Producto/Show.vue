@@ -57,6 +57,27 @@ const filtradoVenta = (value) => {
 	}
 }
 
+const duplicar = (id) => {
+	form.clearErrors()
+	form.post(route(ruta + '.duplicar', id), {
+		preserveScroll: true,
+		forceFormData: true,
+		onSuccess: () => {
+			show('success', 'Mensaje', 'Producto Duplicado')
+			/*setTimeout(() => {
+				router.get(route(ruta + '.show', form.id));
+			}, 1000);
+			*/
+		},
+		onFinish: () => {
+
+		},
+		onError: () => {
+
+		}
+	});
+
+};
 //descarga excel
 const descargaExcelProductoVentas = (id) => {
 
@@ -206,7 +227,17 @@ const clickDetImportacion = (e) => {
 				<div class="px-3 col-span-10 flex justify-between items-center">
 					<h5 class="text-xl font-medium">{{ titulo }}</h5>
 				</div>
-				<div class="px-0 py-0 m-2 mt-0 text-white col-span-2 flex justify-end items-center">
+				<div class="mx-3 py-0  mt-0 text-white col-span-2 flex justify-end items-center">
+					<Button label="Duplicar" v-if="permissions.includes('productos-editar')" @click="duplicar(form.id)"
+						:pt="{
+							root: {
+								class: 'flex items-center bg-green-700 hover:bg-green-600 justify-center font-medium w-10 mx-3'
+							},
+							label: {
+								class: 'hidden'
+							}
+						}" v-tooltip.top="{ value: `Duplicar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+							class="fa-regular fa-copy"></i></Button>
 					<Button label="Editar" v-if="permissions.includes('productos-editar')" @click="btnEditar(form.id)"
 						:pt="{
 							root: {
@@ -321,7 +352,7 @@ const clickDetImportacion = (e) => {
 							<h3 class="font-semibold text-gray-800 text-base"> Precio Aprox:</h3>
 						</div>
 						<div class="w-full md:w-2/3">
-							<h3 class="font-normal text-gray-800 text-base">{{ costo_aprox  ?? '-' }}
+							<h3 class="font-normal text-gray-800 text-base">{{ costo_aprox ?? '-' }}
 							</h3>
 						</div>
 					</div>
@@ -436,33 +467,37 @@ const clickDetImportacion = (e) => {
 								class: 'text-center'
 							}
 						}">
-						  <template #loading>
-                        </template>
-                        <template #body="slotProps">
-                            <span class="text-md">
-                                {{ slotProps.data.importacion.nro_carpeta }}
-                            </span>
-                        </template></Column>
+							<template #loading>
+							</template>
+							<template #body="slotProps">
+								<span class="text-md">
+									{{ slotProps.data.importacion.nro_carpeta }}
+								</span>
+							</template>
+						</Column>
 						<Column field="importacion.fecha" header="Fecha Arribo" sortable :pt="{
 							bodyCell: {
 								class: 'text-center'
 							}
 						}">
-						 <template #body="slotProps">
-                            <span class="text-md">
-                                {{ slotProps.data.importacion.fecha }}
-                            </span>
-                        </template></Column>
-						<Column  header="Costo Real" sortable :pt="{
+							<template #body="slotProps">
+								<span class="text-md">
+									{{ slotProps.data.importacion.fecha }}
+								</span>
+							</template>
+						</Column>
+						<Column header="Costo Real" sortable :pt="{
 							bodyCell: {
 								class: 'text-center'
 							}
 						}">
-						 <template #body="slotProps">
-                            <span class="text-md">
-                                {{ slotProps.data.real_costo.length>0?slotProps.data.real_costo[0].monto:'0.00' }}
-                            </span>
-                        </template></Column>
+							<template #body="slotProps">
+								<span class="text-md">
+									{{ slotProps.data.real_costo.length > 0 ? slotProps.data.real_costo[0].monto :
+									'0.00' }}
+								</span>
+							</template>
+						</Column>
 						<Column field="precio" sortable header="EXW Precio" :pt="{
 							bodyCell: {
 								class: 'text-center'

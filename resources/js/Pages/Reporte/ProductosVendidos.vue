@@ -42,7 +42,6 @@ watch(categorias, (value) => {
 		},
 		{
 			preserveState: true,
-			//replace: true,
 			onSuccess: () => {
 				total_cantidad.value = usePage().props.total_cantidad;
 				total_productos.value = usePage().props.total_productos;
@@ -70,7 +69,6 @@ const filtrado = (value) => {
 		},
 		{
 			preserveState: true,
-			//replace: true,
 			onSuccess: () => {
 				total_cantidad.value = usePage().props.total_cantidad;
 				categorias.value = usePage().props.filtro.categoria
