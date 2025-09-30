@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AtributoController;
+use App\Http\Controllers\AtributoValorController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CategoriaController;
@@ -171,7 +173,7 @@ Route::controller(CajaController::class)->prefix('cajas')->name('cajas.')->middl
 	Route::get('/edit/{id}', 'edit')->name('edit');
 	Route::get('/facturar/{id}', 'facturar')->name('facturar');
 	Route::get('/', 'index')->name('index');
-	Route::get('//{id}', 'show')->name('show');
+	Route::get('/{id}', 'show')->name('show');
 });
 
 //Expedicion
@@ -359,7 +361,7 @@ Route::controller(MetodoPagoController::class)->prefix('metodo-pago')->name('met
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 
-	//Pagos Compras
+//Pagos Compras
 Route::controller(PagoCompraController::class)->prefix('pagos-compras')->name('pagos-compras.')
 	->middleware('auth')->group(function () {
 		Route::delete('/{id}', 'destroy')->name('destroy');
@@ -369,6 +371,24 @@ Route::controller(PagoCompraController::class)->prefix('pagos-compras')->name('p
 		Route::post('/store', 'store')->name('store');
 	});
 
+//Atributo Valores
+Route::controller(AtributoController::class)->prefix('atributos')->name('atributos.')
+	->middleware('auth')->group(function () {
+		Route::post('/update/{id}', 'update')->name('update');
+		Route::get('/', 'index')->name('index');
+		Route::get('/{id}', 'show')->name('show');
+		Route::post('/store', 'store')->name('store');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
 
+
+Route::controller(AtributoValorController::class)->prefix('atributos-valores')->name('atributos-valores.')
+	->middleware('auth')->group(function () {
+		Route::post('/update/{id}', 'update')->name('update');
+		Route::get('/{id}', 'index')->name('index');
+		Route::get('/{id}/show', 'show')->name('show');
+		Route::post('/store', 'store')->name('store');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
 
 require __DIR__ . '/auth.php';

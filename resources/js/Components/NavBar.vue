@@ -89,7 +89,7 @@ import { computed } from 'vue'
 import { useToggle, useDark } from '@vueuse/core'
 import Logo from '/public/images/logo.png';
 import { Link, usePage } from '@inertiajs/vue3';
-import { useConfigStore } from '@/store/config'
+import { useConfigStore } from '@/stores/config'
 
 
 const configStore = useConfigStore();

@@ -3,7 +3,7 @@ import { onMounted, computed, watch, ref } from "vue";
 import NavLinkSideBar from '@/Components/NavLinkSideBar.vue';
 import NavLinkSideBarNotIcon from '@/Components/NavLinkSideBarNotIcon.vue';
 import { usePage, router } from '@inertiajs/vue3';
-import { useConfigStore } from '@/store/config.js'
+import { useConfigStore } from '@/stores/config.js'
 import Swal from 'sweetalert2';
 import {
 	Disclosure,

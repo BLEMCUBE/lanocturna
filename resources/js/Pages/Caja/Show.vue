@@ -26,7 +26,8 @@ const form = useForm({
 	localidad: '',
 	nro_casa: '',
 	telefono: '',
-	mp_id: ''
+	mp_id: '',
+	auth_id: ''
 
 })
 const btnEditar = (id) => {
@@ -81,6 +82,7 @@ onMounted(() => {
 	form.total = datos.total
 	form.codigo = datos.codigo
 	form.mp_id = datos.mp_id
+	form.auth_id = datos.auth_id
 	form.nro_casa = datos.nro_casa
 	form.tipo_cambio = datos.tipo_cambio.toFixed(2)
 
@@ -200,6 +202,13 @@ onMounted(() => {
 							MP:
 						</b>
 						{{ form.mp_id }}
+					</p>
+				</div>
+				<div class="col-span-1" v-if="form.auth_id !== ''">
+					<p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+							Auth ID:
+						</b>
+						{{ form.auth_id }}
 					</p>
 				</div>
 

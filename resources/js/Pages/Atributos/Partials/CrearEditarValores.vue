@@ -1,0 +1,173 @@
+<script setup>
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import { useForm, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import axios from 'axios';
+
+import { useToast } from "primevue/usetoast";
+import { useLoaderStore } from "@/stores/loader";
+const loader = useLoaderStore();
+
+const toast = useToast();
+const titulo = "Valor Atributo"
+const tipo = ref("Crear ")
+const ruta = "atributos-valores"
+const rutaAtributo = "atributos"
+const emit = defineEmits(['updated']);
+//Variables
+const isShowModal = ref(false);
+
+const form = useForm({
+	id: null,
+	valor: '',
+	atributo_id: '',
+})
+
+const props = defineProps({
+	itemId: {
+		type: Number,
+		default: null,
+	},
+	atributoId: {
+		type: Number,
+		default: null,
+	},
+	atributoNombre: {
+		type: String,
+		default: null,
+	},
+
+
+});
+
+
+//Funciones
+const addItem = () => {
+	if (props.itemId === null) {
+		tipo.value = 'Crear '
+		isShowModal.value = true;
+		form.atributo_id = props.atributoId
+	} else {
+		tipo.value = 'Editar '
+		dataEdit(props.itemId);
+
+	}
+};
+
+const dataEdit = (id) => {
+	loader.show()
+	axios.get(route(ruta + '.show', id))
+		.then(res => {
+			isShowModal.value = true;
+			var datos = res.data.atributo
+			form.id = datos.id
+			form.valor = datos.valor
+			form.atributo_id = datos.atributo_id
+		}).finally(() => {
+			loader.hide()
+		})
+
+};
+
+const closeModal = () => {
+	form.reset();
+	form.clearErrors()
+	isShowModal.value = false;
+};
+
+
+//envio de formulario
+const submit = () => {
+	loader.show()
+	if (form.id) {
+
+		form.clearErrors()
+		form.post(route(ruta + '.update', form.id), {
+			preserveScroll: true,
+			forceFormData: true,
+			onSuccess: () => {
+				isShowModal.value = false
+				show('success', 'Mensaje', 'Se ha editado')
+				setTimeout(() => {
+					//router.get(route(ruta + '.index'));
+					//dataEdit(props.itemId);
+				}, 500);
+			},
+			onFinish: () => {
+				loader.hide()
+			},
+			onError: () => {
+
+			}
+		});
+	} else {
+		form.post(route(ruta + '.store'), {
+			preserveScroll: true,
+			forceFormData: true,
+			onSuccess: () => {
+				isShowModal.value = false
+				show('success', 'Mensaje', 'Se ha creado')
+				setTimeout(() => {
+					//	router.get(route(ruta + '.index'));
+				}, 1000);
+			},
+			onFinish: () => {
+
+				loader.hide()
+			},
+			onError: () => {
+
+			}
+		});
+	}
+passInfo();
+};
+
+function passInfo() {
+	emit('updated', { atributoId: props.atributoId })
+}
+
+const show = (tipo, titulo, mensaje) => {
+	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+};
+</script>
+
+<template>
+	<section>
+		<Button v-if="props.itemId === null" size="small" @click="addItem" type="button" :label="'Agregar'"
+			severity="success"></Button>
+		<button v-if="props.itemId !== null" type="button" @click="addItem"><i class="fas fa-edit"> </i></button>
+
+		<Dialog v-model:visible="isShowModal" modal :header="tipo + titulo" :style="{ width: '30vw' }" position="top"
+			:pt="{
+				header: {
+					class: 'mt-6 p-2 lg:p-4 '
+				},
+				content: {
+					class: 'p-4 lg:p-4'
+				},
+			}">
+			<form @submit.prevent="submit">
+				<div class="px-2 grid grid-cols-6 gap-4 md:gap-3 2xl:gap-6 mb-2">
+
+					<div class="col-span-6 shadow-default xl:col-span-6">
+						<InputLabel for="valor" value="Valor"
+							class="block text-base font-medium leading-6 text-gray-900" />
+						<input type="text" v-model="form.valor"
+							class="p-inputtext p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1" />
+						<InputError class="mt-1 text-xs" :message="form.errors.valor" />
+					</div>
+
+				</div>
+				<div class="flex justify-end py-3">
+					<Button label="Cancelar" :pt="{ root: 'mr-5 py-1' }" severity="danger" size="small"
+						@click="closeModal" type="button" />
+
+					<Button label="Guardar" size="small" type="submit" :class="{ 'opacity-50': form.processing }"
+						:disabled="form.processing" />
+				</div>
+			</form>
+		</Dialog>
+	</section>
+</template>

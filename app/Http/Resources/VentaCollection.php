@@ -39,6 +39,7 @@ class VentaCollection extends ResourceCollection
 					'nro_compra' => $row->nro_compra ?? '',
 					'nro_orden' => $row->nro_orden ?? '',
 					'mp_id' => $row->mp_id ?? '',
+					'auth_id' => $row->auth_id ?? '',
 					'observaciones' => $row->observaciones ?? '',
 					'total' => number_format($row->total, 2) ?? '',
 					'parametro' => $parametro ?? [],

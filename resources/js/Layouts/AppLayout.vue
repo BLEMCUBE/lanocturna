@@ -9,11 +9,11 @@ import Breadcrumb from '@/Components/Breadcrumb.vue';
 import AppSideBar from '@/Layouts/AppSideBar.vue'
 //import AppFooter from '@/Layouts/AppFooter.vue'
 import { useLayout } from '@/composables/layout';
-import { useConfigStore } from '@/store/config.js'
-
+import { useConfigStore } from '@/stores/config.js'
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import audio_envio from '@/assets/audio_envio.mp3'
+import Loader from "@/Components/Loader.vue";
 
 const confirm = useConfirm();
 const toast = useToast();
@@ -133,6 +133,7 @@ const getConfig = (dato) => {
 <template>
 	<div class="layout-wrapper layout-static" :class="containerClass">
 		<!--Top-->
+		 <Loader />
 		<AppTopBar></AppTopBar>
 		<div class="layout-sidebar bg-primary-900">
 			<AppSideBar></AppSideBar>
