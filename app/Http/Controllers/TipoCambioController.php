@@ -33,7 +33,6 @@ class TipoCambioController extends Controller
     {
 
         $cliente = TipoCambio::create($request->all());
-        //return Redirect::route('clientes.index');
     }
     public function show($id)
     {

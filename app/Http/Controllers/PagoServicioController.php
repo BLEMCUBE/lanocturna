@@ -90,9 +90,7 @@ class PagoServicioController extends Controller
 			]);
 
 			DB::commit();
-			return Redirect::route('pago-servicio.index')->with([
-				// 'success' =>  $venta->codigo
-			]);
+			return Redirect::route('pago-servicio.index')->with([]);
 		} catch (Exception $e) {
 			DB::rollBack();
 			return [

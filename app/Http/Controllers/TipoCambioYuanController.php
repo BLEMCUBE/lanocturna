@@ -32,7 +32,6 @@ class TipoCambioYuanController extends Controller
     {
 
         $cliente = TipoCambioYuan::create($request->all());
-        //return Redirect::route('clientes.index');
     }
     public function show($id)
     {

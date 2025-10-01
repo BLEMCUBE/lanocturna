@@ -108,9 +108,9 @@ Route::controller(ProductoController::class)->prefix('productos')->name('product
 	Route::get('/vistaimportar', 'vistaImportar')->name('vistaimportar');
 	Route::get('/create', 'create')->name('create');
 	Route::get('/{id}', 'edit')->name('edit');
+	Route::post('/{id}/duplicar', 'duplicar')->name('duplicar');
 	Route::get('/{id}/show', 'show')->name('show');
 	Route::post('/update/{id}', 'update')->name('update');
-	Route::post('/duplicar/{id}', 'duplicar')->name('duplicar');
 	Route::get('/', 'index')->name('index');
 	Route::post('/store', 'store')->name('store');
 	Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productoventa');

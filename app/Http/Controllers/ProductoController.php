@@ -318,8 +318,8 @@ class ProductoController extends Controller
 		$tipo_yuan = ProductoYuan::where('producto_id', '=', $producto->id)->latest()->first();
 		if (!is_null($tipo_yuan)) {
 			$tipo_cambio_yuan = TipoCambioYuan::findOrFail($tipo_yuan->tipo_cambio_yuan_id);
-		}else{
-			$tipo_cambio_yuan=null;
+		} else {
+			$tipo_cambio_yuan = null;
 		}
 
 		$ultimo_importacion = ImportacionDetalle::select('precio')->where('sku', $producto->origen)->latest()->first();
@@ -404,15 +404,6 @@ class ProductoController extends Controller
 			->orderBy('nombre', 'ASC')
 			->get();
 
-		$styleArray = [
-			'borders' => [
-				'allBorders' => [
-					'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-					'color' => ['argb' => '00000000'],
-				],
-			]
-
-		];
 		$filename = "productos.xlsx";
 		$spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
@@ -505,36 +496,6 @@ class ProductoController extends Controller
 		return $content;
 	}
 
-	public function exportExce2()
-	{
-
-		$productos = Producto::query()->select(
-			'id',
-			'origen',
-			'nombre',
-			'aduana',
-			'precio',
-			'codigo_barra',
-			'imagen',
-			'stock',
-			'stock_minimo',
-			'stock_futuro',
-			'en_camino',
-			'arribado'
-		)
-			->with(['categorias' => function ($query) {
-				$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
-			}])
-			->when(Request::input('categoria'), function ($query) {
-				$query->whereHas('categorias', function ($query) {
-					$query->whereIn('id', Request::input('categoria'));
-				});
-			})
-
-			->orderBy('nombre', 'ASC')
-			->get();
-		return Excel::download(new ProductosExport($productos), 'Productos.xlsx');
-	}
 	public function vistaImportar()
 	{
 		return Inertia::render('Producto/Importar');
@@ -751,7 +712,7 @@ class ProductoController extends Controller
 		// 3. Si quieres, cambia algunos valores (ej. nombre o slug)
 		$newProduct->nombre = $product->nombre . '-' . $code;
 		$newProduct->origen = $product->origen . '-' . $code;
-		$newProduct->stock=0;
+		$newProduct->stock = 0;
 
 		// 4. Guardar la copia en la base de datos
 		$newProduct->save();
@@ -786,9 +747,10 @@ class ProductoController extends Controller
 		}])
 			->findOrFail($newProduct->id);
 
-		return Inertia::render('Producto/Edit', [
+		return redirect()->route('productos.show', ['id' => $newProduct->id]);
+		/*return Inertia::render('Producto/Show', [
 			'lista_categorias' => $lista_categorias,
 			'producto' => $producto
-		]);
+		]);*/
 	}
 }

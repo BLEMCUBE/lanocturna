@@ -9,6 +9,7 @@ import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import axios from 'axios';
+import { useToast } from "primevue/usetoast";
 
 const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
@@ -20,6 +21,7 @@ const { ultimo_yang } = usePage().props
 const titulo = "Detalle Producto"
 const ruta = 'productos'
 const cantidad = ref()
+const toast = useToast();
 const cantidad_importacion = ref()
 const tabla_vendidos = ref()
 const tabla_importaciones = ref()
@@ -57,6 +59,10 @@ const filtradoVenta = (value) => {
 	}
 }
 
+const show = (tipo, titulo, mensaje) => {
+	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+};
+
 const duplicar = (id) => {
 	form.clearErrors()
 	form.post(route(ruta + '.duplicar', id), {
@@ -64,10 +70,10 @@ const duplicar = (id) => {
 		forceFormData: true,
 		onSuccess: () => {
 			show('success', 'Mensaje', 'Producto Duplicado')
-			/*setTimeout(() => {
-				router.get(route(ruta + '.show', form.id));
-			}, 1000);
-			*/
+			setTimeout(() => {
+				location.reload();
+			}, 500);
+
 		},
 		onFinish: () => {
 
@@ -222,7 +228,7 @@ const clickDetImportacion = (e) => {
 		<div
 			class="card px-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-3 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
 			<!--Contenido-->
-
+			<Toast />
 			<div class="grid grid-cols-12 justify-center">
 				<div class="px-3 col-span-10 flex justify-between items-center">
 					<h5 class="text-xl font-medium">{{ titulo }}</h5>
@@ -494,7 +500,7 @@ const clickDetImportacion = (e) => {
 							<template #body="slotProps">
 								<span class="text-md">
 									{{ slotProps.data.real_costo.length > 0 ? slotProps.data.real_costo[0].monto :
-									'0.00' }}
+										'0.00' }}
 								</span>
 							</template>
 						</Column>

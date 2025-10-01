@@ -24,7 +24,8 @@ const form = useForm({
     stock_futuro: 0,
     imagen: '',
     photo: '',
-    categorias:[]
+    categorias:[],
+    atributos:[]
 })
 
 const setStock = (e) => {
