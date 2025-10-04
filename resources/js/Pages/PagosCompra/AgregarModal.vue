@@ -118,9 +118,6 @@ const submit = () => {
 
 };
 
-/*const show = (tipo, titulo, mensaje) => {
-	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
-};*/
 </script>
 
 <template>

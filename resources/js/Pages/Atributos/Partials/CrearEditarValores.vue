@@ -13,7 +13,6 @@ const toast = useToast();
 const titulo = "Valor Atributo"
 const tipo = ref("Crear ")
 const ruta = "atributos-valores"
-const rutaAtributo = "atributos"
 const emit = defineEmits(['updated']);
 //Variables
 const isShowModal = ref(false);

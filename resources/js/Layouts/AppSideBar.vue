@@ -398,6 +398,18 @@ const ok = (icono, mensaje) => {
 							</NavLinkSideBarNotIcon>
 						</li>
 					</div>
+					<div class="flex items-center">
+
+						<li @click="setMenu('configuraciones')" class="w-full"
+							v-show="permissions.includes('configuraciones-codigoMaestro')">
+							<NavLinkSideBarNotIcon
+								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+								:href="route('atributos.index')"
+								:active="route().current('atributos.index')">
+								<span class="ml-2 uppercase">Atributos producto</span>
+							</NavLinkSideBarNotIcon>
+						</li>
+					</div>
 				</DisclosurePanel>
 			</Disclosure>
 			<!--Configuraciones-->

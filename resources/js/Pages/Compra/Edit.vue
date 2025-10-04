@@ -339,7 +339,6 @@ const calculoSinIva = () => {
 
 						</div>
 
-
 						<div class="col-span-12 mx-2 py-0 shadow-default lg:col-span-6">
 							<InputLabel for="proveedor" value="Proveedor"
 								class="text-base font-medium leading-6 text-gray-900" />

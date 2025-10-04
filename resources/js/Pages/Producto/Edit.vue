@@ -7,12 +7,19 @@ import { useToast } from "primevue/usetoast";
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Multiselect from '@vueform/multiselect';
+import axios from 'axios';
+
 const previewImage = ref('/images/productos/sin_foto.png');
 const toast = useToast();
 const { permissions } = usePage().props.auth;
+const { atributos } = usePage().props
+const { lista_atributos } = usePage().props
 const titulo = "Editar Producto"
 const ruta = 'productos'
-
+const rutaAtributo = 'atributos'
+const showAtributo = ref(false)
+const listAtributo = ref([])
+const listadoAtributos = ref([])
 const form = useForm({
 	id: '',
 	origen: '',
@@ -22,20 +29,21 @@ const form = useForm({
 	stock: 0,
 	precio: 0,
 	stock_minimo: 0,
-	//stock_futuro:'',
 	imagen: '',
 	photo: '',
 	costo_origen: null,
 	costo_fecha: null,
 	costo_real: 0,
 	costo_id: null,
-	categorias: []
+	categorias: [],
+	atributos: []
 })
 
 onMounted(() => {
+	getAtributos(usePage().props.producto.id);
+
 	lista_categorias.value.options = usePage().props.lista_categorias
 	var datos = usePage().props.producto;
-	console.log('datos ',datos)
 	form.id = datos.id
 	form.nombre = datos.nombre
 	form.origen = datos.origen
@@ -45,22 +53,22 @@ onMounted(() => {
 	form.stock = datos.stock
 	form.stock_minimo = datos.stock_minimo
 	form.stock_futuro = datos.stock_futuro
-	form.costo_real = datos.costos_reales.length>0 ? datos.costos_reales[0].monto : 0
-	form.costo_origen = datos.costos_reales.length>0 ? datos.costos_reales[0].origen : null
-	form.costo_id = datos.costos_reales.length>0 ? datos.costos_reales[0].id : null
-	form.costo_fecha = datos.costos_reales.length>0 ? datos.costos_reales[0].fecha : null
+	form.costo_real = datos.costos_reales.length > 0 ? datos.costos_reales[0].monto : 0
+	form.costo_origen = datos.costos_reales.length > 0 ? datos.costos_reales[0].origen : null
+	form.costo_id = datos.costos_reales.length > 0 ? datos.costos_reales[0].id : null
+	form.costo_fecha = datos.costos_reales.length > 0 ? datos.costos_reales[0].fecha : null
+	form.atributos = atributos
 
 	if (datos.categorias.length > 0) {
 		datos.categorias.forEach((ele) => {
 			form.categorias.push(ele.id)
 		})
-		//form.categorias= [datos.categorias.map(entry => entry.id).join(',')]
 	}
-	//previewImage.value= usePage().props.base_url+datos.imagen
 	previewImage.value = datos.imagen
 	form.imagen = datos.imagen
 
 });
+
 //envio de formulario
 const submit = () => {
 
@@ -75,10 +83,8 @@ const submit = () => {
 			}, 1000);
 		},
 		onFinish: () => {
-
 		},
 		onError: () => {
-
 		}
 	});
 
@@ -92,11 +98,12 @@ const lista_categorias = ref({
 	searchable: true,
 	options: [],
 });
+
 const setStock = (e) => {
 	if (e.target.value.length > 0)
-
 		form.stock_futuro = parseFloat(form.stock_futuro) + parseFloat(e.target.value);
 }
+
 const show = (tipo, titulo, mensaje) => {
 	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
 };
@@ -104,11 +111,10 @@ const show = (tipo, titulo, mensaje) => {
 const cancelCrear = () => {
 	router.get(route(ruta + '.index'))
 };
+
 const pickFile = (e) => {
 	e.preventDefault();
-
 	form.photo = e.target.files[0]
-
 	let file = e.target.files
 	if (file && file[0]) {
 		let reader = new FileReader
@@ -116,9 +122,51 @@ const pickFile = (e) => {
 			previewImage.value = e.target.result
 		}
 		reader.readAsDataURL(file[0])
-
 	}
 }
+
+const getAtributos = (id) => {
+	axios.get(route(rutaAtributo + '.listado-producto', id))
+		.then(res => {
+			console.log('r2 ', res.data)
+			listAtributo.value = res.data.listado
+		}).finally(() => {
+
+		})
+}
+
+const setAtributo = (e) => {
+	console.log('e ', e.value.id)
+	console.log('lista_atributos ', listadoAtributos.value.atributos)
+	var atri = listadoAtributos.value.find(pr => pr.id === e.value.id);
+	console.log('e2 ', atri.id)
+			form.atributos.push(
+				{
+					id: atri.id,
+					valor: atri.valor,
+					nombre: atri.nombre,
+					atributo_id: atri.atributo_id,
+					producto_id: atri.producto_id,
+				}
+			)
+
+
+}
+
+const removerAtributo = (index) => {
+	form.atributos.splice(index, 1);
+}
+
+const addAtributo = () => {
+	showAtributo.value = true;
+
+
+}
+
+onMounted(() => {
+    listadoAtributos.value = usePage().props.lista_atributos.data;
+});
+
 
 </script>
 <template>
@@ -133,7 +181,7 @@ const pickFile = (e) => {
 			<div class=" px-3 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 			</div>
-
+			{{ form }}
 			<div class="align-middle">
 				<form @submit.prevent="submit">
 					<div class="px-2 pt-4 pb-0 grid grid-cols-12 gap-4 mb-2">
@@ -254,6 +302,33 @@ const pickFile = (e) => {
 							<div class="imagePreviewWrapper" :style="{ 'background-image': `url(${previewImage})` }">
 							</div>
 						</div>
+						<div class=" col-span-12 w-full flex flex-col md:flex-row pt-2">
+							<div class="bg-gray-200 w-full text-start">
+								<h3 class="font-semibold text-gray-800 text-lg px-5">ATRIBUTOS: </h3>
+							</div>
+						</div>
+						<div class=" col-span-12 w-full flex flex-col md:flex-row pt-2">
+							<Button size="small" @click="addAtributo" type="button" :label="'Agregar Atributo'"
+								severity="success"></Button>
+						</div>
+
+						<div v-if="form.atributos.length > 0"
+							class="flex justify-start col-span-12 w-full flex-col md:flex-row py-1 px-5"
+							v-for="(atributo, index) in form.atributos">
+							<div class="w-full md:w-1/3 xl:w-1/3 mr-2">
+								<h3 class="font-semibold text-gray-800 text-base">{{ atributo.nombre }}: </h3>
+							</div>
+							<div class="w-56">
+								<h3 class="font-normal text-gray-800 text-base">{{ atributo.valor }}
+								</h3>
+							</div>
+							<div
+								class="rounded-md p-1 flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
+								<button type="button" @click.prevent="removerAtributo(index)" class="w-6"
+									v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"><i
+										class="fas fa-trash"></i></button>
+							</div>
+						</div>
 
 					</div>
 
@@ -269,6 +344,52 @@ const pickFile = (e) => {
 			<!--Contenido-->
 
 		</div>
+
+		<!--Modal Atributo-->
+
+		<Dialog v-model:visible="showAtributo" modal header="Atributos" :style="{ width: '30vw' }"
+			:breakpoints="{ '1199px': '75vw', '575px': '90vw' }" position="top" :pt="{
+				header: {
+					class: 'mt-6 p-2 lg:p-4 '
+				},
+				content: {
+					class: 'p-4 lg:p-4'
+				},
+			}">
+
+			<div class="card flex justify-content-center">
+				<div class="flex flex-wrap gap-3 w-full" v-for="(atributo, index) in lista_atributos.data">
+					<div class="col-span-6 shadow-default xl:col-span-3">
+						<InputLabel for="rol" :value="atributo.nombre"
+							class="block text-base font-normal leading-6 text-gray-900" />
+						{{ form.atributos }}
+						<Dropdown :options="atributo.valores" @change="setAtributo($event)" :v-model="form.atributos"
+							optionLabel="valor" placeholder="Select a Country" class="w-full md:w-14rem">
+
+							<template #value="slotProps">
+								<div v-if="slotProps.option" class="flex align-items-center">
+
+									<div>{{ slotProps.option.id }}</div>
+								</div>
+								<span v-else>
+									{{ slotProps.placeholder }}
+								</span>
+							</template>
+							<template #option="slotProps">
+								<div class="flex align-items-center">
+									<div>{{ slotProps.option.valor }}</div>
+								</div>
+							</template>
+						</Dropdown>
+					</div>
+				</div>
+			</div>
+
+
+
+		</Dialog>
+
+		<!--Modal Atributo-->
 
 	</AppLayout>
 </template>

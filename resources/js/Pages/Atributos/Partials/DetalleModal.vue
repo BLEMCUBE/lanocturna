@@ -13,7 +13,6 @@ const toast = useToast();
 const confirm = useConfirm();
 const titulo = "Atributo"
 const ruta = "atributos-valores"
-const rutaAtributo = "atributos"
 const isShowModal = ref(false);
 const formDelete = useForm({
 	id: '',
@@ -65,8 +64,6 @@ const dataEdit = (id) => {
 
 			loader.hide()
 		})
-
-
 };
 
 //modal eliminar
@@ -109,7 +106,6 @@ const show = (tipo, titulo, mensaje) => {
 
 const filters = ref({
 	global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-
 });
 
 </script>

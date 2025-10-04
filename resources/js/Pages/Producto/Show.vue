@@ -17,6 +17,7 @@ const { roles } = usePage().props.auth
 const { costo_real } = usePage().props
 const { costo_aprox } = usePage().props
 const { productoEnCamino } = usePage().props
+const { atributos } = usePage().props
 const { ultimo_yang } = usePage().props
 const titulo = "Detalle Producto"
 const ruta = 'productos'
@@ -35,11 +36,11 @@ const form = useForm({
 	stock_minimo: 0,
 	imagen: '',
 	photo: '',
-	categorias: []
+	categorias: [],
+	atributos: []
 })
 const date = ref([new Date(), new Date()]);
 const date2 = ref([new Date(), new Date()]);
-//const fechaVentaExport = ref({inicio:'',fin:''});
 const fechaVentaExport = ref([]);
 
 
@@ -181,6 +182,7 @@ const shortcuts2 = [
 ]
 
 const formatDate = (dat) => moment(dat).format("DD/MM/YYYY");
+
 onMounted(() => {
 	tabla_vendidos.value = Array.from(usePage().props.productoventa, (x) => x);
 	cantidad_importacion.value = usePage().props.cantidad_importacion;
@@ -198,6 +200,7 @@ onMounted(() => {
 	previewImage.value = datos.imagen
 	form.imagen = datos.imagen
 	form.categorias = datos.categorias
+	form.atributos = atributos
 
 });
 const filters = ref({
@@ -368,6 +371,21 @@ const clickDetImportacion = (e) => {
 						</div>
 						<div class="w-full md:w-2/3">
 							<h3 class="font-normal text-gray-800 text-base">{{ (ultimo_yang > 0) ? ultimo_yang : '-' }}
+							</h3>
+						</div>
+					</div>
+
+					<div v-if="form.atributos.length>0" class="w-full flex flex-col md:flex-row pt-2">
+						<div class="bg-gray-200 w-full text-center">
+							<h3 class="font-semibold text-gray-800 text-lg">ATRIBUTOS</h3>
+						</div>
+					</div>
+					<div v-if="form.atributos.length>0" class="w-full flex flex-col md:flex-row py-1" v-for="(atributo, index) in form.atributos">
+						<div class="w-full md:w-1/3 xl:w-1/3 mr-2">
+							<h3 class="font-semibold text-gray-800 text-base">{{ atributo.nombre }}: </h3>
+						</div>
+						<div class="w-full md:w-2/3">
+							<h3 class="font-normal text-gray-800 text-base">{{ atributo.valor }}
 							</h3>
 						</div>
 					</div>

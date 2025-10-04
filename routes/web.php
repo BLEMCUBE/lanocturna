@@ -374,6 +374,8 @@ Route::controller(AtributoController::class)->prefix('atributos')->name('atribut
 	->middleware('auth')->group(function () {
 		Route::post('/update/{id}', 'update')->name('update');
 		Route::get('/', 'index')->name('index');
+		Route::get('/listado', 'listado')->name('listado');
+		Route::get('/{id}/producto', 'listadoProducto')->name('listado-producto');
 		Route::get('/{id}', 'show')->name('show');
 		Route::post('/store', 'store')->name('store');
 		Route::delete('/{id}', 'destroy')->name('destroy');

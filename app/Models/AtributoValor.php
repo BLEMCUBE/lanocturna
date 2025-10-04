@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AtributoValor extends Model
 {
 	protected $table = 'atributo_valores';
-	protected $fillable = ['id','atributo_id', 'valor'];
+	protected $fillable = ['id', 'atributo_id', 'valor'];
 
 	public function atributo()
 	{
@@ -16,6 +16,6 @@ class AtributoValor extends Model
 
 	public function productos()
 	{
-		return $this->belongsToMany(Producto::class, 'atributo_valor_producto');
+		return $this->belongsToMany(Producto::class, 'atributo_valor_producto', 'atributo_valor_id', 'producto_id');
 	}
 }

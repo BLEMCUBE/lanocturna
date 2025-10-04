@@ -19,6 +19,7 @@ use App\Models\Producto;
 use App\Models\ProductoYuan;
 use App\Models\TipoCambioYuan;
 use App\Models\VentaDetalle;
+use App\Services\AtributoService;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -32,7 +33,9 @@ use Illuminate\Support\Str;
 class ProductoController extends Controller
 {
 
-	public function __construct()
+	public function __construct(
+			private AtributoService $AtributoService,
+	)
 	{
 		//protegiendo el controlador segun el rol
 		$this->middleware(['auth', 'permission:menu-productos'])->only('index');
@@ -154,18 +157,24 @@ class ProductoController extends Controller
 		}
 		$producto = Producto::with(['categorias' => function ($query) {
 			$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
-		}])->with(['costos_reales' => function ($query) use ($hoy) {
+		}
+		])
+		->with(['costos_reales' => function ($query) use ($hoy) {
 			$query->select('origen', 'monto', 'producto_id', 'id', 'fecha')
 				//->whereNot('monto', '=', 0)
 				->orderBy('fecha', 'DESC')
 				->whereDate('fecha', '<=', $hoy)
 				->limit(1)->first();
 		}])
+		->select(DB::raw("*"))
 			->findOrFail($id);
-
+		$atributos=$this->AtributoService->getProductoAtributos($id);
+		$lista_atributos=$this->AtributoService->getAtributos();
 		return Inertia::render('Producto/Edit', [
 			'lista_categorias' => $lista_categorias,
-			'producto' => $producto
+			'lista_atributos' => $lista_atributos,
+			'producto' => $producto,
+			'atributos' => $atributos
 		]);
 	}
 
@@ -348,8 +357,8 @@ class ProductoController extends Controller
 			->whereDate('fecha', '<=', $hoy)
 			->limit(1)->first();
 		$c_real = $costo_real != null ? $costo_real->monto : 0.00;
-
-		return Inertia::render('Producto/Show', [
+		$atributos=$this->AtributoService->getProductoAtributos($id);
+		$datos=[
 			'producto' => $producto,
 			'productoImportacion' => $productoImportacion,
 			'productoEnCamino' => $productoEnCamino,
@@ -357,9 +366,12 @@ class ProductoController extends Controller
 			'costo_real' => number_format($c_real, 2, ',', '.'),
 			'costo_aprox' => number_format($costo_aprox, 2, ','),
 			'ultimo_yang' => $ultimo_yang,
+			'atributos' => $atributos,
 			'productoventa' => $productoventa,
 			'cantidad_importacion' => $cantidad_importacion,
-		]);
+		];
+		//dd($datos);
+		return Inertia::render('Producto/Show', $datos);
 	}
 
 
@@ -719,8 +731,8 @@ class ProductoController extends Controller
 
 		// 5. (Opcional) Si el producto tiene relaciones, también se pueden clonar
 
-		// Ejemplo: duplicar categorías relacionadas
 		$newProduct->categorias()->sync($product->categorias->pluck('id'));
+
 		// Ejemplo: duplicar variaciones o atributos
 		/*foreach ($product->variations as $variation) {
         $newVariation = $variation->replicate();
@@ -747,10 +759,7 @@ class ProductoController extends Controller
 		}])
 			->findOrFail($newProduct->id);
 
-		return redirect()->route('productos.show', ['id' => $newProduct->id]);
-		/*return Inertia::render('Producto/Show', [
-			'lista_categorias' => $lista_categorias,
-			'producto' => $producto
-		]);*/
+		return redirect()->route('productos.edit', ['id' => $producto->id]);
+
 	}
 }

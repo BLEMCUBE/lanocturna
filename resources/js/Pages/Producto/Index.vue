@@ -67,12 +67,10 @@ watch(categorias, (value) => {
 });
 
 const rowClass = (stock, stock_minimo, stock_futuro) => {
-	//Si stock = < stock minimo Y stock_futuro = stock
+
 	if (parseFloat(stock) <= parseFloat(stock_minimo) && parseFloat(stock) == parseFloat(stock_futuro)) {
-		//return "text-red-700 text-xs"
 		return "bg-red-700 text-white"
 	}
-	//Si stock = < stock mínimo y stock_futuro > stock
 	if (parseFloat(stock) <= parseFloat(stock_minimo) && parseFloat(stock_futuro) > parseFloat(stock)) {
 
 		return "bg-orange-500 text-black"
@@ -82,7 +80,6 @@ const rowClass = (stock, stock_minimo, stock_futuro) => {
 
 const btnVer = (id) => {
 	router.get(route(ruta + '.show', id));
-
 };
 
 const duplicar = (id) => {
@@ -92,10 +89,6 @@ const duplicar = (id) => {
 		forceFormData: true,
 		onSuccess: () => {
 			show('success', 'Mensaje', 'Producto Duplicado')
-			/*setTimeout(() => {
-				router.get(route(ruta + '.show', form.id));
-			}, 1000);
-			*/
 		},
 		onFinish: () => {
 
@@ -164,9 +157,8 @@ const BtnCrear = () => {
 const clickDetalle = (id) => {
 	btnVer(id)
 }
-
-
 </script>
+
 <template>
 
 	<Head :title="titulo" />
@@ -245,7 +237,8 @@ const clickDetalle = (id) => {
 											<button v-if="permissions.includes('productos-eliminar')"
 												class="w-8 h-8 rounded bg-green-700  border border-white px-2 py-1 text-base font-normal text-white m-1 hover:bg-green-600"
 												v-tooltip.top="{ value: `Duplicar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-												@click.prevent="duplicar(post.id)"><i class="fa-regular fa-copy"></i></button>
+												@click.prevent="duplicar(post.id)"><i
+													class="fa-regular fa-copy"></i></button>
 										</div>
 										<div>
 

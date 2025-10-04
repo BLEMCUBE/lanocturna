@@ -6,11 +6,15 @@ use App\Http\Requests\AtributoStoreRequest;
 use App\Http\Requests\AtributoUpdateRequest;
 use App\Http\Resources\AtributoCollection;
 use App\Models\Atributo;
+use App\Services\AtributoService;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class AtributoController extends Controller
 {
+	public function __construct(
+		private AtributoService $AtributoService,
+	) {}
 	public function index()
 	{
 
@@ -27,6 +31,24 @@ class AtributoController extends Controller
 	{
 		Atributo::create($request->only('nombre'));
 	}
+
+	public function listado()
+	{
+		$item = $this->AtributoService->getAtributos();
+		return response()->json([
+			"listado" => $item
+		]);
+	}
+
+	public function listadoProducto($id)
+	{
+		$item = $this->AtributoService->getProductoAtributos($id);
+
+		return response()->json([
+			"listado" => $item
+		]);
+	}
+
 
 	public function show($id)
 	{
