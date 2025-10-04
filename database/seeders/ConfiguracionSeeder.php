@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Configuracion;
 use Illuminate\Database\Seeder;
-use App\Models\Longitud;
 
 class ConfiguracionSeeder extends Seeder
 {

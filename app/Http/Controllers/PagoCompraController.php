@@ -79,9 +79,7 @@ class PagoCompraController extends Controller
 			}
 
 			DB::commit();
-			return Redirect::route('pagos-compras.index')->with([
-				// 'success' =>  $venta->codigo
-			]);
+			return Redirect::route('pagos-compras.index')->with([]);
 		} catch (Exception $e) {
 			DB::rollBack();
 			return [

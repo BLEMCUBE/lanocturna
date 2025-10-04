@@ -23,6 +23,7 @@ const form = useForm({
     productos: [],
     cliente: '',
 	mp_id:'',
+	auth_id:'',
 	nro_casa:'',
     direccion:'',
     localidad : '',
@@ -53,6 +54,7 @@ onMounted(() => {
     form.codigo = datos.codigo
     form.nro_casa = datos.nro_casa
     form.mp_id = datos.mp_id
+    form.auth_id = datos.auth_id
 
 });
 
@@ -156,6 +158,13 @@ onMounted(() => {
                             MP:
                         </b>
                         {{ form.mp_id }}
+                    </p>
+                </div>
+                <div class="col-span-1" v-if="form.auth_id!==''">
+                    <p class="text-lg leading-6 mt-0 text-gray-700 dark:text-gray-300"><b>
+                            Auth ID:
+                        </b>
+                        {{ form.auth_id }}
                     </p>
                 </div>
                 <div class="col-span-2">

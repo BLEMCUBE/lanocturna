@@ -32,21 +32,8 @@ const formDelete = useForm({
 let categorias = ref([props.filtro.categoria])
 let buscar = ref(props.filtro.buscar);
 
-/*watch(buscar, (value) => {
-	router.get(
-		route(ruta + '.index'),
-		{
-			buscar: value,
-			categoria: categorias.value
-		},
-		{
-			preserveState: true,
-			replace: true,
-		}
-	);
-});*/
 
-const funcBuscar=()=>{
+const funcBuscar = () => {
 	router.get(
 		route(ruta + '.index'),
 		{
@@ -59,6 +46,10 @@ const funcBuscar=()=>{
 		}
 	);
 }
+
+const form = useForm({
+	id: ''
+})
 
 
 watch(categorias, (value) => {
@@ -76,12 +67,10 @@ watch(categorias, (value) => {
 });
 
 const rowClass = (stock, stock_minimo, stock_futuro) => {
-	//Si stock = < stock minimo Y stock_futuro = stock
+
 	if (parseFloat(stock) <= parseFloat(stock_minimo) && parseFloat(stock) == parseFloat(stock_futuro)) {
-		//return "text-red-700 text-xs"
 		return "bg-red-700 text-white"
 	}
-	//Si stock = < stock mínimo y stock_futuro > stock
 	if (parseFloat(stock) <= parseFloat(stock_minimo) && parseFloat(stock_futuro) > parseFloat(stock)) {
 
 		return "bg-orange-500 text-black"
@@ -91,6 +80,23 @@ const rowClass = (stock, stock_minimo, stock_futuro) => {
 
 const btnVer = (id) => {
 	router.get(route(ruta + '.show', id));
+};
+
+const duplicar = (id) => {
+	form.clearErrors()
+	form.post(route(ruta + '.duplicar', id), {
+		preserveScroll: true,
+		forceFormData: true,
+		onSuccess: () => {
+			show('success', 'Mensaje', 'Producto Duplicado')
+		},
+		onFinish: () => {
+
+		},
+		onError: () => {
+
+		}
+	});
 
 };
 
@@ -134,13 +140,7 @@ const lista_categorias = ref({
 	options: [],
 });
 
-const check = (checked) => {
-	if (checked) {
-		console.log('checked ', checked)
-	} else {
-		console.log('f ', checked)
-	}
-};
+
 onMounted(() => {
 	tabla_productos.value = usePage().props.productos.data;
 	lista_categorias.value.options = usePage().props.lista_categorias
@@ -157,9 +157,8 @@ const BtnCrear = () => {
 const clickDetalle = (id) => {
 	btnVer(id)
 }
-
-
 </script>
+
 <template>
 
 	<Head :title="titulo" />
@@ -195,7 +194,8 @@ const clickDetalle = (id) => {
 				<div class="grid grid-cols-12 gap-4  m-3">
 
 					<div class="flex justify-content-end text-md col-span-12 lg:col-span-4 2xl:col-span-3">
-						<InputText v-debounce:500ms="funcBuscar" :debounce-events="['keyup']" class="w-full" v-model="buscar" placeholder="Buscar" />
+						<InputText v-debounce:500ms="funcBuscar" :debounce-events="['keyup']" class="w-full"
+							v-model="buscar" placeholder="Buscar" />
 					</div>
 					<div class="flex justify-content-end text-md col-span-12 lg:col-span-8 2xl:col-span-9">
 						<Multiselect id="categorias" v-model="categorias" class="w-full" v-bind="lista_categorias">
@@ -230,13 +230,25 @@ const clickDetalle = (id) => {
 								<td @click="clickDetalle(post.id)">{{ post.origen }}</td>
 								<td @click="clickDetalle(post.id)">{{ post.nombre }}</td>
 								<td @click="clickDetalle(post.id)">
-									{{ post.categorias.map(entry => entry.name).join(',') }}</td>
+									{{post.categorias.map(entry => entry.name).join(',')}}</td>
 								<td>
-									<button v-if="permissions.includes('productos-eliminar')"
-										class="w-8 h-8 rounded bg-red-700  border border-white px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
-										v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-										@click.prevent="btnEliminar(post.id, post.nombre)"><i
-											class="fas fa-trash-alt"></i></button>
+									<div class="flex justify-end">
+										<div>
+											<button v-if="permissions.includes('productos-eliminar')"
+												class="w-8 h-8 rounded bg-green-700  border border-white px-2 py-1 text-base font-normal text-white m-1 hover:bg-green-600"
+												v-tooltip.top="{ value: `Duplicar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+												@click.prevent="duplicar(post.id)"><i
+													class="fa-regular fa-copy"></i></button>
+										</div>
+										<div>
+
+											<button v-if="permissions.includes('productos-eliminar')"
+												class="w-8 h-8 rounded bg-red-700  border border-white px-2 py-1 text-base font-normal text-white m-1 hover:bg-red-600"
+												v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
+												@click.prevent="btnEliminar(post.id, post.nombre)"><i
+													class="fas fa-trash-alt"></i></button>
+										</div>
+									</div>
 								</td>
 							</tr>
 						</tbody>

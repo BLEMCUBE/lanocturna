@@ -79,28 +79,6 @@ let date = ref([props.filtro.inicio, props.filtro.fin]);
 let inicio = ref(props.filtro.inicio);
 let fin = ref(props.filtro.fin);
 
-/*
-watch(buscar, (value) => {
-	setTimeout(function () {
-		router.get(
-			route(ruta + '.index'),
-			{
-				buscar: value,
-				inicio: inicio.value,
-				fin: fin.value,
-				total: total.value,
-				cliente: cliente.value,
-				compra: compra.value
-			},
-			{
-				preserveState: true,
-				replace: true,
-			}
-		);
-	}, 500);
-
-});*/
-
 const funcBuscar = () => {
 	router.get(
 		route(ruta + '.index'),

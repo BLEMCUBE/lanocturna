@@ -74,5 +74,14 @@ class Producto extends Model
 		return $this->hasMany(CostoReal::class, 'producto_id', 'id');
 	}
 
+	public function atributo_valores()
+	{
+		return $this->belongsToMany(AtributoValor::class, 'atributo_valor_producto', 'producto_id', 'atributo_valor_id');
+	}
 
+
+	public function variaciones()
+	{
+		return $this->hasMany(ProductoVariacion::class);
+	}
 }

@@ -172,24 +172,6 @@ class CajaController extends Controller
                     "stock_futuro"=>$new_stock+$prod->en_camino
                 ]);
             }
-              //eliminando  detalle
-              //$venta->detalles_ventas()->delete();
-
-                 //creando detalle venta
-           /* foreach ($request->productos as $producto) {
-
-                $venta->detalles_ventas()->create(
-                    [
-                        "producto_id" => $producto['producto_id'],
-                        "precio" => $producto['precio'],
-                        "precio_sin_iva" => $producto['precio_sin_iva'],
-                        "cantidad" => $producto['cantidad'],
-                        "total" => $producto['total'],
-                        "total_sin_iva" => $producto['total_sin_iva'],
-                    ]
-                );
-            }*/
-
 
             DB::commit();
         } catch (Exception $e) {

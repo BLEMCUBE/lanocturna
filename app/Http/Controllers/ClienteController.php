@@ -32,7 +32,6 @@ class ClienteController extends Controller
     {
 
         $cliente = Cliente::create($request->all());
-        //return Redirect::route('clientes.index');
     }
     public function show($id)
     {

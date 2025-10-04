@@ -9,6 +9,7 @@ import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import axios from 'axios';
+import { useToast } from "primevue/usetoast";
 
 const { permissions } = usePage().props.auth
 const previewImage = ref('/images/productos/sin_foto.png');
@@ -16,10 +17,12 @@ const { roles } = usePage().props.auth
 const { costo_real } = usePage().props
 const { costo_aprox } = usePage().props
 const { productoEnCamino } = usePage().props
+const { atributos } = usePage().props
 const { ultimo_yang } = usePage().props
 const titulo = "Detalle Producto"
 const ruta = 'productos'
 const cantidad = ref()
+const toast = useToast();
 const cantidad_importacion = ref()
 const tabla_vendidos = ref()
 const tabla_importaciones = ref()
@@ -33,11 +36,11 @@ const form = useForm({
 	stock_minimo: 0,
 	imagen: '',
 	photo: '',
-	categorias: []
+	categorias: [],
+	atributos: []
 })
 const date = ref([new Date(), new Date()]);
 const date2 = ref([new Date(), new Date()]);
-//const fechaVentaExport = ref({inicio:'',fin:''});
 const fechaVentaExport = ref([]);
 
 
@@ -57,6 +60,31 @@ const filtradoVenta = (value) => {
 	}
 }
 
+const show = (tipo, titulo, mensaje) => {
+	toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+};
+
+const duplicar = (id) => {
+	form.clearErrors()
+	form.post(route(ruta + '.duplicar', id), {
+		preserveScroll: true,
+		forceFormData: true,
+		onSuccess: () => {
+			show('success', 'Mensaje', 'Producto Duplicado')
+			setTimeout(() => {
+				location.reload();
+			}, 500);
+
+		},
+		onFinish: () => {
+
+		},
+		onError: () => {
+
+		}
+	});
+
+};
 //descarga excel
 const descargaExcelProductoVentas = (id) => {
 
@@ -154,6 +182,7 @@ const shortcuts2 = [
 ]
 
 const formatDate = (dat) => moment(dat).format("DD/MM/YYYY");
+
 onMounted(() => {
 	tabla_vendidos.value = Array.from(usePage().props.productoventa, (x) => x);
 	cantidad_importacion.value = usePage().props.cantidad_importacion;
@@ -171,6 +200,7 @@ onMounted(() => {
 	previewImage.value = datos.imagen
 	form.imagen = datos.imagen
 	form.categorias = datos.categorias
+	form.atributos = atributos
 
 });
 const filters = ref({
@@ -201,12 +231,22 @@ const clickDetImportacion = (e) => {
 		<div
 			class="card px-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-3 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
 			<!--Contenido-->
-
+			<Toast />
 			<div class="grid grid-cols-12 justify-center">
 				<div class="px-3 col-span-10 flex justify-between items-center">
 					<h5 class="text-xl font-medium">{{ titulo }}</h5>
 				</div>
-				<div class="px-0 py-0 m-2 mt-0 text-white col-span-2 flex justify-end items-center">
+				<div class="mx-3 py-0  mt-0 text-white col-span-2 flex justify-end items-center">
+					<Button label="Duplicar" v-if="permissions.includes('productos-editar')" @click="duplicar(form.id)"
+						:pt="{
+							root: {
+								class: 'flex items-center bg-green-700 hover:bg-green-600 justify-center font-medium w-10 mx-3'
+							},
+							label: {
+								class: 'hidden'
+							}
+						}" v-tooltip.top="{ value: `Duplicar`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"><i
+							class="fa-regular fa-copy"></i></Button>
 					<Button label="Editar" v-if="permissions.includes('productos-editar')" @click="btnEditar(form.id)"
 						:pt="{
 							root: {
@@ -321,7 +361,7 @@ const clickDetImportacion = (e) => {
 							<h3 class="font-semibold text-gray-800 text-base"> Precio Aprox:</h3>
 						</div>
 						<div class="w-full md:w-2/3">
-							<h3 class="font-normal text-gray-800 text-base">{{ costo_aprox  ?? '-' }}
+							<h3 class="font-normal text-gray-800 text-base">{{ costo_aprox ?? '-' }}
 							</h3>
 						</div>
 					</div>
@@ -331,6 +371,21 @@ const clickDetImportacion = (e) => {
 						</div>
 						<div class="w-full md:w-2/3">
 							<h3 class="font-normal text-gray-800 text-base">{{ (ultimo_yang > 0) ? ultimo_yang : '-' }}
+							</h3>
+						</div>
+					</div>
+
+					<div v-if="form.atributos.length>0" class="w-full flex flex-col md:flex-row pt-2">
+						<div class="bg-gray-200 w-full text-center">
+							<h3 class="font-semibold text-gray-800 text-lg">ATRIBUTOS</h3>
+						</div>
+					</div>
+					<div v-if="form.atributos.length>0" class="w-full flex flex-col md:flex-row py-1" v-for="(atributo, index) in form.atributos">
+						<div class="w-full md:w-1/3 xl:w-1/3 mr-2">
+							<h3 class="font-semibold text-gray-800 text-base">{{ atributo.nombre }}: </h3>
+						</div>
+						<div class="w-full md:w-2/3">
+							<h3 class="font-normal text-gray-800 text-base">{{ atributo.valor }}
 							</h3>
 						</div>
 					</div>
@@ -436,33 +491,37 @@ const clickDetImportacion = (e) => {
 								class: 'text-center'
 							}
 						}">
-						  <template #loading>
-                        </template>
-                        <template #body="slotProps">
-                            <span class="text-md">
-                                {{ slotProps.data.importacion.nro_carpeta }}
-                            </span>
-                        </template></Column>
+							<template #loading>
+							</template>
+							<template #body="slotProps">
+								<span class="text-md">
+									{{ slotProps.data.importacion.nro_carpeta }}
+								</span>
+							</template>
+						</Column>
 						<Column field="importacion.fecha" header="Fecha Arribo" sortable :pt="{
 							bodyCell: {
 								class: 'text-center'
 							}
 						}">
-						 <template #body="slotProps">
-                            <span class="text-md">
-                                {{ slotProps.data.importacion.fecha }}
-                            </span>
-                        </template></Column>
-						<Column  header="Costo Real" sortable :pt="{
+							<template #body="slotProps">
+								<span class="text-md">
+									{{ slotProps.data.importacion.fecha }}
+								</span>
+							</template>
+						</Column>
+						<Column header="Costo Real" sortable :pt="{
 							bodyCell: {
 								class: 'text-center'
 							}
 						}">
-						 <template #body="slotProps">
-                            <span class="text-md">
-                                {{ slotProps.data.real_costo.length>0?slotProps.data.real_costo[0].monto:'0.00' }}
-                            </span>
-                        </template></Column>
+							<template #body="slotProps">
+								<span class="text-md">
+									{{ slotProps.data.real_costo.length > 0 ? slotProps.data.real_costo[0].monto :
+										'0.00' }}
+								</span>
+							</template>
+						</Column>
 						<Column field="precio" sortable header="EXW Precio" :pt="{
 							bodyCell: {
 								class: 'text-center'

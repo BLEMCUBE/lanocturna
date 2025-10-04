@@ -122,9 +122,7 @@ const validarCodigoMaestro = () => {
 			form.productos[cod_maestro.index].producto_validado = true;
 			show('success', 'Mensaje', 'Producto Validado')
 			BotonConfirmar()
-			/* setTimeout(() => {
-				 router.get(route(ruta + '.index'));
-			 }, 1000);*/
+
 			closeModal()
 
 		},

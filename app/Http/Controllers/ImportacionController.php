@@ -314,11 +314,8 @@ class ImportacionController extends Controller
 			$importacion->fecha_camino = $request->input('fecha_camino');
 			$importacion->costo_cif = $request->input('costo_cif');
 			$importacion->save();
-
 			DB::commit();
-			/*return Redirect::route('importaciones.index')->with([
-                // 'success' =>  $venta->codigo
-            ]);*/
+
 		} catch (Exception $e) {
 			DB::rollBack();
 			return [
@@ -437,10 +434,6 @@ class ImportacionController extends Controller
 					'fila' => $n_fila,
 					'sku' => "sku no debe estar vacio.",
 				]);
-				/*throw ValidationException::withMessages([
-					//'error_sku' => "SKU no debe estar vacio.",
-					'error_sku' => $vacio
-				]);*/
 			}
 		}
 		if (count($vacio) > 0) {
