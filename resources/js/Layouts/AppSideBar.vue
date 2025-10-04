@@ -3,7 +3,7 @@ import { onMounted, computed, watch, ref } from "vue";
 import NavLinkSideBar from '@/Components/NavLinkSideBar.vue';
 import NavLinkSideBarNotIcon from '@/Components/NavLinkSideBarNotIcon.vue';
 import { usePage, router } from '@inertiajs/vue3';
-import { useConfigStore } from '@/store/config.js'
+import { useConfigStore } from '@/stores/config.js'
 import Swal from 'sweetalert2';
 import {
 	Disclosure,
@@ -395,6 +395,18 @@ const ok = (icono, mensaje) => {
 								:href="route('configuraciones.index')"
 								:active="route().current('configuraciones.index')">
 								<span class="ml-2 uppercase">Código Maestro</span>
+							</NavLinkSideBarNotIcon>
+						</li>
+					</div>
+					<div class="flex items-center">
+
+						<li @click="setMenu('configuraciones')" class="w-full"
+							v-show="permissions.includes('configuraciones-codigoMaestro')">
+							<NavLinkSideBarNotIcon
+								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+								:href="route('atributos.index')"
+								:active="route().current('atributos.index')">
+								<span class="ml-2 uppercase">Atributos producto</span>
 							</NavLinkSideBarNotIcon>
 						</li>
 					</div>

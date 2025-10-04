@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AtributoController;
+use App\Http\Controllers\AtributoValorController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CategoriaController;
@@ -49,10 +51,6 @@ use Inertia\Inertia;
 Route::get('/', function () {
 	return Inertia::render('Auth/Login');
 });
-/*Route::get('/demo', function () {
-    return Inertia::render('Pixijs');
-});*/
-
 
 Route::get('/inicio', [InicioController::class, 'index'])->name('inicio')->middleware(['auth', 'verified']);
 
@@ -98,24 +96,26 @@ Route::controller(ClienteController::class)->group(function () {
 });
 
 //Producto
-Route::controller(ProductoController::class)->group(function () {
-	Route::get('/productos/export', 'exportExcel')->name('productos.exportar')->middleware('auth');
-	Route::post('/productos/storemasivo', 'storeMasivo')->name('productos.storemasivo')->middleware('auth');
-	Route::get('/productos/{id}/exportproductoventas', 'exportProductoVentas')->name('productos.exportproductoventas')->middleware('auth');
-	Route::get('/productos/actualizarfuturo', 'actualizarFuturo')->name('productos.actualizarfuturo')->middleware('auth');
-	Route::get('/productos/actualizarYuanes', 'actualizarYuanes')->name('productos.actualizarYuanes')->middleware('auth');
-	Route::get('/productos/ajuste-stock', 'ajusteStock')->name('productos.ajuste-stock')->middleware('auth');
-	Route::post('/productos/importarstock', 'importarStock')->name('productos.importarstock')->middleware('auth');
-	Route::get('/productos/vistaimportar', 'vistaImportar')->name('productos.vistaimportar')->middleware('auth');
-	Route::get('/productos/create', 'create')->name('productos.create')->middleware('auth');
-	Route::get('/productos/{id}', 'edit')->name('productos.edit')->middleware('auth');
-	Route::get('/productos/{id}/show', 'show')->name('productos.show')->middleware('auth');
-	Route::post('/productos/update/{id}', 'update')->name('productos.update')->middleware('auth');
-	Route::get('/productos', 'index')->name('productos.index')->middleware('auth');
-	Route::post('/productos/store', 'store')->name('productos.store')->middleware('auth');
-	Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productos.productoventa')->middleware('auth');
-	Route::get('/productoimportacion/{id}/{inicio}/{fin}', 'productoImportacion')->name('productos.productoimportacion')->middleware('auth');
-	Route::delete('/productos/{id}', 'destroy')->name('productos.destroy')->middleware('auth');
+Route::controller(ProductoController::class)->prefix('productos')->name('productos.')
+	->middleware('auth')->group(function () {
+	Route::get('/export', 'exportExcel')->name('exportar');
+	Route::post('/storemasivo', 'storeMasivo')->name('storemasivo');
+	Route::get('/{id}/exportproductoventas', 'exportProductoVentas')->name('exportproductoventas');
+	Route::get('/actualizarfuturo', 'actualizarFuturo')->name('actualizarfuturo');
+	Route::get('/actualizarYuanes', 'actualizarYuanes')->name('actualizarYuanes');
+	Route::get('/ajuste-stock', 'ajusteStock')->name('ajuste-stock');
+	Route::post('/importarstock', 'importarStock')->name('importarstock');
+	Route::get('/vistaimportar', 'vistaImportar')->name('vistaimportar');
+	Route::get('/create', 'create')->name('create');
+	Route::get('/{id}', 'edit')->name('edit');
+	Route::post('/{id}/duplicar', 'duplicar')->name('duplicar');
+	Route::get('/{id}/show', 'show')->name('show');
+	Route::post('/update/{id}', 'update')->name('update');
+	Route::get('/', 'index')->name('index');
+	Route::post('/store', 'store')->name('store');
+	Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productoventa');
+	Route::get('/productoimportacion/{id}/{inicio}/{fin}', 'productoImportacion')->name('productoimportacion');
+	Route::delete('/{id}', 'destroy')->name('destroy');
 });
 
 //Importacion
@@ -171,7 +171,7 @@ Route::controller(CajaController::class)->prefix('cajas')->name('cajas.')->middl
 	Route::get('/edit/{id}', 'edit')->name('edit');
 	Route::get('/facturar/{id}', 'facturar')->name('facturar');
 	Route::get('/', 'index')->name('index');
-	Route::get('//{id}', 'show')->name('show');
+	Route::get('/{id}', 'show')->name('show');
 });
 
 //Expedicion
@@ -359,7 +359,7 @@ Route::controller(MetodoPagoController::class)->prefix('metodo-pago')->name('met
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 
-	//Pagos Compras
+//Pagos Compras
 Route::controller(PagoCompraController::class)->prefix('pagos-compras')->name('pagos-compras.')
 	->middleware('auth')->group(function () {
 		Route::delete('/{id}', 'destroy')->name('destroy');
@@ -369,6 +369,26 @@ Route::controller(PagoCompraController::class)->prefix('pagos-compras')->name('p
 		Route::post('/store', 'store')->name('store');
 	});
 
+//Atributo Valores
+Route::controller(AtributoController::class)->prefix('atributos')->name('atributos.')
+	->middleware('auth')->group(function () {
+		Route::post('/update/{id}', 'update')->name('update');
+		Route::get('/', 'index')->name('index');
+		Route::get('/listado', 'listado')->name('listado');
+		Route::get('/{id}/producto', 'listadoProducto')->name('listado-producto');
+		Route::get('/{id}', 'show')->name('show');
+		Route::post('/store', 'store')->name('store');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
 
+
+Route::controller(AtributoValorController::class)->prefix('atributos-valores')->name('atributos-valores.')
+	->middleware('auth')->group(function () {
+		Route::post('/update/{id}', 'update')->name('update');
+		Route::get('/{id}', 'index')->name('index');
+		Route::get('/{id}/show', 'show')->name('show');
+		Route::post('/store', 'store')->name('store');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
 
 require __DIR__ . '/auth.php';

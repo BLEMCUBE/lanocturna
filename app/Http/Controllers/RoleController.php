@@ -133,8 +133,6 @@ class RoleController extends Controller
 	{
 		$rol = Role::find($id);
 		$rol->syncPermissions($request->input('permisos'));
-
-		//return Redirect::route('roles.index');
 	}
 
 	public function destroy($id)

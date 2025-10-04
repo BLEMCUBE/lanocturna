@@ -139,6 +139,7 @@ class VentaService
 					'nro_orden' => $request->id,
 					'nro_compra' => $request->id,
 					'mp_id' => $request->mp_id ?? '',
+					'auth_id' => $request->auth_id ?? '',
 					'tipo_cambio' => $last_cambio->valor,
 					'observaciones' => $request->observacion,
 					'cliente' => json_encode($cliente),

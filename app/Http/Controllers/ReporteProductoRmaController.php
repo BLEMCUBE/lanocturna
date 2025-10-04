@@ -212,12 +212,7 @@ class ReporteProductoRmaController extends Controller
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 'wrapText' => true
             ],
-            /*'borders' => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    'color' => ['argb' => '00000000'],
-                ],
-            ],*/
+
 
         ];
 

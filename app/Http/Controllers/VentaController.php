@@ -22,10 +22,7 @@ use Illuminate\Support\Facades\Request;
 
 class VentaController extends Controller
 {
-	public function __construct()
-	{
-
-	}
+	public function __construct() {}
 
 	public function index()
 	{
@@ -57,11 +54,7 @@ class VentaController extends Controller
 			DB::raw("DATE_FORMAT(created_at,'%d/%m/%y  %H:%i:%s') AS fecha"),
 			DB::raw("JSON_UNQUOTE(json_extract(cliente,'$.nombre')) AS cliente")
 		)
-			/*->when(Request::input('buscar'), function ($query) {
-                $query->where(DB::raw('lower(nro_compra)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
-                    ->orWhere(DB::raw('lower(cliente)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%')
-					->orWhere(DB::raw('total'), '=', Request::input('buscar'));
-            })*/
+
 			->when(Request::input('compra') == 'true', function ($query) {
 				return $query->where(DB::raw('lower(nro_compra)'), 'LIKE', '%' . strtolower(Request::input('buscar')) . '%');
 			})
@@ -465,7 +458,7 @@ class VentaController extends Controller
 			$venta->estado = "ANULADO";
 			$venta->facturado = 0;
 			$venta->validado = 0;
-			$venta->nro_orden =null;
+			$venta->nro_orden = null;
 			$venta->fecha_anulacion =  now();
 			$venta->save();
 

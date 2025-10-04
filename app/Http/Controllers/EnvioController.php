@@ -598,7 +598,6 @@ class EnvioController extends Controller
 				Excel::import(new MercadoLibreImport($usuario, $request->destino), $file);
 
 				DB::commit();
-				//return Redirect::route('envios.index')->with([]);
 			} catch (Exception $e) {
 				DB::rollBack();
 				return [

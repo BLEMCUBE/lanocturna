@@ -14,8 +14,4 @@ class TipoCambio extends Model
         'valor',
         'created_at'
     ];
-
-    /*protected $casts = [
-        'created_at' => 'date',
-    ];*/
 }

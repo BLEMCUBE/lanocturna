@@ -38,13 +38,7 @@ class ExpedicionController extends Controller
                     ->orWhere('estado', "VALIDADO")
                     ->orWhere('estado', "FACTURADO");
             })
-                /*->orWhere(function ($query) {
-                    $query->orWhere('facturado', "1")
-                        ->where('estado', "RMA");
-                })*/
                 ->orderBy('created_at', 'DESC')->get()
-
-            //whereNot('estado',"COMPLETADO")
         );
         return Inertia::render('Expedicion/Index', [
             'ventas' => $expedidiones

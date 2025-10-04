@@ -28,18 +28,18 @@ class MercadoLibreImport implements ToCollection, WithHeadingRow, WithCalculated
 
             if (!empty($row['SKU'])) {
 
-              
+
                 if(!is_null($row['CLIENTE'])){
                     $cliente=json_encode(["nombre"=>$row['CLIENTE']]);
                 }else{
                     $cliente=NULL;
                 }
-                
+
                 //comprobando si existe
                 $existe_nro_venta = Venta::where('nro_compra', '=', $row['NUMERO COMPRA'])->first();
 
                 if (is_null($existe_nro_venta)) {
-                    
+
                     //creando venta
                     $venta = Venta::create([
                         'nro_compra' => $row['NUMERO COMPRA'],
@@ -73,51 +73,9 @@ class MercadoLibreImport implements ToCollection, WithHeadingRow, WithCalculated
                         "stock" => $new_stock,
                         "stock_futuro" => $new_stock + $prod->en_camino
                     ]);
-                } 
-                /*else {
-                    var_dump($cliente);
-                    $existe_nro_venta->update([
-                        'destino' => $this->destino,
-                        'cliente' =>$cliente,
-                        'vendedor_id' => $this->usuario->id,
-                        'facturador_id' => $this->usuario->id,
-                        'fecha_facturacion' => now()
-                    ]);
-
-
-                    //reponiendo el producto a stock
-                    foreach ($existe_nro_venta->detalles_ventas as $producto) {
-                        $prod = Producto::find($producto->producto_id);
-                        $n_stock = $prod->stock + $producto->cantidad;
-                        $prod->update([
-                            "stock" => $n_stock,
-                            "stock_futuro" => $n_stock + $prod->en_camino
-                        ]);
-                    }
-
-                    //eliminado detalle venta
-                    $existe_nro_venta->detalles_ventas()->delete();
-
-                    //creando nueva venta
-                    $prod_n = Producto::where('origen', '=', $row['SKU'])->first();
-                    $existe_nro_venta->detalles_ventas()->create(
-                        [
-
-                            "producto_id" => $prod_n->id,
-                            "cantidad" =>  $row['CANTIDAD'],
-
-                        ]
-                    );
-                    //actualizando stock producto
-                    $ne_stock = $prod_n->stock;
-                    $new_stock = $ne_stock -  $row['CANTIDAD'];
-                    $prod_n->update([
-                        "stock" => $new_stock,
-                        "stock_futuro" => $new_stock + $prod_n->en_camino
-                    ]);
-                }*/
+                }
             }
         }
-        
+
     }
 }
