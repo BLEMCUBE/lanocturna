@@ -30,4 +30,14 @@ class AtributoService
 		->get()->toArray();
 		return $item??[];
 	}
+
+	public function getValores():array
+	{
+		$item = DB::table('atributo_valores as av')
+		->join('atributos as at','at.id','av.atributo_id')
+		->select('av.id','av.valor','at.nombre','av.atributo_id'
+		)
+		->get()->toArray();
+		return $item??[];
+	}
 }

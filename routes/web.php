@@ -115,6 +115,7 @@ Route::controller(ProductoController::class)->prefix('productos')->name('product
 	Route::post('/store', 'store')->name('store');
 	Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productoventa');
 	Route::get('/productoimportacion/{id}/{inicio}/{fin}', 'productoImportacion')->name('productoimportacion');
+	Route::post('/updateprice/{sku}', 'updatePrice')->name('updatePrice');
 	Route::delete('/{id}', 'destroy')->name('destroy');
 });
 
