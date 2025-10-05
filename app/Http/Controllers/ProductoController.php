@@ -27,16 +27,14 @@ use Exception;
 use Illuminate\Support\Facades\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Illuminate\Support\Str;
 
 
 class ProductoController extends Controller
 {
 
 	public function __construct(
-			private AtributoService $AtributoService,
-	)
-	{
+		private AtributoService $AtributoService,
+	) {
 		//protegiendo el controlador segun el rol
 		$this->middleware(['auth', 'permission:menu-productos'])->only('index');
 		$this->middleware(['auth', 'permission:productos-crear'])->only(['store']);
@@ -108,10 +106,14 @@ class ProductoController extends Controller
 				'label' =>  $value->name,
 			]);
 		}
+		$lista_atributos = $this->AtributoService->getAtributos();
+		$lista_valores = $this->AtributoService->getValores();
 		return Inertia::render(
 			'Producto/Create',
 			[
-				'lista_categorias' => $lista_categorias
+				'lista_categorias' => $lista_categorias,
+				'lista_atributos' => $lista_atributos,
+				'lista_valores' => $lista_valores,
 			]
 		);
 	}
@@ -142,6 +144,14 @@ class ProductoController extends Controller
 		if (!empty($request->categorias)) {
 			$producto->categorias()->sync($request->categorias);
 		}
+		//atributos
+		$valoresData = $request->input('atributos', []);
+		$syncIds = [];
+		foreach ($valoresData as $valor) {
+			$syncIds[] = $valor['id'];
+		}
+		// sincroniza con el producto
+		$producto->atributo_valores()->sync($syncIds);
 	}
 
 	public function edit($id)
@@ -155,24 +165,27 @@ class ProductoController extends Controller
 				'label' =>  $value->name,
 			]);
 		}
-		$producto = Producto::with(['categorias' => function ($query) {
-			$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
-		}
+		$producto = Producto::with([
+			'categorias' => function ($query) {
+				$query->select(DB::raw("id,name"))->orderBy('name', 'ASC');
+			}
 		])
-		->with(['costos_reales' => function ($query) use ($hoy) {
-			$query->select('origen', 'monto', 'producto_id', 'id', 'fecha')
-				//->whereNot('monto', '=', 0)
-				->orderBy('fecha', 'DESC')
-				->whereDate('fecha', '<=', $hoy)
-				->limit(1)->first();
-		}])
-		->select(DB::raw("*"))
+			->with(['costos_reales' => function ($query) use ($hoy) {
+				$query->select('origen', 'monto', 'producto_id', 'id', 'fecha')
+					//->whereNot('monto', '=', 0)
+					->orderBy('fecha', 'DESC')
+					->whereDate('fecha', '<=', $hoy)
+					->limit(1)->first();
+			}])
+			->select(DB::raw("*"))
 			->findOrFail($id);
-		$atributos=$this->AtributoService->getProductoAtributos($id);
-		$lista_atributos=$this->AtributoService->getAtributos();
+		$atributos = $this->AtributoService->getProductoAtributos($id);
+		$lista_atributos = $this->AtributoService->getAtributos();
+		$lista_valores = $this->AtributoService->getValores();
 		return Inertia::render('Producto/Edit', [
 			'lista_categorias' => $lista_categorias,
 			'lista_atributos' => $lista_atributos,
+			'lista_valores' => $lista_valores,
 			'producto' => $producto,
 			'atributos' => $atributos
 		]);
@@ -242,8 +255,16 @@ class ProductoController extends Controller
 		} else {
 			$producto->categorias()->detach();
 		}
-	}
 
+		//atributos
+		$valoresData = $request->input('atributos', []);
+		$syncIds = [];
+		foreach ($valoresData as $valor) {
+			$syncIds[] = $valor['id'];
+		}
+		// sincroniza con el producto
+		$producto->atributo_valores()->sync($syncIds);
+	}
 
 	public function show($id)
 	{
@@ -357,8 +378,8 @@ class ProductoController extends Controller
 			->whereDate('fecha', '<=', $hoy)
 			->limit(1)->first();
 		$c_real = $costo_real != null ? $costo_real->monto : 0.00;
-		$atributos=$this->AtributoService->getProductoAtributos($id);
-		$datos=[
+		$atributos = $this->AtributoService->getProductoAtributos($id);
+		$datos = [
 			'producto' => $producto,
 			'productoImportacion' => $productoImportacion,
 			'productoEnCamino' => $productoEnCamino,
@@ -435,13 +456,11 @@ class ProductoController extends Controller
 		$sheet->setCellValue('J' . (string)$f, "arribado");
 		$sheet->setCellValue('K' . (string)$f, "en_camino");
 
-
 		$sheet->getStyle('A' . (string)1 . ':' . 'K' . (string)1)->getFont()->setBold(true);
 		$sheet->getStyle('A' . (string)1 . ':' . 'K' . (string)1)->getAlignment()->setHorizontal('center');
 		$sheet->getStyle('A' . (string)1 . ':' . 'K' . (string)1)->getAlignment()->setVertical('center');
 
 		foreach ($productos as $key => $vent) {
-
 			$f++;
 			if ($foto == "1") {
 				$drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
@@ -760,6 +779,14 @@ class ProductoController extends Controller
 			->findOrFail($newProduct->id);
 
 		return redirect()->route('productos.edit', ['id' => $producto->id]);
+	}
+
+	public function updateStockWeb($sku){
+			$product = Producto::where('origen','=',$sku);
+
+	}
+
+	public function updatePrice(Request $request,$sku){
 
 	}
 }
