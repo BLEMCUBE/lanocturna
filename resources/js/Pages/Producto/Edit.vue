@@ -7,19 +7,17 @@ import { useToast } from "primevue/usetoast";
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Multiselect from '@vueform/multiselect';
-import axios from 'axios';
 
 const previewImage = ref('/images/productos/sin_foto.png');
 const toast = useToast();
 const { permissions } = usePage().props.auth;
 const { atributos } = usePage().props
 const { lista_atributos } = usePage().props
+const { lista_valores } = usePage().props
+const expandedRows = ref([]);
 const titulo = "Editar Producto"
 const ruta = 'productos'
-const rutaAtributo = 'atributos'
 const showAtributo = ref(false)
-const listAtributo = ref([])
-const listadoAtributos = ref([])
 const form = useForm({
 	id: '',
 	origen: '',
@@ -40,8 +38,6 @@ const form = useForm({
 })
 
 onMounted(() => {
-	getAtributos(usePage().props.producto.id);
-
 	lista_categorias.value.options = usePage().props.lista_categorias
 	var datos = usePage().props.producto;
 	form.id = datos.id
@@ -125,32 +121,37 @@ const pickFile = (e) => {
 	}
 }
 
-const getAtributos = (id) => {
-	axios.get(route(rutaAtributo + '.listado-producto', id))
-		.then(res => {
-			console.log('r2 ', res.data)
-			listAtributo.value = res.data.listado
-		}).finally(() => {
 
-		})
-}
+const expandEvent = (event) => {
+	//expandedRows.value = lista_depositos.value.filter((p) => p.id == event.data.id);
+	//formDelete.reset();
+
+};
+const collapseEvent = (event) => {
+	// expandedRows.value = null;
+	//formDelete.reset();
+
+};
+
 
 const setAtributo = (e) => {
-	console.log('e ', e.value.id)
-	console.log('lista_atributos ', listadoAtributos.value.atributos)
-	var atri = listadoAtributos.value.find(pr => pr.id === e.value.id);
-	console.log('e2 ', atri.id)
-			form.atributos.push(
-				{
-					id: atri.id,
-					valor: atri.valor,
-					nombre: atri.nombre,
-					atributo_id: atri.atributo_id,
-					producto_id: atri.producto_id,
-				}
-			)
-
-
+	if (form.atributos.length > 0) {
+		const indice = form.atributos.findIndex(producto => producto.atributo_id === e.atributo_id);
+		if (indice !== -1) { // Asegurarse de que el elemento fue encontrado
+			form.atributos.splice(indice, 1);
+		}
+	}
+	var atri = lista_valores.find(pr => pr.id === e.id);
+	form.atributos.push(
+		{
+			id: atri.id,
+			valor: atri.valor,
+			nombre: atri.nombre,
+			atributo_id: atri.atributo_id,
+			producto_id: form.id,
+		}
+	)
+	showAtributo.value = false;
 }
 
 const removerAtributo = (index) => {
@@ -159,14 +160,11 @@ const removerAtributo = (index) => {
 
 const addAtributo = () => {
 	showAtributo.value = true;
-
-
 }
 
 onMounted(() => {
-    listadoAtributos.value = usePage().props.lista_atributos.data;
+	expandedRows.value = null;
 });
-
 
 </script>
 <template>
@@ -181,11 +179,9 @@ onMounted(() => {
 			<div class=" px-3 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 			</div>
-			{{ form }}
 			<div class="align-middle">
 				<form @submit.prevent="submit">
 					<div class="px-2 pt-4 pb-0 grid grid-cols-12 gap-4 mb-2">
-
 						<div class="col-span-12 shadow-default xl:col-span-3">
 							<InputLabel for="origen" value="Origen"
 								class="block text-base font-medium leading-6 text-gray-900" />
@@ -315,21 +311,18 @@ onMounted(() => {
 						<div v-if="form.atributos.length > 0"
 							class="flex justify-start col-span-12 w-full flex-col md:flex-row py-1 px-5"
 							v-for="(atributo, index) in form.atributos">
-							<div class="w-full md:w-1/3 xl:w-1/3 mr-2">
+							<div class="flex items-center w-full md:w-1/3 xl:w-1/3 mr-2">
 								<h3 class="font-semibold text-gray-800 text-base">{{ atributo.nombre }}: </h3>
-							</div>
-							<div class="w-56">
-								<h3 class="font-normal text-gray-800 text-base">{{ atributo.valor }}
+								<h3 class="font-normal text-gray-800 text-base px-3">{{ atributo.valor }}
 								</h3>
-							</div>
-							<div
-								class="rounded-md p-1 flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
-								<button type="button" @click.prevent="removerAtributo(index)" class="w-6"
-									v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"><i
-										class="fas fa-trash"></i></button>
+								<div
+									class="rounded-md p-1 flex justify-center items-center bg-red-600 py-auto  text-base font-semibold text-white hover:bg-red-700">
+									<button type="button" @click.prevent="removerAtributo(index)" class="w-6"
+										v-tooltip.top="{ value: `Eliminar`, pt: { text: 'bg-gray-500 p-1 m-0 text-xs text-white rounded' } }"><i
+											class="fas fa-trash"></i></button>
+								</div>
 							</div>
 						</div>
-
 					</div>
 
 					<div class="flex justify-end pt-2">
@@ -339,56 +332,74 @@ onMounted(() => {
 							:disabled="form.processing" />
 					</div>
 				</form>
-
 			</div>
 			<!--Contenido-->
-
 		</div>
 
 		<!--Modal Atributo-->
-
-		<Dialog v-model:visible="showAtributo" modal header="Atributos" :style="{ width: '30vw' }"
+		<Dialog v-model:visible="showAtributo" modal :style="{ width: '50vw' }"
 			:breakpoints="{ '1199px': '75vw', '575px': '90vw' }" position="top" :pt="{
 				header: {
-					class: 'mt-6 p-2 lg:p-4 '
+					class: 'mt-6 p-2 lg:p-4 flex justify-around text-end'
 				},
 				content: {
 					class: 'p-4 lg:p-4'
 				},
 			}">
+			<div class="card flex  w-full">
+				<DataTable v-model:expandedRows="expandedRows" size="small" v-on:row-collapse="collapseEvent"
+					v-on:row-expand="expandEvent" :value="lista_atributos.data" scrollable scrollHeight="800px"
+					pagination :rows=50 :pt="{
+						root: { class: 'w-full' }
+					}">
+					<template #empty> No existe Resultado </template>
+					<template #loading> Cargando... </template>
+					<Column expander style="width: 4rem" :pt="{
+						bodyCell: { class: 'bg-secondary-900/30 font-bold m-2 text-2xl text-start' },
+						headerCell: { class: 'uppercase bg-secondary-900 text-md ' },
+					}" />
+					<Column sortable field="nombre" header="Atributos" :pt="{
+						bodyCell: { class: 'bg-secondary-900/30 font-bold text-start' },
+						headerCell: { class: 'uppercase bg-secondary-100 text-md' },
+					}"></Column>
+					<template #expansion="slotProps">
+						<div class="px-1">
+							<DataTable :value="slotProps.data.valores" scrollable scrollHeight="300px" paginator
+								:rows="100" :pt="{
+									header: { class: 'text-center pb-0 mb-0 text-start' },
+									headerContent: { class: 'bg-white pb-0 mb-0 text-start' },
+								}">
+								<Column :pt="{
+									bodyCell: { class: 'text-start p-0 m-0' },
+									headerCell: { class: 'bg-white p-0 m-0' },
+									headerContent: {
+										class: 'text-start stickyToTopTableHeaders'
+									},
+									bodyCellContent: {
+										class: 'text-start'
+									},
+								}">
+									<template #body="slotProps">
+										<div class="flex justify-between items-center mx-2 w-1/2">
+											<div class="mx-3">
+												{{ slotProps.data.valor }}
+											</div>
+											<div class="px-5 text-end">
+												<button @click="setAtributo(slotProps.data)"
+													class="bg-green-500 disabled:bg-gray-800 disabled:text-white hover:bg-green-600 text-white rounded px-2 py-1.5"
+													:disabled="form.atributos.filter(e => e.id === slotProps.data.id).length > 0"><i
+														class="fas fa-plus"></i></button>
+											</div>
+										</div>
+									</template>
+								</Column>
+							</DataTable>
+						</div>
+					</template>
 
-			<div class="card flex justify-content-center">
-				<div class="flex flex-wrap gap-3 w-full" v-for="(atributo, index) in lista_atributos.data">
-					<div class="col-span-6 shadow-default xl:col-span-3">
-						<InputLabel for="rol" :value="atributo.nombre"
-							class="block text-base font-normal leading-6 text-gray-900" />
-						{{ form.atributos }}
-						<Dropdown :options="atributo.valores" @change="setAtributo($event)" :v-model="form.atributos"
-							optionLabel="valor" placeholder="Select a Country" class="w-full md:w-14rem">
-
-							<template #value="slotProps">
-								<div v-if="slotProps.option" class="flex align-items-center">
-
-									<div>{{ slotProps.option.id }}</div>
-								</div>
-								<span v-else>
-									{{ slotProps.placeholder }}
-								</span>
-							</template>
-							<template #option="slotProps">
-								<div class="flex align-items-center">
-									<div>{{ slotProps.option.valor }}</div>
-								</div>
-							</template>
-						</Dropdown>
-					</div>
-				</div>
+				</DataTable>
 			</div>
-
-
-
 		</Dialog>
-
 		<!--Modal Atributo-->
 
 	</AppLayout>
