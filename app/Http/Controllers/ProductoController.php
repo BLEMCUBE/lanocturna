@@ -780,4 +780,13 @@ class ProductoController extends Controller
 
 		return redirect()->route('productos.edit', ['id' => $producto->id]);
 	}
+
+	public function updateStockWeb($sku){
+			$product = Producto::where('origen','=',$sku);
+
+	}
+
+	public function updatePrice(Request $request,$sku){
+
+	}
 }
