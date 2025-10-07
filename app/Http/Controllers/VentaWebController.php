@@ -21,16 +21,12 @@ class VentaWebController extends Controller
 	public function store(Request $request)
 	{
 
-
 		$configuracion = Configuracion::get();
-
 		$venta = $this->ventaService->crearEnvio($request);
-
 		$options = [
 			'cluster' => $this->configuracionService->getOp($configuracion, 'pusher-cluster'),
 			'useTLS' => $this->configuracionService->getOp($configuracion, 'pusher-forcetls'),
 		];
-
 
 		$data = [
 			'id' => $this->configuracionService->getOp($configuracion, 'pusher-id'),
@@ -40,9 +36,7 @@ class VentaWebController extends Controller
 		];
 
 		$pusher = new Pusher(
-
 			$data['key'],
-
 			$data['secret'],
 			$data['id'],
 			$options
