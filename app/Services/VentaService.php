@@ -69,6 +69,9 @@ class VentaService
 					case 'UES Estandar - 24 Horas':
 						$destino = 'CADETERIA';
 						break;
+					case 'Entrega en Pick Up':
+						$destino = 'CADETERIA';
+						break;
 				}
 			} else {
 				//interior
