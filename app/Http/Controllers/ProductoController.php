@@ -25,6 +25,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Exception;
+use App\Models\TipoCambio;
 use Illuminate\Support\Facades\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -822,11 +823,17 @@ class ProductoController extends Controller
 
 	public function updatedPriceMultiple(dRequest $request)
 	{
+		$tipo_cambio = TipoCambio::orderBy('created_at', 'desc')->first();
 		foreach ($request->datos as $dato) {
 			$producto = Producto::where('origen', '=', $dato['sku'])
 				->first();
 			if ($producto) {
-				$precio = $dato['precio'];
+				$moneda = $dato['moneda'];
+				if ($moneda == 'USD') {
+					$precio = $dato['precio'] * doubleval($tipo_cambio->valor);
+				} else {
+					$precio = $dato['precio'];
+				}
 				$producto->update([
 					'precio' => $precio
 				]);
