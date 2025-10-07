@@ -11,6 +11,7 @@ use App\Http\Requests\ProductoUpdateRequest;
 use App\Imports\ProductoMasivoImport;
 use App\Imports\ProductoStockImport;
 use App\Models\Categoria;
+use App\Models\Configuracion;
 use App\Models\CostoReal;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
@@ -27,13 +28,14 @@ use Exception;
 use Illuminate\Support\Facades\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
+use App\Services\ConfiguracionService;
+use Illuminate\Http\Request  as dRequest;
 
 class ProductoController extends Controller
 {
-
 	public function __construct(
 		private AtributoService $AtributoService,
+		private ConfiguracionService $configuracionService
 	) {
 		//protegiendo el controlador segun el rol
 		$this->middleware(['auth', 'permission:menu-productos'])->only('index');
@@ -206,6 +208,8 @@ class ProductoController extends Controller
 		$producto->stock_minimo = $request->input('stock_minimo');
 		$producto->stock_futuro = $producto->en_camino + $request->input('stock');
 		$producto->save();
+		$configuracion = Configuracion::get();
+		$url_tienda = $this->configuracionService->getOp($configuracion, 'url-tienda');
 
 		$costo_real_reg = CostoReal::select('*')
 			->where('producto_id', '=', $request->input('id'))
@@ -264,6 +268,28 @@ class ProductoController extends Controller
 		}
 		// sincroniza con el producto
 		$producto->atributo_valores()->sync($syncIds);
+
+		//actualizar stock web
+		$url = $url_tienda . "/wp-json/wclanocturnauy/v1/actualizar_stock?sku=" . $producto->origen; // URL con parámetros
+		$ch = curl_init();
+		$post_data = array(
+			'stock' => $producto->stock
+		);
+
+		curl_setopt($ch, CURLOPT_URL, $url);
+		// Enable POST method
+		curl_setopt($ch, CURLOPT_POST, true);
+		// Set the POST data. If using an array, http_build_query() is recommended.
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($ch);
+		/*
+				if (curl_errno($ch)) {
+					echo 'Error cURL: ' . curl_error($ch);
+				} else {
+					echo "Respuesta: " . $response;
+				}*/
+		curl_close($ch);
 	}
 
 	public function show($id)
@@ -685,7 +711,6 @@ class ProductoController extends Controller
 
 		$file = $request->file('archivo');
 		$existe = [];
-		$existe_codigo = [];
 		$filas = Excel::toArray([], $file);
 		$filas_a = array_slice($filas[0], 1);
 		$n_fila = 1;
@@ -739,7 +764,6 @@ class ProductoController extends Controller
 
 		// 2. Replicar el producto (clona todos los atributos menos id, created_at, updated_at)
 		$newProduct = $product->replicate();
-
 		// 3. Si quieres, cambia algunos valores (ej. nombre o slug)
 		$newProduct->nombre = $product->nombre . '-' . $code;
 		$newProduct->origen = $product->origen . '-' . $code;
@@ -747,7 +771,6 @@ class ProductoController extends Controller
 
 		// 4. Guardar la copia en la base de datos
 		$newProduct->save();
-
 		// 5. (Opcional) Si el producto tiene relaciones, también se pueden clonar
 
 		$newProduct->categorias()->sync($product->categorias->pluck('id'));
@@ -781,12 +804,19 @@ class ProductoController extends Controller
 		return redirect()->route('productos.edit', ['id' => $producto->id]);
 	}
 
-	public function updateStockWeb($sku){
-			$product = Producto::where('origen','=',$sku);
-
-	}
-
-	public function updatePrice(Request $request,$sku){
-
+	public function updatedPrice(dRequest $request, $sku)
+	{
+		$precio = 0;
+		$producto = Producto::where('origen', '=', $sku)
+			->first();
+		if ($producto) {
+			$precio = $request->precio;
+			$producto->update([
+			'precio'=>$precio
+			]);
+			return $producto;
+		} else {
+			return;
+		}
 	}
 }
