@@ -27,5 +27,6 @@ Route::controller(VentaWebController::class)->prefix('ventasweb')->name('ventasw
 
 //Producto
 Route::controller(ProductoController::class)->prefix('productos')->name('productos.')->middleware('guest')->group(function () {
+	Route::post('/updated-price-multiple', 'updatedPriceMultiple')->name('updated_price_multiple');
 	Route::post('/{sku}/updated-price', 'updatedPrice')->name('updated_price');
 });
