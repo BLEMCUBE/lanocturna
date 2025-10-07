@@ -823,10 +823,10 @@ class ProductoController extends Controller
 	public function updatedPriceMultiple(dRequest $request)
 	{
 		foreach ($request->datos as $dato) {
-			$producto = Producto::where('origen', '=', $dato->sku)
+			$producto = Producto::where('origen', '=', $dato['sku'])
 				->first();
 			if ($producto) {
-				$precio = $dato->precio;
+				$precio = $dato['precio'];
 				$producto->update([
 					'precio' => $precio
 				]);
