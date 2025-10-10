@@ -32,6 +32,7 @@ const form = useForm({
 	nombre: '',
 	aduana: '',
 	codigo_barra: '',
+	observaciones:'',
 	stock: 0,
 	stock_minimo: 0,
 	imagen: '',
@@ -197,6 +198,7 @@ onMounted(() => {
 	form.stock = datos.stock
 	form.stock_minimo = datos.stock_minimo
 	form.stock_futuro = datos.stock_futuro
+	form.observaciones = datos.observaciones
 	previewImage.value = datos.imagen
 	form.imagen = datos.imagen
 	form.categorias = datos.categorias
@@ -371,6 +373,15 @@ const clickDetImportacion = (e) => {
 						</div>
 						<div class="w-full md:w-2/3">
 							<h3 class="font-normal text-gray-800 text-base">{{ (ultimo_yang > 0) ? ultimo_yang : '-' }}
+							</h3>
+						</div>
+					</div>
+					<div class="w-full flex flex-col md:flex-row py-1">
+						<div class="w-full md:w-1/3 xl:w-1/3 mr-2">
+							<h3 class="font-semibold text-gray-800 text-base"> Observaciones:</h3>
+						</div>
+						<div class="w-full md:w-2/3">
+							<h3 class="font-normal text-gray-800 text-base">{{ form.observaciones }}
 							</h3>
 						</div>
 					</div>

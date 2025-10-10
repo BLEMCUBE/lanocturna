@@ -356,7 +356,7 @@ class EnvioController extends Controller
 	{
 		$subtema = Venta::with(['detalles_ventas' => function ($query) {
 			$query->select('venta_detalles.*')->with(['producto' => function ($query) {
-				$query->select('id', 'nombre','imagen', 'codigo_barra', 'origen');
+				$query->select('id', 'nombre','imagen', 'codigo_barra', 'origen','observaciones');
 			}]);
 		}])->select('ventas.*')
 			->with(['vendedor' => function ($query) {
@@ -403,7 +403,7 @@ class EnvioController extends Controller
 	{
 		$venta_query = Venta::with(['detalles_ventas' => function ($query) {
 			$query->select('venta_detalles.*')->with(['producto' => function ($query) {
-				$query->select('id', 'nombre', 'codigo_barra', 'origen');
+				$query->select('id', 'nombre', 'codigo_barra', 'origen','observaciones');
 			}]);
 		}])
 			//->select('ventas.*')

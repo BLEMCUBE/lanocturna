@@ -25,6 +25,7 @@ const form = useForm({
 	precio: 0,
 	stock_minimo: 0,
 	stock_futuro: 0,
+	observaciones: '',
 	imagen: '',
 	photo: '',
 	categorias: [],
@@ -250,6 +251,17 @@ onMounted(() => {
 						<div class="col-span-12 shadow-default xl:col-span-3">
 							<div class="imagePreviewWrapper" :style="{ 'background-image': `url(${previewImage})` }">
 							</div>
+						</div>
+
+						<div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-12">
+							<InputLabel for="observacion" value="Observaciones:"
+								class="text-base font-medium leading-6 text-gray-900" />
+							<Textarea v-model="form.observaciones" :pt="{
+								root: {
+									rows: '2',
+									class: 'w-full'
+								}
+							}" />
 						</div>
 
 						<div class=" col-span-12 w-full flex flex-col md:flex-row pt-2">
