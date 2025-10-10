@@ -26,6 +26,7 @@ class ProductoResource extends JsonResource
             'peso_id' => $this->peso_id,
             'curva_id' => $this->curva_id,
             'longitud_id' => $this->longitud_id,
+            'observaciones' => $this->observaciones,
             'marca_id' => $this->marca_id,
             'diferenciador_id' => $this->diferenciador_id,
             'subproducto_id' => $this->subproducto_id,

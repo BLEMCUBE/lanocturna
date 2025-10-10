@@ -167,6 +167,7 @@ onMounted(() => {
 				cantidad: el.cantidad,
 				producto_id: el.producto_id,
 				origen: el.producto.origen,
+				observaciones: el.producto.observaciones,
 				imagen: el.producto.imagen,
 				nombre: el.producto.nombre,
 				codigo_barra: el.producto.codigo_barra,
@@ -177,7 +178,17 @@ onMounted(() => {
 
 });
 
-
+function toolTipObs(item) {
+	return {
+		value: item.observaciones,
+		showDelay: 200,
+		hideDelay: 150,
+		pt: {
+			arrow: { style: { borderBottomColor: 'bg-primary' } },
+			text: 'bg-primary font-medium p-2 rounded',
+		}
+	}
+}
 </script>
 <template>
 
@@ -287,11 +298,30 @@ onMounted(() => {
 							class="font-sans  text-center font-normal text-gray-800 border border-gray-300">
 							<td class="border border-gray-300 p-2">{{ item.cantidad }}</td>
 							<td class="border border-gray-300 p-2">{{ item.origen }}</td>
-							<td class="flex justify-center items-center pt-1">
-								<img class="rounded  bg-white shadow-2xl border-2 text-center w-10 h-10 object-contain"
-									:src="usePage().props.base_url + item.imagen" alt="image">
+							<td class="border border-gray-300 p-2">
+								<div class="flex justify-center items-center">
+									<img class="rounded  bg-white shadow-2xl border-2 text-center  w-10 h-10 object-contain"
+										:src="usePage().props.base_url + item.imagen" alt="image">
+								</div>
 							</td>
-							<td class="border border-gray-300 p-2">{{ item.nombre }}</td>
+
+							<td class="border border-gray-300 p-2">
+								<div class="flex justify-center items-center">
+									{{ item.nombre }}
+									<Button v-if="item.observaciones !== null" severity="warning"
+									class="ml-5"
+										v-tooltip.bottom="toolTipObs(item)">
+
+										<svg width="20px" height="20px" viewBox="0 0 0.72 0.72" version="1.1"
+											xmlns="http://www.w3.org/2000/svg"
+											xmlns:xlink="http://www.w3.org/1999/xlink">
+											<path fill="#000" d="M0.27 0h0.18v0.18l-0.045 0.315H0.315L0.27 0.18z" />
+											<path fill="#000"
+												d="M0.45 0.63a0.09 0.09 0 1 1 -0.18 0A0.09 0.09 0 0 1 0.45 0.63" />
+										</svg>
+									</Button>
+								</div>
+							</td>
 							<td class="border border-gray-300 p-2">
 								<input type="password"
 									v-if="(form.estado == 'FACTURADO' || form.estado == 'VALIDADO') && !item.producto_validado"

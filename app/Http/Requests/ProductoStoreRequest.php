@@ -21,6 +21,7 @@ class ProductoStoreRequest extends FormRequest
             'codigo_barra' => 'required|unique:productos',
             'imagen' => 'image|max:2048|nullable',
             'stock' => 'required',
+            'observaciones' => 'nullable',
             'stock_minimo' => 'required',
         ];
 

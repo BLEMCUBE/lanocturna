@@ -27,6 +27,7 @@ const form = useForm({
 	stock: 0,
 	precio: 0,
 	stock_minimo: 0,
+	observaciones: '',
 	imagen: '',
 	photo: '',
 	costo_origen: null,
@@ -49,6 +50,7 @@ onMounted(() => {
 	form.stock = datos.stock
 	form.stock_minimo = datos.stock_minimo
 	form.stock_futuro = datos.stock_futuro
+	form.observaciones = datos.observaciones
 	form.costo_real = datos.costos_reales.length > 0 ? datos.costos_reales[0].monto : 0
 	form.costo_origen = datos.costos_reales.length > 0 ? datos.costos_reales[0].origen : null
 	form.costo_id = datos.costos_reales.length > 0 ? datos.costos_reales[0].id : null
@@ -298,6 +300,18 @@ onMounted(() => {
 							<div class="imagePreviewWrapper" :style="{ 'background-image': `url(${previewImage})` }">
 							</div>
 						</div>
+
+						<div class="col-span-12 mx-2 py-0 shadow-default xl:col-span-12">
+							<InputLabel for="observacion" value="Observaciones:"
+								class="text-base font-medium leading-6 text-gray-900" />
+							<Textarea v-model="form.observaciones" :pt="{
+								root: {
+									rows: '2',
+									class: 'w-full'
+								}
+							}" />
+						</div>
+
 						<div class=" col-span-12 w-full flex flex-col md:flex-row pt-2">
 							<div class="bg-gray-200 w-full text-start">
 								<h3 class="font-semibold text-gray-800 text-lg px-5">ATRIBUTOS: </h3>

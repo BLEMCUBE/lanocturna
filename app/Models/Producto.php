@@ -23,6 +23,7 @@ class Producto extends Model
 		'stock_futuro',
 		'en_camino',
 		'arribado',
+		'observaciones',
 		'created_at'
 	];
 

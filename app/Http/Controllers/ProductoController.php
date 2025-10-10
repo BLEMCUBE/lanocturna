@@ -204,6 +204,7 @@ class ProductoController extends Controller
 		$producto->nombre = $request->input('nombre');
 		$producto->precio = $request->input('precio');
 		$producto->aduana = $request->input('aduana');
+		$producto->observaciones = $request->input('observaciones');
 		$producto->codigo_barra     = $request->input('codigo_barra');
 		$producto->stock = $request->input('stock');
 		$producto->stock_minimo = $request->input('stock_minimo');
