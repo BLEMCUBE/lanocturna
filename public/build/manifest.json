@@ -2567,7 +2567,7 @@
     ]
   },
   "resources/js/Pages/Envio/Show.vue": {
-    "file": "assets/Show-DnFLx6jN.js",
+    "file": "assets/Show-CdR2v8hZ.js",
     "name": "Show",
     "src": "resources/js/Pages/Envio/Show.vue",
     "isDynamicEntry": true,
@@ -2610,7 +2610,7 @@
     ]
   },
   "resources/js/Pages/Envio/ShowRetiro.vue": {
-    "file": "assets/ShowRetiro-DAPCUjlp.js",
+    "file": "assets/ShowRetiro-C3rmPVKK.js",
     "name": "ShowRetiro",
     "src": "resources/js/Pages/Envio/ShowRetiro.vue",
     "isDynamicEntry": true,
@@ -2694,7 +2694,7 @@
     ]
   },
   "resources/js/Pages/Expedicion/Show.vue": {
-    "file": "assets/Show-B9VK8mdL.js",
+    "file": "assets/Show-CntU43sz.js",
     "name": "Show",
     "src": "resources/js/Pages/Expedicion/Show.vue",
     "isDynamicEntry": true,
@@ -2706,6 +2706,7 @@
       "_primevue-DAb-R_om.js",
       "_sweetalert2-5zhdP7Ax.js",
       "_InputLabel-CkCrW4zf.js",
+      "_@fortawesome-DkONYewM.js",
       "_pusher-js-Ck_2Ecjm.js",
       "_logo-C8Jea0Rc.js",
       "_pinia-IH2nVPr3.js",
@@ -3588,7 +3589,7 @@
     ]
   },
   "resources/js/Pages/Producto/Create.vue": {
-    "file": "assets/Create-BQZuQUbc.js",
+    "file": "assets/Create-65vOeuYR.js",
     "name": "Create",
     "src": "resources/js/Pages/Producto/Create.vue",
     "isDynamicEntry": true,
@@ -3632,11 +3633,11 @@
       "_lodash.isequal-BY8B19Vp.js"
     ],
     "css": [
-      "assets/Create-CfeTBSg_.css"
+      "assets/Create-CenSHoBI.css"
     ]
   },
   "resources/js/Pages/Producto/Edit.vue": {
-    "file": "assets/Edit-DhhR1tdN.js",
+    "file": "assets/Edit-DNCkNwlq.js",
     "name": "Edit",
     "src": "resources/js/Pages/Producto/Edit.vue",
     "isDynamicEntry": true,
@@ -3680,7 +3681,7 @@
       "_lodash.isequal-BY8B19Vp.js"
     ],
     "css": [
-      "assets/Edit-BwygXSLi.css"
+      "assets/Edit-BPCY1-eD.css"
     ]
   },
   "resources/js/Pages/Producto/Importar.vue": {
@@ -3777,7 +3778,7 @@
     ]
   },
   "resources/js/Pages/Producto/Show.vue": {
-    "file": "assets/Show-qBYoB4eQ.js",
+    "file": "assets/Show-Ca9UIzgD.js",
     "name": "Show",
     "src": "resources/js/Pages/Producto/Show.vue",
     "isDynamicEntry": true,
@@ -5545,7 +5546,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-2zKiyIbG.js",
+    "file": "assets/app-DYr29dKB.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
