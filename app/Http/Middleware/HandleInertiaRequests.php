@@ -10,6 +10,7 @@ use Tightenco\Ziggy\Ziggy;
 use App\Http\Resources\VentaCollection;
 use App\Models\Compra;
 use App\Models\Configuracion;
+use App\Models\MercadoLibrePregunta;
 use App\Models\Venta;
 
 class HandleInertiaRequests extends Middleware
@@ -37,15 +38,12 @@ class HandleInertiaRequests extends Middleware
 	public function share(Request $request): array
 	{
 		$ultimo_tipo_cambio = TipoCambio::all()->last();
-
 		$hoy_tipo_cambio = false;
-
 		$actual = Carbon::now()->format('Y-m-d');
 		if (!empty($ultimo_tipo_cambio)) {
 			$fecha = Carbon::create($ultimo_tipo_cambio->created_at->format('Y-m-d'));
 			if ($fecha->eq($actual)) {
 				$hoy_tipo_cambio = true;
-				//$tipo_cambio = $ultimo_tipo_cambio;
 			} else {
 				$hoy_tipo_cambio = false;
 			}
@@ -94,6 +92,9 @@ class HandleInertiaRequests extends Middleware
 			->select('id', 'destino', 'created_at')
 			->orderBy('created_at', 'DESC')->get();
 
+		$cant_preguntas = MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->with('from_user')->with('item')->whereHas('item', function ($query) {
+			$query->where('status', 'active');
+		})->count();
 		$total_ues = 0;
 		$total_flex = 0;
 		$total_dac = 0;
@@ -133,7 +134,6 @@ class HandleInertiaRequests extends Middleware
 			}
 		}
 
-
 		$dato = [
 			...parent::share($request),
 			'auth' => [
@@ -150,10 +150,8 @@ class HandleInertiaRequests extends Middleware
 				'total_expedicion' => $total_expedicion,
 				'pagos_compras' => $pagos_compra,
 				'total_retiro' => $total_retiro,
-				'configuracion' =>
-				//'nombre'=>$configuracion->nombre_app,
-				$configuracion,
-				//'notificaciones' => !empty(auth()->user()->unreadNotifications) ?auth()->user()->unreadNotifications: [],
+				'configuracion' => $configuracion,
+				'cant_preguntas' => $cant_preguntas,
 			],
 			//'csrf_token' => csrf_token(),
 			'ziggy' => function () use ($request) {
@@ -166,9 +164,7 @@ class HandleInertiaRequests extends Middleware
 				'error' => session('error'),
 				'success' => session('success')
 			],
-
 			'base_url' => url('/')
-			//]);
 		];
 		return $dato;
 	}

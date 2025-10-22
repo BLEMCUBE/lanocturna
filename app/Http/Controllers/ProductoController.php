@@ -335,8 +335,6 @@ class ProductoController extends Controller
 			->where('sku', '=', $sku->origen)
 			->orderBy('importacion_id', 'DESC')->get();
 
-
-
 		$productoEnCamino = DB::table('importaciones as imp')
 			->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
 			->join('productos as prod', 'prod.origen', '=', 'det.sku')
@@ -419,7 +417,7 @@ class ProductoController extends Controller
 			'productoventa' => $productoventa,
 			'cantidad_importacion' => $cantidad_importacion,
 		];
-		//dd($datos);
+
 		return Inertia::render('Producto/Show', $datos);
 	}
 

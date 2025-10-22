@@ -40,11 +40,11 @@ class ConfiguracionController extends Controller
     public function webDatos()
     {
         $configuraciones=Configuracion::
-        select('id','slug','key','value')
+        select('id','slug','key','value','type','options')
         ->whereNot('id',1)
         ->orderBy('slug')
-        ->get()
-        ;
+        ->get();
+
         return Inertia::render('Configuracion/Index', [
             'lista_configuracion' =>
                 $configuraciones

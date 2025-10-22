@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Resources;
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ClienteCollection extends ResourceCollection
@@ -26,7 +25,6 @@ class ClienteCollection extends ResourceCollection
                     'direccion' => $row->direccion??'',
                     'empresa' => $row->empresa??'',
                     'rut' => $row->rut??'',
-                    //'fecha_nacimiento'=>Carbon::parse($row->fecha_nacimiento)->format('d/m/Y'),
                     'created_at'=>$row->created_at->format('d/m/Y H:i:s'),
                 ];
             }),

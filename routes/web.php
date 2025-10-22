@@ -15,6 +15,8 @@ use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
+use App\Http\Controllers\MercadoLibre\NotificacionController;
+use App\Http\Controllers\MercadoLibre\PreguntasController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\PagoCompraController;
@@ -98,26 +100,26 @@ Route::controller(ClienteController::class)->group(function () {
 //Producto
 Route::controller(ProductoController::class)->prefix('productos')->name('productos.')
 	->middleware('auth')->group(function () {
-	Route::get('/export', 'exportExcel')->name('exportar');
-	Route::post('/storemasivo', 'storeMasivo')->name('storemasivo');
-	Route::get('/{id}/exportproductoventas', 'exportProductoVentas')->name('exportproductoventas');
-	Route::get('/actualizarfuturo', 'actualizarFuturo')->name('actualizarfuturo');
-	Route::get('/actualizarYuanes', 'actualizarYuanes')->name('actualizarYuanes');
-	Route::get('/ajuste-stock', 'ajusteStock')->name('ajuste-stock');
-	Route::post('/importarstock', 'importarStock')->name('importarstock');
-	Route::get('/vistaimportar', 'vistaImportar')->name('vistaimportar');
-	Route::get('/create', 'create')->name('create');
-	Route::get('/{id}', 'edit')->name('edit');
-	Route::post('/{id}/duplicar', 'duplicar')->name('duplicar');
-	Route::get('/{id}/show', 'show')->name('show');
-	Route::post('/update/{id}', 'update')->name('update');
-	Route::get('/', 'index')->name('index');
-	Route::post('/store', 'store')->name('store');
-	Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productoventa');
-	Route::get('/productoimportacion/{id}/{inicio}/{fin}', 'productoImportacion')->name('productoimportacion');
-	Route::post('/updateprice/{sku}', 'updatePrice')->name('updatePrice');
-	Route::delete('/{id}', 'destroy')->name('destroy');
-});
+		Route::get('/export', 'exportExcel')->name('exportar');
+		Route::post('/storemasivo', 'storeMasivo')->name('storemasivo');
+		Route::get('/{id}/exportproductoventas', 'exportProductoVentas')->name('exportproductoventas');
+		Route::get('/actualizarfuturo', 'actualizarFuturo')->name('actualizarfuturo');
+		Route::get('/actualizarYuanes', 'actualizarYuanes')->name('actualizarYuanes');
+		Route::get('/ajuste-stock', 'ajusteStock')->name('ajuste-stock');
+		Route::post('/importarstock', 'importarStock')->name('importarstock');
+		Route::get('/vistaimportar', 'vistaImportar')->name('vistaimportar');
+		Route::get('/create', 'create')->name('create');
+		Route::get('/{id}', 'edit')->name('edit');
+		Route::post('/{id}/duplicar', 'duplicar')->name('duplicar');
+		Route::get('/{id}/show', 'show')->name('show');
+		Route::post('/update/{id}', 'update')->name('update');
+		Route::get('/', 'index')->name('index');
+		Route::post('/store', 'store')->name('store');
+		Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productoventa');
+		Route::get('/productoimportacion/{id}/{inicio}/{fin}', 'productoImportacion')->name('productoimportacion');
+		Route::post('/updateprice/{sku}', 'updatePrice')->name('updatePrice');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
 
 //Importacion
 Route::controller(ImportacionController::class)->group(function () {
@@ -392,4 +394,22 @@ Route::controller(AtributoValorController::class)->prefix('atributos-valores')->
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 
+//mercado libre
+Route::controller(NotificacionController::class)->prefix('mercadolibre')->name('mercadolibre.')
+	->middleware('auth')->group(function () {
+		Route::get('/conectar/{id}', 'conectar')->name('conectar');
+		Route::get('/clientes', 'indexClientes')->name('index-clientes');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+		Route::get('/preguntas', [PreguntasController::class, 'index'])->name('preguntas');
+		Route::get('/preguntas/{id}', [PreguntasController::class, 'obtenerPreguntasYProductos'])->name('preguntas-items');
+		Route::get('/{cliente}/desconectar', 'desconectar')->name('desconectar');
+		Route::delete('/preguntas/{id}', [PreguntasController::class, 'destroy'])->name('preguntas-destroy');
+	});
+
+//mecado libre sin auth
+Route::controller(NotificacionController::class)->prefix('mercadolibre')->name('mercadolibre.')
+	->group(function () {
+		Route::get('/callback', 'callback')->name('callback');
+		Route::post('/notifications', 'notifications')->name('notifications');
+	});
 require __DIR__ . '/auth.php';

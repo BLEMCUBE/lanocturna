@@ -1,4 +1,3 @@
-import './bootstrap';
 import '../css/app.css';
 import '../css/vue-multiselect.css';
 import '../css/custom.css';
@@ -7,10 +6,8 @@ import '../css/menu.css';
 import '../css/content.css';
 import '../css/topbar.css';
 import '../css/responsive.css';
-//import "primeflex/primeflex.css";
 import 'primeicons/primeicons.css';
 import { createApp, h } from 'vue';
-
 import { createInertiaApp } from '@inertiajs/vue3';
 import PrimeVue from 'primevue/config';
 import Tailwind_PT from "@/passthrough/tailwind";
@@ -28,12 +25,6 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 library.add(far);
 import { dom } from "@fortawesome/fontawesome-svg-core";
 dom.watch();
-
-
-
-
-
-
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
@@ -43,7 +34,6 @@ import Badge from 'primevue/badge';
 import BadgeDirective from "primevue/badgedirective";
 import BlockUI from 'primevue/blockui';
 import Button from 'primevue/button';
-//import Breadcrumb from 'primevue/breadcrumb';
 import Calendar from 'primevue/calendar';
 import Card from 'primevue/card';
 import CascadeSelect from 'primevue/cascadeselect';
@@ -142,7 +132,7 @@ createInertiaApp({
 	setup({ el, App, props, plugin }) {
 		return createApp({ render: () => h(App, props) })
 			.use(plugin)
-			.use(ZiggyVue, Ziggy)
+			.use(ZiggyVue)
 			.use(pinia)
 			.use(VueApexCharts)
 			.use(PrimeVue, {
