@@ -7,7 +7,6 @@ import axios from 'axios';
 import { useToast } from "primevue/usetoast";
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 
@@ -116,7 +115,6 @@ const show = (tipo, titulo, mensaje) => {
 <template>
     <section>
         <button type="button" @click="addCliente"><i class="fas fa-edit"></i></button>
-        <Toast />
         <Dialog v-model:visible="isShowModal" modal :header="'Editar ' + titulo" :style="{ width: '30vw' }" position="top"
             :pt="{
                 header: {

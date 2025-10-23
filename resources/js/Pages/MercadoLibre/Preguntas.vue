@@ -3,18 +3,24 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, Link, useForm, router } from '@inertiajs/vue3';
 import { useToast } from "primevue/usetoast";
+import CheckboxName from '@/Components/CheckboxName.vue';
+import ModalRepuestaRapidas from '@/Pages/MercadoLibre/Partials/ModalRepuestaRapidas.vue';
 import Swal from 'sweetalert2';
+
 const { items } = usePage().props
 const { saludo } = usePage().props
 const { firma } = usePage().props
+const { repuesta_rapidas } = usePage().props
 const toast = useToast();
 const titulo = "Preguntas"
 const ruta = 'mercadolibre'
+const respuestasrapidas = 'respuestasrapidas'
 const formDelete = useForm({
 	id: '',
 });
-import CheckboxName from '@/Components/CheckboxName.vue';
+
 onMounted(() => {
+
 
 });
 //modal eliminar
@@ -58,7 +64,6 @@ const show = (tipo, titulo, mensaje) => {
 	<AppLayout :pagina="[{ 'label': titulo, link: false }]">
 
 		<div class="mb-4 e col-span-12   dark:border-gray-700  dark:bg-gray-800">
-			<Toast />
 			<div class=" px-5 pb-2 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 			</div>
@@ -68,14 +73,12 @@ const show = (tipo, titulo, mensaje) => {
 					<div class="bg-white rounded-xl shadow p-6 my-5" v-for="item, index in items.data">
 						<!-- Header producto -->
 						<div
-							class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-4">
-							<div class="flex items-start gap-4 w-full">
+							class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b pb-4">
+							<div class="flex items-start gap-2 w-full">
 								<img :src="item.product.thumbnail" alt="Producto"
 									class="w-16 h-16 rounded object-cover">
-
 								<div class="w-full">
 									<span>
-
 										<a :href="item.product.permalink"
 											class="text-gray-800 font-medium text-sm hover:text-blue-600"
 											target="_blank">
@@ -131,7 +134,7 @@ const show = (tipo, titulo, mensaje) => {
 							<span class="font-medium text-gray-800 mb-1">
 								{{ item.pregunta }}
 							</span>
-							<span class="ml-5 text-gray-500 text-xs flex items-center gap-1">
+							<span class="ml-3 text-gray-500 text-xs flex items-center gap-1">
 								<i class="far fa-clock"></i> {{ item.publicado }}
 							</span>
 						</div>
@@ -161,37 +164,24 @@ const show = (tipo, titulo, mensaje) => {
 					</div>
 				</div>
 
-				<!-- Columna derecha -->
-				<div class="md:col-span-4 xl:col-span-3">
-					<div class="bg-white rounded-xl shadow p-5 sticky top-4">
+				<!-- Columna derecha-->
+				<div class="md:col-span-4 xl:col-span-3 relative">
+					<div class="bg-white rounded-xl shadow p-5 top-5 fixed ">
 						<h5 class="text-lg font-semibold mb-4">Respuestas rápidas</h5>
-
 						<div class="hidden sm:block flex flex-wrap gap-2 mb-4">
-							<button
-								class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200">ANTENAS
-								TV</button>
-							<button
-								class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200">E-SHOP</button>
-							<button
-								class="px-3 py-1 text-sm bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200">ENVIOS</button>
-							<button
-								class="px-3 py-1 text-sm bg-pink-100 text-pink-700 rounded hover:bg-pink-200">FLEX</button>
-							<button
-								class="px-3 py-1 text-sm bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200">HAY
-								STOCK</button>
-							<!-- ...agregá los demás botones según necesites -->
+							<button v-for="item in repuesta_rapidas"
+								class="px-3 py-1 m-1 text-sm  text-white rounded  text-medium"
+								:style="{ backgroundColor: item.color }">
+								{{ item.titulo }}</button>
 						</div>
-
-						<button
-							class="w-full bg-gray-200 hover:bg-gray-300 text-sm py-2 rounded mt-3 flex items-center justify-center gap-2">
-							<i class="fas fa-pen"></i> Modificar respuestas rápidas
-						</button>
-
-						<p class="text-xs text-gray-500 mt-4">
-							Tipeá <span class="text-blue-600">@</span> para respuestas rápidas o
-							<span class="text-blue-600">#</span> para insertar un link.
-							Usá <span class="text-blue-600 font-semibold">Ctrl + Enter</span> para enviar la respuesta.
-						</p>
+						<ModalRepuestaRapidas></ModalRepuestaRapidas>
+						<!--
+	<p class="text-xs text-gray-500 mt-4">
+		Tipeá <span class="text-blue-600">@</span> para respuestas rápidas o
+		<span class="text-blue-600">#</span> para insertar un link.
+		Usá <span class="text-blue-600 font-semibold">Ctrl + Enter</span> para enviar la respuesta.
+	</p>
+	-->
 					</div>
 				</div>
 			</div>

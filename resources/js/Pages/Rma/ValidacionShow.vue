@@ -6,7 +6,6 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { useToast } from "primevue/usetoast";
 import moment from 'moment';
-import Swal from 'sweetalert2';
 
 const isShowModal = ref(false);
 const toast = useToast();
@@ -54,32 +53,7 @@ const validarCodigoMaestro = () => {
 
 };
 
-const ok = (icono, mensaje) => {
 
-    Swal.fire({
-        width: 350,
-        title: mensaje,
-        icon: icono
-    })
-}
-
-
-const BotonConfirmar = () => {
-    /*
-    var total = form.productos.length;
-    var total_valido = 0;
-    form.productos.forEach(el => {
-        if (el.producto_validado) {
-            total_valido += 1
-        }
-    })
-    if (total == total_valido) {
-        isConfirm.value = true;
-    } else {
-        isConfirm.value = false;
-
-    }*/
-}
 const form = useForm({
     id: '',
     vendedor: '',
@@ -107,26 +81,7 @@ const btnEditar = (id) => {
     router.get(route(ruta + '.edit', id));
 
 };
-const btnFacturar = (id) => {
-    //router.get(route(ruta + '.facturar', id));
-    form.get(route(ruta + '.facturar', id), {
-        preserveScroll: true,
-        forceFormData: true,
-        onSuccess: () => {
-            show('success', 'Mensaje', 'Se ha Validado')
-            setTimeout(() => {
-                router.get(route(ruta + '.index'));
-            }, 1000);
-        },
-        onFinish: () => {
 
-        },
-        onError: () => {
-
-        }
-    });
-
-};
 const formatDate = (dat) => {
     return moment(dat).format("DD/MM/YYYY");
 }
@@ -171,19 +126,11 @@ onMounted(() => {
         <div
             class="card px-4 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
-            <Toast />
-            <div class="px-0 py-1 m-2 mt-0 col-span-full  flex justify-start items-center">
-                <!--
 
-                    <Button @click="btnEditar(form.id)" v-if="form.estado!='FACTURADO'"
-                    class="rounded border-0 bg-yellow-500 px-2 py-0.5 text-base font-normal  m-2 hover:bg-yellow-600">
-                    <span class="text-black font-semibold">Editar</span>
-                </Button>
-            -->
+            <div class="px-0 py-1 m-2 mt-0 col-span-full  flex justify-start items-center">
                 <Button v-if="form.facturado == '0'"
                     class="rounded border-0 bg-green-700 px-2 py-0.5 text-base font-normal  m-2 hover:bg-green-600"
                     @click.prevent="openModal(form.id)"> <span class="text-white font-semibold">Validar</span></Button>
-
 
             </div>
 

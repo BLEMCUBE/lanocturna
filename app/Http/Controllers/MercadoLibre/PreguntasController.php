@@ -9,6 +9,7 @@ use App\Models\MercadoLibreCliente;
 use App\Models\MercadoLibreItem;
 use App\Models\MercadoLibreListaUsuario;
 use App\Models\MercadoLibrePregunta;
+use App\Models\RespuestaRapida;
 use App\Services\ItemService;
 use App\Services\ListaUsuarioService;
 use App\Services\MercadoLibreService;
@@ -73,7 +74,7 @@ class PreguntasController extends Controller
 				}
 			}
 		}
-
+$repuesta_rapidas=RespuestaRapida::select('id', 'titulo', 'descripcion', 'color')->orderBy('titulo', 'ASC')->get();
 		$datos = new PreguntaCollection(
 			MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->with('from_user')->with('item')->whereHas('item', function ($query) {
 				$query->where('status', 'active');
@@ -85,6 +86,7 @@ class PreguntasController extends Controller
 			'items' => $datos,
 			'saludo' => $saludo,
 			'firma' => $firma,
+			'repuesta_rapidas'=>$repuesta_rapidas
 		]);
 	}
 

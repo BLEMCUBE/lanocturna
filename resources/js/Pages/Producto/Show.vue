@@ -233,7 +233,6 @@ const clickDetImportacion = (e) => {
 		<div
 			class="card px-3 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-3 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
 			<!--Contenido-->
-			<Toast />
 			<div class="grid grid-cols-12 justify-center">
 				<div class="px-3 col-span-10 flex justify-between items-center">
 					<h5 class="text-xl font-medium">{{ titulo }}</h5>

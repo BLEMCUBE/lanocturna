@@ -4,7 +4,6 @@ import { ref, onMounted } from 'vue'
 import { Head, usePage, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
 import Column from 'primevue/column';
-import { useToast } from "primevue/usetoast";
 
 const tabla_ventas = ref()
 const titulo = "Envios Flex"
@@ -58,7 +57,6 @@ const filters = ref({
             class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
-            <Toast />
             <div class="p-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>

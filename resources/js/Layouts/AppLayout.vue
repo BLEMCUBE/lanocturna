@@ -131,6 +131,7 @@ const getConfig = (dato) => {
 </script>
 
 <template>
+	  <Toast />
 	<div class="layout-wrapper layout-static" :class="containerClass">
 		<!--Top-->
 		 <Loader />

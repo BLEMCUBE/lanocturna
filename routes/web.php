@@ -29,6 +29,7 @@ use App\Http\Controllers\ReporteProductoVendidoController;
 use App\Http\Controllers\ReporteStockProductosController;
 use App\Http\Controllers\ReporteVendedoresPedidosController;
 use App\Http\Controllers\ReporteVentaController;
+use App\Http\Controllers\RespuestaRapidaController;
 use App\Http\Controllers\RmaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RotacionStockController;
@@ -404,6 +405,12 @@ Route::controller(NotificacionController::class)->prefix('mercadolibre')->name('
 		Route::get('/preguntas/{id}', [PreguntasController::class, 'obtenerPreguntasYProductos'])->name('preguntas-items');
 		Route::get('/{cliente}/desconectar', 'desconectar')->name('desconectar');
 		Route::delete('/preguntas/{id}', [PreguntasController::class, 'destroy'])->name('preguntas-destroy');
+	});
+
+//respuestas rapidas
+Route::controller(RespuestaRapidaController::class)->prefix('respuestasrapidas')->name('respuestasrapidas.')
+	->middleware('auth')->group(function () {
+		Route::get('/', 'index')->name('index');
 	});
 
 //mecado libre sin auth

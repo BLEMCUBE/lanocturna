@@ -98,7 +98,6 @@ onMounted(() => {
 		<div
 			class="card px-4 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
 			<!--Contenido-->
-			<Toast />
 			<div class="px-0 py-1 m-2 mt-0 col-span-full  flex justify-start items-center">
 				<Button @click="btnEditar(form.id)" v-if="form.estado != 'FACTURADO'"
 					class="rounded border-0 bg-yellow-500 px-2 py-0.5 text-base font-normal  m-2 hover:bg-yellow-600">

@@ -22,10 +22,7 @@ const btnVer = (id) => {
     router.get(route(ruta + '.show', id));
 
 };
-const btnDescargar = (id) => {
-    router.get(route(ruta + '.exportar', id));
 
-};
 
 const btnEliminar = (id) => {
 
@@ -64,7 +61,6 @@ const clickDetalle = (e) => {
 }
 
 onMounted(() => {
-
     tabla_productos.value = usePage().props.productos.data;
 
 });
@@ -78,7 +74,6 @@ const BtnCrear = () => {
 }
 
 
-
 const filters = ref({
     'global': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 });
@@ -90,7 +85,6 @@ const filters = ref({
             class="card px-4 mb-4 bg-white col-span-12 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
-            <Toast />
             <div class="p-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
 

@@ -2,7 +2,7 @@
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted, reactive, computed, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Head, usePage,useForm,router } from '@inertiajs/vue3';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
@@ -66,7 +66,6 @@ onMounted(() => {
             class="card p-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg lg:col-span-6 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
-            <Toast />
             <div class=" px-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>
