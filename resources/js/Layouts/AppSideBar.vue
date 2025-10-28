@@ -839,7 +839,7 @@ const ok = (icono, mensaje) => {
 			<li @click="setMenu('mercadolibre')" v-show="permissions.includes('mercadolibre-clientes')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.index-clientes')" :active="route().current('mercadolibre.index-clientes')">
+					:href="route('mercadolibre.clientes.index')" :active="route().current('mercadolibre.clientes.index')">
 					<span class="ml-2 uppercase">Clientes</span>
 				</NavLinkSideBar>
 			</li>

@@ -23,9 +23,7 @@ class MercadoLibreCollection extends ResourceCollection
 					'client_id' => $row->client_id,
 					'client_secret' => $row->client_secret,
 					'redirect_uri' => $row->redirect_uri,
-					'access_token' => $row->access_token,
-					'refresh_token' => $row->refresh_token,
-					'expires_at' =>$row->usuario?Carbon::parse($row->usuario->expires_at)->format('d/m/Y H:i:s') :'',
+					'is_default' => $row->is_default,
 					'usuario' => $row->usuario?1:0
 
 				];

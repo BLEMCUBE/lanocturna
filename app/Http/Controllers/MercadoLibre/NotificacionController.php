@@ -5,52 +5,19 @@ namespace App\Http\Controllers\MercadoLibre;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Http\Resources\MercadoLibreCollection;
 use App\Jobs\ProcessMercadoLibreNotification;
 use App\Models\MercadoLibreCliente;
 use App\Models\MercadoLibreUsuario;
 use App\Models\MercadoLibreNotificacion;
 use Illuminate\Support\Facades\Http;
-use Inertia\Inertia;
 
 class NotificacionController extends Controller
 {
-	public function indexClientes()
-	{
-
-		$items = new MercadoLibreCollection(
-			MercadoLibreCliente::with('usuario')->orderBy('nombre', 'ASC')
-				->get()
-		);
-
-		return Inertia::render('MercadoLibre/IndexClientes', [
-			'items' => $items
-		]);
-	}
-
-
-	public function conectar($id)
-	{
-		$client = MercadoLibreCliente::findOrFail($id);
-
-		$query = http_build_query([
-			'response_type' => 'code',
-			'client_id' => $client->client_id,
-			'redirect_uri' => route('mercadolibre.callback'),
-			'state' => $client->id, // pasamos el ID del cliente
-		]);
-
-		return redirect("https://auth.mercadolibre.com.uy/authorization?$query");
-	}
-
-
 	public function callback(Request $request)
 	{
 		$code = $request->get('code');
 		$cliente_id = $request->get('state');
-
 		$client = MercadoLibreCliente::findOrFail($cliente_id);
-
 		// Intercambiar code por access_token
 		$tokenResponse = Http::asForm()->post('https://api.mercadolibre.com/oauth/token', [
 			'grant_type' => 'authorization_code',
@@ -63,11 +30,10 @@ class NotificacionController extends Controller
 		$tokenData = $tokenResponse->json();
 
 		if (isset($tokenData['error'])) {
-			return redirect()->route('mercadolibre.index-clientes')->with('error', 'Error al obtener el token');
+			return redirect()->route('mercadolibre.clientes.index')->with('error', 'Error al obtener el token');
 		}
 
 		$accessToken = $tokenData['access_token'];
-
 		// Obtener datos del usuario de Mercado Libre
 		$userResponse = Http::withToken($accessToken)->get('https://api.mercadolibre.com/users/me');
 		$meliUser = $userResponse->json();
@@ -80,24 +46,13 @@ class NotificacionController extends Controller
 				'email' => $meliUser['email'] ?? null,
 			]
 		);
-
 		// Actualizar tokens del usuario
 		$usuario->update([
 			'access_token' => $accessToken,
 			'refresh_token' => $tokenData['refresh_token'] ?? null,
 			'expires_at' => now()->addSeconds($tokenData['expires_in'] ?? 21600),
 		]);
-
-		return redirect()->route('mercadolibre.index-clientes')->with('success', 'Cuenta de Mercado Libre vinculada correctamente');
-	}
-
-	public function desconectar(MercadoLibreCliente $cliente)
-	{
-		// Eliminar usuario asociado 1 a 1
-		if ($cliente->usuario) {
-			$cliente->usuario->delete();
-		}
-		return redirect()->back()->with('success', 'Cuenta de Mercado Libre desconectada correctamente.');
+		return redirect()->route('mercadolibre.clientes.index')->with('success', 'Cuenta de Mercado Libre vinculada correctamente');
 	}
 
 	public function notifications(Request $request)
@@ -105,7 +60,6 @@ class NotificacionController extends Controller
 		http_response_code(200);
 		flush();
 		$payload = $request->all();
-
 		// Validar datos mínimos
 		if (empty($payload['resource']) || empty($payload['topic'])) {
 			Log::warning('⚠️ Notificación incompleta recibida', ['payload' => $payload]);

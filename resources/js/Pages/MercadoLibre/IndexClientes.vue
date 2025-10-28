@@ -3,15 +3,16 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, Link, useForm, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
-import CrearModal from '@/Pages/Role/Partials/CrearModal.vue';
-import EditarModal from '@/Pages/Role/Partials/EditarModal.vue';
+import CrearModal from '@/Pages/MercadoLibre/Partials/CrearModal.vue';
+import EditarModal from '@/Pages/MercadoLibre/Partials/EditarModal.vue';
 import { useToast } from "primevue/usetoast";
 import Swal from 'sweetalert2';
 
 const toast = useToast();
 const tabla_datos = ref()
 const titulo = "Clientes"
-const ruta = 'mercadolibre'
+const ruta = 'mercadolibre.clientes'
+
 const formDelete = useForm({
 	id: '',
 });
@@ -26,6 +27,7 @@ const show = (tipo, titulo, mensaje) => {
 const filters = ref({
 	global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
+
 
 //modal eliminar
 const eliminar = (id, name) => {
@@ -50,8 +52,8 @@ const eliminar = (id, name) => {
 					onSuccess: () => {
 						show('success', 'Eliminado', 'Se ha eliminado')
 						setTimeout(() => {
-							router.get(route(ruta + '.index-clientes'));
-						}, 1000);
+							router.get(route(ruta + '.index'));
+						}, 500);
 
 					}
 				});
@@ -60,7 +62,6 @@ const eliminar = (id, name) => {
 }
 
 const desconectar = (id, name) => {
-
 	const alerta = Swal.mixin({ buttonsStyling: true });
 	alerta.fire({
 		width: 350,
@@ -80,8 +81,8 @@ const desconectar = (id, name) => {
 					onSuccess: () => {
 						show('success', 'Desconectado', 'Se ha desconectado')
 						setTimeout(() => {
-							router.get(route(ruta + '.index-clientes'));
-						}, 1000);
+							router.get(route(ruta + '.index'));
+						}, 500);
 
 					}
 				});
@@ -149,8 +150,7 @@ const estado = (access_token) => {
 										<EditarModal :cliente-id="slotProps.data.id"></EditarModal>
 									</span>
 								</div>
-
-								<span
+								<span v-if="slotProps.data.is_default==0"
 									class="mx-2 inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mb-0 hover:bg-red-600">
 									<button @click.prevent="eliminar(slotProps.data.id, slotProps.data.nombre)"><i
 											class="fas fa-trash-alt"></i></button>

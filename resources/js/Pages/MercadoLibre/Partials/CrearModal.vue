@@ -2,21 +2,16 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { useForm, router } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useToast } from "primevue/usetoast";
 import Button from 'primevue/button'
 const toast = useToast();
 const isShowModal = ref(false);
 const titulo = "Cliente"
-const ruta = "mercadolibre"
-
-onMounted(() => {
-
-})
+const ruta = "mercadolibre.clientes"
 
 const addCliente = () => {
 	isShowModal.value = true;
-
 };
 
 const closeModal = () => {
@@ -26,15 +21,13 @@ const closeModal = () => {
 };
 
 const form = useForm({
-	name: '',
-
+	nombre: '',
+	client_id: '',
+	client_secret: '',
 })
-
-
 
 //envio de formulario
 const submit = () => {
-
 	form.clearErrors()
 	form.post(route(ruta + '.store'), {
 		preserveScroll: true,
@@ -48,14 +41,11 @@ const submit = () => {
 		},
 		onFinish: () => {
 
-			//form.reset()
 		},
 		onError: () => {
 
 		}
 	});
-
-
 
 };
 
@@ -70,7 +60,7 @@ const show = (tipo, titulo, mensaje) => {
 
 		<Button size="small" @click="addCliente" type="button" :label="'Agregar'" severity="success"></Button>
 
-		<Dialog v-model:visible="isShowModal" modal :header="'Crear ' + titulo" :style="{ width: '30vw' }"
+		<Dialog v-model:visible="isShowModal" modal :header="'Crear ' + titulo" :style="{ width: '50vw' }"
 			position="top" :pt="{
 				header: {
 					class: 'mt-2 p-2 lg:p-4 '
@@ -80,15 +70,31 @@ const show = (tipo, titulo, mensaje) => {
 				},
 			}">
 			<form @submit.prevent="submit">
-				<div class="px-2 grid grid-cols-6 gap-4 md:gap-3 2xl:gap-6 mb-2">
+				<div class="px-2 grid grid-cols-6 gap-2 md:gap-2 2xl:gap-6 mb-2">
 
 					<div class="col-span-6 shadow-default xl:col-span-6">
 						<InputLabel for="nombre" value="Nombre"
 							class="block text-base font-medium leading-6 text-gray-900" />
-						<input type="text" v-model="form.name"
+						<input type="text" v-model="form.nombre"
 							class="p-inputtext p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1">
 
-						<InputError class="mt-1 text-xs" :message="form.errors.name" />
+						<InputError class="mt-1 text-xs" :message="form.errors.nombre" />
+					</div>
+					<div class="col-span-6 shadow-default xl:col-span-6">
+						<InputLabel for="client_id" value="Cliente ID"
+							class="block text-base font-medium leading-6 text-gray-900" />
+						<input type="text" v-model="form.client_id"
+							class="p-inputtext p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1">
+
+						<InputError class="mt-1 text-xs" :message="form.errors.client_id" />
+					</div>
+					<div class="col-span-6 shadow-default xl:col-span-6">
+						<InputLabel for="client_secret" value="Cliente Secret"
+							class="block text-base font-medium leading-6 text-gray-900" />
+						<input type="text" v-model="form.client_secret"
+							class="p-inputtext p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1">
+
+						<InputError class="mt-1 text-xs" :message="form.errors.client_secret" />
 					</div>
 
 				</div>
@@ -101,7 +107,5 @@ const show = (tipo, titulo, mensaje) => {
 				</div>
 			</form>
 		</Dialog>
-
-
 	</section>
 </template>

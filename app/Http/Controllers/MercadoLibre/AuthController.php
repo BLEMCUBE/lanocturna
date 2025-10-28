@@ -44,7 +44,7 @@ class AuthController extends Controller
 		$tokenData = $tokenResponse->json();
 
 		if (isset($tokenData['error'])) {
-			return redirect()->route('mercadolibre.index-clientes')->with('error', 'Error al obtener el token');
+			return redirect()->route('mercadolibre.clientes.index')->with('error', 'Error al obtener el token');
 		}
 
 		$accessToken = $tokenData['access_token'];
@@ -69,16 +69,7 @@ class AuthController extends Controller
 			'expires_at' => now()->addSeconds($tokenData['expires_in'] ?? 21600),
 		]);
 
-		return redirect()->route('mercadolibre.index-clientes')->with('success', 'Cuenta de Mercado Libre vinculada correctamente');
+		return redirect()->route('mercadolibre.clientes.index')->with('success', 'Cuenta de Mercado Libre vinculada correctamente');
 	}
 
-	public function desconectar(MercadoLibreCliente $cliente)
-	{
-		// Eliminar usuario asociado 1 a 1
-		if ($cliente->usuario) {
-			$cliente->usuario->delete();
-		}
-
-	return redirect()->back()->with('success', 'Cuenta de Mercado Libre desconectada correctamente.');
-	}
 }

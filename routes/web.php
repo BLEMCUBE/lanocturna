@@ -17,6 +17,7 @@ use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\MercadoLibre\NotificacionController;
 use App\Http\Controllers\MercadoLibre\PreguntasController;
+use App\Http\Controllers\MercadoLibre\ClientesController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\PagoCompraController;
@@ -395,16 +396,19 @@ Route::controller(AtributoValorController::class)->prefix('atributos-valores')->
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 
-//mercado libre
-Route::controller(NotificacionController::class)->prefix('mercadolibre')->name('mercadolibre.')
+//mercado libre clientes
+Route::controller(ClientesController::class)->prefix('mercadolibre/clientes')->name('mercadolibre.clientes.')
 	->middleware('auth')->group(function () {
-		Route::get('/conectar/{id}', 'conectar')->name('conectar');
-		Route::get('/clientes', 'indexClientes')->name('index-clientes');
+		Route::get('/', 'index')->name('index');
+		Route::get('/{id}/show', 'show')->name('show');
+		Route::get('/{id}/conectar', 'conectar')->name('conectar');
 		Route::delete('/{id}', 'destroy')->name('destroy');
+		Route::post('/store', 'store')->name('store');
+		Route::post('/update/{id}', 'update')->name('update');
 		Route::get('/{cliente}/desconectar', 'desconectar')->name('desconectar');
 	});
 
-//preguntas
+//mercado libre preguntas
 Route::controller(PreguntasController::class)->prefix('mercadolibre/preguntas')->name('mercadolibre.preguntas.')
 	->middleware('auth')->group(function () {
 		Route::get('/', 'index')->name('lista');
