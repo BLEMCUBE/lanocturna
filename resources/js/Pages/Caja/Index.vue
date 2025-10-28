@@ -23,8 +23,6 @@ const btnVer = (id) => {
 };
 
 
-
-
 const clickDetalle = (e) => {
 
     btnVer(e.data.id)

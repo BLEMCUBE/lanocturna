@@ -9,7 +9,7 @@ class MercadoLibreRespuesta extends Model
 
 	protected $table = 'mercadolibre_respuestas';
 	protected $fillable = [
-		'pregunta_id',
+		'mercadolibre_pregunta_id',
 		'from_user_id',
 		'text',
 		'date_created',
@@ -19,6 +19,7 @@ class MercadoLibreRespuesta extends Model
 
 	protected $casts = [
 		'payload' => 'array',
+		'date_created' => 'datetime'
 	];
 
 	/*public function cliente()

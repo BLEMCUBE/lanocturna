@@ -401,16 +401,25 @@ Route::controller(NotificacionController::class)->prefix('mercadolibre')->name('
 		Route::get('/conectar/{id}', 'conectar')->name('conectar');
 		Route::get('/clientes', 'indexClientes')->name('index-clientes');
 		Route::delete('/{id}', 'destroy')->name('destroy');
-		Route::get('/preguntas', [PreguntasController::class, 'index'])->name('preguntas');
-		Route::get('/preguntas/{id}', [PreguntasController::class, 'obtenerPreguntasYProductos'])->name('preguntas-items');
 		Route::get('/{cliente}/desconectar', 'desconectar')->name('desconectar');
-		Route::delete('/preguntas/{id}', [PreguntasController::class, 'destroy'])->name('preguntas-destroy');
+	});
+
+//preguntas
+Route::controller(PreguntasController::class)->prefix('mercadolibre/preguntas')->name('mercadolibre.preguntas.')
+	->middleware('auth')->group(function () {
+		Route::get('/', 'index')->name('lista');
+		Route::get('/{id}', 'obtenerPreguntasYProductos')->name('items');
+		Route::post('/responder', 'responder')->name('responder');
+		Route::post('/bloquear-usuario', 'bloquearUsuario')->name('bloquear-usuario');
+		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 
 //respuestas rapidas
 Route::controller(RespuestaRapidaController::class)->prefix('respuestasrapidas')->name('respuestasrapidas.')
 	->middleware('auth')->group(function () {
+		Route::post('/update', 'update')->name('update');
 		Route::get('/', 'index')->name('index');
+		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 
 //mecado libre sin auth

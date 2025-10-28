@@ -15,8 +15,8 @@ class PreguntaSeeder extends Seeder
 	public function run()
 	{
 		$configuraciones =  [
-			["type"=>"textarea","slug" => "pregunta-saludo", "key" => "Pregunta Saludo inicial", "value" => 'Hola,'],
-			["type"=>"textarea", "slug" => "pregunta-firma", "key" => "Pregunta Firma", "value" => "Somos MERCADOLIDER IMPORTACIONES en nuestra nueva CASA CENTRAL zona CENTRO de Montevideo (próximo a colonia frente al ACU) con mas de 200m2 de SHOWROOM Y RETIRO en el mismo lugar. Nos encontramos de lunes a viernes de 10 a 18hs y los sábados de 09 a 13hs.Saludos, del equipo de MERCADOLIDER IMPORTACIONES!."],
+			["type"=>"textarea","slug" => "pregunta-saludo", "key" => "Saludo inicial:", "value" => 'Hola,'],
+			["type"=>"textarea", "slug" => "pregunta-firma", "key" => "Firma:", "value" => "Somos MERCADOLIDER IMPORTACIONES en nuestra nueva CASA CENTRAL zona CENTRO de Montevideo (próximo a colonia frente al ACU) con mas de 200m2 de SHOWROOM Y RETIRO en el mismo lugar. Nos encontramos de lunes a viernes de 10 a 18hs y los sábados de 09 a 13hs.Saludos, del equipo de MERCADOLIDER IMPORTACIONES!."],
 		];
 
 		//eliminar si existe

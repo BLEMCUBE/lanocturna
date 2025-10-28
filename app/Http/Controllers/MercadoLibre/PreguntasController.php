@@ -9,6 +9,7 @@ use App\Models\MercadoLibreCliente;
 use App\Models\MercadoLibreItem;
 use App\Models\MercadoLibreListaUsuario;
 use App\Models\MercadoLibrePregunta;
+use App\Models\MercadoLibreRespuesta;
 use App\Models\RespuestaRapida;
 use App\Services\ItemService;
 use App\Services\ListaUsuarioService;
@@ -17,6 +18,9 @@ use App\Services\PreguntaService;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Request as Req;
+use Illuminate\Http\Request;
+
 
 
 class PreguntasController extends Controller
@@ -74,19 +78,18 @@ class PreguntasController extends Controller
 				}
 			}
 		}
-$repuesta_rapidas=RespuestaRapida::select('id', 'titulo', 'descripcion', 'color')->orderBy('titulo', 'ASC')->get();
+		$repuesta_rapidas =	RespuestaRapida::select('id', 'titulo', 'descripcion', 'color')->orderBy('titulo', 'ASC')->get();
 		$datos = new PreguntaCollection(
 			MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->with('from_user')->with('item')->whereHas('item', function ($query) {
 				$query->where('status', 'active');
 			})
 				->orderBy('date_created', 'DESC')->get()
 		);
-
 		return Inertia::render('MercadoLibre/Preguntas', [
 			'items' => $datos,
 			'saludo' => $saludo,
 			'firma' => $firma,
-			'repuesta_rapidas'=>$repuesta_rapidas
+			'repuesta_rapidas' => $repuesta_rapidas
 		]);
 	}
 
@@ -148,6 +151,36 @@ $repuesta_rapidas=RespuestaRapida::select('id', 'titulo', 'descripcion', 'color'
 			$this->listaUsuarioService->updateOrCreate($itemUser);
 		}
 		Log::info("Pregunta registrada [{$question['id']}]");
+	}
+
+	public function responder(Request $request)
+	{
+		$request->merge(['date_created' => now()]);
+		MercadoLibreRespuesta::create([
+			'mercadolibre_pregunta_id' => $request->mercadolibre_pregunta_id,
+			'from_user_id' => $request->from_user_id,
+			'date_created' => $request->date_created,
+			'text' => $request->text,
+			'payload' => $request->payload,
+
+		]);
+
+		//enviar a mercado libre
+
+
+		//cambiar a respondido la pregunta
+		$item=MercadoLibrePregunta::where('mercadolibre_pregunta_id', '=', $request->mercadolibre_pregunta_id)->first();
+		if(!is_null($item)){
+		$item->update([
+			'status'=>'ANSWERED',
+		]);
+		}
+	}
+
+	public function bloquearUsuario(Request $request){
+		dd($request);
+		//enviar a mercado libre
+
 	}
 
 	//eliminar

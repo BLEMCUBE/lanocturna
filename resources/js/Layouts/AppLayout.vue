@@ -7,16 +7,10 @@ import { Link, usePage } from '@inertiajs/vue3';
 import AppTopBar from '@/Layouts/AppTopBar.vue';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import AppSideBar from '@/Layouts/AppSideBar.vue'
-//import AppFooter from '@/Layouts/AppFooter.vue'
 import { useLayout } from '@/composables/layout';
 import { useConfigStore } from '@/stores/config.js'
-import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
-import audio_envio from '@/assets/audio_envio.mp3'
 import Loader from "@/Components/Loader.vue";
 
-const confirm = useConfirm();
-const toast = useToast();
 const visible = ref(false);
 
 const { configuracion } = usePage().props.auth
@@ -25,7 +19,6 @@ const channel = ref(null);
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 const outsideClickListener = ref(null);
 const configStore = useConfigStore();
-const items22 = ref([]);
 const props = defineProps({
 	pagina: {
 		type: Array,
@@ -35,30 +28,16 @@ const props = defineProps({
 });
 
 onMounted(() => {
-	items22.value = props.pagina;
-	pusher.value = new Pusher(getConfig('pusher-key'), {
+	/*pusher.value = new Pusher(getConfig('pusher-key'), {
 		cluster: getConfig('pusher-cluster'),
 	});
 	channel.value = pusher.value.subscribe('venta');
 	channel.value.bind('envio', function (data) {
 		showModal()
-	});
+	});*/
 })
 
-const setMenu = (menu) => {
-	configStore.showMenu(menu);
-}
 
-const showModal = () => {
-	visible.value = true;
-	playSound(audio_envio)
-	setTimeout(() => {
-		visible.value = false
-		window.open(self.location, '_self');
-	}, "10000");
-
-
-}
 const playSound = (sound) => {
 	if (sound) {
 		var audio = new Audio(sound);

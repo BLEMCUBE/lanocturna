@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AtributoStoreRequest;
-use App\Models\Atributo;
+use App\Http\Requests\RespuestaRapidaRequest;
 use App\Models\RespuestaRapida;
 use App\Models\Configuracion;
 use App\Services\ConfiguracionService;
+use Illuminate\Support\Facades\Log;
 
 class RespuestaRapidaController extends Controller
 {
@@ -16,10 +16,11 @@ class RespuestaRapidaController extends Controller
 
 	public function index()
 	{
-		$configuracion = Configuracion::get();
 		$datos =	RespuestaRapida::select('id', 'titulo', 'descripcion', 'color')->orderBy('titulo', 'ASC')->get();
-		$saludo = $this->configuracionService->getOp($configuracion, 'pregunta-saludo');
-		$firma = $this->configuracionService->getOp($configuracion, 'pregunta-firma');
+		//$saludo = $this->configuracionService->getOp($configuracion, 'pregunta-saludo');
+		$saludo = Configuracion::where('slug', 'pregunta-saludo')->first();
+		$firma = Configuracion::where('slug', 'pregunta-firma')->first();
+
 		return response()->json([
 			"respuestas" => $datos,
 			"firma" => $firma,
@@ -27,8 +28,52 @@ class RespuestaRapidaController extends Controller
 		]);
 	}
 
-	public function store(AtributoStoreRequest $request)
+	public function saludoFirma()
 	{
-		Atributo::create($request->only('nombre'));
+		$saludo = Configuracion::where('slug', 'pregunta-saludo')->first();
+		$firma = Configuracion::where('slug', 'pregunta-firma')->first();
+		return response()->json([
+			"firma" => $firma,
+			"saludo" => $saludo
+		]);
+	}
+
+	public function update(RespuestaRapidaRequest $request)
+	{
+		//actualizar saludo y firma
+		$saludo = Configuracion::find($request->saludo[0]['id']);
+		$saludo->value = $request->saludo[0]['value'];
+		$saludo->save();
+
+		$firma = Configuracion::find($request->firma[0]['id']);
+		$firma->value = $request->firma[0]['value'];
+		$firma->save();
+
+		//etiquetas
+		$etiq = $request->etiquetas;
+		foreach ($etiq as $key => $value) {
+			if (!is_null($value['id'])) {
+				RespuestaRapida::updateOrCreate(
+					['id' => $value['id']],
+					[
+						'titulo' => $value['titulo'] ?? '',
+						'descripcion' => $value['descripcion'] ?? '',
+						'color' => $value['color'] ?? '',
+					]
+				);
+			} else {
+				RespuestaRapida::create([
+					'titulo' => $value['titulo'] ?? '',
+					'descripcion' => $value['descripcion'] ?? '',
+					'color' => $value['color'] ?? '',
+				]);
+			}
+		}
+	}
+
+	public function destroy($id)
+	{
+		$item = RespuestaRapida::find($id);
+		$item->delete();
 	}
 }

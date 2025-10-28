@@ -101,8 +101,6 @@ const addToCart = (id) => {
 			}
 		)
 		sumTotalProducto(id)
-		//sumaTotal()
-		//calculoSinIva()
 
 	} else {
 		alerta('No hay stock disponible', 'error')

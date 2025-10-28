@@ -9,7 +9,7 @@ return new class extends Migration {
 	{
 		Schema::create('mercadolibre_respuestas', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('mercadolibre_pregunta_id')->constrained('mercadolibre_preguntas')->onDelete('cascade');
+			$table->unsignedBigInteger('mercadolibre_pregunta_id');
 			$table->unsignedBigInteger('from_user_id')->nullable();
 			$table->text('text');
 			$table->timestamp('date_created')->nullable();

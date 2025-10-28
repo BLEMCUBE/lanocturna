@@ -27,10 +27,11 @@ class PreguntaCollection extends ResourceCollection
 
 				return [
 					'id' => $row->id,
-					'nombre' => $row->nombre,
 					'pregunta' => $row->text,
 					'publicado'=>$publicado->diffForHumans(),
-					'product' => [
+					'mercadolibre_pregunta_id'=>$row->mercadolibre_pregunta_id,
+					'from_user_id'=>$row->from_user_id,
+					'producto' => [
 						'title' => $item['title'],
 						'id' => $item['id'],
 						'thumbnail' => $item['thumbnail'],

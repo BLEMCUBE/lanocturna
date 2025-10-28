@@ -846,7 +846,7 @@ const ok = (icono, mensaje) => {
 			<li @click="setMenu('preguntas')" v-show="permissions.includes('mercadolibre-clientes')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.preguntas')" :active="route().current('mercadolibre.preguntas')">
+					:href="route('mercadolibre.preguntas.lista')" :active="route().current('mercadolibre.preguntas.lista')">
 					<span class="ml-2 uppercase">Preguntas
 									<Badge v-if="cant_preguntas > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
 										severity="danger" :value="cant_preguntas" />
