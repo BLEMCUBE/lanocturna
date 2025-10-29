@@ -19,24 +19,19 @@ use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Request as Req;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
-
 
 
 class PreguntasController extends Controller
 {
-	protected $ml;
-	protected $preguntaService;
 
 	public function __construct(
-		MercadoLibreService $ml,
-		PreguntaService $preguntaService,
+		private	MercadoLibreService $ml,
+		private PreguntaService $preguntaService,
 		private ItemService $itemService,
 		private ListaUsuarioService $listaUsuarioService,
-	) {
-		$this->ml = $ml;
-		$this->preguntaService = $preguntaService;
-	}
+	) {}
 
 	public function index()
 	{
@@ -96,7 +91,7 @@ class PreguntasController extends Controller
 	public function store($payload, $userId)
 	{
 		$exists = MercadoLibrePregunta::where('mercadolibre_pregunta_id', $payload['id'] ?? null)->exists();
-		//if ($exists) return;
+		if ($exists) return;
 		//try {
 
 		//crear pregunta
@@ -130,12 +125,10 @@ class PreguntasController extends Controller
 		$userId   = $payload['user_id'] ?? null;
 
 		if (!$resource || !$userId) return;
-
 		//try {
 		$question = $this->ml->apiGet($resource, $userId);
-
 		//crear pregunta
-		$this->preguntaService->updateOrCreate($payload);
+		$this->preguntaService->updateOrCreate($question);
 
 		$exists = MercadoLibreItem::where('item_id', $question['item_id'] ?? null)->exists();
 
@@ -144,18 +137,22 @@ class PreguntasController extends Controller
 			$this->itemService->updateOrCreate($item);
 		}
 		//usuario
-		$existsUser = MercadoLibreListaUsuario::where('user_id', $payload['from']['id'] ?? null)->exists();
+		if (!is_null($question)) {
+		$existsUser = MercadoLibreListaUsuario::where('user_id', $question['from']['id'] ?? null)->exists();
 
 		if (!$existsUser) {
-			$itemUser = $this->ml->apiGet('/users/' . $payload['from']['id'], $userId);
+			$itemUser = $this->ml->apiGet('/users/' . $question['from']['id'], $userId);
 			$this->listaUsuarioService->updateOrCreate($itemUser);
 		}
-		Log::info("Pregunta registrada [{$question['id']}]");
+		}
+		Log::info("Pregunta registrada Notificacion [{$question['id']}]");
 	}
 
 	public function responder(Request $request)
 	{
 		$request->merge(['date_created' => now()]);
+		$cliente = MercadoLibreCliente::with('usuario')->first();
+
 		MercadoLibreRespuesta::create([
 			'mercadolibre_pregunta_id' => $request->mercadolibre_pregunta_id,
 			'from_user_id' => $request->from_user_id,
@@ -166,18 +163,26 @@ class PreguntasController extends Controller
 		]);
 
 		//enviar a mercado libre
+		$respuestaML = $this->ml->apiPost('/answers', [
+			'question_id' => $request->mercadolibre_pregunta_id,
+			'text' => $request->text,
 
+		], $cliente->usuario->meli_user_id);
+
+		$tokenData = $respuestaML;
 
 		//cambiar a respondido la pregunta
-		$item=MercadoLibrePregunta::where('mercadolibre_pregunta_id', '=', $request->mercadolibre_pregunta_id)->first();
-		if(!is_null($item)){
-		$item->update([
-			'status'=>'ANSWERED',
-		]);
+		$item = MercadoLibrePregunta::where('mercadolibre_pregunta_id', '=', $request->mercadolibre_pregunta_id)->first();
+		if (!is_null($item)) {
+			$item->update([
+				'status' => 'ANSWERED',
+				'payload' => $tokenData
+			]);
 		}
 	}
 
-	public function bloquearUsuario(Request $request){
+	public function bloquearUsuario(Request $request)
+	{
 		dd($request);
 		//enviar a mercado libre
 

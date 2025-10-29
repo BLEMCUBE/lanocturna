@@ -25,6 +25,7 @@ use App\Http\Controllers\PagoImportacionController;
 use App\Http\Controllers\PagoServicioController;
 use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\PusherController;
 use App\Http\Controllers\ReporteProductoRmaController;
 use App\Http\Controllers\ReporteProductoVendidoController;
 use App\Http\Controllers\ReporteStockProductosController;
@@ -426,10 +427,17 @@ Route::controller(RespuestaRapidaController::class)->prefix('respuestasrapidas')
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 
-//mecado libre sin auth
+//mercado libre sin auth
 Route::controller(NotificacionController::class)->prefix('mercadolibre')->name('mercadolibre.')
 	->group(function () {
 		Route::get('/callback', 'callback')->name('callback');
 		Route::post('/notifications', 'notifications')->name('notifications');
 	});
+
+//test pusher
+Route::controller(PusherController::class)->prefix('pushertest')->name('pushertest.')
+	->middleware('auth')->group(function () {
+		Route::get('/{tipo}', 'testNotif')->name('testNotif');
+	});
+
 require __DIR__ . '/auth.php';

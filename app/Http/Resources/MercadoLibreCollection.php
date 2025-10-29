@@ -24,6 +24,7 @@ class MercadoLibreCollection extends ResourceCollection
 					'client_secret' => $row->client_secret,
 					'redirect_uri' => $row->redirect_uri,
 					'is_default' => $row->is_default,
+					'expires_at' => !is_null($row->usuario)?Carbon::createFromFormat('Y-m-d H:i:s', $row->usuario->expires_at)->format('d/m/Y H:i:s'):'',
 					'usuario' => $row->usuario?1:0
 
 				];

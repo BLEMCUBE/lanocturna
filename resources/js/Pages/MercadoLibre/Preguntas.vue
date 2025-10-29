@@ -297,9 +297,11 @@ const setTexto = (index) => {
 									title="Borrar pregunta">
 									<i class="fa fa-trash"></i>
 								</button>
+								<!--
 								<button  @click.prevent="bloquearUsuario(index,item.usuario.nickname)" class="text-gray-600 hover:text-gray-800" title="Bloquear usuario">
 									<i class="fa fa-ban"></i>
 								</button>
+								-->
 							</div>
 						</div>
 
