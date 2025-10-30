@@ -416,6 +416,7 @@ Route::controller(PreguntasController::class)->prefix('mercadolibre/preguntas')-
 		Route::get('/', 'index')->name('lista');
 		Route::get('/{id}', 'obtenerPreguntasYProductos')->name('items');
 		Route::post('/responder', 'responder')->name('responder');
+		Route::get('/{id}/cambiar', 'cambiarEstado')->name('cambiar');
 		Route::post('/bloquear-usuario', 'bloquearUsuario')->name('bloquear-usuario');
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
@@ -424,7 +425,7 @@ Route::controller(PreguntasController::class)->prefix('mercadolibre/preguntas')-
 Route::controller(RespuestaRapidaController::class)->prefix('respuestasrapidas')->name('respuestasrapidas.')
 	->middleware('auth')->group(function () {
 		Route::post('/update', 'update')->name('update');
-		Route::get('/', 'index')->name('index');
+		Route::get('/{tipo}', 'index')->name('index');
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 

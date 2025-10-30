@@ -16,6 +16,7 @@ return new class extends Migration
 			$table->string('titulo');
 			$table->text('descripcion');
 			$table->string('color');
+			$table->string('tipo')->nullable();
 			$table->timestamps();
 		});
 	}

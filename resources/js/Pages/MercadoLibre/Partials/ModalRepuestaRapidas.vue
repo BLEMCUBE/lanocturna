@@ -12,15 +12,15 @@ const ruta = "respuestasrapidas"
 const mlruta = "mercadolibre"
 const emit = defineEmits(['addTexto']);
 import { useCustomToast } from '@/composables/customToast';
-const {setShow}=useCustomToast()
+const { setShow } = useCustomToast()
 
 //Variables
 const isShowModal = ref(false);
 
 const props = defineProps({
-	listaRespuestas: {
-		type: Array,
-		default: [],
+	tipo: {
+		type: String,
+		default: 'pregunta',
 	},
 
 });
@@ -39,6 +39,7 @@ const colores = [
 ]
 
 const hoverIndex = ref(null)
+const respuestas = ref([])
 const etiqueta = ref('')
 const color = ref(null)
 const descripcion = ref('')
@@ -48,11 +49,12 @@ const colorSeleccionado = ref(null)
 //Funciones
 
 const showData = () => {
-	dataEdit();
+	//loader.show()
+	isShowModal.value = true;
 
 };
 const sendTexto = (index) => {
-	let texto = props.listaRespuestas[index].descripcion;
+	let texto = respuestas.value[index].descripcion;
 	devolverRespuesta(texto, index);
 };
 
@@ -114,22 +116,23 @@ const removerEtiqueta = async (index) => {
 }
 
 onMounted(() => {
-
+	dataEdit();
 	colorSeleccionado.value = colores[0].bg
 	color.value = colores[0].bg
 })
 
 const dataEdit = () => {
-	loader.show()
-	axios.get(route(ruta + '.index'))
+
+	axios.get(route(ruta + '.index',props.tipo))
 		.then(res => {
-			isShowModal.value = true;
-			var respuestas = res.data.respuestas
+
+			respuestas.value = res.data.respuestas
 			var firma = res.data.firma
 			var saludo = res.data.saludo
-			form.etiquetas = respuestas.map(el => ({
+			form.etiquetas = respuestas.value.map(el => ({
 				id: el.id,
 				titulo: el.titulo,
+				tipo:el.tipo,
 				descripcion: el.descripcion,
 				color: el.color,
 			}));
@@ -181,14 +184,14 @@ const show = (tipo, titulo, mensaje) => {
 
 <template>
 	<section>
-
-		<button v-for="(item, index) in props.listaRespuestas" @click.prevent="sendTexto(index)"
+		<button v-for="(item, index) in respuestas" @click.prevent="sendTexto(index)"
 			class="px-3 py-1 m-1 text-sm  text-white rounded  text-medium" :style="{ backgroundColor: item.color }">
 
-			{{ item.titulo }}</button>
+			{{ item.titulo }}
+		</button>
 
 
-		<button @click="showData"
+		<button @click.prevent="showData"
 			class="w-full bg-gray-200 hover:bg-gray-300 text-xs p-2 rounded mt-3 flex items-center justify-center gap-2">
 			<i class="fas fa-pen"></i> Modificar respuestas rápidas
 		</button>

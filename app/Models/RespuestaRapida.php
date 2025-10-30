@@ -10,6 +10,7 @@ class RespuestaRapida extends Model
 	protected $fillable = [
 		'titulo',
 		'descripcion',
-		'color'
+		'color',
+		'tipo'
 	];
 }

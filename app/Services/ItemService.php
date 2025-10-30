@@ -22,6 +22,6 @@ class ItemService
 			);
 			return $data;
 		}
-		return $row;
+		return null;
 	}
 }

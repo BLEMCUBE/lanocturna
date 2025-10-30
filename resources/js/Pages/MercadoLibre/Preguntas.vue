@@ -13,7 +13,6 @@ const { saludo } = usePage().props
 const { firma } = usePage().props
 const titulo = "Preguntas"
 const ruta = 'mercadolibre.preguntas'
-const respuestas = ref([]);
 const listaPreguntas = ref([]);
 const inputSelect = ref(null);
 const formDelete = useForm({
@@ -68,12 +67,9 @@ onMounted(() => {
 			}
 		)
 	})
-	getRepuestas();
 });
 
-const getRepuestas = () => {
-	respuestas.value = usePage().props.repuesta_rapidas
-}
+
 
 const selectTextArea = (index) => {
 	inputSelect.value = index
@@ -105,15 +101,15 @@ const enviarRespuesta = (index) => {
 	});
 }
 
-const bloquearUsuario = (index,name) => {
+const bloquearUsuario = (index, name) => {
 	const alerta = Swal.mixin({ buttonsStyling: true });
-	let user_id=listaPreguntas.value[index].from_user_id
-	formBloquearUsuario.id=user_id;
+	let user_id = listaPreguntas.value[index].from_user_id
+	formBloquearUsuario.id = user_id;
 
 	alerta.fire({
 		width: 350,
 		title: "Seguro de Bloquear al usuario ",
-		text: 'Se procedera a bloquear a '+name,
+		text: 'Se procedera a bloquear a ' + name,
 		icon: 'question',
 		showCancelButton: true,
 		confirmButtonText: 'Eliminar',
@@ -133,13 +129,13 @@ const bloquearUsuario = (index,name) => {
 				});
 		}
 	});
-	}
+}
 
 const setRespuesta = (obj) => {
 	if (inputSelect.value !== null) {
 		listaPreguntas.value[inputSelect.value].respuesta = obj.respuesta
 		setTexto(inputSelect.value);
-		inputSelect.value=null;
+		inputSelect.value = null;
 	}
 
 }
@@ -339,11 +335,11 @@ const setTexto = (index) => {
 				</div>
 
 				<!-- Columna derecha-->
-				<div class="md:col-span-4 xl:col-span-3 relative">
-					<div class="bg-white rounded-xl shadow p-5 top-5 fixed ">
+				<div class="md:col-span-4 xl:col-span-3">
+					<div class="bg-white rounded-xl shadow p-5 fixed overflow-y-auto">
 						<h5 class="text-lg font-semibold mb-4">Respuestas rápidas</h5>
 						<div class="hidden sm:block flex flex-wrap gap-2 mb-4">
-							<ModalRepuestaRapidas @add-texto="setRespuesta" :lista-respuestas="respuestas">
+							<ModalRepuestaRapidas @add-texto="setRespuesta" tipo="pregunta">
 							</ModalRepuestaRapidas>
 						</div>
 						<!--

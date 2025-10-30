@@ -24,7 +24,7 @@ class ItemsController extends Controller
 
 		$item = $this->ml->apiGet($resource, $userId, []);
 		$newItem=$this->itemService->updateOrCreate($item);
-		if(!$newItem==null){
+		if($newItem!==null){
 			Log::info("Item Creado [{$item['id']}]");
 		}
 

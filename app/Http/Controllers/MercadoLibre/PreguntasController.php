@@ -4,6 +4,7 @@ namespace App\Http\Controllers\MercadoLibre;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PreguntaCollection;
+use App\Jobs\ProcessActualizarPregunta;
 use App\Models\Configuracion;
 use App\Models\MercadoLibreCliente;
 use App\Models\MercadoLibreItem;
@@ -74,6 +75,13 @@ class PreguntasController extends Controller
 			}
 		}
 		$repuesta_rapidas =	RespuestaRapida::select('id', 'titulo', 'descripcion', 'color')->orderBy('titulo', 'ASC')->get();
+
+		$verificarEstado=MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->select('status','mercadolibre_pregunta_id')->get();
+		foreach ($verificarEstado as $value) {
+			//dd($value->mercadolibre_pregunta_id);
+				ProcessActualizarPregunta::dispatch($value->mercadolibre_pregunta_id)->onQueue('meli');
+		}
+
 		$datos = new PreguntaCollection(
 			MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->with('from_user')->with('item')->whereHas('item', function ($query) {
 				$query->where('status', 'active');
@@ -115,9 +123,7 @@ class PreguntasController extends Controller
 
 
 		Log::info("Pregunta registrada [{$payload['id']}]");
-		/*} catch (\Exception $e) {
-			Log::error("Error guardando pregunta: " . $e->getMessage());
-		}*/
+
 	}
 	public function storeNotificacion($payload)
 	{
@@ -138,14 +144,14 @@ class PreguntasController extends Controller
 		}
 		//usuario
 		if (!is_null($question)) {
-		$existsUser = MercadoLibreListaUsuario::where('user_id', $question['from']['id'] ?? null)->exists();
+			$existsUser = MercadoLibreListaUsuario::where('user_id', $question['from']['id'] ?? null)->exists();
 
-		if (!$existsUser) {
-			$itemUser = $this->ml->apiGet('/users/' . $question['from']['id'], $userId);
-			$this->listaUsuarioService->updateOrCreate($itemUser);
+			if (!$existsUser) {
+				$itemUser = $this->ml->apiGet('/users/' . $question['from']['id'], $userId);
+				$this->listaUsuarioService->updateOrCreate($itemUser);
+			}
+			Log::info("Pregunta registrada Notificacion [{$question['id']}]");
 		}
-		}
-		Log::info("Pregunta registrada Notificacion [{$question['id']}]");
 	}
 
 	public function responder(Request $request)
@@ -179,6 +185,24 @@ class PreguntasController extends Controller
 				'payload' => $tokenData
 			]);
 		}
+	}
+
+	public function cambiarEstado($id)
+	{
+		$cliente = MercadoLibreCliente::with('usuario')->first();
+		$query_question = $this->ml->apiGet('/questions/' . $id, $cliente->usuario->meli_user_id);
+
+		$this->preguntaService->updateOrCreate($query_question);
+		if (!$query_question['answer'] == null) {
+			MercadoLibreRespuesta::create([
+				'mercadolibre_pregunta_id' => $query_question['id'],
+				'from_user_id' => $query_question['from']['id'],
+				'date_created' =>  $query_question['answer']['date_created'],
+				'text' =>  $query_question['answer']['text'],
+				'payload' => $query_question['answer'],
+
+			]);
+		};
 	}
 
 	public function bloquearUsuario(Request $request)

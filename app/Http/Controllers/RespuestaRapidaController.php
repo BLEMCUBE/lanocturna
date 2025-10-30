@@ -14,10 +14,10 @@ class RespuestaRapidaController extends Controller
 		private ConfiguracionService $configuracionService
 	) {}
 
-	public function index()
+	public function index($tipo)
 	{
-		$datos =	RespuestaRapida::select('id', 'titulo', 'descripcion', 'color')->orderBy('titulo', 'ASC')->get();
-		//$saludo = $this->configuracionService->getOp($configuracion, 'pregunta-saludo');
+		$datos =	RespuestaRapida::select('id', 'titulo', 'descripcion', 'color','tipo')
+		->where('tipo','=',$tipo)->orderBy('titulo', 'ASC')->get();
 		$saludo = Configuracion::where('slug', 'pregunta-saludo')->first();
 		$firma = Configuracion::where('slug', 'pregunta-firma')->first();
 
@@ -58,6 +58,7 @@ class RespuestaRapidaController extends Controller
 					[
 						'titulo' => $value['titulo'] ?? '',
 						'descripcion' => $value['descripcion'] ?? '',
+						'tipo' => $value['tipo'] ?? '',
 						'color' => $value['color'] ?? '',
 					]
 				);
@@ -65,6 +66,7 @@ class RespuestaRapidaController extends Controller
 				RespuestaRapida::create([
 					'titulo' => $value['titulo'] ?? '',
 					'descripcion' => $value['descripcion'] ?? '',
+					'tipo' => $value['tipo'] ?? '',
 					'color' => $value['color'] ?? '',
 				]);
 			}
