@@ -406,6 +406,7 @@ Route::controller(ClientesController::class)->prefix('mercadolibre/clientes')->n
 		Route::delete('/{id}', 'destroy')->name('destroy');
 		Route::post('/store', 'store')->name('store');
 		Route::post('/update/{id}', 'update')->name('update');
+		Route::get('/{cliente}/refrecarToken', 'refrecarToken')->name('refresh-token');
 		Route::get('/{cliente}/desconectar', 'desconectar')->name('desconectar');
 	});
 

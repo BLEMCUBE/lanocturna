@@ -7,10 +7,18 @@ use App\Http\Requests\MLClienteStoreRequest;
 use App\Http\Requests\MLClienteUpdateRequest;
 use App\Http\Resources\MercadoLibreCollection;
 use App\Models\MercadoLibreCliente;
+use App\Models\MercadoLibreUsuario;
+use App\Services\MercadoLibreService;
 use Inertia\Inertia;
 
 class ClientesController extends Controller
 {
+	public function __construct(
+		private	MercadoLibreService $ml,
+	)
+	{
+
+	}
 	public function index()
 	{
 		$items = new MercadoLibreCollection(
@@ -61,6 +69,13 @@ class ClientesController extends Controller
 		return redirect("https://auth.mercadolibre.com.uy/authorization?$query");
 	}
 
+	public function refrecarToken(MercadoLibreCliente $cliente) {
+		$usuario=MercadoLibreUsuario::where('cliente_id',$cliente->id)->first();
+		if (!$usuario == null) {
+			$token= $this->ml->refreshAccessToken($usuario->meli_user_id);
+		}
+
+	}
 	public function desconectar(MercadoLibreCliente $cliente)
 	{
 		// Eliminar usuario asociado 1 a 1

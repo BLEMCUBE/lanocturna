@@ -17,7 +17,9 @@ class MercadoLibreUsuario extends Model
 		'expires_at'
 	];
 
-
+  /*protected $casts = [
+        'expires_at' => 'datetime',
+    ];*/
 	public function cliente()
 	{
 		return $this->belongsTo(MercadoLibreCliente::class, 'cliente_id', 'id');

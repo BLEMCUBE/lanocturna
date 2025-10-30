@@ -17,6 +17,19 @@ class MercadoLibreCollection extends ResourceCollection
 	{
 		return
 			$this->collection->transform(function ($row, $key) {
+				$usuario = $row->usuario;
+				$time = config('app.timezone');
+				$fActual = Carbon::now($time)->format('d/m/Y H:i:s');
+				$expira = 0;
+				if (!is_null($usuario)) {
+					$fExpira = Carbon::create($usuario->expires_at)->format('d/m/Y H:i:s');
+
+					if ($fExpira < $fActual) {
+						$expira = 1;
+					} else {
+						$expira = 0;
+					}
+				}
 				return [
 					'id' => $row->id,
 					'nombre' => $row->nombre,
@@ -24,10 +37,11 @@ class MercadoLibreCollection extends ResourceCollection
 					'client_secret' => $row->client_secret,
 					'redirect_uri' => $row->redirect_uri,
 					'is_default' => $row->is_default,
-					'expires_at' => !is_null($row->usuario)?Carbon::createFromFormat('Y-m-d H:i:s', $row->usuario->expires_at)->format('d/m/Y H:i:s'):'',
-					'usuario' => $row->usuario?1:0
+					'is_expired' =>  $expira,
+					'expires_at' => !is_null($row->usuario) ? Carbon::createFromFormat('Y-m-d H:i:s', $row->usuario->expires_at)->format('d/m/Y H:i:s') : '',
+					'usuario' => $row->usuario ? 1 : 0
 
 				];
-			})	;
+			});
 	}
 }

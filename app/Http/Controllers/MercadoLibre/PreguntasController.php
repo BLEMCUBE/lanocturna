@@ -64,9 +64,9 @@ class PreguntasController extends Controller
 				'date_created.from' => $fechaInicio,
 				'date_created.to' => $fechaFin,
 			];
-			//$query_questions = $this->ml->apiGet('/questions/search', $cliente->usuario->meli_user_id, $parametros);
+			$query_questions = $this->ml->apiGet('/questions/search', $cliente->usuario->meli_user_id, $parametros);
 
-			$query_questions = null;
+			//$query_questions = null;
 			if (!is_null($query_questions)) {
 				foreach ($query_questions['questions'] as $key => $value) {
 					$this->store($value, $cliente->usuario->meli_user_id);
@@ -78,7 +78,7 @@ class PreguntasController extends Controller
 			MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->with('from_user')->with('item')->whereHas('item', function ($query) {
 				$query->where('status', 'active');
 			})
-				->orderBy('date_created', 'DESC')->get()
+				->orderBy('date_created', 'ASC')->get()
 		);
 		return Inertia::render('MercadoLibre/Preguntas', [
 			'items' => $datos,

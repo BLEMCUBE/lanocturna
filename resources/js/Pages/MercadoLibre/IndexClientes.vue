@@ -7,7 +7,9 @@ import CrearModal from '@/Pages/MercadoLibre/Partials/CrearModal.vue';
 import EditarModal from '@/Pages/MercadoLibre/Partials/EditarModal.vue';
 import { useToast } from "primevue/usetoast";
 import Swal from 'sweetalert2';
+import { useLoaderStore } from "@/stores/loader";
 
+const loader = useLoaderStore();
 const toast = useToast();
 const tabla_datos = ref()
 const titulo = "Clientes"
@@ -90,19 +92,29 @@ const desconectar = (id, name) => {
 	});
 }
 
+
+const refreshToken = (id) => {
+
+	formDelete.get(route(ruta + '.refresh-token', id),
+		{
+			preserveScroll: true,
+			onSuccess: () => {
+				show('success', 'Mensaje', 'Token refrescado')
+				setTimeout(() => {
+					router.get(route(ruta + '.index'));
+				}, 500);
+
+			}
+		});
+
+
+}
+
 const conectar = (id) => {
 	let url = route(ruta + '.conectar', id);
 	window.open(url, '_blank')
 };
 
-const estado = (access_token) => {
-	if (access_token == 'null') {
-		return false
-	} else {
-		return true
-	}
-
-};
 
 </script>
 <template>
@@ -135,22 +147,32 @@ const estado = (access_token) => {
 						<template #body="slotProps">
 							<div class="flex justify-end justify-items-center ">
 								<span v-if="slotProps.data.usuario == 0"
-									class="mx-2 inline-block rounded bg-green-700 px-2 py-1 text-base font-medium text-white mb-0 hover:bg-green-600">
+									class="mx-2 inline-block rounded bg-green-700 px-2 py-1 text-xs font-medium text-white mb-0 hover:bg-green-600">
 									<button @click.prevent="conectar(slotProps.data.id)">Conectar </button>
 								</span>
-								<span v-else
-									class="mx-2 inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mb-0 hover:bg-red-600">
-									<button
-										@click.prevent="desconectar(slotProps.data.id, slotProps.data.nombre)">Desconectar
-									</button>
-								</span>
-								<div class="mx-2" >
+								<div class="flex" v-else>
+
+
+									<span
+										class="mx-2  rounded bg-red-700 px-1 py-1 text-xs font-normal text-white mb-0 hover:bg-red-600">
+										<button class="h-8"
+											@click.prevent="desconectar(slotProps.data.id, slotProps.data.nombre)">Desconectar
+										</button>
+									</span>
+									<span v-if="slotProps.data.is_expired==1"
+										class="mx-2 inline-block rounded bg-blue-700 p-1 py-1 text-xs font-normal text-white mb-0 hover:bg-blue-600">
+										<button
+											@click.prevent="refreshToken(slotProps.data.id)">Refrescar token
+										</button>
+									</span>
+								</div>
+								<div class="mx-2">
 									<span
 										class="inline-block rounded bg-primary-900 px-2 py-1 text-base font-medium text-white mb-0 hover:bg-primary-100">
 										<EditarModal :cliente-id="slotProps.data.id"></EditarModal>
 									</span>
 								</div>
-								<span v-if="slotProps.data.is_default==0"
+								<span v-if="slotProps.data.is_default == 0"
 									class="mx-2 inline-block rounded bg-red-700 px-2 py-1 text-base font-medium text-white mb-0 hover:bg-red-600">
 									<button @click.prevent="eliminar(slotProps.data.id, slotProps.data.nombre)"><i
 											class="fas fa-trash-alt"></i></button>

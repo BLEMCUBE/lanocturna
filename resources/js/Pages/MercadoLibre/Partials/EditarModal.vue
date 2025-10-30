@@ -5,7 +5,9 @@ import { useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import axios from 'axios';
 import { useToast } from "primevue/usetoast";
+import { useLoaderStore } from "@/stores/loader";
 
+const loader = useLoaderStore();
 const toast = useToast();
 const titulo = "Cliente"
 const ruta = "mercadolibre.clientes"
@@ -36,6 +38,7 @@ const addCliente = () => {
 };
 
 const dataEdit = (id) => {
+	loader.show()
 	axios.get(route(ruta + '.show', id))
 		.then(res => {
 			isShowModal.value = true;
@@ -44,7 +47,7 @@ const dataEdit = (id) => {
 			form.nombre = datos.nombre
 			form.client_id = datos.client_id
 			form.client_secret = datos.client_secret
-
+			loader.hide()
 		})
 
 };
@@ -89,7 +92,7 @@ const show = (tipo, titulo, mensaje) => {
 	<section>
 		<button type="button" @click="addCliente"><i class="fas fa-edit"></i></button>
 
-		<Dialog v-model:visible="isShowModal" modal :header="'Crear ' + titulo" :style="{ width: '50vw' }"
+		<Dialog v-model:visible="isShowModal" modal :header="'Editar ' + titulo" :style="{ width: '50vw' }"
 			position="top" :pt="{
 				header: {
 					class: 'mt-6 p-2 lg:p-4 '
@@ -98,11 +101,11 @@ const show = (tipo, titulo, mensaje) => {
 					class: 'p-4 lg:p-4'
 				},
 			}">
-			{{ form }}
+
 			<form @submit.prevent="submit">
 				<div class="px-2 grid grid-cols-6 gap-4 md:gap-3 2xl:gap-6 mb-2">
 
-						<div class="col-span-6 shadow-default xl:col-span-6">
+					<div class="col-span-6 shadow-default xl:col-span-6">
 						<InputLabel for="nombre" value="Nombre"
 							class="block text-base font-medium leading-6 text-gray-900" />
 						<input type="text" v-model="form.nombre"
