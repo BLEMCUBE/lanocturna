@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Http\Controllers\MercadoLibre\ItemsController;
+use App\Http\Controllers\MercadoLibre\OrdersController;
 use App\Http\Controllers\MercadoLibre\PreguntasController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,10 +33,13 @@ class ProcessMercadoLibreNotification implements ShouldQueue
 
 		switch ($topic) {
 			case 'items':
-				app(ItemsController::class)->handles($this->payload);
+				app(ItemsController::class)->storeNotificacion($this->payload);
 				break;
 			case 'questions':
 				app(PreguntasController::class)->storeNotificacion($this->payload);
+				break;
+			case 'orders_v2':
+				app(OrdersController::class)->storeNotificacion($this->payload);
 				break;
 
 			default:

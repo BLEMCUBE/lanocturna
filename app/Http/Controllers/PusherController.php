@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Configuracion;
-use App\Services\ConfiguracionService;
-use Exception;
-use Inertia\Inertia;
-use Pusher\Pusher;
-use Illuminate\Support\Facades\DB;
+use App\Services\MercadoLibreService;
 
 class PusherController extends Controller
 {
 	public function __construct(
-			private ConfiguracionService $configuracionService
+			private	MercadoLibreService $ml
 	) {}
 
 	public function index() {}
@@ -20,35 +15,13 @@ class PusherController extends Controller
 	public function testNotif($tipo)
 	{
 
-		$configuracion = Configuracion::get();
-
-		$options = [
-			'cluster' => $this->configuracionService->getOp($configuracion, 'pusher-cluster'),
-			'useTLS' => $this->configuracionService->getOp($configuracion, 'pusher-forcetls'),
-		];
-
-		$data = [
-			'id' => $this->configuracionService->getOp($configuracion, 'pusher-id'),
-			'key' => $this->configuracionService->getOp($configuracion, 'pusher-key'),
-			'forcetls' => $this->configuracionService->getOp($configuracion, 'pusher-forcetls'),
-			'secret' => $this->configuracionService->getOp($configuracion, 'pusher-secret')
-		];
-
-		$pusher = new Pusher(
-			$data['key'],
-			$data['secret'],
-			$data['id'],
-			$options
-		);
-
 
 		switch ($tipo) {
 			case 'envio':
-				//dd($tipo);
-				$pusher->trigger('venta', 'envio','venta');
+				$this->ml->pusherNotificacion('venta', 'envio');
 				break;
 			case 'question':
-			$pusher->trigger('ml', 'question','question');
+				$this->ml->pusherNotificacion('ml', 'question');
 				break;
 
 			default:

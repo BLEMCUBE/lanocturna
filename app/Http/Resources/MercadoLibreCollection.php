@@ -19,12 +19,15 @@ class MercadoLibreCollection extends ResourceCollection
 			$this->collection->transform(function ($row, $key) {
 				$usuario = $row->usuario;
 				$time = config('app.timezone');
-				$fActual = Carbon::now($time)->format('d/m/Y H:i:s');
+
+				$fActual = Carbon::now($time)->format('Y-m-d H:i:s');
 				$expira = 0;
 				if (!is_null($usuario)) {
-					$fExpira = Carbon::create($usuario->expires_at)->format('d/m/Y H:i:s');
+					$fExpira = Carbon::create($usuario->expires_at)->format('Y-m-d H:i:s');
+					$fE = Carbon::parse($fExpira);
+					$fA = Carbon::parse($fActual);
 
-					if ($fExpira < $fActual) {
+					if ($fE < $fA) {
 						$expira = 1;
 					} else {
 						$expira = 0;

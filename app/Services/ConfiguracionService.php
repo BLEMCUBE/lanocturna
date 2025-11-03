@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Services;
-use App\Models\Producto;
+
+use App\Models\Configuracion;
 
 class ConfiguracionService
 {
@@ -17,5 +18,16 @@ class ConfiguracionService
 		return $dato;
 	}
 
-
+	public function getOption($key)
+	{
+		$config = Configuracion::get();
+		$dato = '';
+		foreach ($config as $ar) {
+			if ($ar['slug'] === $key) {
+				$dato = $ar['value'];
+				break;
+			}
+		}
+		return $dato;
+	}
 }

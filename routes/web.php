@@ -18,6 +18,7 @@ use App\Http\Controllers\InicioController;
 use App\Http\Controllers\MercadoLibre\NotificacionController;
 use App\Http\Controllers\MercadoLibre\PreguntasController;
 use App\Http\Controllers\MercadoLibre\ClientesController;
+use App\Http\Controllers\MercadoLibre\MensajesController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\PagoCompraController;
@@ -419,6 +420,20 @@ Route::controller(PreguntasController::class)->prefix('mercadolibre/preguntas')-
 		Route::get('/{id}/cambiar', 'cambiarEstado')->name('cambiar');
 		Route::post('/bloquear-usuario', 'bloquearUsuario')->name('bloquear-usuario');
 		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
+
+//mercado libre mensajes
+Route::controller(MensajesController::class)->prefix('mercadolibre/mensajes')->name('mercadolibre.mensajes.')
+	->middleware('auth')->group(function () {
+		Route::get('/', 'index')->name('lista');
+		Route::get('/test/{id}', 'test')->name('test');
+		/*
+		Route::get('/{id}', 'obtenerPreguntasYProductos')->name('items');
+		Route::post('/responder', 'responder')->name('responder');
+		Route::get('/{id}/cambiar', 'cambiarEstado')->name('cambiar');
+		Route::post('/bloquear-usuario', 'bloquearUsuario')->name('bloquear-usuario');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+		*/
 	});
 
 //respuestas rapidas

@@ -12,7 +12,7 @@ import { useLoaderStore } from "@/stores/loader";
 const loader = useLoaderStore();
 const toast = useToast();
 const tabla_datos = ref()
-const titulo = "Clientes"
+const titulo = "ML Clientes"
 const ruta = 'mercadolibre.clientes'
 
 const formDelete = useForm({

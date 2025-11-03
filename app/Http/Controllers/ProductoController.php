@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ProductosExport;
 use App\Exports\ProductoVentaExport;
 use App\Http\Requests\ProductoImportStockRequest;
 use App\Http\Requests\ProductoMasivoStoreRequest;
@@ -11,7 +10,6 @@ use App\Http\Requests\ProductoUpdateRequest;
 use App\Imports\ProductoMasivoImport;
 use App\Imports\ProductoStockImport;
 use App\Models\Categoria;
-use App\Models\Configuracion;
 use App\Models\CostoReal;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
@@ -210,8 +208,7 @@ class ProductoController extends Controller
 		$producto->stock_minimo = $request->input('stock_minimo');
 		$producto->stock_futuro = $producto->en_camino + $request->input('stock');
 		$producto->save();
-		$configuracion = Configuracion::get();
-		$url_tienda = $this->configuracionService->getOp($configuracion, 'url-tienda');
+		$url_tienda = $this->configuracionService->getOption('url-tienda');
 
 		$costo_real_reg = CostoReal::select('*')
 			->where('producto_id', '=', $request->input('id'))

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\MercadoLibre;
 
 use App\Http\Controllers\Controller;
 use App\Services\MercadoLibreService;
+use App\Models\MercadoLibreNotificacion;
 use Illuminate\Support\Facades\Log;
 use App\Services\ItemService;
 
@@ -16,19 +17,30 @@ class ItemsController extends Controller
 	) {}
 
 	//crear desde notificacion
-	public function handles($payload)
+	public function storeNotificacion($payload)
 	{
 		$resource = $payload['resource'] ?? null;
 		$userId   = $payload['user_id'] ?? null;
+
 		if (!$resource || !$userId) return;
 
 		$item = $this->ml->apiGet($resource, $userId, []);
-		$newItem=$this->itemService->updateOrCreate($item);
-		if($newItem!==null){
+
+		$newItem = $this->itemService->updateOrCreate($item);
+
+		if ($newItem !== null) {
 			Log::info("Item Creado [{$item['id']}]");
 		}
+		$this->actualizar($resource);
+	}
 
-
-
+	private function actualizar($resource)
+	{
+		$notif = MercadoLibreNotificacion::where('resource', '=', $resource)->first();
+		if (!is_null($notif)) {
+			$notif->update([
+				'status' => 'processed'
+			]);
+		}
 	}
 }

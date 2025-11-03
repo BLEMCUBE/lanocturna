@@ -11,13 +11,14 @@ use App\Models\MercadoLibreItem;
 use App\Models\MercadoLibreListaUsuario;
 
 
-class PreguntaService
+class MensajeService
 {
 	public function __construct(
 		private ItemService $itemService,
 		private MercadoLibreService $ml,
 		private ListaUsuarioService $listaUsuarioService,
 	) {}
+
 	public function updateOrCreate($question)
 	{
 		$cliente = MercadoLibreCliente::with('usuario')->first();

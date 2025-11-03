@@ -14,12 +14,13 @@ class MercadoLibreUsuario extends Model
 		'cliente_id',
 		'access_token',
 		'refresh_token',
-		'expires_at'
+		'expires_at',
+		'payload'
 	];
 
-  /*protected $casts = [
-        'expires_at' => 'datetime',
-    ];*/
+	protected $casts = [
+		'payload' => 'array'
+	];
 	public function cliente()
 	{
 		return $this->belongsTo(MercadoLibreCliente::class, 'cliente_id', 'id');

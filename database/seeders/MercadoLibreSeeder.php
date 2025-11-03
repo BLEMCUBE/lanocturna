@@ -27,8 +27,8 @@ class MercadoLibreSeeder extends Seeder
 		$mercado_libre_clientes =  [
 			[
 				"nombre" => "Tienda 1",
-				"client_id" => "5958999118991163",
-				"client_secret" => 'rZRg7x4k6qXMzMIM8YfWLM4smYUQtAIz',
+				"client_id" => "4747882108427165",
+				"client_secret" => 'EHtUk2eWqC0RtgzCO2CiiSXDqjehfjBF',
 				"is_default" =>1,
 				"redirect_uri" =>  route('mercadolibre.callback')
 			],

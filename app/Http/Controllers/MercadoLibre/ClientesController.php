@@ -15,10 +15,7 @@ class ClientesController extends Controller
 {
 	public function __construct(
 		private	MercadoLibreService $ml,
-	)
-	{
-
-	}
+	) {}
 	public function index()
 	{
 		$items = new MercadoLibreCollection(
@@ -48,6 +45,7 @@ class ClientesController extends Controller
 	public function update(MLClienteUpdateRequest $request, $id)
 	{
 		$tipo_cambio = MercadoLibreCliente::findOrFail($id);
+		$request->merge(['redirect_uri' => route('mercadolibre.callback')]);
 		$tipo_cambio->update($request->all());
 	}
 
@@ -66,15 +64,17 @@ class ClientesController extends Controller
 			'redirect_uri' => route('mercadolibre.callback'),
 			'state' => $client->id, // pasamos el ID del cliente
 		]);
+		$client->update(['redirect_uri' => route('mercadolibre.callback')]);
+
 		return redirect("https://auth.mercadolibre.com.uy/authorization?$query");
 	}
 
-	public function refrecarToken(MercadoLibreCliente $cliente) {
-		$usuario=MercadoLibreUsuario::where('cliente_id',$cliente->id)->first();
+	public function refrecarToken(MercadoLibreCliente $cliente)
+	{
+		$usuario = MercadoLibreUsuario::where('cliente_id', $cliente->id)->first();
 		if (!$usuario == null) {
-			$token= $this->ml->refreshAccessToken($usuario->meli_user_id);
+			$token = $this->ml->refreshAccessToken($usuario->meli_user_id);
 		}
-
 	}
 	public function desconectar(MercadoLibreCliente $cliente)
 	{

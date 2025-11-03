@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\MercadoLibre\ItemsController;
 use App\Http\Controllers\MercadoLibre\PreguntasController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

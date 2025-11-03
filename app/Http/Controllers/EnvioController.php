@@ -30,7 +30,6 @@ use Illuminate\Support\Facades\Request as Req;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 
-
 class EnvioController extends Controller
 {
 	public function __construct(
@@ -428,12 +427,9 @@ class EnvioController extends Controller
 	{
 
 
-		$configuracion = Configuracion::get();
-		$url_tienda = $this->configuracionService->getOp($configuracion, 'url-tienda');
+		$url_tienda = $this->configuracionService->getOption('url-tienda');
 		$venta = Venta::findOrFail($id);
-
 		$validador = auth()->user();
-
 		DB::beginTransaction();
 		try {
 			$venta->validado = true;

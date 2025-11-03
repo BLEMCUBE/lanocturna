@@ -80,14 +80,14 @@ const showModal = () => {
 	setTimeout(() => {
 		visible.value = false
 		window.open(self.location, '_self');
-	}, "10000");
+	}, "5000");
 }
 
 const mlToast = () => {
 	playSound(audio_envio)
 	setTimeout(() => {
 		window.open(self.location, '_self');
-	}, "5000");
+	}, "3000");
 }
 
 

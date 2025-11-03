@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\MercadoLibreCliente;
 use App\Models\MercadoLibreUsuario;
+use App\Services\ConfiguracionService;
+use Pusher\Pusher;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Client\ConnectionException;
@@ -13,7 +15,9 @@ class MercadoLibreService
 {
 	protected $apiBase = 'https://api.mercadolibre.com';
 	protected $oauthUrl = 'https://api.mercadolibre.com/oauth/token';
-
+	public function __construct(
+		private ConfiguracionService $configuracionService
+	) {}
 	/**
 	 * Obtiene el token del usuario desde la BD y lo refresca si expiró.
 	 */
@@ -269,5 +273,28 @@ class MercadoLibreService
 			]);
 			throw new Exception("Error de conexión con Mercado Libre: {$e->getMessage()}");
 		}
+	}
+
+	public function pusherNotificacion($canal, $evento, $data = 'mensaje')
+	{
+		$options = [
+			'cluster' => $this->configuracionService->getOption('pusher-cluster'),
+			'useTLS' => $this->configuracionService->getOption('pusher-forcetls'),
+		];
+
+		$data = [
+			'id' => $this->configuracionService->getOption('pusher-id'),
+			'key' => $this->configuracionService->getOption('pusher-key'),
+			'forcetls' => $this->configuracionService->getOption('pusher-forcetls'),
+			'secret' => $this->configuracionService->getOption('pusher-secret')
+		];
+
+		$pusher = new Pusher(
+			$data['key'],
+			$data['secret'],
+			$data['id'],
+			$options
+		);
+		$pusher->trigger($canal, $evento, $data);
 	}
 }

@@ -833,7 +833,7 @@ const ok = (icono, mensaje) => {
 			</Disclosure>
 			<!--RMA-->
 			<div class="px-3 py-2 text-black font-bold bg-white">
-				Mercado Libre Api
+				Mercado Libre
 			</div>
 			<!--mercado libre-->
 			<li @click="setMenu('mercadolibre')" v-show="permissions.includes('mercadolibre-clientes')">
@@ -848,6 +848,16 @@ const ok = (icono, mensaje) => {
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.preguntas.lista')" :active="route().current('mercadolibre.preguntas.lista')">
 					<span class="ml-2 uppercase">Preguntas
+									<Badge v-if="cant_preguntas > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+										severity="danger" :value="cant_preguntas" />
+								</span>
+				</NavLinkSideBar>
+			</li>
+			<li @click="setMenu('mensajes')" v-show="permissions.includes('mercadolibre-clientes')">
+				<NavLinkSideBar icon-class="fas fa-boxes"
+					class="flex items-center justify-start px-3 py-2 text-base font-medium"
+					:href="route('mercadolibre.mensajes.lista')" :active="route().current('mercadolibre.mensajes.lista')">
+					<span class="ml-2 uppercase">Mensajes
 									<Badge v-if="cant_preguntas > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
 										severity="danger" :value="cant_preguntas" />
 								</span>
