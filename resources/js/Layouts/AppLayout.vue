@@ -53,7 +53,6 @@ onMounted(() => {
 						showModal()
 						break;
 					case '.question':
-							console.log(`📡 Evento recibido: "${event}" en canal "${item.channel}"`, payload)
 							 showToast('success', 'Pregunta', 'Nueva Pregunta Recibida')
 							 mlToast()
 						break;

@@ -49,7 +49,6 @@ const btnValidar = () => {
 			isShowModal.value = false
 			show('success', 'Mensaje', 'Pedido confirmado')
 			setTimeout(() => {
-				//router.get(route(ruta + '.index'));
 				router.get(route(ruta + '.' + tipo.value));
 			}, 1000);
 		},

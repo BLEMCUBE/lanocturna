@@ -29,7 +29,7 @@ class CompraController extends Controller
 	{
 
 
-		$ultimo_tipo_cambio = TipoCambio::all()->last();
+		$ultimo_tipo_cambio = TipoCambio::latest('id')->first();
 
 		$hoy_tipo_cambio = false;
 
@@ -60,7 +60,7 @@ class CompraController extends Controller
 	public function create()
 	{
 
-		$ultimo_tipo_cambio = TipoCambio::all()->last();
+		$ultimo_tipo_cambio = TipoCambio::latest('id')->first();
 
 		$hoy_tipo_cambio = false;
 		$tipo_cambio = 0;

@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\MercadoLibreCliente;
 use App\Models\MercadoLibreUsuario;
+use App\Models\MercadoLibreNotificacion;
 use App\Services\ConfiguracionService;
 use Pusher\Pusher;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Client\ConnectionException;
@@ -16,7 +18,7 @@ class MercadoLibreService
 	protected $apiBase = 'https://api.mercadolibre.com';
 	protected $oauthUrl = 'https://api.mercadolibre.com/oauth/token';
 	public function __construct(
-		private ConfiguracionService $configuracionService
+		private ConfiguracionService $configuracionService,
 	) {}
 	/**
 	 * Obtiene el token del usuario desde la BD y lo refresca si expiró.
@@ -30,8 +32,12 @@ class MercadoLibreService
 			throw new Exception('Usuario de Mercado Libre no encontrado.');
 		}
 		$cliente = MercadoLibreCliente::where('id', '=', $usuario->cliente_id)->first();
-
-		if ($usuario->expires_at < now()->timestamp) {
+		$time = config('app.timezone');
+		$fActual = Carbon::now($time)->format('Y-m-d H:i:s');
+		$fExpira = Carbon::create($usuario->expires_at)->format('Y-m-d H:i:s');
+		$fE = Carbon::parse($fExpira);
+		$fA = Carbon::parse($fActual);
+		if ($fE < $fA) {
 			Log::info('Token expirado, refrescando...', ['meli_user_id' => $usuario->meli_user_id]);
 
 			$response = Http::asForm()->post($this->oauthUrl, [
@@ -51,12 +57,22 @@ class MercadoLibreService
 			$usuario->update([
 				'access_token'  => $data['access_token'],
 				'refresh_token' => $data['refresh_token'] ?? $usuario->refresh_token,
-				'expires_at'    => now()->addSeconds($data['expires_in'])->timestamp,
+				'expires_at' => now()->addSeconds($tokenData['expires_in'] ?? 21600),
 			]);
 		}
-
 		return $usuario->access_token;
 	}
+
+	public function actualizar($resource)
+	{
+		$notif = MercadoLibreNotificacion::where('resource', '=', $resource)->first();
+		if (!is_null($notif)) {
+			$notif->update([
+				'status' => 'processed'
+			]);
+		}
+	}
+
 	/**
 	 * 🔄 Refrescar token de acceso (usando refresh_token)
 	 */
@@ -93,7 +109,7 @@ class MercadoLibreService
 			$usuario->update([
 				'access_token' => $data['access_token'],
 				'refresh_token' => $data['refresh_token'] ?? $usuario->refresh_token,
-				'expires_at' => now()->addSeconds($data['expires_in'])
+				'expires_at' => now()->addSeconds($tokenData['expires_in'] ?? 21600),
 			]);
 			$cliente->update([
 				'redirect_uri' => route('mercadolibre.callback')
@@ -150,6 +166,93 @@ class MercadoLibreService
 			throw new Exception("Error de conexión con Mercado Libre: {$e->getMessage()}");
 		}
 	}
+
+	public function apiGetDos($endpoint, $userId = null, $params = [])
+	{
+		$token = $this->getAccessToken($userId);
+		$url   = "{$this->apiBase}{$endpoint}";
+
+		try {
+			$response = Http::withToken($token)
+				->acceptJson()
+				->timeout(60)          // más seguro para órdenes grandes
+				->connectTimeout(10)
+				->retry(3, 200)
+				->withOptions(['verify' => true])
+				->get($url, $params);
+
+			// ⚠️ Si el token expiró, intenta renovarlo una sola vez
+			if ($response->status() === 401) {
+				$token = $this->refreshAccessToken($userId);
+
+				$response = Http::withToken($token)
+					->acceptJson()
+					->timeout(60)
+					->connectTimeout(10)
+					->retry(3, 200)
+					->get($url, $params);
+			}
+
+			$isSuccess = $response->successful();
+
+			$result = [
+				'success'     => $isSuccess,
+				'status_code' => $response->status(),
+				'error'       => $response->json('error') ?? null,
+				'message'     => $response->json('message') ?? null,
+				'body'        => $response->json(),
+				'raw'         => $response->body(),
+			];
+
+			if (! $isSuccess) {
+				Log::error('Error GET2 ML', [
+					'endpoint' => $endpoint,
+					'params'   => $params,
+					'result'   => $result,
+				]);
+			}
+
+			return $result;
+		}
+
+		// ❗ Captura errores de conexión (cURL error 28, DNS, timeout, etc.)
+		catch (ConnectionException $e) {
+			$error = [
+				'success'     => false,
+				'status_code' => 0,
+				'error'       => 'connection_error',
+				'message'     => $e->getMessage(),
+			];
+
+			Log::error('Error de conexión GET ML', [
+				'endpoint' => $endpoint,
+				'params'   => $params,
+				'error'    => $error,
+			]);
+
+			return $error;
+		}
+
+		// ❗ Captura cualquier otro error inesperado
+		catch (\Throwable $e) {
+			$error = [
+				'success'     => false,
+				'status_code' => 0,
+				'error'       => 'unexpected_error',
+				'message'     => $e->getMessage(),
+				//'trace'       => $e->getTraceAsString(),
+			];
+
+			Log::error('Excepción GET ML', [
+				'endpoint' => $endpoint,
+				'params'   => $params,
+				'error'    => $error,
+			]);
+
+			return $error;
+		}
+	}
+
 
 	/**
 	 * POST genérico

@@ -19,11 +19,6 @@ class MercadoLibreRespuesta extends Model
 
 	protected $casts = [
 		'payload' => 'array',
-		'date_created' => 'datetime'
 	];
 
-	/*public function cliente()
-	{
-		return $this->belongsTo(MercadoLibreCliente::class, 'cliente_id', 'id');
-	}*/
 }

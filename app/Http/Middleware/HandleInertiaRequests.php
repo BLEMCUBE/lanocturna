@@ -10,11 +10,13 @@ use Tightenco\Ziggy\Ziggy;
 use App\Http\Resources\VentaCollection;
 use App\Models\Compra;
 use App\Models\Configuracion;
+use App\Models\MercadoLibreMensaje;
 use App\Models\MercadoLibrePregunta;
 use App\Models\Venta;
 
 class HandleInertiaRequests extends Middleware
 {
+
 	/**
 	 * The root template that is loaded on the first page visit.
 	 *
@@ -37,7 +39,7 @@ class HandleInertiaRequests extends Middleware
 	 */
 	public function share(Request $request): array
 	{
-		$ultimo_tipo_cambio = TipoCambio::all()->last();
+		$ultimo_tipo_cambio = TipoCambio::latest('id')->first();
 		$hoy_tipo_cambio = false;
 		$actual = Carbon::now()->format('Y-m-d');
 		if (!empty($ultimo_tipo_cambio)) {
@@ -94,7 +96,8 @@ class HandleInertiaRequests extends Middleware
 
 		$cant_preguntas = MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->with('from_user')->with('item')->whereHas('item', function ($query) {
 			$query->where('status', 'active');
-		})->count();
+		})->count()??0;
+		$order = MercadoLibreMensaje::select('id','pack_id','is_read','is_from_seller')->where('is_from_seller', '=', 0)->where('is_read', '=', 0)->count()??0;
 		$total_ues = 0;
 		$total_flex = 0;
 		$total_dac = 0;
@@ -152,6 +155,7 @@ class HandleInertiaRequests extends Middleware
 				'total_retiro' => $total_retiro,
 				'configuracion' => $configuracion,
 				'cant_preguntas' => $cant_preguntas,
+				'cant_mensajes' =>$order
 			],
 			//'csrf_token' => csrf_token(),
 			'ziggy' => function () use ($request) {

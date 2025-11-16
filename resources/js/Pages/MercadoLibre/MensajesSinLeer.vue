@@ -4,8 +4,8 @@ import { ref, onMounted } from 'vue'
 import { Head, usePage, Link, useForm, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
 
-const titulo = "ML Mensajes todos"
-const datosTodos = ref([]);
+const titulo = "ML Mensajes sin leer"
+const datosNoLeido = ref([]);
 const ruta = 'mercadolibre.mensajes'
 
 const filters = ref({
@@ -21,7 +21,7 @@ const sinLeer = () => {
 };
 
 onMounted(() => {
-	datosTodos.value = usePage().props.datos.data.map(item => ({
+	datosNoLeido.value = usePage().props.datos.data.map(item => ({
 		...item,
 		productoDisplay:
 			'<div class="ml-6 text-xs text-gray-500">' + `#${item.pack_id}` + '</div>' +
@@ -47,7 +47,7 @@ onMounted(() => {
 				<Button :class="{ 'opacity-60': route().current('mercadolibre.mensajes.sinLeer') }" @click="todos" label="Todos" />
 				<Button class="mx-2" :class="{ 'opacity-60': route().current('mercadolibre.mensajes.lista') }"
 					label="Sin leer" @click="sinLeer" />
-				<DataTable size="small" :filters="filters" :value="datosTodos" :paginator="true" :rows="50" :pt="{
+				<DataTable size="small" :filters="filters" :value="datosNoLeido" :paginator="true" :rows="50" :pt="{
 					bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100' }
 				}" :rowsPerPageOptions="[5, 10, 20, 50]" :globalFilterFields="['productoDisplay']"
 					paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
@@ -60,28 +60,27 @@ onMounted(() => {
 					</template>
 					<template #empty> No existe Resultado </template>
 					<template #loading> Cargando... </template>
-					<Column field="productoDisplay" header="Producto">
-						<template #body="slotProps" style="width:300px">
-							<div class="w-72" v-html="slotProps.data.productoDisplay"></div>
+					<Column class="w-[210px]" field="productoDisplay" header="Producto">
+						<template #body="slotProps" style="width:210px">
+							<div class="w-[210px]" v-html="slotProps.data.productoDisplay"></div>
 						</template>
 					</Column>
 					<Column class="px-10" field="mensaje" header="Mensaje">
 						<template #body="slotProps">
-							<div class="text-xs w-[30rem] text-start">
+							<div class="text-xs  text-start">
 								<div v-if="slotProps.data.leido > 0"
 									class="my-2 px-2 py-1 font-bold rounded-md text-white bg-red-700 border-1 w-fit  border-red-700">
 									{{ slotProps.data.leido > 1 ? `${slotProps.data.leido} mensajes sin
-									leer`: `${slotProps.data.leido } mensaje sin leer` }}
+									leer`: `${slotProps.data.leido} mensaje sin leer` }}
 								</div>
-
 								<div v-html="slotProps.data.mensaje">
 								</div>
 							</div>
 						</template>
 					</Column>
-					<Column class="text-xs text-center" field="comprador" header="Comprador">
+					<Column class="text-xs text-center w-[270px]" field="comprador" header="Comprador">
 					</Column>
-					<Column class="text-xs text-center" header="Fecha">
+					<Column class="text-xs text-center w-[100px]" header="Fecha">
 						<template #body="{ data }" style="width:250px">
 							<div class="flex flex-col justify-items-center ">
 								<div class="text-bold">

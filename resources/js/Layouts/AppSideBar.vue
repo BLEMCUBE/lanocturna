@@ -34,6 +34,7 @@ const { total_retiro } = usePage().props.auth
 const { pagos_compras } = usePage().props.auth
 const { total_rmas } = usePage().props.auth
 const { cant_preguntas } = usePage().props.auth
+const { cant_mensajes } = usePage().props.auth
 const configStore = useConfigStore();
 const setMenu = (menu) => {
 	configStore.showMenu(menu);
@@ -836,14 +837,14 @@ const ok = (icono, mensaje) => {
 				Mercado Libre
 			</div>
 			<!--mercado libre-->
-			<li @click="setMenu('mercadolibre')" v-show="permissions.includes('mercadolibre-clientes')">
+			<li @click="setMenu('mercadolibre')" v-show="permissions.includes('mercadoLibre-apis')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.clientes.index')" :active="route().current('mercadolibre.clientes.index')">
-					<span class="ml-2 uppercase">Clientes</span>
+					<span class="ml-2 uppercase">App Keys</span>
 				</NavLinkSideBar>
 			</li>
-			<li @click="setMenu('preguntas')" v-show="permissions.includes('mercadolibre-clientes')">
+			<li @click="setMenu('preguntas')" v-show="permissions.includes('mercadoLibre-preguntas')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.preguntas.lista')" :active="route().current('mercadolibre.preguntas.lista')">
@@ -853,13 +854,13 @@ const ok = (icono, mensaje) => {
 								</span>
 				</NavLinkSideBar>
 			</li>
-			<li @click="setMenu('mensajes')" v-show="permissions.includes('mercadolibre-clientes')">
+			<li @click="setMenu('mensajes')" v-show="permissions.includes('mercadoLibre-mensajes')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.mensajes.lista')" :active="route().current('mercadolibre.mensajes.lista')">
+					:href="route('mercadolibre.mensajes.sinLeer')" :active="route().current('mercadolibre.mensajes.sinLeer')">
 					<span class="ml-2 uppercase">Mensajes
-									<Badge v-if="cant_preguntas > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
-										severity="danger" :value="cant_preguntas" />
+									<Badge v-if="cant_mensajes > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+										severity="danger" :value="cant_mensajes" />
 								</span>
 				</NavLinkSideBar>
 			</li>

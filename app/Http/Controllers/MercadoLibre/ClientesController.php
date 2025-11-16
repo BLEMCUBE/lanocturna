@@ -30,7 +30,6 @@ class ClientesController extends Controller
 	public function store(MLClienteStoreRequest $request)
 	{
 		$request->merge(['redirect_uri' => route('mercadolibre.callback')]);
-		//dd($request->all());
 		MercadoLibreCliente::create($request->all());
 	}
 

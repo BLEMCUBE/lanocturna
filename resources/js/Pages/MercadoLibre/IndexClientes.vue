@@ -142,6 +142,7 @@ const conectar = (id) => {
 					<Column field="nombre" header="Nombre" sortable></Column>
 					<Column field="client_id" header="Cliente ID" sortable></Column>
 					<Column field="client_secret" header="Cliente Secret"></Column>
+					<Column field="access_token" header="Token Acceso"></Column>
 					<Column field="expires_at" header="Expira"></Column>
 					<Column header="Acciones" style="width:200px">
 						<template #body="slotProps">

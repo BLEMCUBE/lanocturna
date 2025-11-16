@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('application_id')->nullable();
             $table->timestamp('sent_at')->nullable();
             $table->integer('attempts')->default(1);
-            $table->string('status')->default('pending'); // pending, processed, failed
+            $table->string('status')->default('received'); // received, processed, failed
             $table->json('payload')->nullable(); // guarda la notificación completa
             $table->timestamps();
 

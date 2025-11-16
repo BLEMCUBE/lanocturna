@@ -35,7 +35,6 @@ const btnEditar = (id) => {
 
 };
 const btnFacturar = (id) => {
-	//router.get(route(ruta + '.facturar', id));
 	form.get(route(ruta + '.facturar', id), {
 		preserveScroll: true,
 		forceFormData: true,

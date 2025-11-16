@@ -17,9 +17,18 @@ class MercadoLibreListaUsuario extends Model
         'payload' => 'array',
     ];
 
-
 	public function preguntas()
 	{
 		return $this->hasMany(MercadoLibrePregunta::class, 'from_user_id', 'user_id');
+	}
+
+	public function mensajes()
+	{
+		return $this->hasMany(MercadoLibreMensaje::class, 'from_user_id', 'user_id');
+	}
+
+	public function venta()
+	{
+		return $this->belongsTo(MercadoLibreVenta::class, 'user_id', 'buyer_id');
 	}
 }

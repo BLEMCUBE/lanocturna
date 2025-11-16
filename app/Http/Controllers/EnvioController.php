@@ -289,7 +289,7 @@ class EnvioController extends Controller
 	public function historialEnvios()
 	{
 
-		$ultimo_tipo_cambio = TipoCambio::all()->last();
+		$ultimo_tipo_cambio = TipoCambio::latest('id')->first();
 
 		$hoy_tipo_cambio = false;
 

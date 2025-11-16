@@ -238,7 +238,6 @@ const submit = () => {
 		onSuccess: () => {
 			show('success', 'Mensaje', 'Venta Actualizada')
 			setTimeout(() => {
-				//router.get(route(ruta + '.index'));
 				router.get(route('inicio'))
 			}, 1000);
 		},

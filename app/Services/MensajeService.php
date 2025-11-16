@@ -2,57 +2,215 @@
 
 namespace App\Services;
 
-use App\Models\MercadoLibrePregunta;
-use App\Models\MercadoLibreCliente;
-use App\Services\ItemService;
-use App\Services\ListaUsuarioService;
+use App\Jobs\FetchMercadoLibreOrder;
+use App\Models\MercadoLibreMensaje;
+use App\Models\MercadoLibreVenta;
+use App\Services\MLUsuarioService;
 use App\Services\MercadoLibreService;
-use App\Models\MercadoLibreItem;
-use App\Models\MercadoLibreListaUsuario;
-
+use Illuminate\Support\Facades\Log;
 
 class MensajeService
 {
 	public function __construct(
-		private ItemService $itemService,
-		private MercadoLibreService $ml,
-		private ListaUsuarioService $listaUsuarioService,
+		private	MercadoLibreService $ml,
+		private MLUsuarioService $mLUsuarioService
 	) {}
 
 	public function updateOrCreate($question)
 	{
-		$cliente = MercadoLibreCliente::with('usuario')->first();
+		$user = $this->mLUsuarioService->datosUsuario();
+		if (!$user) return;
+		if ($question['messages'] !== null) {
 
-		// item
-		$existsItem = MercadoLibreItem::where('item_id', $question['item_id'] ?? null)->exists();
-		if (!$existsItem) {
-			$item = $this->ml->apiGet('/items/' . $question['item_id'], $cliente->usuario->meli_user_id);
-			$this->itemService->updateOrCreate($item);
-		}
+			foreach ($question['messages'] as  $msg) {
+				$this->mLUsuarioService->buscarUsuario($msg['from']['user_id']);
+				$this->mLUsuarioService->buscarUsuario($msg['to']['user_id']);
+				$read = $msg['message_date']['read'] ?? null;
+				$created = $msg['message_date']['created'] ?? null;
+				// dato clave para saber si el vendedor lo envió
+				$fromSeller = isset($msg['from']['user_id'])
+					&& strval($msg['from']['user_id']) === strval($user->meli_user_id);
+				$pack_id = collect($msg['message_resources'])
+					->firstWhere('name', 'packs')['id'] ?? null;
 
-		//usuario
-		$existsUser = MercadoLibreListaUsuario::where('user_id', $question['from']['id'] ?? null)->exists();
-		if (!$existsUser) {
-			$itemUser = $this->ml->apiGet('/users/' . $question['from']['id'], $cliente->usuario->meli_user_id);
-			$this->listaUsuarioService->updateOrCreate($itemUser);
-		}
+				$orden = MercadoLibreVenta::where('pack_id', $pack_id)
+					->orWhere('mercadolibre_venta_id', $pack_id)->first();
+				if (is_null($orden)) {
+					$response = $this->ml->apiGetDos('/packs/' . $pack_id, $user->meli_user_id);
+					if ($response['success']) {
+						foreach ($response['body']['orders'] as  $value) {
+							FetchMercadoLibreOrder::dispatch($value['id'])->onQueue('meli');
+						}
+					} else {
+						FetchMercadoLibreOrder::dispatch($pack_id)->onQueue('meli');
+					}
+				}
 
-		$row = MercadoLibrePregunta::where('mercadolibre_pregunta_id', '=', $question['id'])->first();
-		if ($row === null) {
-			$data =	MercadoLibrePregunta::updateOrCreate(
-				['mercadolibre_pregunta_id' => $question['id']],
-				[
-					'item_id' => $question['item_id'],
-					'seller_id' => $question['seller_id'],
-					'text' => $question['text'],
-					'status' => $question['status'],
-					'date_created' => $question['date_created'],
-					'from_user_id' => $question['from']['id'] ?? null,
-					'payload' => $question,
-				]
-			);
-			return $data;
+				$data =	MercadoLibreMensaje::updateOrCreate(
+					['message_id' => $msg['id']],
+					[
+						'pack_id' => $pack_id,
+						'message_id' => $msg['id'],
+						'from_user_id' => $msg['from']['user_id'] ?? null,
+						'to_user_id'   => $msg['to']['user_id'] ?? null,
+						'date_created' => $created,
+						'body' => strval($msg['text']),
+						'attachment_path' => $msg['message_attachments'][0]['filename']
+							?? null,
+						// si read ≠ null → lo leyó alguien → marcar como leído
+						'is_read' => $read ? 1 : 0,
+						// marcar si lo envió el vendedor
+						'is_from_seller' => $fromSeller ? 1 : 0,
+						// guardar JSON entero
+						'payload' => $msg,
+
+
+					]
+				);
+			}
 		}
-		return null;
+		return true;
+	}
+
+	public function storeNotificacion($payload)
+	{
+		$resource = $payload['resource'] ?? null;
+		$userId   = $payload['user_id'] ?? null;
+		if (!$resource || !$userId) return;
+		$parametros = [
+			'tag' => 'post_sale',
+			'mark_as_read' => false,
+		];
+		$question = $this->ml->apiGet('/messages/' . $resource, $userId, $parametros);
+
+		//crear
+		$order = $this->updateOrCreate($question);
+		if ($order !== null) {
+			Log::info("Mensaje registrada Notificacion [{$resource}]");
+		}
+		$this->ml->actualizar($resource);
+		//notificion
+		$this->ml->pusherNotificacion('ml', 'question');
+	}
+
+	public function getSinLeer()
+	{
+		$user = $this->mLUsuarioService->datosUsuario();
+		if (!$user) return;
+		MercadoLibreMensaje::where('is_read', '=', 0)
+			->update(['is_read' => 1]);
+		$parametros = [
+			'role' => 'seller',
+			'tag' => 'post_sale'
+		];
+
+		$response = $this->ml->apiGet('/messages/unread', $user->meli_user_id, $parametros);
+		return $response['results'] ?? [];
+	}
+
+
+	public function getPack($packId)
+	{
+		$offset = 0;
+		$limit = 50;
+
+		$parametros = [
+			'tag' => 'post_sale',
+			'mark_as_read' => false,
+			'offset' => $offset,
+			'limit' => $limit,
+		];
+		$user = $this->mLUsuarioService->datosUsuario();
+		if (!$user) return;
+		do {
+			$response = $this->ml->apiGet("/messages" . $packId, $user->meli_user_id, $parametros);
+			$messages = $response['messages'] ?? [];
+
+			foreach ($messages as $msg) {
+				$created = $msg['message_date']['created'] ?? null;
+				$read = $msg['message_date']['read'] ?? null;
+				// dato clave para saber si el vendedor lo envió
+				$fromSeller = isset($msg['from']['user_id'])
+					&& strval($msg['from']['user_id']) === strval($user->meli_user_id);
+				$pack_id = collect($msg['message_resources'])
+					->firstWhere('name', 'packs')['id'] ?? null;
+
+
+				$orden = MercadoLibreVenta::where('pack_id', $pack_id)
+					->orWhere('mercadolibre_venta_id', $pack_id)->first();
+				if (is_null($orden)) {
+					$response = $this->ml->apiGetDos('/packs/' . $pack_id, $user->meli_user_id);
+					if ($response['success']) {
+						foreach ($response['body']['orders'] as  $value) {
+
+							FetchMercadoLibreOrder::dispatch($value['id'])->onQueue('meli');
+						}
+					} else {
+						FetchMercadoLibreOrder::dispatch($pack_id)->onQueue('meli');
+					}
+				}
+				MercadoLibreMensaje::updateOrCreate(
+					['message_id' => $msg['id']],
+					[
+						'pack_id' => $pack_id,
+						'message_id' => $msg['id'],
+						'from_user_id' => $msg['from']['user_id'] ?? null,
+						'to_user_id'   => $msg['to']['user_id'] ?? null,
+						'date_created' => $created,
+						'body' => strval($msg['text']),
+						'attachment_path' => $msg['message_attachments'][0]['filename']
+							?? null,
+						// si read ≠ null → lo leyó alguien → marcar como leído
+						'is_read' => $read ? 1 : 0,
+						// marcar si lo envió el vendedor
+						'is_from_seller' => $fromSeller ? 1 : 0,
+						// guardar JSON entero
+						'payload' => $msg,
+
+
+					]
+				);
+			}
+
+			// Paginación
+			$offset += $limit;
+			$total = $response['paging']['total'] ?? $offset;
+		} while ($offset < $total);
+	}
+
+	public function marcarLeido()
+	{
+		$user = $this->mLUsuarioService->datosUsuario();
+		if (!$user) return;
+		$mensajes = MercadoLibreMensaje::where('is_read', '=', 0)->get();
+
+		$parametros = [
+			'tag' => 'post_sale',
+			'mark_as_read' => false,
+		];
+		if (!empty($mensajes)) {
+			foreach ($mensajes as $key => $value) {
+				$question = $this->ml->apiGet('/messages/' . $value->message_id, $user->meli_user_id, $parametros);
+				$this->updateOrCreate($question);
+			}
+		}
+	}
+
+	public function noLeidos()
+	{
+		$user = $this->mLUsuarioService->datosUsuario();
+		if (!$user) return;
+		$parametros = [
+			'tag' => 'post_sale',
+			'role' => 'seller',
+		];
+
+		return $this->ml->apiGet('/messages/unread', $user->meli_user_id, $parametros);
+	}
+
+	public function noLeidosLocal()
+	{
+		$total = MercadoLibreMensaje::select('id')->where('is_read', '=', 0)->count();
+		return $total;
 	}
 }

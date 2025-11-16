@@ -219,7 +219,6 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-	//router.get(route(ruta + '.index'))
 	router.get(route('inicio'))
 };
 

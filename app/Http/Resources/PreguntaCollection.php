@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\HelperMercadoLibre;
+use App\Services\ItemService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -18,29 +19,17 @@ class PreguntaCollection extends ResourceCollection
 	{
 		return
 			$this->collection->transform(function ($row, $key) {
-				$item = $row->item->payload;
 				$pregunta = $row->payload;
 				$publicado=Carbon::parse($pregunta['date_created']);
-				$sellerSku = collect($item['attributes'])
-					->firstWhere('id', 'SELLER_SKU')['value_name'] ?? null;
 				$user = $row->from_user->payload??null;
-
+				$product=app(ItemService::class)->detalle($row->item_id);
 				return [
 					'id' => $row->id,
 					'pregunta' => $row->text,
 					'publicado'=>$publicado->diffForHumans(),
 					'mercadolibre_pregunta_id'=>$row->mercadolibre_pregunta_id,
 					'from_user_id'=>$row->from_user_id,
-					'producto' => [
-						'title' => $item['title'],
-						'id' => $item['id'],
-						'thumbnail' => $item['thumbnail'],
-						'sku' => $sellerSku,
-						'permalink' => $item['permalink'],
-						'base_price' => number_format($item['base_price'], 2, ',', '.') ?? 0,
-						'listing_type_id' => HelperMercadoLibre::tipo($item['listing_type_id']),
-
-					],
+					'producto' =>$product,
 					'usuario' => [
 						'nickname' => !is_null($user)?$user['nickname']:'',
 						'permalink' => !is_null($user)?$user['permalink']:'',

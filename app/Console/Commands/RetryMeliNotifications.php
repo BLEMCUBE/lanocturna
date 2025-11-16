@@ -29,7 +29,9 @@ class RetryMeliNotifications extends Command
 	{
 		$this->info('Buscando notificaciones pendientes...');
 
-		$notifications = MercadoLibreNotificacion::whereIn('status', ['failed', 'error', 'received'])->get();
+		$notifications = MercadoLibreNotificacion::whereIn('status', ['failed', 'error', 'received'])
+		->select('status','id','payload')
+		->get();
 
 		if ($notifications->isEmpty()) {
 			$this->info('✅ No hay notificaciones pendientes.');

@@ -8,6 +8,7 @@ use App\Services\ItemService;
 use App\Services\ListaUsuarioService;
 use App\Services\MercadoLibreService;
 use App\Models\MercadoLibreItem;
+use Illuminate\Support\Facades\Log;
 use App\Models\MercadoLibreListaUsuario;
 
 
@@ -36,22 +37,35 @@ class PreguntaService
 			$this->listaUsuarioService->updateOrCreate($itemUser);
 		}
 
-		$row = MercadoLibrePregunta::where('mercadolibre_pregunta_id', '=', $question['id'])->first();
-		if ($row === null) {
-			$data =	MercadoLibrePregunta::updateOrCreate(
-				['mercadolibre_pregunta_id' => $question['id']],
-				[
-					'item_id' => $question['item_id'],
-					'seller_id' => $question['seller_id'],
-					'text' => $question['text'],
-					'status' => $question['status'],
-					'date_created' => $question['date_created'],
-					'from_user_id' => $question['from']['id'] ?? null,
-					'payload' => $question,
-				]
-			);
-			return $data;
+		$data =	MercadoLibrePregunta::updateOrCreate(
+			['mercadolibre_pregunta_id' => $question['id']],
+			[
+				'item_id' => $question['item_id'],
+				'seller_id' => $question['seller_id'],
+				'text' => $question['text'],
+				'status' => $question['status'],
+				'date_created' => $question['date_created'],
+				'from_user_id' => $question['from']['id'] ?? null,
+				'payload' => $question,
+			]
+		);
+		return $data;
+	}
+	public function storeNotificacion($payload)
+	{
+		$resource = $payload['resource'] ?? null;
+		$userId   = $payload['user_id'] ?? null;
+
+		if (!$resource || !$userId) return;
+
+		$question = $this->ml->apiGet($resource, $userId);
+		//crear pregunta
+		$newItem = $this->updateOrCreate($question);
+		if ($newItem !== null) {
+			Log::info("Pregunta registrada Notificacion [{$question['id']}]");
+			//notificacion
+			$this->ml->pusherNotificacion('ml', 'question');
 		}
-		return null;
+		$this->ml->actualizar($resource);
 	}
 }

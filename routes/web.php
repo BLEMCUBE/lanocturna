@@ -398,42 +398,37 @@ Route::controller(AtributoValorController::class)->prefix('atributos-valores')->
 		Route::delete('/{id}', 'destroy')->name('destroy');
 	});
 
-//mercado libre clientes
-Route::controller(ClientesController::class)->prefix('mercadolibre/clientes')->name('mercadolibre.clientes.')
-	->middleware('auth')->group(function () {
-		Route::get('/', 'index')->name('index');
-		Route::get('/{id}/show', 'show')->name('show');
-		Route::get('/{id}/conectar', 'conectar')->name('conectar');
-		Route::delete('/{id}', 'destroy')->name('destroy');
-		Route::post('/store', 'store')->name('store');
-		Route::post('/update/{id}', 'update')->name('update');
-		Route::get('/{cliente}/refrecarToken', 'refrecarToken')->name('refresh-token');
-		Route::get('/{cliente}/desconectar', 'desconectar')->name('desconectar');
-	});
 
-//mercado libre preguntas
-Route::controller(PreguntasController::class)->prefix('mercadolibre/preguntas')->name('mercadolibre.preguntas.')
+//mercadolibre api
+Route::prefix('mercadolibre')->name('mercadolibre.')
 	->middleware('auth')->group(function () {
-		Route::get('/', 'index')->name('lista');
-		Route::get('/{id}', 'obtenerPreguntasYProductos')->name('items');
-		Route::post('/responder', 'responder')->name('responder');
-		Route::get('/{id}/cambiar', 'cambiarEstado')->name('cambiar');
-		Route::post('/bloquear-usuario', 'bloquearUsuario')->name('bloquear-usuario');
-		Route::delete('/{id}', 'destroy')->name('destroy');
-	});
 
-//mercado libre mensajes
-Route::controller(MensajesController::class)->prefix('mercadolibre/mensajes')->name('mercadolibre.mensajes.')
-	->middleware('auth')->group(function () {
-		Route::get('/', 'index')->name('lista');
-		Route::get('/test/{id}', 'test')->name('test');
-		/*
-		Route::get('/{id}', 'obtenerPreguntasYProductos')->name('items');
-		Route::post('/responder', 'responder')->name('responder');
-		Route::get('/{id}/cambiar', 'cambiarEstado')->name('cambiar');
-		Route::post('/bloquear-usuario', 'bloquearUsuario')->name('bloquear-usuario');
-		Route::delete('/{id}', 'destroy')->name('destroy');
-		*/
+		//app keys
+		Route::prefix('clientes')->name('clientes.')->group(function () {
+			Route::get('/', [ClientesController::class, 'index'])->name('index');
+			Route::get('/{id}/show', [ClientesController::class, 'show'])->name('show');
+			Route::get('/{id}/conectar', [ClientesController::class, 'conectar'])->name('conectar');
+			Route::delete('/{id}', [ClientesController::class, 'destroy'])->name('destroy');
+			Route::post('/store', [ClientesController::class, 'store'])->name('store');
+			Route::post('/update/{id}', [ClientesController::class, 'update'])->name('update');
+			Route::get('/{cliente}/refrecarToken', [ClientesController::class, 'refrecarToken'])->name('refresh-token');
+			Route::get('/{cliente}/desconectar', [ClientesController::class, 'desconectar'])->name('desconectar');
+		});
+
+		//preguntas
+		Route::prefix('preguntas')->name('preguntas.')->group(function () {
+			Route::get('/', [PreguntasController::class, 'index'])->name('lista');
+			Route::get('/{id}', [PreguntasController::class, 'obtenerPreguntasYProductos'])->name('items');
+			Route::post('/responder', [PreguntasController::class, 'responder'])->name('responder');
+			Route::post('/bloquear-usuario', [PreguntasController::class, 'bloquearUsuario'])->name('bloquear-usuario');
+			Route::delete('/{id}', [PreguntasController::class, 'destroy'])->name('destroy');
+		});
+
+		//mensajes
+		Route::prefix('mensajes')->name('mensajes.')->group(function () {
+			Route::get('/sin_leer', [MensajesController::class, 'sinLeer'])->name('sinLeer');
+			Route::get('/', [MensajesController::class, 'index'])->name('lista');
+		});
 	});
 
 //respuestas rapidas

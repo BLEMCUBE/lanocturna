@@ -53,7 +53,6 @@ class CostoRealImport implements ToCollection, WithHeadingRow, WithCalculatedFor
 				->where('sku','=',$row['sku'])
 				->where('importacion_id','=',$this->importacion_id)
 				->where('importaciones_detalle_id','=',$idDet->id)->first();
-				Log::info('costo_real_reg ' . json_encode($costo_real_reg));
 				if (!empty($costo_real_reg)) {
 					$costo_real_reg->update([
 						"monto" => $costo_real,

@@ -63,14 +63,15 @@ class NotificacionController extends Controller
 		$payload = $request->all();
 		$resource = $payload['resource'] ?? null;
 		$topic = $payload['topic'] ?? null;
-
+		Log::info('notifications storeNotificacion...', ['meli_user_id' => $payload]);
 		if (!$resource) {
 			return response()->json(['error' => 'Notificación sin resource'], 400);
 		}
 
-
 		// Evitar procesar duplicados
-		$exists = MercadoLibreNotificacion::where('resource', $resource)->exists();
+		$exists = MercadoLibreNotificacion::where('resource', $resource)
+		->select('resource','status')
+		->whereIn('status',['processed','received'])->exists();
 
 		if ($exists) {
 			// Ya procesada: responder OK sin hacer nada
@@ -94,6 +95,7 @@ class NotificacionController extends Controller
 		]);
 		//guardar en log
 		Log::info('Notificación Mercado Libre:', ['payload' => $payload]);
+
 		//enviar a cola
 		ProcessMercadoLibreNotification::dispatch($payload)->onQueue('meli');
 		//}

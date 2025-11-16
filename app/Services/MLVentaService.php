@@ -2,56 +2,87 @@
 
 namespace App\Services;
 
-use App\Models\MercadoLibreCliente;
-use App\Services\ListaUsuarioService;
 use App\Services\MercadoLibreService;
+use App\Services\MLUsuarioService;
+use App\Services\ItemService;
 use App\Models\MercadoLibreVenta;
-use App\Models\MercadoLibreListaUsuario;
+use Illuminate\Support\Facades\Log;
 
 class MLVentaService
 {
 	public function __construct(
 		private MercadoLibreService $ml,
-		private ListaUsuarioService $listaUsuarioService,
+		private ItemService $itemService,
+		private MLUsuarioService $mLUsuarioService
 	) {}
+
 	public function updateOrCreate($item)
 	{
-		$cliente = MercadoLibreCliente::with('usuario')->first();
-		$row = MercadoLibreVenta::where('mercadolibre_venta_id', '=', $item['id'])->first();
+		$user = $this->mLUsuarioService->datosUsuario();
+		if (!$user) return;
 		//existComprador
-		$existComprador = MercadoLibreListaUsuario::where('user_id', $payload['buyer']['id'] ?? null)->exists();
+		$existComprador = $this->mLUsuarioService->buscarUsuario($item['buyer']['id']);
+		$existVendedor = $this->mLUsuarioService->buscarUsuario($item['seller']['id']);
 
-		if (!$existComprador) {
-			$itemUser = $this->ml->apiGet('/users/' . $item['buyer']['id'], $cliente->usuario->meli_user_id);
-			$this->listaUsuarioService->updateOrCreate($itemUser);
-		}
-		//existVendedor
-		$existVendedor = MercadoLibreListaUsuario::where('user_id', $payload['seller']['id'] ?? null)->exists();
+		//if ($row === null) {
 
-		if (!$existVendedor) {
-			$itemUser = $this->ml->apiGet('/users/' . $item['seller']['id'], $cliente->usuario->meli_user_id);
-			$this->listaUsuarioService->updateOrCreate($itemUser);
-		}
-		if ($row === null) {
+		//ids items
+		$items = collect($item['order_items'])
+			->pluck('item.id')
+			->filter()
+			->values()
+			->toArray();
+		$data =	MercadoLibreVenta::updateOrCreate(
+			['mercadolibre_venta_id' => $item['id']],
+			[
+				'mercadolibre_venta_id' => $item['id'] ?? null,
+				'pack_id' => $item['pack_id'] ?? null,
+				'claim_id' => $item['claim_id'] ?? null,
+				'buyer_id' => $item['buyer']['id'] ?? null,
+				'seller_id' => $item['seller']['id'] ?? null,
+				'status' => $item['status'] ?? 'pending',
+				'payload' => $item,
+				'item_ids' => $items,
+			]
 
-			//ids items
-			$data =	MercadoLibreVenta::updateOrCreate(
-				['mercadolibre_venta_id' => $item['id']],
-				[
-					'mercadolibre_venta_id' => $item['id'] ?? null,
-					'buyer_id' => $item['buyer']['id'] ?? null,
-					'seller_id' => $item['seller']['id'] ?? null,
-					'status' => $item['status'] ?? 'pending',
-					'payload' => $item,
-					'item_ids' => collect($item['order_items'])
-						->pluck('item.id')
-						->filter()
-						->values()
-						->toArray(),
-				]
-			);
-			return $data;
+		);
+
+		foreach ($items as $key => $value) {
+			$item = $this->ml->apiGet('/items/' . $value, $user->meli_user_id);
+			$this->itemService->updateOrCreate($item);
 		}
-		return null;
+		return $data;
+	}
+
+	public function storeNotificacion($payload)
+	{
+		$resource = $payload['resource'] ?? null;
+		$userId   = $payload['user_id'] ?? null;
+		if (!$resource || !$userId) return;
+
+		$question = $this->ml->apiGetDos($resource, $userId);
+
+		//crear
+		$order = $this->updateOrCreate($question);
+		if ($order !== null) {
+			Log::info("Orden registrada Notificacion [{$question['id']}]");
+		}
+
+		$this->ml->actualizar($resource);
+	}
+
+	public function comprador($orderId)
+	{
+		$query = MercadoLibreVenta::where('id', $orderId)->first();
+		$item = $query->payload;
+		if (!is_null($item)) {
+			return [
+				"id" => $item['buyer']['id'],
+				"nickname" => $item['buyer']['nickname'],
+				"last_name" => $item['buyer']['last_name'],
+				"first_name" => $item['buyer']['first_name']
+			];
+		}
+		return [];
 	}
 }

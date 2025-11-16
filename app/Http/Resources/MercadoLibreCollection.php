@@ -42,7 +42,8 @@ class MercadoLibreCollection extends ResourceCollection
 					'is_default' => $row->is_default,
 					'is_expired' =>  $expira,
 					'expires_at' => !is_null($row->usuario) ? Carbon::createFromFormat('Y-m-d H:i:s', $row->usuario->expires_at)->format('d/m/Y H:i:s') : '',
-					'usuario' => $row->usuario ? 1 : 0
+					'usuario' => $row->usuario ? 1 : 0,
+					'access_token' => $row->usuario->access_token ?? ''
 
 				];
 			});
