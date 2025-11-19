@@ -12,7 +12,6 @@ use App\Services\MercadoLibreService;
 use App\Services\PreguntaService;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Request as Req;
 use Illuminate\Http\Request;
 
@@ -27,7 +26,6 @@ class PreguntasController extends Controller
 
 	public function index()
 	{
-		$cliente = MercadoLibreCliente::with('usuario')->first();
 		$datos = [];
 
 		$saludo = Configuracion::select('slug', 'value')
@@ -36,34 +34,6 @@ class PreguntasController extends Controller
 		$firma = Configuracion::select('slug', 'value')
 			->where('slug', 'pregunta-firma')
 			->first();
-
-		$fechaInicio = Carbon::now()
-			->subDays(15)
-			->startOfDay()
-			->format('Y-m-d\TH:i:s.vP');
-		$fechaFin = Carbon::now()
-			->setHour(23)
-			->setMinute(59)
-			->setSecond(0)
-			->format('Y-m-d\TH:i:s.vP');
-
-		if (!is_null($cliente->usuario)) {
-			$parametros = [
-				'seller_id' => $cliente->usuario->meli_user_id,
-				'status' => 'UNANSWERED',
-				'api_version' => '4',
-				'date_created.from' => $fechaInicio,
-				'date_created.to' => $fechaFin,
-			];
-			$query_questions = $this->ml->apiGet('/questions/search', $cliente->usuario->meli_user_id, $parametros);
-
-			//$query_questions = null;
-			if (!is_null($query_questions)) {
-				foreach ($query_questions['questions'] as $key => $value) {
-					$this->store($value, $cliente->usuario->meli_user_id);
-				}
-			}
-		}
 
 		$datos = new PreguntaCollection(
 			MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->with('from_user')->with('item')->whereHas('item', function ($query) {
@@ -84,8 +54,6 @@ class PreguntasController extends Controller
 		if ($exists) return;
 		$this->preguntaService->updateOrCreate($payload);
 	}
-
-
 
 	public function responder(Request $request)
 	{
@@ -110,7 +78,6 @@ class PreguntasController extends Controller
 
 		$tokenData = $respuestaML;
 
-		//cambiar a respondido la pregunta
 		$item = MercadoLibrePregunta::where('mercadolibre_pregunta_id', '=', $request->mercadolibre_pregunta_id)->first();
 		if (!is_null($item)) {
 			$item->update([
@@ -119,27 +86,6 @@ class PreguntasController extends Controller
 			]);
 		}
 	}
-
-	public function cambiarEstado($id)
-	{
-		$cliente = MercadoLibreCliente::with('usuario')->first();
-		$query_question = $this->ml->apiGet('/questions/' . $id, $cliente->usuario->meli_user_id);
-
-		$this->preguntaService->updateOrCreate($query_question);
-
-		if (!$query_question['answer'] == null) {
-
-			MercadoLibreRespuesta::create([
-				'mercadolibre_pregunta_id' => $query_question['id'],
-				'from_user_id' => $query_question['from']['id'],
-				'date_created' =>  $query_question['answer']['date_created'],
-				'text' =>  $query_question['answer']['text'],
-				'payload' => $query_question['answer'],
-
-			]);
-		};
-	}
-
 
 	public function bloquearUsuario(Request $request)
 	{
@@ -150,7 +96,7 @@ class PreguntasController extends Controller
 	//eliminar
 	public function destroy($id)
 	{
-		$item = MercadoLibrePregunta::find($id);
-		$item->delete();
+		//$item = MercadoLibrePregunta::find($id);
+		//$item->delete();
 	}
 }

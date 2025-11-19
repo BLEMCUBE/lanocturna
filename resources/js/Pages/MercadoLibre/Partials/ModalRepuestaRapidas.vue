@@ -11,16 +11,13 @@ const titulo = "Respuestas Rapidas"
 const ruta = "respuestasrapidas"
 const mlruta = "mercadolibre"
 const emit = defineEmits(['addTexto']);
-import { useCustomToast } from '@/composables/customToast';
-const { setShow } = useCustomToast()
 
 //Variables
 const isShowModal = ref(false);
 
 const props = defineProps({
 	tipo: {
-		type: String,
-		default: 'pregunta',
+		type: String
 	},
 
 });
@@ -49,9 +46,7 @@ const colorSeleccionado = ref(null)
 //Funciones
 
 const showData = () => {
-	//loader.show()
 	isShowModal.value = true;
-
 };
 const sendTexto = (index) => {
 	let texto = respuestas.value[index].descripcion;
@@ -84,6 +79,7 @@ const agregarEtiqueta = () => {
 				{
 					id: null,
 					titulo: etiqueta.value,
+					tipo:props.tipo,
 					descripcion: descripcion.value,
 					color: color.value,
 				}
@@ -159,9 +155,12 @@ const submit = () => {
 		onSuccess: () => {
 			isShowModal.value = false
 			show('success', 'Mensaje', 'Se ha editado')
-			setTimeout(() => {
-				router.get(route(mlruta + '.preguntas.lista'));
-			}, 500);
+			if(props.tipo=='pregunta'){
+				setTimeout(() => {
+					router.get(route(mlruta + '.preguntas.lista'));
+				}, 500);
+			}
+			dataEdit()
 		},
 		onFinish: () => {
 		},
@@ -186,11 +185,8 @@ const show = (tipo, titulo, mensaje) => {
 	<section>
 		<button v-for="(item, index) in respuestas" @click.prevent="sendTexto(index)"
 			class="px-3 py-1 m-1 text-sm  text-white rounded  text-medium" :style="{ backgroundColor: item.color }">
-
 			{{ item.titulo }}
 		</button>
-
-
 		<button @click.prevent="showData"
 			class="w-full bg-gray-200 hover:bg-gray-300 text-xs p-2 rounded mt-3 flex items-center justify-center gap-2">
 			<i class="fas fa-pen"></i> Modificar respuestas rápidas

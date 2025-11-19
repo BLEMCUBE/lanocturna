@@ -5,14 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RespuestaRapidaRequest;
 use App\Models\RespuestaRapida;
 use App\Models\Configuracion;
-use App\Services\ConfiguracionService;
-use Illuminate\Support\Facades\Log;
 
 class RespuestaRapidaController extends Controller
 {
-	public function __construct(
-		private ConfiguracionService $configuracionService
-	) {}
 
 	public function index($tipo)
 	{

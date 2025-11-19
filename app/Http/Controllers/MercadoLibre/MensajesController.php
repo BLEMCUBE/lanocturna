@@ -5,7 +5,11 @@ namespace App\Http\Controllers\MercadoLibre;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MensajeCollection;
 use App\Models\MercadoLibreMensaje;
+use App\Models\MercadoLibreVenta;
 use Illuminate\Support\Facades\DB;
+use App\Services\MensajeService;
+use App\Services\MercadoLibreService;
+use App\Services\MLUsuarioService;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Carbon\Carbon;
@@ -51,5 +55,114 @@ class MensajesController extends Controller
 		return Inertia::render('MercadoLibre/MensajesSinLeer', [
 			'datos' => $datosFinal,
 		]);
+	}
+
+	public function showMensajes($id)
+	{
+		$datos = MercadoLibreVenta::where('pack_id', $id)
+			->orWhere('mercadolibre_venta_id', $id)
+			->select('mercadolibre_venta_id', 'pack_id', 'payload')
+			->first();
+		$mensaje = app(MensajeService::class);
+
+		$detalle = $mensaje->mensajesDetalleMejorado($id, $datos);
+
+		return Inertia::render('MercadoLibre/MensajesDetalle', [
+			'datos' => $detalle,
+		]);
+	}
+
+	public function descargarAdjunto(Request $request)
+	{
+		$user = app(MLUsuarioService::class)->datosUsuario();
+		if (!$user) return;
+		$ml = app(MercadoLibreService::class);
+
+
+		$request->validate([
+			'filename'  => 'required',
+			'original_filename' => 'required',
+		]);
+
+		$realName = $request->original_filename;
+		$filename = $request->filename;
+
+		$token = $ml->getAccessToken($user->meli_user_id);  // renueva automáticamente el access token
+
+		$url = "https://api.mercadolibre.com/messages/attachments/{$filename}?tag=post_sale&site_id=MLU";
+
+		try {
+			$response = Http::withToken($token)->withOptions([
+				'stream' => true,
+			])->get($url);
+
+			if (!$response->successful()) {
+				return response()->json([
+					'success' => false,
+					'message' => 'Error al descargar adjunto',
+					'status' => $response->status(),
+					'body' => $response->body(),
+				], 400);
+			}
+
+			// Tipo MIME real
+			$contentType = $response->header('Content-Type');
+
+			return response()->streamDownload(function () use ($response) {
+				echo $response->body();
+			}, $realName, [
+				'Content-Type' => $contentType,
+			]);
+		} catch (\Exception $e) {
+			return response()->json([
+				'success' => false,
+				'message' => 'Error inesperado',
+				'error' => $e->getMessage(),
+			], 500);
+		}
+	}
+
+	public function responder(Request $request)
+	{
+		$request->merge(['date_created' => now()]);
+		$user = app(MLUsuarioService::class)->datosUsuario();
+		if (!$user) return;
+		$ml = app(MercadoLibreService::class);
+
+		//enviar a mercado libre
+		$respuestaML = $ml->apiPost("/messages/packs/{$request->packId}/sellers/{$request->sellerId}?tag=post_sale",  [
+			"from" => [
+				"user_id" => (int) $request->sellerId
+			],
+			"to" => [
+				"user_id" => (int) $request->buyerId //null // ML lo detecta automáticamente por ser mensaje al comprador
+			],
+			"text" => $request->text
+		], $user->meli_user_id);
+
+		$respuestaML;
+		$created = $respuestaML['message_date']['created'] ?? null;
+		MercadoLibreMensaje::updateOrCreate(
+			['message_id' => $respuestaML['id']],
+			[
+				'pack_id' => $request->packId,
+				'message_id' => $respuestaML['id'],
+				'from_user_id' => $respuestaML['from']['user_id'] ?? null,
+				'to_user_id'   => $respuestaML['to']['user_id'] ?? null,
+				'date_created' => $created,
+				'body' => $request->text,
+				'attachment_path' => $respuestaML['message_attachments'][0]['filename']
+					?? null,
+				// si read ≠ null → lo leyó alguien → marcar como leído
+				'is_read' =>  0,
+				// marcar si lo envió el vendedor
+				'is_from_seller' => 1,
+				// guardar JSON entero
+				'payload' => $respuestaML,
+
+
+			]
+		);
+
 	}
 }

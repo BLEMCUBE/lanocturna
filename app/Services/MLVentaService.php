@@ -61,11 +61,9 @@ class MLVentaService
 		if (!$resource || !$userId) return;
 
 		$question = $this->ml->apiGetDos($resource, $userId);
-
-		//crear
-		$order = $this->updateOrCreate($question);
-		if ($order !== null) {
-			Log::info("Orden registrada Notificacion [{$question['id']}]");
+		if ($question['success']) {
+			//crear
+			$order = $this->updateOrCreate($question['body']);
 		}
 
 		$this->ml->actualizar($resource);

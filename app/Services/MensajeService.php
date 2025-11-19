@@ -6,6 +6,7 @@ use App\Jobs\FetchMercadoLibreOrder;
 use App\Models\MercadoLibreMensaje;
 use App\Models\MercadoLibreVenta;
 use App\Services\MLUsuarioService;
+use App\Services\ItemService;
 use App\Services\MercadoLibreService;
 use Illuminate\Support\Facades\Log;
 
@@ -13,7 +14,8 @@ class MensajeService
 {
 	public function __construct(
 		private	MercadoLibreService $ml,
-		private MLUsuarioService $mLUsuarioService
+		private MLUsuarioService $mLUsuarioService,
+		private ItemService $itemService
 	) {}
 
 	public function updateOrCreate($question)
@@ -204,7 +206,6 @@ class MensajeService
 			'tag' => 'post_sale',
 			'role' => 'seller',
 		];
-
 		return $this->ml->apiGet('/messages/unread', $user->meli_user_id, $parametros);
 	}
 
@@ -212,5 +213,71 @@ class MensajeService
 	{
 		$total = MercadoLibreMensaje::select('id')->where('is_read', '=', 0)->count();
 		return $total;
+	}
+
+	public function mensajesDetalleMejorado($ventaId, $detalle)
+	{
+		// 1) Normalizar payload de la venta
+		$venta_payload = is_string($detalle['payload'])
+			? json_decode($detalle['payload'], true)
+			: $detalle['payload'];
+
+		// 2) Productos (simple, corto y optimizado)
+		$productos = collect($venta_payload['order_items'] ?? [])
+			->map(fn($i) => [
+				//"producto" => $i['item']['title'] ?? '',
+				"producto" => $this->itemService->detalle($i['item']['id']),
+				"cantidad" => $i['quantity'] ?? '',
+				"seller_sku" => $i['item']['seller_sku'] ?? '',
+				"precio"   => number_format($i['full_unit_price'],2,',','.') ?? '',
+				"color" =>	collect($i['item']['variation_attributes'])
+					->firstWhere('id', 'COLOR')['value_name'] ?? null
+			])
+			->values()
+			->toArray();
+
+		// 3) Mensajes agrupados por fecha + normalizados
+		$mensajes = MercadoLibreMensaje::where('pack_id', $ventaId)
+			->orderBy('date_created')
+			->select('date_created', 'payload', 'is_from_seller')
+			->get()
+			->map(function ($m) {
+
+				// Decodificar una sola vez
+				$payload = is_string($m->payload)
+					? json_decode($m->payload, true)
+					: $m->payload;
+
+				return [
+					"fecha"          => $m->date_created->format("Y-m-d H:i:s"),
+					"attachment_path"          => $m->attachment_path ?? null,
+					//"from_id"        => $payload["from"]["user_id"] ?? null,
+					"is_from_seller" => $m->is_from_seller,
+					"raw"            => $payload
+				];
+			})
+			->groupBy(
+				fn($m) =>
+				\Carbon\Carbon::parse($m["fecha"])->format("d/m/Y")
+			)
+			->toArray();
+
+		// 4) Estructura final
+		return [
+			"id"                    => $ventaId,
+			"pack_id"               => $detalle['pack_id'],
+			"mercadolibre_venta_id" => $detalle['mercadolibre_venta_id'],
+			"date_created" => \Carbon\Carbon::parse($venta_payload['date_created'])->setTimezone(config('app.timezone'))->format("d-m-Y H:i") ?? '',
+			"estado"                => $venta_payload['fulfilled'] ?? '',
+			"comprador"             => [
+				"id"   => $venta_payload['buyer']['id'] ?? '',
+				"nickname"   => $venta_payload['buyer']['nickname'] ?? '',
+				"first_name" => $venta_payload['buyer']['first_name'] ?? '',
+				"last_name"  => $venta_payload['buyer']['last_name'] ?? '',
+				"seller"  => $venta_payload['seller']['id'] ?? ''
+			],
+			"compra"   => $productos,
+			"mensajes" => $mensajes
+		];
 	}
 }

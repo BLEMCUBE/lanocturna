@@ -197,6 +197,8 @@ class MercadoLibreService
 
 			$result = [
 				'success'     => $isSuccess,
+				//'url'     => $url,
+				//'content_type' => $response->header('Content-Type'),
 				'status_code' => $response->status(),
 				'error'       => $response->json('error') ?? null,
 				'message'     => $response->json('message') ?? null,

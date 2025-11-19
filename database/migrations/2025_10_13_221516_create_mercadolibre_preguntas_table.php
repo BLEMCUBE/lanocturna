@@ -16,7 +16,7 @@ return new class extends Migration {
 			$table->text('text');
 			$table->string('status')->nullable();
 			$table->timestamp('date_created')->nullable();
-			$table->json('payload')->nullable(); // Guardamos el JSON completo de la pregunta
+			$table->json('payload')->nullable();
 			$table->timestamps();
 		});
 	}

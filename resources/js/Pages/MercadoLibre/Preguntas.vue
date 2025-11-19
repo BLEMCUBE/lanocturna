@@ -233,7 +233,7 @@ const setTexto = (index) => {
 	<Head title="Mercado Libre-Preguntas" />
 	<AppLayout :pagina="[{ 'label': titulo, link: false }]">
 
-		<div class="mb-4 e col-span-12   dark:border-gray-700  dark:bg-gray-800">
+		<div class="mb-4  col-span-12   dark:border-gray-700  dark:bg-gray-800">
 			<div class=" px-5 pb-2 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 			</div>
@@ -293,11 +293,6 @@ const setTexto = (index) => {
 									title="Borrar pregunta">
 									<i class="fa fa-trash"></i>
 								</button>
-								<!--
-								<button  @click.prevent="bloquearUsuario(index,item.usuario.nickname)" class="text-gray-600 hover:text-gray-800" title="Bloquear usuario">
-									<i class="fa fa-ban"></i>
-								</button>
-								-->
 							</div>
 						</div>
 

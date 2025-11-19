@@ -24,9 +24,9 @@ class MercadoLibreMensaje extends Model
 		'is_from_seller',
 		'payload'
 	];
- //protected $appends = ['venta'];
 	protected $casts = [
 		'payload' => 'array',
+		'date_created' => \App\Casts\UtcDatetime::class,
 	];
 
 	/**

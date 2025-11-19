@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
 	{
 		// $schedule->command('inspire')->hourly();
 		$schedule->command('datos:eliminar-notificaciones-antiguas')->dailyAt('01:00');
-		$schedule->job(new \App\Jobs\CheckMeliPackStatus, 'meli')->everyMinute();
+		$schedule->job(new \App\Jobs\FetchUnreadQuestionsJob, 'meli')->everyTwoMinutes();
+		$schedule->job(new \App\Jobs\CheckMeliPackStatus, 'meli')->everyTwoMinutes();
 	}
 
 	/**

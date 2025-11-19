@@ -59,7 +59,7 @@ class PreguntaService
 		if (!$resource || !$userId) return;
 
 		$question = $this->ml->apiGet($resource, $userId);
-		//crear pregunta
+
 		$newItem = $this->updateOrCreate($question);
 		if ($newItem !== null) {
 			Log::info("Pregunta registrada Notificacion [{$question['id']}]");

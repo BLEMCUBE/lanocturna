@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use App\Models\MercadoLibreMensaje;
 use App\Services\ItemService;
 use App\Services\MLVentaService;
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class MensajeCollection extends ResourceCollection
@@ -20,8 +19,7 @@ class MensajeCollection extends ResourceCollection
 	{
 		return
 			$this->collection->transform(function ($row, $key) {
-				$time = config('app.timezone');
-				$fecha = Carbon::parse($row->date_created, 'UTC')->setTimezone($time);
+				$fecha = $row->date_created;
 				$comprador=app(MLVentaService::class)->comprador($row->venta->id);
 				$items=app(ItemService::class)->detalle($row->venta->item_ids,true);
 				return [

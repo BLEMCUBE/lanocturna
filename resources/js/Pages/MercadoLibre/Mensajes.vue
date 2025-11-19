@@ -16,6 +16,16 @@ const todos = () => {
 	router.get(route(ruta + '.lista'))
 };
 
+const btnVer = (id) => {
+	router.get(route(ruta + '.showMensajes', id));
+
+};
+
+
+const clickDetalle = (e) => {
+
+	btnVer(e.data.pack_id)
+}
 const sinLeer = () => {
 	router.get(route(ruta + '.sinLeer'))
 };
@@ -44,12 +54,14 @@ onMounted(() => {
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 			</div>
 			<div class="align-middle">
-				<Button :class="{ 'opacity-60': route().current('mercadolibre.mensajes.sinLeer') }" @click="todos" label="Todos" />
+				<Button :class="{ 'opacity-60': route().current('mercadolibre.mensajes.sinLeer') }" @click="todos"
+					label="Todos" />
 				<Button class="mx-2" :class="{ 'opacity-60': route().current('mercadolibre.mensajes.lista') }"
 					label="Sin leer" @click="sinLeer" />
-				<DataTable size="small" :filters="filters" :value="datosTodos" :paginator="true" :rows="50" :pt="{
-					bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100' }
-				}" :rowsPerPageOptions="[5, 10, 20, 50]" :globalFilterFields="['productoDisplay']"
+				<DataTable size="small" :filters="filters" @row-click="clickDetalle" :value="datosTodos"
+					:paginator="true" :rows="50" :pt="{
+						bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100' }
+					}" :rowsPerPageOptions="[5, 10, 20, 50]" :globalFilterFields="['productoDisplay']"
 					paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
 					tableStyle="width: 100%">
 					<template #header size="small" class="bg-secondary-900">
@@ -71,7 +83,7 @@ onMounted(() => {
 								<div v-if="slotProps.data.leido > 0"
 									class="my-2 px-2 py-1 font-bold rounded-md text-white bg-red-700 border-1 w-fit  border-red-700">
 									{{ slotProps.data.leido > 1 ? `${slotProps.data.leido} mensajes sin
-									leer`: `${slotProps.data.leido } mensaje sin leer` }}
+									leer`: `${slotProps.data.leido} mensaje sin leer` }}
 								</div>
 
 								<div v-html="slotProps.data.mensaje">
