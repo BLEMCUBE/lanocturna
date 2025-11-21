@@ -3137,7 +3137,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/Mensajes.vue": {
-    "file": "assets/Mensajes-S3csrKox.js",
+    "file": "assets/Mensajes-D7BBUNzu.js",
     "name": "Mensajes",
     "src": "resources/js/Pages/MercadoLibre/Mensajes.vue",
     "isDynamicEntry": true,
@@ -5788,7 +5788,7 @@
     ]
   },
   "resources/js/Pages/Venta/Edit.vue": {
-    "file": "assets/Edit-BXuoj9yq.js",
+    "file": "assets/Edit-C3zbmRHk.js",
     "name": "Edit",
     "src": "resources/js/Pages/Venta/Edit.vue",
     "isDynamicEntry": true,
@@ -6002,7 +6002,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-B090QhLK.js",
+    "file": "assets/app-BYaCuesX.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
