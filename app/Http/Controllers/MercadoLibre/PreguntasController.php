@@ -4,8 +4,11 @@ namespace App\Http\Controllers\MercadoLibre;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PreguntaCollection;
+use App\Http\Resources\PreguntaHistorialCollection;
+use App\Jobs\FetchMercadoLibrePreguntasHistorial;
 use App\Models\Configuracion;
 use App\Models\MercadoLibreCliente;
+use App\Models\MercadoLibreListaUsuario;
 use App\Models\MercadoLibrePregunta;
 use App\Models\MercadoLibreRespuesta;
 use App\Services\MercadoLibreService;
@@ -98,5 +101,38 @@ class PreguntasController extends Controller
 	{
 		//$item = MercadoLibrePregunta::find($id);
 		//$item->delete();
+	}
+
+	public function historial()
+	{
+		$items = MercadoLibrePregunta::select('item_id', 'from_user_id')->groupBy('item_id')->get();
+		//dd($items);
+
+
+		foreach ($items as $key => $value) {
+			$user = MercadoLibreListaUsuario::where('user_id', $value->from_user_id)->first();
+			if (is_null($user)) {
+
+				FetchMercadoLibrePreguntasHistorial::dispatch($value->item_id)->onQueue('meli');
+			}
+		}
+
+		$queryDatos = MercadoLibrePregunta::with(['from_user', 'respuesta', 'item'])
+			->whereHas('item', function ($q) {
+				$q->where('status', 'active');
+			})
+			->whereHas('respuesta') // <-- Solo preguntas que tengan respuesta
+			->orderBy('date_created', 'ASC')
+			->get();
+
+
+
+		$datos = new PreguntaHistorialCollection(
+			$queryDatos
+		);
+
+		return Inertia::render('MercadoLibre/PreguntaHistorial', [
+			'datos' => $datos,
+		]);
 	}
 }

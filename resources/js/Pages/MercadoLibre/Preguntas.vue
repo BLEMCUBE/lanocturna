@@ -287,13 +287,14 @@ const setTexto = (index) => {
 								</div>
 							</div>
 
-							<!-- Botones header -->
+							<!-- Botones header
 							<div class="flex items-center gap-3">
 								<button @click.prevent="eliminar(item.id, '')" class="text-red-500 hover:text-red-700"
-									title="Borrar pregunta">
-									<i class="fa fa-trash"></i>
-								</button>
-							</div>
+								title="Borrar pregunta">
+								<i class="fa fa-trash"></i>
+							</button>
+						</div>
+						-->
 						</div>
 
 						<!-- Pregunta -->

@@ -15,7 +15,16 @@ const filters = ref({
 const todos = () => {
 	router.get(route(ruta + '.lista'))
 };
+const btnVer = (id) => {
+	router.get(route(ruta + '.showMensajes', id));
 
+};
+
+
+const clickDetalle = (e) => {
+
+	btnVer(e.data.pack_id)
+}
 const sinLeer = () => {
 	router.get(route(ruta + '.sinLeer'))
 };
@@ -47,7 +56,7 @@ onMounted(() => {
 				<Button :class="{ 'opacity-60': route().current('mercadolibre.mensajes.sinLeer') }" @click="todos" label="Todos" />
 				<Button class="mx-2" :class="{ 'opacity-60': route().current('mercadolibre.mensajes.lista') }"
 					label="Sin leer" @click="sinLeer" />
-				<DataTable size="small" :filters="filters" :value="datosNoLeido" :paginator="true" :rows="50" :pt="{
+				<DataTable size="small" :filters="filters" @row-click="clickDetalle" :value="datosNoLeido" :paginator="true" :rows="50" :pt="{
 					bodyRow: { class: 'hover:cursor-pointer hover:bg-gray-100' }
 				}" :rowsPerPageOptions="[5, 10, 20, 50]" :globalFilterFields="['productoDisplay']"
 					paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"

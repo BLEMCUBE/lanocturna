@@ -840,28 +840,41 @@ const ok = (icono, mensaje) => {
 			<li @click="setMenu('mercadolibre')" v-show="permissions.includes('mercadoLibre-apis')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.clientes.index')" :active="route().current('mercadolibre.clientes.index')">
+					:href="route('mercadolibre.clientes.index')"
+					:active="route().current('mercadolibre.clientes.index')">
 					<span class="ml-2 uppercase">App Keys</span>
 				</NavLinkSideBar>
 			</li>
 			<li @click="setMenu('preguntas')" v-show="permissions.includes('mercadoLibre-preguntas')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.preguntas.lista')" :active="route().current('mercadolibre.preguntas.lista')">
+					:href="route('mercadolibre.preguntas.lista')"
+					:active="route().current('mercadolibre.preguntas.lista')">
 					<span class="ml-2 uppercase">Preguntas
-									<Badge v-if="cant_preguntas > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
-										severity="danger" :value="cant_preguntas" />
-								</span>
+						<Badge v-if="cant_preguntas > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+							severity="danger" :value="cant_preguntas" />
+					</span>
+				</NavLinkSideBar>
+			</li>
+			<li @click="setMenu('preguntas')" v-show="permissions.includes('mercadoLibre-preguntas')">
+				<NavLinkSideBar icon-class="fas fa-boxes"
+					class="flex items-center justify-start px-3 py-2 text-base font-medium"
+					:href="route('mercadolibre.preguntas.historial')"
+					:active="route().current('mercadolibre.preguntas.historial')">
+					<span class="ml-2 uppercase">Historial preguntas
+
+					</span>
 				</NavLinkSideBar>
 			</li>
 			<li @click="setMenu('mensajes')" v-show="permissions.includes('mercadoLibre-mensajes')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.mensajes.sinLeer')" :active="route().current('mercadolibre.mensajes.sinLeer')">
+					:href="route('mercadolibre.mensajes.sinLeer')"
+					:active="route().current('mercadolibre.mensajes.sinLeer')">
 					<span class="ml-2 uppercase">Mensajes
-									<Badge v-if="cant_mensajes > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
-										severity="danger" :value="cant_mensajes" />
-								</span>
+						<Badge v-if="cant_mensajes > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+							severity="danger" :value="cant_mensajes" />
+					</span>
 				</NavLinkSideBar>
 			</li>
 			<!--mercado libre-->

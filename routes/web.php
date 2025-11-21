@@ -418,6 +418,7 @@ Route::prefix('mercadolibre')->name('mercadolibre.')
 		//preguntas
 		Route::prefix('preguntas')->name('preguntas.')->group(function () {
 			Route::get('/', [PreguntasController::class, 'index'])->name('lista');
+			Route::get('/historial', [PreguntasController::class, 'historial'])->name('historial');
 			Route::get('/{id}', [PreguntasController::class, 'obtenerPreguntasYProductos'])->name('items');
 			Route::post('/responder', [PreguntasController::class, 'responder'])->name('responder');
 			Route::post('/bloquear-usuario', [PreguntasController::class, 'bloquearUsuario'])->name('bloquear-usuario');
@@ -428,6 +429,7 @@ Route::prefix('mercadolibre')->name('mercadolibre.')
 		Route::prefix('mensajes')->name('mensajes.')->group(function () {
 			Route::get('/sin_leer', [MensajesController::class, 'sinLeer'])->name('sinLeer');
 			Route::get('/', [MensajesController::class, 'index'])->name('lista');
+
 			Route::post('/responder', [MensajesController::class, 'responder'])->name('responder');
 			Route::get('/adjunto', [MensajesController::class, 'descargarAdjunto'])->name('descargarAdjunto');
 			Route::get('/{id}/mensajes', [MensajesController::class, 'showMensajes'])->name('showMensajes');

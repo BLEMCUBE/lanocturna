@@ -21,4 +21,9 @@ class MercadoLibreRespuesta extends Model
 		'payload' => 'array',
 	];
 
+	  public function pregunta()
+    {
+        return $this->belongsTo(MercadoLibrePregunta::class, 'mercadolibre_pregunta_id', 'mercadolibre_pregunta_id');
+    }
+
 }

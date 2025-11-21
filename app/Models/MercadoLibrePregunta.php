@@ -33,4 +33,8 @@ class MercadoLibrePregunta extends Model
 	{
 		return $this->belongsTo(MercadoLibreListaUsuario::class, 'from_user_id', 'user_id');
 	}
+	  public function respuesta()
+    {
+        return $this->hasOne(MercadoLibreRespuesta::class, 'mercadolibre_pregunta_id', 'mercadolibre_pregunta_id');
+    }
 }

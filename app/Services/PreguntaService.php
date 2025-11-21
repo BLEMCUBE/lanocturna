@@ -6,17 +6,19 @@ use App\Models\MercadoLibrePregunta;
 use App\Models\MercadoLibreCliente;
 use App\Services\ItemService;
 use App\Services\ListaUsuarioService;
+use App\Services\MLUsuarioService;
 use App\Services\MercadoLibreService;
 use App\Models\MercadoLibreItem;
 use Illuminate\Support\Facades\Log;
 use App\Models\MercadoLibreListaUsuario;
-
+use App\Models\MercadoLibreRespuesta;
 
 class PreguntaService
 {
 	public function __construct(
 		private ItemService $itemService,
 		private MercadoLibreService $ml,
+		private MLUsuarioService $mLUsuarioService,
 		private ListaUsuarioService $listaUsuarioService,
 	) {}
 	public function updateOrCreate($question)
@@ -49,6 +51,19 @@ class PreguntaService
 				'payload' => $question,
 			]
 		);
+
+		if (!is_null($question['answer'])) {
+			MercadoLibreRespuesta::updateOrCreate(
+				['mercadolibre_pregunta_id' => $question['id']],
+				[
+					'mercadolibre_pregunta_id' => $question['id'],
+					'from_user_id' => $question['from']['id'] ?? null,
+					'date_created' => $question['answer']['date_created'],
+					'text' => $question['answer']['text'],
+					'payload' => $question['answer']
+				]
+			);
+		}
 		return $data;
 	}
 	public function storeNotificacion($payload)
@@ -67,5 +82,32 @@ class PreguntaService
 			$this->ml->pusherNotificacion('ml', 'question');
 		}
 		$this->ml->actualizar($resource);
+	}
+
+	public function getPorItem($itemId)
+	{
+		$offset = 0;
+		$limit = 50;
+
+		$parametros = [
+			'api_version' => 4,
+			'item' => $itemId,
+			'offset' => $offset,
+			'limit' => $limit,
+		];
+		$user = $this->mLUsuarioService->datosUsuario();
+		if (!$user) return;
+		do {
+			$response = $this->ml->apiGet("/questions/search", $user->meli_user_id, $parametros);
+			$messages = $response['questions'] ?? [];
+
+			foreach ($messages as $msg) {
+				$this->updateOrCreate($msg);
+			}
+
+			// Paginación
+			$offset += $limit;
+			$total = $response['paging']['total'] ?? $offset;
+		} while ($offset < $total);
 	}
 }
