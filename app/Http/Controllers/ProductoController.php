@@ -765,6 +765,7 @@ class ProductoController extends Controller
 		$newProduct->nombre = $product->nombre . '-' . $code;
 		$newProduct->origen = $product->origen . '-' . $code;
 		$newProduct->stock = 0;
+		$newProduct->stock_futuro = 0;
 
 		// 4. Guardar la copia en la base de datos
 		$newProduct->save();
