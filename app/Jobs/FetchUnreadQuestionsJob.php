@@ -25,7 +25,7 @@ class FetchUnreadQuestionsJob implements ShouldQueue
 			->update(['status' => 'ANSWERED']);
 		$ml = app(MercadoLibreService::class);
 		$fechaInicio = Carbon::now()
-			->subDays(15)
+			->subDays(14)
 			->startOfDay()
 			->format('Y-m-d\TH:i:s.vP');
 		$fechaFin = Carbon::now()

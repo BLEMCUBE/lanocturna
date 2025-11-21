@@ -29,10 +29,10 @@ const subscriptions = [
 		channel: 'venta',
 		events: ['.envio']
 	},
-	{
+	/*{
 		channel: 'ml',
 		events: ['.question']
-	}
+	}*/
 ]
 
 onMounted(() => {
