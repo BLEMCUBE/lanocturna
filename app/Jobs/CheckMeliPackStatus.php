@@ -37,7 +37,6 @@ class CheckMeliPackStatus implements ShouldQueue
 		if (!$user) return;
 		$messages = app(MensajeService::class)->getSinLeer();
 		foreach ($messages as $message) {
-			Log::info("CheckMeliPackStatus ejecutado", ['data' => $message['resource']]);
 			app(MensajeService::class)->getPack($message['resource']);
 		}
 	}

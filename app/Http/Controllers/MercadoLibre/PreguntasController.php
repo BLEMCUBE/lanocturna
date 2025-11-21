@@ -106,8 +106,6 @@ class PreguntasController extends Controller
 	public function historial()
 	{
 		$items = MercadoLibrePregunta::select('item_id', 'from_user_id')->groupBy('item_id')->get();
-		//dd($items);
-
 
 		foreach ($items as $key => $value) {
 			$user = MercadoLibreListaUsuario::where('user_id', $value->from_user_id)->first();
@@ -121,6 +119,8 @@ class PreguntasController extends Controller
 			->whereHas('item', function ($q) {
 				$q->where('status', 'active');
 			})
+			->where('status', '=', 'UNANSWERED')
+		->orWhere('status', '=', 'ANSWERED')
 			->whereHas('respuesta') // <-- Solo preguntas que tengan respuesta
 			->orderBy('date_created', 'ASC')
 			->get();

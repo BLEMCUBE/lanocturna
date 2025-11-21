@@ -28,6 +28,7 @@ class MensajeCollection extends ResourceCollection
 					'hora' => $fecha->format('H:i'),
 					'fecha' =>  $fecha->format('d/m/Y'),
 					'productos'=>$items,
+					'ult_mgs'=>MercadoLibreMensaje::where('pack_id',$row->pack_id)->latest('id')->first(),
 					'comprador' => $comprador['nickname'],
 					'leido'=>MercadoLibreMensaje::where('pack_id',$row->pack_id)->where('is_read',0)->where('is_from_seller',0)->count()
 				];

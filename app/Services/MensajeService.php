@@ -92,7 +92,7 @@ class MensajeService
 		}
 		$this->ml->actualizar($resource);
 		//notificion
-		$this->ml->pusherNotificacion('ml', 'question');
+		//$this->ml->pusherNotificacion('ml', 'question');
 	}
 
 	public function getSinLeer()
