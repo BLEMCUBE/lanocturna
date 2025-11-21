@@ -310,7 +310,7 @@ const cancelCrear = () => {
 									<td class="border border-gray-300"><input type="number" v-model="producto.cantidad"
 											min="1" step="1"
 											class="p-inputtext p-component font-sans  font-normal text-gray-700 bg-white  border-0 appearance-none rounded-none  p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm"
-											@input.prevent="sumaTotalProducto($event, index)" />
+											@input.prevent="sumaTotalProducto($event, producto.producto_id)" />
 
 									</td>
 									<td class="border border-gray-300">
