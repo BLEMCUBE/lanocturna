@@ -167,7 +167,6 @@ const filters = ref({
         <div class="card px-4 mb-4 bg-white col-span-12 rounded-lg shadow-lg 2xl:col-span-12">
 
             <!--Contenido-->
-            <Toast />
             <div class="p-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 <Button size="small" :label="'Ingresar RMA'" severity="success" @click="BtnCrearRma"></Button>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ProductosExport;
 use App\Exports\ProductoVentaExport;
 use App\Http\Requests\ProductoImportStockRequest;
 use App\Http\Requests\ProductoMasivoStoreRequest;
@@ -11,7 +10,6 @@ use App\Http\Requests\ProductoUpdateRequest;
 use App\Imports\ProductoMasivoImport;
 use App\Imports\ProductoStockImport;
 use App\Models\Categoria;
-use App\Models\Configuracion;
 use App\Models\CostoReal;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
@@ -210,8 +208,7 @@ class ProductoController extends Controller
 		$producto->stock_minimo = $request->input('stock_minimo');
 		$producto->stock_futuro = $producto->en_camino + $request->input('stock');
 		$producto->save();
-		$configuracion = Configuracion::get();
-		$url_tienda = $this->configuracionService->getOp($configuracion, 'url-tienda');
+		$url_tienda = $this->configuracionService->getOption('url-tienda');
 
 		$costo_real_reg = CostoReal::select('*')
 			->where('producto_id', '=', $request->input('id'))
@@ -335,8 +332,6 @@ class ProductoController extends Controller
 			->where('sku', '=', $sku->origen)
 			->orderBy('importacion_id', 'DESC')->get();
 
-
-
 		$productoEnCamino = DB::table('importaciones as imp')
 			->join('importaciones_detalles as det', 'imp.id', '=', 'det.importacion_id')
 			->join('productos as prod', 'prod.origen', '=', 'det.sku')
@@ -419,7 +414,7 @@ class ProductoController extends Controller
 			'productoventa' => $productoventa,
 			'cantidad_importacion' => $cantidad_importacion,
 		];
-		//dd($datos);
+
 		return Inertia::render('Producto/Show', $datos);
 	}
 
@@ -770,6 +765,7 @@ class ProductoController extends Controller
 		$newProduct->nombre = $product->nombre . '-' . $code;
 		$newProduct->origen = $product->origen . '-' . $code;
 		$newProduct->stock = 0;
+		$newProduct->stock_futuro = 0;
 
 		// 4. Guardar la copia en la base de datos
 		$newProduct->save();

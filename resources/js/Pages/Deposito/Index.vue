@@ -3,9 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted, watch, computed } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-import CambiarDepositoModal from '@/Pages/Deposito/Partials/CambiarDepositoModal.vue';
 import CambiarProductosDepositoModal from '@/Pages/Deposito/Partials/CambiarProductosDepositoModal.vue';
-
 import { FilterMatchMode } from 'primevue/api';
 const { roles } = usePage().props.auth
 const { permissions } = usePage().props.auth;
@@ -181,7 +179,6 @@ const filters = ref({
         <div
             class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
-            <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>

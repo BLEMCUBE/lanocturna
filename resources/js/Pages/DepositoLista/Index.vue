@@ -3,64 +3,16 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm, router } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
+import { Head, usePage } from '@inertiajs/vue3';
 import CrearModal from '@/Pages/DepositoLista/Partials/CrearModal.vue';
 import EditarModal from '@/Pages/DepositoLista/Partials/EditarModal.vue';
 
 import { FilterMatchMode } from 'primevue/api';
 const tabla_clientes = ref()
-import { useToast } from "primevue/usetoast";
-const toast = useToast();
 const titulo = "Nombre Depósito"
-const ruta = 'depositoslista'
-
-
-const formDelete = useForm({
-    id: '',
-});
-
 onMounted(() => {
     tabla_clientes.value = usePage().props.tipo_cambio.data;
 });
-
-
-//modal eliminar
-const eliminar = (id, name) => {
-
-    const alerta = Swal.mixin({ buttonsStyling: true });
-    alerta.fire({
-        width: 350,
-        title: "Seguro de eliminar " + name,
-        text: 'Se eliminará definitivamente',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar',
-        cancelButtonColor: 'red',
-        confirmButtonColor: '#2563EB',
-
-    }).then((result) => {
-        if (result.isConfirmed) {
-            formDelete.delete(route(ruta + '.destroy', id),
-                {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        show('success', 'Eliminado', 'Se ha eliminado')
-                        setTimeout(() => {
-                            router.get(route(ruta + '.index'));
-                        }, 1000);
-
-                    }
-                });
-        }
-    });
-}
-
-
-const show = (tipo, titulo, mensaje) => {
-    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
-};
 
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -73,7 +25,6 @@ const filters = ref({
         <div
             class="px-4 py-3 mb-4 bg-white col-span-12  rounded-lg shadow-lg lg:col-span-6">
             <!--Contenido-->
-            <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
                 <CrearModal></CrearModal>

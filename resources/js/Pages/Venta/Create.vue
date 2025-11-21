@@ -101,8 +101,6 @@ const addToCart = (id) => {
 			}
 		)
 		sumTotalProducto(id)
-		//sumaTotal()
-		//calculoSinIva()
 
 	} else {
 		alerta('No hay stock disponible', 'error')
@@ -221,7 +219,6 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 const cancelCrear = () => {
-	//router.get(route(ruta + '.index'))
 	router.get(route('inicio'))
 };
 
@@ -236,7 +233,6 @@ const cancelCrear = () => {
 		<div
 			class="grid grid-cols-12 p-0 m-0 gap-2 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
-			<Toast />
 			<div class="mt-0 mb-4 col-span-12 lg:col-span-8">
 
 				<div

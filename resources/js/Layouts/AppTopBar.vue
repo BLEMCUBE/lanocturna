@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/composables/layout';
 import Logo from '/public/images/logo.png';
-const { layoutConfig, onMenuToggle } = useLayout();
+const { onMenuToggle } = useLayout();
 import { Link, router} from '@inertiajs/vue3';
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
@@ -16,17 +16,10 @@ onBeforeUnmount(() => {
     unbindOutsideClickListener();
 });
 
-const logoUrl = computed(() => {
-    return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
-});
-
 const onTopBarMenuButton = () => {
     topbarMenuActive.value = !topbarMenuActive.value;
 };
-const onSettingsClick = () => {
-    topbarMenuActive.value = false;
-    //router.push('/documentation');
-};
+
 const topbarMenuClasses = computed(() => {
     return {
         'layout-topbar-menu-mobile-active': topbarMenuActive.value

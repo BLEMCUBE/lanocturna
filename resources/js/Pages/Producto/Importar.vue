@@ -58,13 +58,7 @@ const pickFile = (e) => {
 
 
 }
-const check = (checked) => {
-    if (checked) {
-        form.mueve_stock = true
-    } else {
-        form.mueve_stock = false
-    }
-};
+
 
 </script>
 <template>
@@ -75,7 +69,6 @@ const check = (checked) => {
             class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
-            <Toast />
             <div class=" px-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>

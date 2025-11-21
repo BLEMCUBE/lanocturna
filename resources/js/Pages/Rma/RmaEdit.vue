@@ -193,7 +193,6 @@ const cancelCrear = () => {
         <div
             class="grid grid-cols-12 p-0 m-0 gap-4 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 2xl:col-span-10">
 
-            <Toast />
             <div class="m-4 col-span-12 lg:col-span-12">
 
                 <div class="px-0 py-1 m-2 mt-0 bg-primary-900 text-white  col-span-full  flex justify-center items-center">

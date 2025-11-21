@@ -8,12 +8,11 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Swal from 'sweetalert2';
 import { FilterMatchMode } from 'primevue/api';
+
 const toast = useToast();
 const titulo = "Editar Compra"
 const ruta = 'compras'
-
 const { productos } = usePage().props
-const { tipo_cambio } = usePage().props
 const filters = ref({
 	'global': { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
@@ -234,7 +233,6 @@ const calculoSinIva = () => {
 		<div
 			class="grid grid-cols-12 p-0 m-0 gap-2 mb-4 bg-white col-span-12 py-2 rounded-lg shadow-lg lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
-			<Toast />
 			<div class="mt-0 mb-4 col-span-12 lg:col-span-8">
 
 				<div

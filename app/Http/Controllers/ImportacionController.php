@@ -33,7 +33,7 @@ class ImportacionController extends Controller
 
 	public function index()
 	{
-		$ultimo_tipo_cambio = TipoCambioYuan::all()->last();
+		$ultimo_tipo_cambio = TipoCambioYuan::latest('id')->first();
 
 		$hoy_tipo_cambio = false;
 
@@ -102,7 +102,7 @@ class ImportacionController extends Controller
 				]);
 
 				//ultimo tipo cambio yuanes
-				$ultimo_tipo_cambio = TipoCambioYuan::all()->last();
+				$ultimo_tipo_cambio = TipoCambioYuan::latest('id')->first();
 				$yuan_id = $ultimo_tipo_cambio->id;
 
 				//importando excel

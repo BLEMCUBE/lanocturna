@@ -7,7 +7,6 @@ import { useToast } from "primevue/usetoast";
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Multiselect from '@vueform/multiselect';
-import { FilterMatchMode } from 'primevue/api';
 import axios from 'axios';
 const toast = useToast();
 const titulo = "Subir Envio RMA"
@@ -15,7 +14,6 @@ const ruta = 'rmas'
 
 const { lista_destinos } = usePage().props
 const { lista_rmas } = usePage().props
-const { rma_existe } = usePage().props.errors
 const { vendedor } = usePage().props
 const { vendedor_id } = usePage().props
 
@@ -164,8 +162,6 @@ const cancelCrear = () => {
         <!--Contenido-->
         <div
             class="grid grid-cols-12 p-2 m-0 gap-2 mb-4 bg-white col-span-10 py-2 rounded-lg shadow-lg lg:col-span-10 2xl:col-span-8">
-
-            <Toast />
             <div class="mt-2 mb-4 col-span-12 lg:col-span-12">
 
                 <div v-if="form.errors.rma_existe"

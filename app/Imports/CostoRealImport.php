@@ -36,7 +36,6 @@ class CostoRealImport implements ToCollection, WithHeadingRow, WithCalculatedFor
 		$f_arribo=Importacion::selectRaw("id,DATE_FORMAT(fecha_arribado ,'%Y-%m-%d') AS fecha")
 		->where('id','=',$this->importacion_id)
 		->first();
- //Log::info('Costo_reales ' . json_encode($rows));
 
 		foreach ($rows as $row) {
 			if (!empty($row['sku'])) {
@@ -54,7 +53,6 @@ class CostoRealImport implements ToCollection, WithHeadingRow, WithCalculatedFor
 				->where('sku','=',$row['sku'])
 				->where('importacion_id','=',$this->importacion_id)
 				->where('importaciones_detalle_id','=',$idDet->id)->first();
-				Log::info('costo_real_reg ' . json_encode($costo_real_reg));
 				if (!empty($costo_real_reg)) {
 					$costo_real_reg->update([
 						"monto" => $costo_real,

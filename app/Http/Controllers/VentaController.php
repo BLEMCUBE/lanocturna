@@ -27,7 +27,7 @@ class VentaController extends Controller
 	public function index()
 	{
 
-		$ultimo_tipo_cambio = TipoCambio::all()->last();
+		$ultimo_tipo_cambio = TipoCambio::latest('id')->first();
 
 		$hoy_tipo_cambio = false;
 
@@ -85,7 +85,7 @@ class VentaController extends Controller
 	}
 	public function create()
 	{
-		$ultimo_tipo_cambio = TipoCambio::all()->last();
+		$ultimo_tipo_cambio = TipoCambio::latest('id')->first();
 
 		$hoy_tipo_cambio = false;
 

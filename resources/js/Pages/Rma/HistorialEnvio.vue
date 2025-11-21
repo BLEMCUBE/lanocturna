@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm, router } from '@inertiajs/vue3';
+import { Head, usePage,  router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 
 import { FilterMatchMode } from 'primevue/api';
@@ -16,10 +16,6 @@ const toast = useToast();
 const tabla_ventas = ref([])
 const titulo = "Historial de Envios RMA"
 const ruta = 'rmas'
-
-const formDelete = useForm({
-    id: '',
-});
 
 //*datepicker  */
 const shortcuts = [
@@ -124,10 +120,9 @@ const filters = ref({
     <Head :title="titulo" />
     <AppLayout :pagina="[{ 'label': titulo, link: false }]">
         <div
-            class="card px-4 py-3 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
+            class="card px-4 py-3 mb-4 bg-white col-span-12 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
-            <Toast />
             <div class="p-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
 
@@ -147,7 +142,7 @@ const filters = ref({
                             }" />
 
                             <date-picker @change="filtrado" type="date" range value-type="YYYY-MM-DD" format="DD/MM/YYYY"
-                                class="p-inputtext p-component col-span-6 lg:col-span-2 px-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
+                                class="p-inputtext p-component col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm px-0 py-0"
                                 v-model:value="date" :shortcuts="shortcuts" lang="es"
                                 placeholder="Seleccione Fecha"></date-picker>
 

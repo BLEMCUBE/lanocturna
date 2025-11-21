@@ -14,6 +14,8 @@ class Configuracion extends Model
         'slug',
         'key',
         'value',
+        'type',
+        'options',
     ];
 
 

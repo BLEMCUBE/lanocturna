@@ -195,7 +195,6 @@ onMounted(() => {
 		<div
 			class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 			<!--Contenido-->
-			<Toast />
 
 			<div class=" px-2.5 pb-2 grid grid-cols-12 gap-4">
 				<div class="py-1 px-3 col-span-12 sm:col-span-8 flex justify-between items-center">

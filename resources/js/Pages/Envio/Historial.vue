@@ -1,12 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, watch } from 'vue'
-import { Head, useForm, router } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
-
-
-import { useToast } from "primevue/usetoast";
-
+import { ref } from 'vue'
+import { Head, router } from '@inertiajs/vue3';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
@@ -23,14 +18,10 @@ const props = defineProps({
         default: () => ({}),
     },
 });
-const toast = useToast();
 
 const titulo = "Historial de Envios"
 const ruta = 'envios'
 
-const formDelete = useForm({
-    id: '',
-});
 
 //*datepicker  */
 const shortcuts = [
@@ -75,7 +66,6 @@ let inicio = ref(props.filtro.inicio);
 let fin = ref(props.filtro.fin);
 
 
-
 const funcBuscar = () => {
 	   router.get(
         route(ruta + '.historial'),
@@ -116,84 +106,19 @@ const filtrado = (value) => {
     );
 
 }
-const colorEstado = (estado) => {
-    switch (estado) {
-        case 'PENDIENTE DE FACTURACIÓN':
-            return 'text-orange-600'
-            break;
-        case 'FACTURADO':
-            return 'text-blue-600'
-            break;
-        case 'COMPLETADO':
-            return 'text-green-600'
-            break;
-        case 'ANULADO':
-            return 'text-red-600'
-            break;
-        default:
-            return 'text-black'
-            break;
-    }
-}
+
 
 const btnVer = (id) => {
     router.get(route(ruta + '.detalle', id));
 
 };
-const btnImprimir = (id) => {
-    router.get(route(ruta + '.generar_ticket', id));
 
-};
-const btnEliminar = (id, name) => {
-
-    const alerta = Swal.mixin({ buttonsStyling: true });
-    alerta.fire({
-        width: 350,
-        title: "Seguro de eliminar " + name,
-        text: 'Se eliminará definitivamente',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar',
-        cancelButtonColor: 'red',
-        confirmButtonColor: '#2563EB',
-
-    }).then((result) => {
-        if (result.isConfirmed) {
-            formDelete.delete(route(ruta + '.destroy', id),
-                {
-                    preserveScroll: true,
-                    forceFormData: true,
-                    onSuccess: () => {
-                        show('success', 'Eliminado', 'Se ha eliminado')
-                        setTimeout(() => {
-                            router.get(route(ruta + '.index'));
-                        }, 1000);
-
-                    }
-                });
-        }
-    });
-}
 
 const clickDetalle = (e) => {
 
     btnVer(e.data.id)
 }
 
-const show = (tipo, titulo, mensaje) => {
-    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
-};
-
-
-const ok = (icono, mensaje) => {
-
-    Swal.fire({
-        width: 350,
-        title: mensaje,
-        icon: icono
-    })
-}
 
 
 </script>
@@ -204,7 +129,6 @@ const ok = (icono, mensaje) => {
             class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
-            <Toast />
             <div class="p-3 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
 

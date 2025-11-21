@@ -49,7 +49,6 @@ const btnValidar = () => {
 			isShowModal.value = false
 			show('success', 'Mensaje', 'Pedido confirmado')
 			setTimeout(() => {
-				//router.get(route(ruta + '.index'));
 				router.get(route(ruta + '.' + tipo.value));
 			}, 1000);
 		},
@@ -198,7 +197,6 @@ function toolTipObs(item) {
 		<div
 			class="card px-4 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
 			<!--Contenido-->
-			<Toast />
 
 			<div class="px-2 py-0 m-0 mt-0 text-white  col-span-full  flex justify-start items-center">
 				<span
@@ -313,7 +311,7 @@ function toolTipObs(item) {
 										v-tooltip.bottom="toolTipObs(item)">
 
 										<svg width="20px" height="20px" viewBox="0 0 0.72 0.72" version="1.1"
-											xmlns="http://www.w3.org/2000/svg"
+											xmlns="https://www.w3.org/2000/svg"
 											xmlns:xlink="http://www.w3.org/1999/xlink">
 											<path fill="#000" d="M0.27 0h0.18v0.18l-0.045 0.315H0.315L0.27 0.18z" />
 											<path fill="#000"
