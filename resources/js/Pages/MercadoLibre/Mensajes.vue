@@ -86,7 +86,7 @@ onMounted(() => {
 									leer`: `${slotProps.data.leido} mensaje sin leer` }}
 								</div>
 
-								<div v-html="slotProps.data.mensaje">
+								<div v-html="slotProps.data.ult_msg.body??''">
 								</div>
 							</div>
 						</template>
