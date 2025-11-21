@@ -15,6 +15,10 @@ use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
+use App\Http\Controllers\MercadoLibre\NotificacionController;
+use App\Http\Controllers\MercadoLibre\PreguntasController;
+use App\Http\Controllers\MercadoLibre\ClientesController;
+use App\Http\Controllers\MercadoLibre\MensajesController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\PagoCompraController;
@@ -22,11 +26,13 @@ use App\Http\Controllers\PagoImportacionController;
 use App\Http\Controllers\PagoServicioController;
 use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\PusherController;
 use App\Http\Controllers\ReporteProductoRmaController;
 use App\Http\Controllers\ReporteProductoVendidoController;
 use App\Http\Controllers\ReporteStockProductosController;
 use App\Http\Controllers\ReporteVendedoresPedidosController;
 use App\Http\Controllers\ReporteVentaController;
+use App\Http\Controllers\RespuestaRapidaController;
 use App\Http\Controllers\RmaController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RotacionStockController;
@@ -98,26 +104,26 @@ Route::controller(ClienteController::class)->group(function () {
 //Producto
 Route::controller(ProductoController::class)->prefix('productos')->name('productos.')
 	->middleware('auth')->group(function () {
-	Route::get('/export', 'exportExcel')->name('exportar');
-	Route::post('/storemasivo', 'storeMasivo')->name('storemasivo');
-	Route::get('/{id}/exportproductoventas', 'exportProductoVentas')->name('exportproductoventas');
-	Route::get('/actualizarfuturo', 'actualizarFuturo')->name('actualizarfuturo');
-	Route::get('/actualizarYuanes', 'actualizarYuanes')->name('actualizarYuanes');
-	Route::get('/ajuste-stock', 'ajusteStock')->name('ajuste-stock');
-	Route::post('/importarstock', 'importarStock')->name('importarstock');
-	Route::get('/vistaimportar', 'vistaImportar')->name('vistaimportar');
-	Route::get('/create', 'create')->name('create');
-	Route::get('/{id}', 'edit')->name('edit');
-	Route::post('/{id}/duplicar', 'duplicar')->name('duplicar');
-	Route::get('/{id}/show', 'show')->name('show');
-	Route::post('/update/{id}', 'update')->name('update');
-	Route::get('/', 'index')->name('index');
-	Route::post('/store', 'store')->name('store');
-	Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productoventa');
-	Route::get('/productoimportacion/{id}/{inicio}/{fin}', 'productoImportacion')->name('productoimportacion');
-	Route::post('/updateprice/{sku}', 'updatePrice')->name('updatePrice');
-	Route::delete('/{id}', 'destroy')->name('destroy');
-});
+		Route::get('/export', 'exportExcel')->name('exportar');
+		Route::post('/storemasivo', 'storeMasivo')->name('storemasivo');
+		Route::get('/{id}/exportproductoventas', 'exportProductoVentas')->name('exportproductoventas');
+		Route::get('/actualizarfuturo', 'actualizarFuturo')->name('actualizarfuturo');
+		Route::get('/actualizarYuanes', 'actualizarYuanes')->name('actualizarYuanes');
+		Route::get('/ajuste-stock', 'ajusteStock')->name('ajuste-stock');
+		Route::post('/importarstock', 'importarStock')->name('importarstock');
+		Route::get('/vistaimportar', 'vistaImportar')->name('vistaimportar');
+		Route::get('/create', 'create')->name('create');
+		Route::get('/{id}', 'edit')->name('edit');
+		Route::post('/{id}/duplicar', 'duplicar')->name('duplicar');
+		Route::get('/{id}/show', 'show')->name('show');
+		Route::post('/update/{id}', 'update')->name('update');
+		Route::get('/', 'index')->name('index');
+		Route::post('/store', 'store')->name('store');
+		Route::get('/productoventa/{id}/{inicio}/{fin}', 'productoVenta')->name('productoventa');
+		Route::get('/productoimportacion/{id}/{inicio}/{fin}', 'productoImportacion')->name('productoimportacion');
+		Route::post('/updateprice/{sku}', 'updatePrice')->name('updatePrice');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
 
 //Importacion
 Route::controller(ImportacionController::class)->group(function () {
@@ -390,6 +396,65 @@ Route::controller(AtributoValorController::class)->prefix('atributos-valores')->
 		Route::get('/{id}/show', 'show')->name('show');
 		Route::post('/store', 'store')->name('store');
 		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
+
+
+//mercadolibre api
+Route::prefix('mercadolibre')->name('mercadolibre.')
+	->middleware('auth')->group(function () {
+
+		//app keys
+		Route::prefix('clientes')->name('clientes.')->group(function () {
+			Route::get('/', [ClientesController::class, 'index'])->name('index');
+			Route::get('/{id}/show', [ClientesController::class, 'show'])->name('show');
+			Route::get('/{id}/conectar', [ClientesController::class, 'conectar'])->name('conectar');
+			Route::delete('/{id}', [ClientesController::class, 'destroy'])->name('destroy');
+			Route::post('/store', [ClientesController::class, 'store'])->name('store');
+			Route::post('/update/{id}', [ClientesController::class, 'update'])->name('update');
+			Route::get('/{cliente}/refrecarToken', [ClientesController::class, 'refrecarToken'])->name('refresh-token');
+			Route::get('/{cliente}/desconectar', [ClientesController::class, 'desconectar'])->name('desconectar');
+		});
+
+		//preguntas
+		Route::prefix('preguntas')->name('preguntas.')->group(function () {
+			Route::get('/', [PreguntasController::class, 'index'])->name('lista');
+			Route::get('/historial', [PreguntasController::class, 'historial'])->name('historial');
+			Route::get('/{id}', [PreguntasController::class, 'obtenerPreguntasYProductos'])->name('items');
+			Route::post('/responder', [PreguntasController::class, 'responder'])->name('responder');
+			Route::post('/bloquear-usuario', [PreguntasController::class, 'bloquearUsuario'])->name('bloquear-usuario');
+			Route::delete('/{id}', [PreguntasController::class, 'destroy'])->name('destroy');
+		});
+
+		//mensajes
+		Route::prefix('mensajes')->name('mensajes.')->group(function () {
+			Route::get('/sin_leer', [MensajesController::class, 'sinLeer'])->name('sinLeer');
+			Route::get('/', [MensajesController::class, 'index'])->name('lista');
+
+			Route::post('/responder', [MensajesController::class, 'responder'])->name('responder');
+			Route::get('/adjunto', [MensajesController::class, 'descargarAdjunto'])->name('descargarAdjunto');
+			Route::get('/{id}/mensajes', [MensajesController::class, 'showMensajes'])->name('showMensajes');
+		});
+	});
+
+//respuestas rapidas
+Route::controller(RespuestaRapidaController::class)->prefix('respuestasrapidas')->name('respuestasrapidas.')
+	->middleware('auth')->group(function () {
+		Route::get('/{tipo}', 'index')->name('index');
+		Route::post('/update', 'update')->name('update');
+		Route::delete('/{id}', 'destroy')->name('destroy');
+	});
+
+//mercado libre sin auth
+Route::controller(NotificacionController::class)->prefix('mercadolibre')->name('mercadolibre.')
+	->group(function () {
+		Route::get('/callback', 'callback')->name('callback');
+		Route::post('/notifications', 'notifications')->name('notifications');
+	});
+
+//test pusher
+Route::controller(PusherController::class)->prefix('pushertest')->name('pushertest.')
+	->middleware('auth')->group(function () {
+		Route::get('/{tipo}', 'testNotif')->name('testNotif');
 	});
 
 require __DIR__ . '/auth.php';

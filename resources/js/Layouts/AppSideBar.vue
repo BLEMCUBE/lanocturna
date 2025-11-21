@@ -33,6 +33,8 @@ const { total_flash } = usePage().props.auth
 const { total_retiro } = usePage().props.auth
 const { pagos_compras } = usePage().props.auth
 const { total_rmas } = usePage().props.auth
+const { cant_preguntas } = usePage().props.auth
+const { cant_mensajes } = usePage().props.auth
 const configStore = useConfigStore();
 const setMenu = (menu) => {
 	configStore.showMenu(menu);
@@ -150,16 +152,14 @@ const ok = (icono, mensaje) => {
 							</NavLinkSideBarNotIcon>
 						</li>
 					</div>
-						<div class="flex items-center">
+					<div class="flex items-center">
 						<li @click="setMenu('contabilidad')" class="w-full"
 							v-show="permissions.includes('contabilidad-pagoEnPlaza')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-								:href="route('pagos-compras.index')"
-								:active="route().current('pagos-compras.index')">
+								:href="route('pagos-compras.index')" :active="route().current('pagos-compras.index')">
 								<span class="ml-2 uppercase text-base font-medium">Pagos Compras en plaza
-									<Badge v-if="pagos_compras > 0"
-										class="ml-2 px-0.5 text-[12px]" severity="danger"
+									<Badge v-if="pagos_compras > 0" class="ml-2 px-0.5 text-[12px]" severity="danger"
 										:value="pagos_compras" />
 								</span>
 							</NavLinkSideBarNotIcon>
@@ -404,8 +404,7 @@ const ok = (icono, mensaje) => {
 							v-show="permissions.includes('configuraciones-codigoMaestro')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
-								:href="route('atributos.index')"
-								:active="route().current('atributos.index')">
+								:href="route('atributos.index')" :active="route().current('atributos.index')">
 								<span class="ml-2 uppercase">Atributos producto</span>
 							</NavLinkSideBarNotIcon>
 						</li>
@@ -464,7 +463,8 @@ const ok = (icono, mensaje) => {
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('compras-historial')">
+						<li @click="setMenu('compras')" class="w-full"
+							v-show="permissions.includes('compras-historial')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('compras.index')" :active="route().current('compras.index')">
@@ -473,7 +473,8 @@ const ok = (icono, mensaje) => {
 						</li>
 					</div>
 					<div class="flex items-center">
-						<li @click="setMenu('compras')" class="w-full" v-show="permissions.includes('compras-rotacionStock')">
+						<li @click="setMenu('compras')" class="w-full"
+							v-show="permissions.includes('compras-rotacionStock')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rotacion-stock.index')" :active="route().current('rotacion-stock.index')">
@@ -533,7 +534,8 @@ const ok = (icono, mensaje) => {
 					</div>
 
 					<div class="flex items-center">
-						<li @click="setMenu('ventas')" class="w-full" v-show="permissions.includes('ventas-mercadoLibre')">
+						<li @click="setMenu('ventas')" class="w-full"
+							v-show="permissions.includes('ventas-mercadoLibre')">
 							<NavLinkSideBarNotIcon
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.create')" :active="route().current('envios.create')">
@@ -575,9 +577,8 @@ const ok = (icono, mensaje) => {
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.flex')" :active="route().current('envios.flex')">
 								<span class="ml-2 uppercase ">Envios Flex
-									<Badge v-if="total_flex > 0"
-										class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
-										:value="total_flex" />
+									<Badge v-if="total_flex > 0" class="ml-4 px-1 mr-auto text-[12px] font-base"
+										severity="danger" :value="total_flex" />
 								</span>
 							</NavLinkSideBarNotIcon>
 						</li>
@@ -602,9 +603,8 @@ const ok = (icono, mensaje) => {
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.cadeteria')" :active="route().current('envios.cadeteria')">
 								<span class="ml-2 uppercase ">Envios cadeteria
-									<Badge v-if="total_cadeteria > 0"
-										class="ml-4 px-1 mr-auto text-[12px] font-base" severity="danger"
-										:value="total_cadeteria" />
+									<Badge v-if="total_cadeteria > 0" class="ml-4 px-1 mr-auto text-[12px] font-base"
+										severity="danger" :value="total_cadeteria" />
 								</span>
 							</NavLinkSideBarNotIcon>
 						</li>
@@ -617,8 +617,8 @@ const ok = (icono, mensaje) => {
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.flash')" :active="route().current('envios.flash')">
 								<span class="ml-2 uppercase ">Envios flash
-									<Badge v-if="total_flash > 0" class="bg-orange-500 ml-4 px-1 mr-auto text-[12px] font-base"
-
+									<Badge v-if="total_flash > 0"
+										class="bg-orange-500 ml-4 px-1 mr-auto text-[12px] font-base"
 										:value="total_flash" />
 								</span>
 							</NavLinkSideBarNotIcon>
@@ -631,7 +631,8 @@ const ok = (icono, mensaje) => {
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('envios.retiro')" :active="route().current('envios.retiro')">
 								<span class="ml-2 uppercase ">RETIROS WEB
-									<Badge v-if="total_retiro > 0" class="bg-orange-500 ml-4 px-1 mr-auto text-[12px] font-base"
+									<Badge v-if="total_retiro > 0"
+										class="bg-orange-500 ml-4 px-1 mr-auto text-[12px] font-base"
 										:value="total_retiro" />
 								</span>
 							</NavLinkSideBarNotIcon>
@@ -823,9 +824,8 @@ const ok = (icono, mensaje) => {
 								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
 								:href="route('rmas.validacion')" :active="route().current('rmas.validacion')">
 								<span class="ml-2 uppercase">VALIDACIÓN RMA
-									<Badge v-if="total_rmas > 0"
-										class="ml-4 px-0.5 mr-auto text-[12px] font-normal" severity="danger"
-										:value="total_rmas" />
+									<Badge v-if="total_rmas > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+										severity="danger" :value="total_rmas" />
 								</span>
 							</NavLinkSideBarNotIcon>
 						</li>
@@ -833,7 +833,51 @@ const ok = (icono, mensaje) => {
 				</DisclosurePanel>
 			</Disclosure>
 			<!--RMA-->
+			<div class="px-3 py-2 text-black font-bold bg-white">
+				Mercado Libre
+			</div>
+			<!--mercado libre-->
+			<li @click="setMenu('mercadolibre')" v-show="permissions.includes('mercadoLibre-apis')">
+				<NavLinkSideBar icon-class="fas fa-boxes"
+					class="flex items-center justify-start px-3 py-2 text-base font-medium"
+					:href="route('mercadolibre.clientes.index')"
+					:active="route().current('mercadolibre.clientes.index')">
+					<span class="ml-2 uppercase">App Keys</span>
+				</NavLinkSideBar>
+			</li>
+			<li @click="setMenu('preguntas')" v-show="permissions.includes('mercadoLibre-preguntas')">
+				<NavLinkSideBar icon-class="fas fa-boxes"
+					class="flex items-center justify-start px-3 py-2 text-base font-medium"
+					:href="route('mercadolibre.preguntas.lista')"
+					:active="route().current('mercadolibre.preguntas.lista')">
+					<span class="ml-2 uppercase">Preguntas
+						<Badge v-if="cant_preguntas > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+							severity="danger" :value="cant_preguntas" />
+					</span>
+				</NavLinkSideBar>
+			</li>
+			<li @click="setMenu('preguntas')" v-show="permissions.includes('mercadoLibre-preguntas')">
+				<NavLinkSideBar icon-class="fas fa-boxes"
+					class="flex items-center justify-start px-3 py-2 text-base font-medium"
+					:href="route('mercadolibre.preguntas.historial')"
+					:active="route().current('mercadolibre.preguntas.historial')">
+					<span class="ml-2 uppercase">Historial preguntas
 
+					</span>
+				</NavLinkSideBar>
+			</li>
+			<li @click="setMenu('mensajes')" v-show="permissions.includes('mercadoLibre-mensajes')">
+				<NavLinkSideBar icon-class="fas fa-boxes"
+					class="flex items-center justify-start px-3 py-2 text-base font-medium"
+					:href="route('mercadolibre.mensajes.sinLeer')"
+					:active="route().current('mercadolibre.mensajes.sinLeer')">
+					<span class="ml-2 uppercase">Mensajes
+						<Badge v-if="cant_mensajes > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+							severity="danger" :value="cant_mensajes" />
+					</span>
+				</NavLinkSideBar>
+			</li>
+			<!--mercado libre-->
 		</ul>
 
 	</div>

@@ -14,7 +14,7 @@ const props = defineProps({
     label: String,
     fieldId: {
         type: String,
-        required: true,
+        required: false,
       },
 });
 

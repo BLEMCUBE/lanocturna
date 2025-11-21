@@ -69,7 +69,6 @@ const show = (tipo, titulo, mensaje) => {
 
 	<Head title="Permisos" />
 	<AppLayout :pagina="[{ 'label': titulo, link: false }]">
-		<Toast />
 		<div
 			class="px-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700 sm:p-2 dark:bg-gray-800">
 

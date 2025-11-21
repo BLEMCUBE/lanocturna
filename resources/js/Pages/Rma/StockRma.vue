@@ -1,11 +1,10 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 
 import { FilterMatchMode } from 'primevue/api';
-const { roles } = usePage().props.auth
 const expandedRows = ref([]);
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
@@ -25,7 +24,6 @@ onMounted(() => {
 //descarga excel
 const descargaExcel = (tipo) => {
 
-
     if (tipo != null) {
         window.open(route('reportes.exportstockrma', { 'completo':tipo  }), '_blank');
     } else {
@@ -33,6 +31,7 @@ const descargaExcel = (tipo) => {
         return;
     }
 }
+
 const btnEliminar = (id) => {
 
     const alerta = Swal.mixin({ buttonsStyling: true });
@@ -109,9 +108,7 @@ const show = (tipo, titulo, mensaje) => {
 };
 
 
-
 const filters = ref({
-
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     'productos': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -123,7 +120,6 @@ const filters = ref({
         <div
             class="card px-4 mb-4 bg-white col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
             <!--Contenido-->
-            <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>

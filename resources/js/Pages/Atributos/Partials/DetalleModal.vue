@@ -83,7 +83,6 @@ const eliminar = (id, name) => {
 			formDelete.delete(route(ruta + '.destroy', id))
 			show('success', 'Eliminado', 'Se ha eliminado')
 			setTimeout(() => {
-				//router.get(route(ruta + '.index'));
 				dataEdit(props.itemId);
 			}, 500);
 		},

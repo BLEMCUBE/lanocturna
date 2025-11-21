@@ -3,13 +3,10 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
-import { Head, usePage, useForm, router } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
-import { useToast } from "primevue/usetoast";
 
-const toast = useToast();
 const titulo = "Depósitos Historial"
-const ruta = 'depositos'
 const lista_depositos = ref();
 
 onMounted(() => {
@@ -30,7 +27,6 @@ const filters = ref({
             class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
             <!--Contenido-->
-            <Toast />
             <div class=" px-5 pb-2 col-span-full flex justify-between items-center">
                 <h5 class="text-2xl font-medium">{{ titulo }}</h5>
             </div>

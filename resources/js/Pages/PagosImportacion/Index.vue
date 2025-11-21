@@ -90,7 +90,6 @@ const show = (tipo, titulo, mensaje) => {
 			class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
 			<!--Contenido-->
-			<Toast />
 			<div class="py-1 px-3 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 				<Button @click.prevent="btnDescargar"

@@ -99,20 +99,6 @@ const rowClass = (pagado) => {
 		<div
 			class="card p-3 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
-			<!--Contenido-->
-			<Toast />
-			<!--
-				<div class="py-1 px-3 col-span-full flex justify-between items-center">
-					<h5 class="text-2xl font-medium">{{ titulo }}</h5>
-					<Button @click.prevent="btnDescargar"
-					v-tooltip.top="{ value: `Exportar Excel`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-					:pt="{
-						root: { class: 'py-auto px-2.5 py-2 text-lg bg-green-600 border-none hover:bg-green-500'}
-					}"><i class="fas fa-file-excel text-white text-lg"></i>
-				</Button>
-			</div>
-			-->
-
 			<div class="align-middle  py-1 px-3 ">
 				<DataTable :filters="filters" :value="tabla_productos" scrollable scrollHeight="700px" paginator
 					:rows="50" columnResizeMode="expand" :pt="{

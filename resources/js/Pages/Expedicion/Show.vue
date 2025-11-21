@@ -6,7 +6,6 @@ import { Head, usePage, useForm, router } from '@inertiajs/vue3';
 import { useToast } from "primevue/usetoast";
 import Swal from 'sweetalert2';
 import InputLabel from '@/Components/InputLabel.vue';
-import { icon } from '@fortawesome/fontawesome-svg-core';
 const toast = useToast();
 const titulo = "Detalle"
 const ruta = 'expediciones'
@@ -185,8 +184,6 @@ function toolTipObs(item) {
 		<div
 			class="card px-4 mb-4 bg-white col-span-12  justify-center md:col-span-12 py-5 rounded-lg shadow-lg 2xl:col-span-10 dark:border-gray-700  dark:bg-gray-800">
 			<!--Contenido-->
-			<Toast />
-
 			<div class="px-2 py-0 m-0 mt-0 text-white  col-span-full  flex justify-start items-center">
 				<span
 					class="inline-block rounded bg-blue-500 px-2 py-1 text-base font-normal text-white mr-1 mb-1 hover:bg-sky-400">
@@ -271,7 +268,7 @@ function toolTipObs(item) {
 										v-tooltip.bottom="toolTipObs(item)">
 
 										<svg width="20px" height="20px" viewBox="0 0 0.72 0.72" version="1.1"
-											xmlns="http://www.w3.org/2000/svg"
+											xmlns="https://www.w3.org/2000/svg"
 											xmlns:xlink="http://www.w3.org/1999/xlink">
 											<path fill="#000" d="M0.27 0h0.18v0.18l-0.045 0.315H0.315L0.27 0.18z" />
 											<path fill="#000"

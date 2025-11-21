@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Resources;
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CategoriaCollection extends ResourceCollection
@@ -21,7 +20,7 @@ class CategoriaCollection extends ResourceCollection
                     'id' => $row->id,
                     'name' => $row->name,
                     'productos'=>count($row->productos)
-                   
+
                 ];
             }),
             'links' => [

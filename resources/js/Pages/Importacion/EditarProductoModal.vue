@@ -121,7 +121,6 @@ const show = (tipo, titulo, mensaje) => {
 <template>
     <section>
         <button type="button" @click="addCliente" :id="'show-' + props.clienteId"><i class="fas fa-edit"></i></button>
-        <Toast />
         <Dialog v-model:visible="isShowModal" modal :header="'Editar ' + titulo" :style="{ width: '40vw' }" position="top"
             :pt="{
                 header: {
@@ -149,8 +148,8 @@ const show = (tipo, titulo, mensaje) => {
                         <InputLabel for="precio" value="precio"
                             class="block text-base font-medium leading-6 text-gray-900" />
                         <input type="number" v-model="form.precio" step="0.1" class="p-inputtext p-component text-gray-700 bg-white
-                            border appearance-none rounded text-sm px-2 py-0
-                            p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end text-sm" />
+                            border appearance-none rounded text-sm px-2
+                            p-inputnumber-input h-9 px-0 py-0 m-0 w-full text-end" />
                         <InputError class="mt-1 text-xs" :message="form.errors.precio" />
                     </div>
 

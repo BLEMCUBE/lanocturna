@@ -1,31 +1,22 @@
 <script setup>
 
-import { ref, onMounted, computed, watch, } from "vue";
-//import Breadcrumb from 'primevue/breadcrumb';
-import Pusher from 'pusher-js';
-import { Link, usePage } from '@inertiajs/vue3';
+import { ref, onMounted, computed, watch, onUnmounted } from "vue";
+import { usePage } from '@inertiajs/vue3';
 import AppTopBar from '@/Layouts/AppTopBar.vue';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import AppSideBar from '@/Layouts/AppSideBar.vue'
-//import AppFooter from '@/Layouts/AppFooter.vue'
 import { useLayout } from '@/composables/layout';
-import { useConfigStore } from '@/stores/config.js'
-import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
 import audio_envio from '@/assets/audio_envio.mp3'
 import Loader from "@/Components/Loader.vue";
+import { useEchoStore } from '@/stores/echoStore'
+import { useToast } from "primevue/usetoast";
 
-const confirm = useConfirm();
 const toast = useToast();
+const echoStore = useEchoStore()
 const visible = ref(false);
-
 const { configuracion } = usePage().props.auth
-const pusher = ref(null);
-const channel = ref(null);
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 const outsideClickListener = ref(null);
-const configStore = useConfigStore();
-const items22 = ref([]);
 const props = defineProps({
 	pagina: {
 		type: Array,
@@ -33,21 +24,54 @@ const props = defineProps({
 	},
 
 });
+const subscriptions = [
+	{
+		channel: 'venta',
+		events: ['.envio']
+	},
+	{
+		channel: 'ml',
+		events: ['.question']
+	}
+]
 
 onMounted(() => {
-	items22.value = props.pagina;
-	pusher.value = new Pusher(getConfig('pusher-key'), {
-		cluster: getConfig('pusher-cluster'),
-	});
-	channel.value = pusher.value.subscribe('venta');
-	channel.value.bind('envio', function (data) {
-		showModal()
-	});
-})
+	const pKey = getConfig('pusher-key')
+	const pCluster = getConfig('pusher-cluster')
 
-const setMenu = (menu) => {
-	configStore.showMenu(menu);
-}
+	echoStore.setKey(pKey)
+	echoStore.setCluster(pCluster)
+	echoStore.initEcho()
+
+	subscriptions.forEach(item => {
+		const channel = echoStore.subscribeChannel(item.channel)
+
+		item.events.forEach(event => {
+			channel.listen(event, (payload) => {
+				switch (event) {
+					case '.envio':
+						showModal()
+						break;
+					case '.question':
+							 showToast('success', 'Pregunta', 'Nueva Pregunta Recibida')
+							 mlToast()
+						break;
+
+					default:
+						break;
+				}
+
+
+			})
+		})
+	})
+
+})
+onUnmounted(() => {
+  echoStore.channels.forEach((_, name) => {
+    echoStore.unsubscribe(name)
+  })
+})
 
 const showModal = () => {
 	visible.value = true;
@@ -55,10 +79,17 @@ const showModal = () => {
 	setTimeout(() => {
 		visible.value = false
 		window.open(self.location, '_self');
-	}, "10000");
-
-
+	}, "5000");
 }
+
+const mlToast = () => {
+	playSound(audio_envio)
+	setTimeout(() => {
+		window.open(self.location, '_self');
+	}, "3000");
+}
+
+
 const playSound = (sound) => {
 	if (sound) {
 		var audio = new Audio(sound);
@@ -74,10 +105,10 @@ watch(isSidebarActive, (newVal) => {
 	}
 });
 
+
 const containerClass = computed(() => {
 	return {
 		'layout-theme-light': layoutConfig.darkTheme.value === 'light',
-		//'layout-theme-dark': layoutConfig.darkTheme.value === 'dark',
 		'layout-overlay': layoutConfig.menuMode.value === 'overlay',
 		'layout-static': layoutConfig.menuMode.value === 'static',
 		'layout-static-inactive': layoutState.staticMenuDesktopInactive.value && layoutConfig.menuMode.value === 'static',
@@ -123,17 +154,19 @@ const getConfig = (dato) => {
 	}
 	)[0]
 	return valores.value
-
-
 }
 
+const showToast = (tipo, titulo, mensaje) => {
+    toast.add({ severity: tipo, summary: titulo, detail: mensaje, life: 3000 });
+};
 
 </script>
 
 <template>
+	<Toast />
 	<div class="layout-wrapper layout-static" :class="containerClass">
 		<!--Top-->
-		 <Loader />
+		<Loader />
 		<AppTopBar></AppTopBar>
 		<div class="layout-sidebar bg-primary-900">
 			<AppSideBar></AppSideBar>

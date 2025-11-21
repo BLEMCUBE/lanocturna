@@ -13,7 +13,6 @@ const titulo = "Importar"
 const ruta = 'importaciones'
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 const inputArchivo = ref(null);
@@ -115,7 +114,6 @@ const check = (checked) => {
 			class="card px-4 py-4 bg-white col-span-12  rounded-lg shadow-lg 2lg:col-span-12 dark:border-gray-700  dark:bg-gray-800">
 
 			<!--Contenido-->
-			<Toast />
 			<div class=" px-3 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 			</div>

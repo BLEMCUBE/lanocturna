@@ -71,7 +71,6 @@ const eliminar = (id, name) => {
 
 		<div
 			class="px-4 py-3 mb-4 bg-white col-span-12  lg:col-span-6 rounded-lg shadow-lg 2xl:col-span-6 dark:border-gray-700  dark:bg-gray-800">
-			<Toast />
 			<div class=" px-5 pb-2 col-span-full flex justify-between items-center">
 				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
 				<CrearModal></CrearModal>

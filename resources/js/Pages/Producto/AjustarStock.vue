@@ -106,7 +106,6 @@ const submitExcel = () => {
         <div class="card px-4 mb-4 bg-white col-span-12  rounded-lg shadow-lg 2xl:col-span-8">
 
             <!--Contenido-->
-            <Toast />
             <div class="px-3 p-2 col-span-full flex justify-start items-center">
                 <h5 class="text-2xl font-medium pr-5">{{ titulo }}</h5>
             </div>
