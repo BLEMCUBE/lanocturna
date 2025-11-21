@@ -31,8 +31,9 @@ class PreguntaHistorialCollection extends ResourceCollection
 					'mercadolibre_pregunta_id'=>$row->mercadolibre_pregunta_id,
 					'from_user_id'=>$row->from_user_id,
 					'producto' =>$product,
-					'respuesta' =>$row['respuesta']['payload']['text'],
-					'fecha_respuesta' =>Carbon::parse($row['respuesta']['payload']['date_created'])->setTimezone(config('app.timezone'))->format("d-m-Y H:i") ?? '',
+					'respuesta' =>$row['respuesta']['payload']['text']??'',
+					//'fecha_respuesta' =>$row['respuesta']['payload']['date_created']?Carbon::parse($row['respuesta']['payload']['date_created'])->setTimezone(config('app.timezone'))->format("d-m-Y H:i") : '',
+					'fecha_respuesta' =>$row['respuesta']['date_created'],
 					'usuario' => [
 						'nickname' => !is_null($user)?$user['nickname']:'',
 						'permalink' => !is_null($user)?$user['permalink']:'',

@@ -79,7 +79,7 @@ class PreguntaService
 		if ($newItem !== null) {
 			Log::info("Pregunta registrada Notificacion [{$question['id']}]");
 			//notificacion
-			$this->ml->pusherNotificacion('ml', 'question');
+			//$this->ml->pusherNotificacion('ml', 'question');
 		}
 		$this->ml->actualizar($resource);
 	}

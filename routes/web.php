@@ -454,7 +454,7 @@ Route::controller(NotificacionController::class)->prefix('mercadolibre')->name('
 //test pusher
 Route::controller(PusherController::class)->prefix('pushertest')->name('pushertest.')
 	->middleware('auth')->group(function () {
-		Route::get('/{tipo}', 'testNotif')->name('testNotif');
+		//Route::get('/{tipo}', 'testNotif')->name('testNotif');
 	});
 
 require __DIR__ . '/auth.php';
