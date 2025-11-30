@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
 	{
 		// $schedule->command('inspire')->hourly();
 		$schedule->command('datos:eliminar-notificaciones-antiguas')->dailyAt('01:00');
+		$schedule->command('woo:consultar-skus')->dailyAt('02:00');
 		$schedule->job(new \App\Jobs\FetchUnreadQuestionsJob, 'meli')->everyTwoMinutes()
         ->withoutOverlapping()
         ->onOneServer();
