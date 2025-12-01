@@ -23,13 +23,12 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
+use App\Jobs\ActualizarStockWooJob;
+use App\Services\ProductoService;
 
 class ImportacionController extends Controller
 {
-	public function __construct()
-	{
-
-	}
+	public function __construct() {}
 
 	public function index()
 	{
@@ -184,8 +183,12 @@ class ImportacionController extends Controller
 			if ($estado == 'Arribado') {
 
 				//quitando cantidad en stock productos
-				$sus_stock = $producto->stock - $importacion_detalle->cantidad_total;
-				$sus_arribado = $producto->arribado - $importacion_detalle->cantidad_total;
+				/*$sus_stock = $producto->stock - $importacion_detalle->cantidad_total;
+				$sus_arribado = $producto->arribado - $importacion_detalle->cantidad_total;*/
+
+				$sus_stock = app(ProductoService::class)->restarStock($producto->stock, $importacion_detalle->cantidad_total);
+				$sus_arribado = app(ProductoService::class)->restarStock($producto->arribado, $importacion_detalle->cantidad_total);
+
 
 				//agregando
 				$add_stock = $sus_stock + $request->cantidad_total;
@@ -197,6 +200,10 @@ class ImportacionController extends Controller
 					"arribado" => $add_arribado,
 					"stock_futuro" => $add_stock + $producto->en_camino,
 				]);
+
+				//actualizar stock web
+				dispatch((new ActualizarStockWooJob($producto->origen, $add_stock))->onQueue('meli'));
+
 				//Guardando producto importacion
 				$importacion_detalle->precio = $request->precio;
 				$importacion_detalle->unidad = $request->unidad;
@@ -272,6 +279,9 @@ class ImportacionController extends Controller
 							"stock_futuro" => $new_futuro,
 						]);
 
+						//actualizar stock web
+						//dispatch((new ActualizarStockWooJob($producto->origen, $new_stock))->onQueue('meli'));
+
 						//actualizando importacion detall
 						$impor_detall = ImportacionDetalle::where('importacion_id', '=', $importacion->id);
 						$impor_detall->update([
@@ -315,7 +325,6 @@ class ImportacionController extends Controller
 			$importacion->costo_cif = $request->input('costo_cif');
 			$importacion->save();
 			DB::commit();
-
 		} catch (Exception $e) {
 			DB::rollBack();
 			return [
@@ -356,8 +365,15 @@ class ImportacionController extends Controller
 				$producto = Producto::where('origen', '=', $codigo)
 					->first();
 				if (!is_null($producto)) {
-					$new_stock = $producto->stock - $detalle->cantidad_total;
-					$new_arribado = $producto->arribado - $detalle->cantidad_total;
+					//$new_stock = $producto->stock - $detalle->cantidad_total;
+					if ($producto->stock < $detalle->cantidad_total) {
+						$new_stock = $producto->stock;
+					} else {
+
+						$new_stock = app(ProductoService::class)->restarStock($producto->stock, $detalle->cantidad_total);
+					}
+					//$new_arribado = $producto->arribado - $detalle->cantidad_total;
+					$new_arribado = app(ProductoService::class)->restarStock($producto->arribado, $detalle->cantidad_total);
 
 					$new_futuro = $new_stock + $producto->en_camino;
 					if ($producto->arribado > 0) {
@@ -366,6 +382,8 @@ class ImportacionController extends Controller
 							"arribado" => $new_arribado,
 							"stock_futuro" => $new_futuro,
 						]);
+						//actualizar stock web
+						//dispatch((new ActualizarStockWooJob($producto->origen, $new_stock))->onQueue('meli'));
 					}
 				}
 			}
@@ -409,10 +427,10 @@ class ImportacionController extends Controller
 	public function importCostoReal(ImportacionCostoRealStoreRequest $request)
 	{
 		$usuario = auth()->user();
-		$hoy=Carbon::now()->format('Y-m-d');
+		$hoy = Carbon::now()->format('Y-m-d');
 		$file = $request->file('archivo');
 		$no_existe = [];
-		$vacio=[];
+		$vacio = [];
 		$filas = Excel::toArray([], $file);
 		$filas_a = array_slice($filas[0], 1);
 		$n_fila = 0;
@@ -420,8 +438,8 @@ class ImportacionController extends Controller
 			$n_fila = $n_fila + 1;
 			if (!empty($col[1])) {
 				$prod = ImportacionDetalle::where('sku', '=', $col[1])
-				->where('importacion_id', '=', $request->importacion_id)
-				->first();
+					->where('importacion_id', '=', $request->importacion_id)
+					->first();
 
 				if (is_null($prod)) {
 					array_push($no_existe, [
@@ -438,7 +456,7 @@ class ImportacionController extends Controller
 		}
 		if (count($vacio) > 0) {
 			throw ValidationException::withMessages([
-				'error_sku' =>[ $vacio]
+				'error_sku' => [$vacio]
 			]);
 		}
 		if (count($no_existe) > 0) {
@@ -451,7 +469,7 @@ class ImportacionController extends Controller
 			try {
 
 				//importando excel
-				Excel::import(new CostoRealImport($request->importacion_id,$hoy,$usuario->id), $file);
+				Excel::import(new CostoRealImport($request->importacion_id, $hoy, $usuario->id), $file);
 				DB::commit();
 			} catch (Exception $e) {
 				DB::rollBack();
