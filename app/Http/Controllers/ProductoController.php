@@ -29,6 +29,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Services\ConfiguracionService;
 use Illuminate\Http\Request  as dRequest;
+use App\Jobs\ActualizarStockWooJob;
 
 class ProductoController extends Controller
 {
@@ -269,26 +270,8 @@ class ProductoController extends Controller
 		$producto->atributo_valores()->sync($syncIds);
 
 		//actualizar stock web
-		$url = $url_tienda . "/wp-json/wclanocturnauy/v1/actualizar_stock?sku=" . $producto->origen; // URL con parámetros
-		$ch = curl_init();
-		$post_data = array(
-			'stock' => $producto->stock
-		);
+		dispatch((new ActualizarStockWooJob($producto->origen,$producto->stock))->onQueue('meli'));
 
-		curl_setopt($ch, CURLOPT_URL, $url);
-		// Enable POST method
-		curl_setopt($ch, CURLOPT_POST, true);
-		// Set the POST data. If using an array, http_build_query() is recommended.
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$response = curl_exec($ch);
-		/*
-				if (curl_errno($ch)) {
-					echo 'Error cURL: ' . curl_error($ch);
-				} else {
-					echo "Respuesta: " . $response;
-				}*/
-		curl_close($ch);
 	}
 
 	public function show($id)

@@ -179,4 +179,16 @@ class ProductoService
 				break;
 		}
 	}
+
+	public function restarStock($actual, $nueva)
+	{
+		if ($actual == 0) {
+			return 0;
+		}
+		if ($actual > $nueva) { //0>200
+			return $actual - $nueva;
+		} else {
+			return $nueva - $actual;
+		}
+	}
 }

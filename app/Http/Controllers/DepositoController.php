@@ -16,6 +16,7 @@ use App\Models\DepositoHistorial;
 use App\Models\DepositoLista;
 use App\Models\DepositoProducto;
 use App\Models\Producto;
+use App\Services\ProductoService;
 use Inertia\Inertia;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
@@ -27,10 +28,9 @@ use Illuminate\Support\Facades\Request as Req;
 
 class DepositoController extends Controller
 {
-	public function __construct()
-	{
-
-	}
+		public function __construct(
+		private ProductoService $productoService
+	) {}
 
 	public function index()
 	{
@@ -267,24 +267,28 @@ class DepositoController extends Controller
 		foreach ($productos as $key => $producto) {
 			$deposito_detalle = DepositoProducto::with(['deposito_lista' => function ($query) {
 				$query->select('id', 'nombre');
-			}])->with(['producto' => function ($query) {
+			}])
+			/*->with(['producto' => function ($query) {
 				$query->select('id', 'origen', 'nombre');
-			}])->select('id', 'sku', 'bultos', 'pcs_bulto', 'cantidad_total', 'deposito_lista_id')->where('id', $producto['id'])->first();
+			}])*/
+			->select('id', 'sku', 'bultos', 'pcs_bulto', 'cantidad_total', 'deposito_lista_id')->where('id', $producto['id'])->first();
+
 			if (!empty($deposito_detalle)) {
+				$nProduct=$this->productoService->ProductoBySku($deposito_detalle->sku);
 				array_push($detalle_productos, [
 					'id' => $deposito_detalle->id,
 					'sku' => $deposito_detalle->sku,
 					'bultos' => $deposito_detalle->bultos,
 					'maxBultos' => $deposito_detalle->bultos,
 					'pcs_bulto' => $deposito_detalle->pcs_bulto,
-					'nombre_producto' => $deposito_detalle->producto->nombre,
+					//'nombre_producto' => $deposito_detalle->producto->nombre,
+					'nombre_producto' => $nProduct->nombre??'',
 				]);
 			}
 		}
 
 		//Lista deposito_detalle
 		$lista_depo = DepositoLista::whereNot('id', $origen_id)->orderBy('nombre', 'asc')->get();
-
 		$lista_depositos = [];
 		foreach ($lista_depo as $destino) {
 			array_push($lista_depositos, [

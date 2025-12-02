@@ -105,6 +105,7 @@ Route::controller(ClienteController::class)->group(function () {
 Route::controller(ProductoController::class)->prefix('productos')->name('productos.')
 	->middleware('auth')->group(function () {
 		Route::get('/export', 'exportExcel')->name('exportar');
+		Route::get('/sync-productos', 'syncProductos')->name('syncProductos');
 		Route::post('/storemasivo', 'storeMasivo')->name('storemasivo');
 		Route::get('/{id}/exportproductoventas', 'exportProductoVentas')->name('exportproductoventas');
 		Route::get('/actualizarfuturo', 'actualizarFuturo')->name('actualizarfuturo');
