@@ -207,7 +207,7 @@ const show = (tipo, titulo, mensaje) => {
 					class="w-full flex flex-col items-center col-span-12 sm:col-span-3  md:col-span-3  lg:col-span-3  text-white rounded-lg text-center">
 					<input type="text" placeholder="ETIQUETA" @input="mayuscula($event)" v-model="etiqueta"
 						class="placeholder:text-white text-center text-[16px] border font-normal  h-10 rounded-md w-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-						:style="{ backgroundColor: colorSeleccionado || '#ffffff' }" />
+						:style="{ backgroundColor: colorSeleccionado || '#484545' }" />
 
 					<div class="flex flex-wrap justify-center mt-2">
 						<button v-for="(item, i) in colores" :key="i"

@@ -11,10 +11,11 @@ const { setShow } = useCustomToast()
 const { datos } = usePage().props
 const titulo = "Venta Mensajes"
 const ruta = 'mercadolibre.mensajes'
-
+const { client_id } = usePage().props
 const formResponder = useForm({
 	packId: null,
 	sellerId: null,
+	clientId: null,
 	buyerId: null,
 	text: '',
 });
@@ -32,7 +33,7 @@ const enviarRespuesta = () => {
 		onSuccess: () => {
 			setShow('success', 'Mensaje', 'Mensaje enviado')
 			setTimeout(() => {
-				router.get(route(ruta + '.showMensajes', formResponder.packId));
+				router.get(route(ruta + '.showMensajes', {client_id,id:formResponder.packId}));
 			}, 500);
 		},
 		onFinish: () => {
@@ -46,6 +47,7 @@ onMounted(() => {
 	formResponder.packId = datos.id
 	formResponder.sellerId = datos.comprador.seller
 	formResponder.buyerId = datos.comprador.id
+	formResponder.clientId = client_id
 });
 
 
@@ -80,7 +82,41 @@ const formatHoraWsp = (fechaString) => {
 const parsedMessages = computed(() => datos.mensajes);
 
 
+const descargar = (attachment) => {
+    router.visit(route('ml.descargarAdjunto'), {
+        method: 'get',
+        data: {
+            filename: attachment.filename,
+            original_filename: attachment.original_filename,
+            client_id: attachment.client_id
+        },
+        preserveScroll: true,
+        preserveState: true,
+        onBefore: () => {
+            // Forzar que Inertia NO intercepte el binario
+            const form = document.createElement('form');
+            form.method = 'GET';
+            form.action = route('ml.descargarAdjunto');
+            form.style.display = 'none';
 
+            // Pasar parámetros
+            Object.entries({
+                filename: attachment.filename,
+                original_filename: attachment.original_filename,
+                client_id: attachment.client_id
+            }).forEach(([key, value]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+};
 
 
 
@@ -101,7 +137,7 @@ const parsedMessages = computed(() => datos.mensajes);
 				</div>
 				<span
 					class=" h-8 p-2 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
-					<a :href="'https://www.mercadolibre.com.uy/ventas/' + datos.mercadolibre_venta_id + '/detalle'"
+					<a :href="'https://www.mercadolibre.com.uy/ventas/' + datos.orden_id + '/detalle'"
 						target="_blank" class="py-auto">Ver ficha de venta</a>
 				</span>
 
@@ -136,7 +172,8 @@ const parsedMessages = computed(() => datos.mensajes);
 												<div v-if="msg.attachment_path!==null" class="w-auto text-xs">
 													<a class="text-blue-700" :href="route(ruta + '.descargarAdjunto', {
 														filename: msg.raw.message_attachments[0].filename,
-														original_filename: msg.raw.message_attachments[0].original_filename
+														original_filename: msg.raw.message_attachments[0].original_filename,
+														client_id:client_id
 													})" target="_blank">
 														<i class="fa fa-paperclip"></i>
 														{{ msg.raw.message_attachments[0].original_filename }}
@@ -234,7 +271,7 @@ const parsedMessages = computed(() => datos.mensajes);
 					</div>
 					<div class="bg-white rounded-xl shadow p-5 overflow-y-auto">
 						<h5 class="text-lg font-semibold mb-4">Respuestas rápidas</h5>
-						<div class="hidden sm:block flex flex-wrap gap-2 mb-4">
+						<div class="hidden sm:block flex-wrap gap-2 mb-4">
 							<ModalRepuestaRapidas @add-texto="setRespuesta" tipo="mensaje">
 							</ModalRepuestaRapidas>
 						</div>

@@ -10,9 +10,9 @@ use Tightenco\Ziggy\Ziggy;
 use App\Http\Resources\VentaCollection;
 use App\Models\Compra;
 use App\Models\Configuracion;
-use App\Models\MercadoLibreMensaje;
-use App\Models\MercadoLibrePregunta;
+use App\Services\MercadoLibre\PreguntaService;
 use App\Models\Venta;
+use App\Services\MercadoLibre\MensajeService;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -74,6 +74,7 @@ class HandleInertiaRequests extends Middleware
 				->orderBy('created_at', 'DESC')->get()
 		);
 
+
 		//configuracion
 		$configuracion = Configuracion::get();
 		//total envios
@@ -94,10 +95,8 @@ class HandleInertiaRequests extends Middleware
 			->select('id', 'destino', 'created_at')
 			->orderBy('created_at', 'DESC')->get();
 
-		$cant_preguntas = MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->with('from_user')->with('item')->whereHas('item', function ($query) {
-			$query->where('status', 'active');
-		})->count()??0;
-		$order = MercadoLibreMensaje::select('id','pack_id','is_read','is_from_seller')->where('is_from_seller', '=', 0)->where('is_read', '=', 0)->count()??0;
+		$menu_preguntas=app(PreguntaService::class)->getSinLeer();
+		$menu_mensajes=app(MensajeService::class)->getSinLeerLocal();
 		$total_ues = 0;
 		$total_flex = 0;
 		$total_dac = 0;
@@ -154,8 +153,8 @@ class HandleInertiaRequests extends Middleware
 				'pagos_compras' => $pagos_compra,
 				'total_retiro' => $total_retiro,
 				'configuracion' => $configuracion,
-				'cant_preguntas' => $cant_preguntas,
-				'cant_mensajes' =>$order
+				'menu_preguntas' => $menu_preguntas,
+				'menu_mensajes' => $menu_mensajes
 			],
 			//'csrf_token' => csrf_token(),
 			'ziggy' => function () use ($request) {

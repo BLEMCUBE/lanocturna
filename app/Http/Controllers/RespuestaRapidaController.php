@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RespuestaRapidaRequest;
-use App\Models\RespuestaRapida;
+use App\Models\MLRespuestaRapida;
 use App\Models\Configuracion;
 
 class RespuestaRapidaController extends Controller
@@ -11,8 +11,8 @@ class RespuestaRapidaController extends Controller
 
 	public function index($tipo)
 	{
-		$datos =	RespuestaRapida::select('id', 'titulo', 'descripcion', 'color','tipo')
-		->where('tipo','=',$tipo)->orderBy('titulo', 'ASC')->get();
+		$datos =	MLRespuestaRapida::select('id', 'titulo', 'descripcion', 'color', 'tipo')
+			->where('tipo', '=', $tipo)->orderBy('titulo', 'ASC')->get();
 		$saludo = Configuracion::where('slug', 'pregunta-saludo')->first();
 		$firma = Configuracion::where('slug', 'pregunta-firma')->first();
 
@@ -48,7 +48,7 @@ class RespuestaRapidaController extends Controller
 		$etiq = $request->etiquetas;
 		foreach ($etiq as $key => $value) {
 			if (!is_null($value['id'])) {
-				RespuestaRapida::updateOrCreate(
+				MLRespuestaRapida::updateOrCreate(
 					['id' => $value['id']],
 					[
 						'titulo' => $value['titulo'] ?? '',
@@ -58,7 +58,7 @@ class RespuestaRapidaController extends Controller
 					]
 				);
 			} else {
-				RespuestaRapida::create([
+				MLRespuestaRapida::create([
 					'titulo' => $value['titulo'] ?? '',
 					'descripcion' => $value['descripcion'] ?? '',
 					'tipo' => $value['tipo'] ?? '',
@@ -70,7 +70,7 @@ class RespuestaRapidaController extends Controller
 
 	public function destroy($id)
 	{
-		$item = RespuestaRapida::find($id);
+		$item = MLRespuestaRapida::find($id);
 		$item->delete();
 	}
 }

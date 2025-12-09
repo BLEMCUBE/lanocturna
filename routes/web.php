@@ -15,10 +15,11 @@ use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ExpedicionController;
 use App\Http\Controllers\ImportacionController;
 use App\Http\Controllers\InicioController;
-use App\Http\Controllers\MercadoLibre\NotificacionController;
+use App\Http\Controllers\MercadoLibre\AppController;
+use App\Http\Controllers\MercadoLibre\AuthController;
 use App\Http\Controllers\MercadoLibre\PreguntasController;
-use App\Http\Controllers\MercadoLibre\ClientesController;
 use App\Http\Controllers\MercadoLibre\MensajesController;
+use App\Http\Controllers\MercadoLibre\MLWebhookController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\PagoCompraController;
@@ -26,7 +27,6 @@ use App\Http\Controllers\PagoImportacionController;
 use App\Http\Controllers\PagoServicioController;
 use App\Http\Controllers\PlantillaController;
 use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\PusherController;
 use App\Http\Controllers\ReporteProductoRmaController;
 use App\Http\Controllers\ReporteProductoVendidoController;
 use App\Http\Controllers\ReporteStockProductosController;
@@ -405,22 +405,21 @@ Route::prefix('mercadolibre')->name('mercadolibre.')
 	->middleware('auth')->group(function () {
 
 		//app keys
-		Route::prefix('clientes')->name('clientes.')->group(function () {
-			Route::get('/', [ClientesController::class, 'index'])->name('index');
-			Route::get('/{id}/show', [ClientesController::class, 'show'])->name('show');
-			Route::get('/{id}/conectar', [ClientesController::class, 'conectar'])->name('conectar');
-			Route::delete('/{id}', [ClientesController::class, 'destroy'])->name('destroy');
-			Route::post('/store', [ClientesController::class, 'store'])->name('store');
-			Route::post('/update/{id}', [ClientesController::class, 'update'])->name('update');
-			Route::get('/{cliente}/refrecarToken', [ClientesController::class, 'refrecarToken'])->name('refresh-token');
-			Route::get('/{cliente}/desconectar', [ClientesController::class, 'desconectar'])->name('desconectar');
+		Route::prefix('apps')->name('apps.')->group(function () {
+			Route::get('/', [AppController::class, 'index'])->name('index');
+			Route::get('/{id}/show', [AppController::class, 'show'])->name('show');
+			Route::get('/{id}/conectar', [AuthController::class, 'conectar'])->name('conectar');
+			Route::delete('/{id}', [AppController::class, 'destroy'])->name('destroy');
+			Route::post('/store', [AppController::class, 'store'])->name('store');
+			Route::post('/update/{id}', [AppController::class, 'update'])->name('update');
+			Route::get('/{cliente}/refrecarToken', [AuthController::class, 'refrecarToken'])->name('refresh-token');
+			Route::get('/{cliente}/desconectar', [AuthController::class, 'desconectar'])->name('desconectar');
 		});
 
 		//preguntas
 		Route::prefix('preguntas')->name('preguntas.')->group(function () {
-			Route::get('/', [PreguntasController::class, 'index'])->name('lista');
-			Route::get('/historial', [PreguntasController::class, 'historial'])->name('historial');
-			Route::get('/{id}', [PreguntasController::class, 'obtenerPreguntasYProductos'])->name('items');
+			Route::get('/{client_id}', [PreguntasController::class, 'index'])->name('lista');
+			Route::get('/{client_id}/historial', [PreguntasController::class, 'historial'])->name('historial');
 			Route::post('/responder', [PreguntasController::class, 'responder'])->name('responder');
 			Route::post('/bloquear-usuario', [PreguntasController::class, 'bloquearUsuario'])->name('bloquear-usuario');
 			Route::delete('/{id}', [PreguntasController::class, 'destroy'])->name('destroy');
@@ -428,12 +427,13 @@ Route::prefix('mercadolibre')->name('mercadolibre.')
 
 		//mensajes
 		Route::prefix('mensajes')->name('mensajes.')->group(function () {
-			Route::get('/sin_leer', [MensajesController::class, 'sinLeer'])->name('sinLeer');
-			Route::get('/', [MensajesController::class, 'index'])->name('lista');
+			Route::get('/adjunto', [MensajesController::class, 'descargarAdjunto'])->name('descargarAdjunto');
+			Route::get('/{client_id}', [MensajesController::class, 'index'])->name('lista');
+			Route::get('/{client_id}/app', [MensajesController::class, 'setAppId'])->name('setAppId');
+			Route::get('/{client_id}/sin_leer', [MensajesController::class, 'sinLeer'])->name('sinLeer');
 
 			Route::post('/responder', [MensajesController::class, 'responder'])->name('responder');
-			Route::get('/adjunto', [MensajesController::class, 'descargarAdjunto'])->name('descargarAdjunto');
-			Route::get('/{id}/mensajes', [MensajesController::class, 'showMensajes'])->name('showMensajes');
+			Route::get('/{client_id}/detalle/{id}', [MensajesController::class, 'showMensajes'])->name('showMensajes');
 		});
 	});
 
@@ -446,16 +446,11 @@ Route::controller(RespuestaRapidaController::class)->prefix('respuestasrapidas')
 	});
 
 //mercado libre sin auth
-Route::controller(NotificacionController::class)->prefix('mercadolibre')->name('mercadolibre.')
+Route::prefix('mercadolibre')->name('mercadolibre.')
 	->group(function () {
-		Route::get('/callback', 'callback')->name('callback');
-		Route::post('/notifications', 'notifications')->name('notifications');
+		Route::get('/callback', [MLWebhookController::class, 'callback'])->name('callback');
+		Route::post('/notifications', [MLWebhookController::class, 'notifications'])->name('notifications');
 	});
 
-//test pusher
-Route::controller(PusherController::class)->prefix('pushertest')->name('pushertest.')
-	->middleware('auth')->group(function () {
-		//Route::get('/{tipo}', 'testNotif')->name('testNotif');
-	});
 
 require __DIR__ . '/auth.php';

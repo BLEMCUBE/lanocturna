@@ -36,7 +36,7 @@ class MercadoLibreCollection extends ResourceCollection
 				return [
 					'id' => $row->id,
 					'nombre' => $row->nombre,
-					'client_id' => $row->client_id,
+					'client_id' => $row->app_id,
 					'client_secret' => $row->client_secret,
 					'redirect_uri' => $row->redirect_uri,
 					'is_default' => $row->is_default,

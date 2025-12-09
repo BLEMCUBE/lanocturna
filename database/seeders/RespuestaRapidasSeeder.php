@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\RespuestaRapida;
+use App\Models\MLRespuestaRapida;
 use Illuminate\Database\Seeder;
 
 class RespuestaRapidasSeeder extends Seeder
@@ -22,12 +22,12 @@ class RespuestaRapidasSeeder extends Seeder
 
 		//eliminar si existe
 		foreach ($items as $item) {
-			RespuestaRapida::where('titulo', $item['titulo'])->delete();
+			MLRespuestaRapida::where('titulo', $item['titulo'])->delete();
 		}
 
 		//crear
 		foreach ($items as $item) {
-			RespuestaRapida::create($item);
+			MLRespuestaRapida::create($item);
 		}
 	}
 }

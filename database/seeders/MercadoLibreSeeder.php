@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Configuracion;
-use App\Models\MercadoLibreCliente;
+use App\Models\MLApp;
 use Illuminate\Database\Seeder;
 
 class MercadoLibreSeeder extends Seeder
@@ -36,7 +36,7 @@ class MercadoLibreSeeder extends Seeder
 		];
 		 // create permissions
         foreach ($mercado_libre_clientes as $item) {
-            MercadoLibreCliente::create($item);
+            MLApp::create($item);
         }
 		//crear configuracion
 		/*		foreach ($conf_mercado_libre as $configuracion) {

@@ -9,8 +9,8 @@ import { useLoaderStore } from "@/stores/loader";
 
 const loader = useLoaderStore();
 const toast = useToast();
-const titulo = "Cliente"
-const ruta = "mercadolibre.clientes"
+const titulo = "Apps"
+const ruta = "mercadolibre.apps"
 
 //Variables
 const isShowModal = ref(false);
@@ -18,7 +18,7 @@ const isShowModal = ref(false);
 const form = useForm({
 	id: '',
 	nombre: '',
-	client_id: '',
+	app_id: '',
 	client_secret: '',
 })
 
@@ -45,7 +45,7 @@ const dataEdit = (id) => {
 			var datos = res.data.item
 			form.id = datos.id
 			form.nombre = datos.nombre
-			form.client_id = datos.client_id
+			form.app_id = datos.app_id
 			form.client_secret = datos.client_secret
 			loader.hide()
 		})
@@ -114,12 +114,12 @@ const show = (tipo, titulo, mensaje) => {
 						<InputError class="mt-1 text-xs" :message="form.errors.nombre" />
 					</div>
 					<div class="col-span-6 shadow-default xl:col-span-6">
-						<InputLabel for="client_id" value="Cliente ID"
+						<InputLabel for="app_id" value="Cliente ID"
 							class="block text-base font-medium leading-6 text-gray-900" />
-						<input type="text" v-model="form.client_id"
+						<input type="text" v-model="form.app_id"
 							class="p-inputtext p-component h-9 w-full font-sans  font-normal text-gray-700 dark:text-white/80 bg-white dark:bg-gray-900 border border-gray-300 dark:border-blue-900/40 transition-colors duration-200 appearance-none rounded-md text-sm px-2 py-1">
 
-						<InputError class="mt-1 text-xs" :message="form.errors.client_id" />
+						<InputError class="mt-1 text-xs" :message="form.errors.app_id" />
 					</div>
 					<div class="col-span-6 shadow-default xl:col-span-6">
 						<InputLabel for="client_secret" value="Cliente Secret"

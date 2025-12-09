@@ -11,6 +11,7 @@ const { setShow } = useCustomToast()
 const { items } = usePage().props
 const { saludo } = usePage().props
 const { firma } = usePage().props
+const { client_id } = usePage().props
 const titulo = "ML Preguntas"
 const ruta = 'mercadolibre.preguntas'
 const listaPreguntas = ref([]);
@@ -24,7 +25,8 @@ const formBloquearUsuario = useForm({
 
 
 const formResponder = useForm({
-	mercadolibre_pregunta_id: null,
+	pregunta_id: null,
+	client_id: null,
 	from_user_id: null,
 	text: null,
 	payload: null,
@@ -36,7 +38,8 @@ onMounted(() => {
 		listaPreguntas.value.push(
 			{
 				id: el.id,
-				mercadolibre_pregunta_id: el.mercadolibre_pregunta_id,
+				pregunta_id: el.pregunta_id,
+				client_id: client_id,
 				pregunta: el.pregunta,
 				publicado: el.publicado,
 				from_user_id: el.from_user_id,
@@ -90,7 +93,7 @@ const enviarRespuesta = (index) => {
 		onSuccess: () => {
 			setShow('success', 'Mensaje', 'Respuesta enviada')
 			setTimeout(() => {
-				router.get(route(ruta + '.lista'));
+				router.get(route(ruta + '.lista',client_id));
 			}, 500);
 		},
 		onFinish: () => {
@@ -143,7 +146,8 @@ const setRespuesta = (obj) => {
 const setDatosResponder = (index) => {
 	if (index !== null) {
 		let item = listaPreguntas.value[index]
-		formResponder.mercadolibre_pregunta_id = item.mercadolibre_pregunta_id
+		formResponder.pregunta_id = item.pregunta_id
+		formResponder.client_id = client_id
 		formResponder.from_user_id = item.from_user_id
 		formResponder.payload = item
 		setTexto(index);
@@ -334,7 +338,7 @@ const setTexto = (index) => {
 				<div class="md:col-span-4 xl:col-span-3">
 					<div class="bg-white rounded-xl shadow p-5 fixed overflow-y-auto">
 						<h5 class="text-lg font-semibold mb-4">Respuestas rápidas</h5>
-						<div class="hidden sm:block flex flex-wrap gap-2 mb-4">
+						<div class="hidden sm:block flex-wrap gap-2 mb-4">
 							<ModalRepuestaRapidas @add-texto="setRespuesta" tipo="pregunta">
 							</ModalRepuestaRapidas>
 						</div>

@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Models\MercadoLibreMensaje;
-use App\Services\ItemService;
-use App\Services\MLVentaService;
+use App\Models\MLMensaje;
+use App\Services\MercadoLibre\ItemService;
+use App\Services\MercadoLibre\OrdenService;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class MensajeCollection extends ResourceCollection
@@ -20,17 +20,19 @@ class MensajeCollection extends ResourceCollection
 		return
 			$this->collection->transform(function ($row, $key) {
 				$fecha = $row->date_created;
-				$comprador=app(MLVentaService::class)->comprador($row->venta->id);
+				$comprador=app(OrdenService::class)->comprador($row->venta->id);
 				$items=app(ItemService::class)->detalle($row->venta->item_ids,true);
 				return [
 					'pack_id' => $row->pack_id,
-					'mensaje' => $row->body,
+					'client_id' => $row->client_id,
+					'mensaje' => $row->text,
 					'hora' => $fecha->format('H:i'),
 					'fecha' =>  $fecha->format('d/m/Y'),
 					'productos'=>$items,
-					'ult_msg'=>MercadoLibreMensaje::where('pack_id',$row->pack_id)->select('body')->latest('id')->first(),
+					'ult_msg'=>MLMensaje::where('pack_id',$row->pack_id)->select('text')->latest('date_created')->first(),
 					'comprador' => $comprador['nickname'],
-					'leido'=>MercadoLibreMensaje::where('pack_id',$row->pack_id)->where('is_read',0)->where('is_from_seller',0)->count()
+					'leido'=>MLMensaje::where('pack_id',$row->pack_id)->where('is_read',0)
+					->where('client_id',$row->client_id)->where('is_from_seller',0)->count()
 				];
 			});
 	}

@@ -7,17 +7,20 @@ import { FilterMatchMode } from 'primevue/api';
 const titulo = "ML Mensajes todos"
 const datosTodos = ref([]);
 const ruta = 'mercadolibre.mensajes'
-
+const { client_id } = usePage().props
 const filters = ref({
 	global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 
 const todos = () => {
-	router.get(route(ruta + '.lista'))
+	router.get(route(ruta + '.lista',{client_id:client_id}))
+};
+const sinLeer = () => {
+	router.get(route(ruta + '.sinLeer',{client_id:client_id}))
 };
 
 const btnVer = (id) => {
-	router.get(route(ruta + '.showMensajes', id));
+	router.get(route(ruta + '.showMensajes', {client_id,id}));
 
 };
 
@@ -26,9 +29,7 @@ const clickDetalle = (e) => {
 
 	btnVer(e.data.pack_id)
 }
-const sinLeer = () => {
-	router.get(route(ruta + '.sinLeer'))
-};
+
 
 onMounted(() => {
 	datosTodos.value = usePage().props.datos.data.map(item => ({
@@ -86,7 +87,7 @@ onMounted(() => {
 									leer`: `${slotProps.data.leido} mensaje sin leer` }}
 								</div>
 
-								<div v-html="slotProps.data.ult_msg.body??''">
+								<div v-html="slotProps.data.ult_msg.text??''">
 								</div>
 							</div>
 						</template>

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\MercadoLibreNotificacion;
+use App\Models\MLNotificacion;
 use Illuminate\Console\Command;
 use App\Jobs\ProcessMercadoLibreNotification;
 
@@ -29,7 +29,7 @@ class RetryMeliNotifications extends Command
 	{
 		$this->info('Buscando notificaciones pendientes...');
 
-		$notifications = MercadoLibreNotificacion::whereIn('status', ['failed', 'error', 'received'])
+		$notifications = MLNotificacion::whereIn('status', ['failed', 'error', 'received'])
 		->select('status','id','payload')
 		->get();
 
