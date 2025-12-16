@@ -30,7 +30,7 @@ class FetchItemsPaused extends Command
 	{
 
 		$items =MLItem::where('status', '=', 'paused')
-			->select('item_id', 'status')->get();
+			->select('item_id','seller_id', 'status')->get();
 
 		if ($items->isEmpty()) {
 			$this->info('✅ No hay notificaciones pendientes.');
@@ -38,6 +38,7 @@ class FetchItemsPaused extends Command
 		}
 
 		foreach ($items as $notif) {
+			$this->info("dsd {$notif->item_id}");
 			dispatch((new DetalleItemJob($notif->item_id,$notif->seller_id))->onQueue('meli'));
 			$this->info("📨 Notificación {$notif->item_id} enviada a la cola.");
 		}

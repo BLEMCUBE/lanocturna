@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\MercadoLibreService;
+use App\Services\MercadoLibre\MercadoLibreService;
 use Illuminate\Http\Request;
 use App\Services\VentaService;
 

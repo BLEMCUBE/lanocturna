@@ -46,7 +46,7 @@ class FetchUnreadQuestionsJob implements ShouldQueue
 		$ml = app(MercadoLibreService::class)->forClient($this->clientId);
 
 		$fechaInicio = Carbon::now()
-			->subDays(15)
+			->subDays(1)
 			->startOfDay()
 			->format('Y-m-d\TH:i:s.vP');
 		$fechaFin = Carbon::now()
@@ -93,7 +93,8 @@ class FetchUnreadQuestionsJob implements ShouldQueue
 				);
 			}
 			$row = MLItem::where('item_id', '=', $q['item_id'])->first();
-			if ($row === null) {
+			if (is_null($row )) {
+				Log::info("dds3 {$q['item_id']}");
 				dispatch((new DetalleItemJob($q['item_id'], $q['seller_id']))->onQueue('meli'));
 			}
 		}

@@ -34,11 +34,14 @@ class Kernel extends ConsoleKernel
         ->withoutOverlapping()
         ->onOneServer();
 
-/*
-		$schedule->job(new \App\Jobs\CheckMeliPackStatus, 'meli')->everyTwoMinutes()
+		$schedule->job(new \App\Jobs\RunFetchRespuestasForAllClientsJob, 'meli')->everyTwoMinutes()
         ->withoutOverlapping()
         ->onOneServer();
-		*/
+/*
+		$schedule->job(new \App\Jobs\NotificacionesPerdidasJob, 'meli')->everyTwoMinutes()
+        ->withoutOverlapping()
+        ->onOneServer();
+*/
 	}
 
 	/**

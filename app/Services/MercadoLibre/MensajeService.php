@@ -119,9 +119,7 @@ class MensajeService
 				$seller_id = collect($msg['message_resources'])
 					->firstWhere('name', 'sellers')['id'] ?? null;
 
-				$item = MLCLient::with('cliente')
-					->where('meli_user_id', $seller_id)
-					->first();
+
 				$orden = MLOrden::where('pack_id', $pack_id)
 					->orWhere('orden_id', $pack_id)->first();
 				if (is_null($orden)) {
@@ -149,7 +147,7 @@ class MensajeService
 						'is_read' => $read ? 1 : 0,
 						// marcar si lo envió el vendedor
 						'is_from_seller' => $fromSeller ? 1 : 0,
-						'client_id' => $item->cliente->app_id,
+						'client_id' => $this->clienteId(),
 						// guardar JSON entero
 						'payload' => $msg,
 
@@ -219,7 +217,7 @@ class MensajeService
 						'is_read' => $read ? 1 : 0,
 						// marcar si lo envió el vendedor
 						'is_from_seller' => $fromSeller ? 1 : 0,
-						'client_id' => $item->cliente->app_id,
+						'client_id' => $this->clienteId(),
 						// guardar JSON entero
 						'payload' => $msg,
 

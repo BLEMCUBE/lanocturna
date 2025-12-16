@@ -20,6 +20,7 @@ use App\Http\Controllers\MercadoLibre\AuthController;
 use App\Http\Controllers\MercadoLibre\PreguntasController;
 use App\Http\Controllers\MercadoLibre\MensajesController;
 use App\Http\Controllers\MercadoLibre\MLWebhookController;
+use App\Http\Controllers\MercadoLibre\VentasController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\PagoCompraController;
@@ -434,6 +435,13 @@ Route::prefix('mercadolibre')->name('mercadolibre.')
 
 			Route::post('/responder', [MensajesController::class, 'responder'])->name('responder');
 			Route::get('/{client_id}/detalle/{id}', [MensajesController::class, 'showMensajes'])->name('showMensajes');
+		});
+
+
+		//ventas
+		Route::prefix('ventas')->name('ventas.')->group(function () {
+			Route::get('/{client_id}', [VentasController::class, 'index'])->name('index');
+			Route::get('/{client_id}/detalle/{venta_id}/{tipo}', [VentasController::class, 'show'])->name('detalle');
 		});
 	});
 

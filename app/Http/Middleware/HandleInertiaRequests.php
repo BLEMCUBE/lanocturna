@@ -10,9 +10,11 @@ use Tightenco\Ziggy\Ziggy;
 use App\Http\Resources\VentaCollection;
 use App\Models\Compra;
 use App\Models\Configuracion;
+use App\Models\MLOrden;
 use App\Services\MercadoLibre\PreguntaService;
 use App\Models\Venta;
 use App\Services\MercadoLibre\MensajeService;
+use App\Services\MercadoLibre\OrdenService;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -97,6 +99,7 @@ class HandleInertiaRequests extends Middleware
 
 		$menu_preguntas=app(PreguntaService::class)->getSinLeer();
 		$menu_mensajes=app(MensajeService::class)->getSinLeerLocal();
+		$menu_ventas=app(OrdenService::class)->getSinLeerLocal();
 		$total_ues = 0;
 		$total_flex = 0;
 		$total_dac = 0;
@@ -154,7 +157,8 @@ class HandleInertiaRequests extends Middleware
 				'total_retiro' => $total_retiro,
 				'configuracion' => $configuracion,
 				'menu_preguntas' => $menu_preguntas,
-				'menu_mensajes' => $menu_mensajes
+				'menu_mensajes' => $menu_mensajes,
+				'menu_ventas' => $menu_ventas
 			],
 			//'csrf_token' => csrf_token(),
 			'ziggy' => function () use ($request) {

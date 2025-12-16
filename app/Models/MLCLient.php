@@ -26,4 +26,10 @@ class MLCLient extends Model
 		//return $this->belongsTo(MLApp::class, 'app_id', 'id');
 		return $this->belongsTo(MLApp::class);
 	}
+
+	/** Relación con reclamos */
+	public function reclamos()
+	{
+		return $this->hasMany(MLReclamo::class, 'meli_user_id', 'meli_user_id');
+	}
 }

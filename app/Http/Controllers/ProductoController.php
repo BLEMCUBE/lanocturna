@@ -29,7 +29,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Services\ConfiguracionService;
 use Illuminate\Http\Request  as dRequest;
-use App\Jobs\ActualizarStockWooJob;
+use App\Jobs\WCActualizarStockJob;
 
 class ProductoController extends Controller
 {
@@ -270,7 +270,7 @@ class ProductoController extends Controller
 		$producto->atributo_valores()->sync($syncIds);
 
 		//actualizar stock web
-		dispatch((new ActualizarStockWooJob($producto->origen,$producto->stock))->onQueue('meli'));
+		dispatch((new WCActualizarStockJob($producto->origen,$producto->stock))->onQueue('meli'));
 
 	}
 

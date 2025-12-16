@@ -11,6 +11,7 @@ class MLMensaje extends Model
 
 	protected $fillable = [
 		'client_id',
+		'reclamo_id',
 		'order_id',
 		'pack_id',
 		'message_id',
@@ -67,4 +68,9 @@ class MLMensaje extends Model
 					->orWhereHas('ventaPorId');
 			});
 	}
+
+	 public function reclamo()
+    {
+        return $this->belongsTo(MLReclamo::class, 'reclamo_id');
+    }
 }

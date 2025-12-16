@@ -5,17 +5,13 @@ namespace App\Http\Controllers\MercadoLibre;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PreguntaCollection;
 use App\Http\Resources\PreguntaHistorialCollection;
-use App\Jobs\PreguntasHistorialJob;
 use App\Models\Configuracion;
 use App\Models\MLApp;
-use App\Models\MLListaUsuario;
 use App\Models\MLPregunta;
 use App\Models\MLRespuesta;
 use App\Services\MercadoLibre\MercadoLibreService;
 use App\Services\MercadoLibre\PreguntaService;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Request as Req;
 use Illuminate\Http\Request;
 
 
@@ -23,7 +19,6 @@ class PreguntasController extends Controller
 {
 
 	public function __construct(
-		private	MercadoLibreService $ml,
 		private PreguntaService $preguntaService,
 	) {}
 
@@ -116,34 +111,15 @@ class PreguntasController extends Controller
 			->where('app_id', $client_id)
 			->firstOrFail();
 
-		// 1️⃣ Revisar usuarios faltantes y disparar job
-		$items = MLPregunta::select('item_id', 'from_user_id', 'seller_id')
-			->where('seller_id', $cliente->usuario->meli_user_id)
-			->groupBy('item_id')
-			->get();
-
-		foreach ($items as $value) {
-			//$user = MLListaUsuario::where('user_id', $value->from_user_id)->first();
-
-			//if (is_null($user)) {
-				//PreguntasHistorialJob::dispatch($value->item_id, $client_id)->onQueue('meli');
-			//}
-		}
-
 		// 2️⃣ Consultar historial con filtros correctos
-		$queryDatos = MLPregunta::with(['from_user', 'respuesta', 'item'])
-			->where('seller_id', $cliente->usuario->meli_user_id)
-			->whereHas('item', function ($q) {
-				$q->where('status', 'active');
+		$queryDatos = MLPregunta::with('from_user')
+			->with('item')->whereHas('item', function ($query) {
+				$query->where('status', 'active');
 			})
-			->where(function ($q) {
-				$q->whereIn('status', ['ANSWERED']);
-			})
-			->whereHas('respuesta') // Solo preguntas con respuesta
-			->orderBy('date_created', 'DESC')
-			->get();
-			//dd($queryDatos[0]);
-
+			->with('respuesta')
+			->where('status', '=', 'ANSWERED')
+			->where('seller_id', '=', $cliente->usuario->meli_user_id)
+			->orderBy('date_created', 'desc')->get();
 		// 3️⃣ Collection para Inertia
 		$datos = new PreguntaHistorialCollection($queryDatos);
 

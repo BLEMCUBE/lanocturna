@@ -69,6 +69,18 @@ class ItemService
 
 		if ($lista == false) {
 			$query_item = MLItem::where('item_id', $item_id)->first();
+			if (is_null($query_item)){
+			return [
+				'title' =>'',
+				'id' => '',
+				'thumbnail' =>'/images/productos/sin_foto.png',
+				'sku' => '',
+				'permalink' =>'',
+				'base_price' =>'',
+				'listing_type_id' =>'',
+
+			];
+			}
 			$item = $query_item->payload;
 			$sellerSku = collect($item['attributes'])
 				->firstWhere('id', 'SELLER_SKU')['value_name'] ?? null;

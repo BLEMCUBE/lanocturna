@@ -18,10 +18,18 @@ class MLOrden extends Model
 		'status',
 		'item_ids',
 		'date_created',
+		'envio',
+		'facturacion',
 		'payload',
+		'shipping_paid_by',
+		'shipping_buyer_cost',
+		'shipping_seller_cost',
+		'shipping_detected_by'
 	];
 
 	protected $casts = [
+		'envio' => 'array',
+		'facturacion' => 'array',
 		'payload' => 'array',
 		'item_ids' => 'array',
 	];
@@ -44,9 +52,18 @@ class MLOrden extends Model
 		return $this->hasOne(MLListaUsuario::class, 'user_id', 'buyer_id');
 	}
 
-
 	public function getItemsAttribute()
 	{
 		return MLItem::whereIn('item_id', $this->item_ids ?? [])->get();
+	}
+
+	public function reclamos()
+	{
+		return $this->hasMany(MLReclamo::class, 'order_id', 'order_id');
+	}
+
+	public function items()
+	{
+		return MLItem::whereIn('item_id', $this->item_ids)->get();
 	}
 }
