@@ -5,6 +5,7 @@ namespace App\Services\MercadoLibre;
 use App\Models\MLApp;
 use App\Models\MLOrden;
 use App\Traits\BaseMLService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class OrdenService
@@ -38,31 +39,37 @@ class OrdenService
 
 		// Guardar venta
 		$venta = [];
-		$exite = MLOrden::where('orden_id', $item['id'])->whereNot('status', 'paid')
+		$exite = MLOrden::where('orden_id', $item['id'])
+			//->whereNot('status', 'paid')
 			->first();
-		if (!$exite) {
+		/*
+			if (!$exite) {
+*/
+		$venta = MLOrden::updateOrCreate(
+			['orden_id' => $item['id']],
+			[
+				'client_id'   => $this->clienteId(),
+				'orden_id' => $item['id'],
+				'pack_id'     => $item['pack_id'] ?? null,
+				'buyer_id'    => $item['buyer']['id'] ?? null,
+				'seller_id'   => $item['seller']['id'] ?? null,
+				'status'      => $item['status'] ?? 'pending',
+				'date_created'     =>  $item['date_created'] ?? null,
+				'payload'     => $item,
+				'envio_id'    => $item['shipping']['id'] ?? null,
+				'item_ids'    => $items,
+			]
+		);
 
-			$venta = MLOrden::updateOrCreate(
-				['orden_id' => $item['id']],
-				[
-					'client_id'   => $this->clienteId(),
-					'orden_id' => $item['id'],
-					'pack_id'     => $item['pack_id'] ?? null,
-					'buyer_id'    => $item['buyer']['id'] ?? null,
-					'seller_id'   => $item['seller']['id'] ?? null,
-					'status'      => $item['status'] ?? 'pending',
-					'date_created'     =>  $item['date_created'] ?? null,
-					'payload'     => $item,
-					'item_ids'    => $items,
-				]
-			);
 
-			// Registrar detalles de los items
-			foreach ($items as $itemId) {
-				$itemData = $this->mlForClient()->apiGet('/items/' . $itemId, $meli_user_id);
-				$this->itemService->updateOrCreate($itemData);
-			}
+		// Registrar detalles de los items
+		foreach ($items as $itemId) {
+			$itemData = $this->mlForClient()->apiGet('/items/' . $itemId, $meli_user_id);
+			$this->itemService->updateOrCreate($itemData);
 		}
+		//}
+		$this->agregarEnvio($item['id'], $clientId);
+		$this->agregarCostoEnvio($item['id'], $clientId);
 
 		return $venta;
 	}
@@ -76,26 +83,85 @@ class OrdenService
 		$appId = $payload['application_id'] ?? null;
 
 		if (! $appId) {
-			Log::warning('MensajeService sin application_id', $payload);
+			Log::warning('OrdenService sin application_id', $payload);
 			return;
 		}
 		$this->forClient($appId);
 		$resource = $payload['resource'] ?? null;
 		$userId   = $payload['user_id'] ?? null;
 
+		$coleccion = new Collection($payload['actions']);
 		if (!$resource || !$userId) return;
-
-		$response = $this->mlForClient()->apiGetDos($resource, $userId);
-
-		if ($response['success']) {
-
-			$order = $this->updateOrCreate($response['body'], $this->clienteId());
-			Log::info("Orden registrada para CLIENTE {$this->clienteId()}", [
-				'orden_id' => $response['body']['id']
-			]);
+		$aact = '';
+		if ($coleccion->contains('status')) {
+			$aact = $coleccion->first(function ($value) {
+				return $value === 'status';
+			});
+		}
+		if ($coleccion->contains('fulfilled')) {
+			$aact = $coleccion->first(function ($value) {
+				return $value === 'fulfilled';
+			});
 		}
 
-		$this->ml->actualizar($resource);
+		switch ($aact) {
+			case 'status':
+				$response = $this->mlForClient()->apiGetDos($resource, $userId);
+
+				if ($response['success']) {
+					$returnValue = explode('/', $resource);
+					//$exist = MLOrden::where('orden_id', '=', $returnValue[2])->first();
+					$exist = MLOrden::where('orden_id', '=', $returnValue[2])
+					->where('status',$response['body']['status'])
+					->first();
+					if (is_null($exist)) {
+
+						$order = $this->updateOrCreate($response['body'], $this->clienteId());
+						Log::info("Orden actualizada status para CLIENTE {$this->clienteId()}", [
+							'orden_id' => $response['body']['id']
+						]);
+					}
+					$this->ml->actualizar($resource);
+				}
+
+				break;
+			case 'fulfilled':
+				$response = $this->mlForClient()->apiGetDos($resource, $userId);
+
+				if ($response['success']) {
+					$returnValue = explode('/', $resource);
+					$exist = MLOrden::where('orden_id', '=', $returnValue[2])->first();
+					if (is_null($exist)) {
+
+						$order = $this->updateOrCreate($response['body'], $this->clienteId());
+						Log::info("Orden actualizada fulfilled para CLIENTE {$this->clienteId()}", [
+							'orden_id' => $response['body']['id']
+						]);
+					}
+					$this->ml->actualizar($resource);
+				}
+
+				break;
+
+			default:
+				$returnValue = explode('/', $resource);
+				$exist = MLOrden::where('orden_id', '=', $returnValue[2])->first();
+
+				if ($exist === null) {
+
+					$response = $this->mlForClient()->apiGetDos($resource, $userId);
+
+					if ($response['success']) {
+
+						$order = $this->updateOrCreate($response['body'], $this->clienteId());
+						Log::info("Orden registrada para CLIENTE {$this->clienteId()}", [
+							'orden_id' => $response['body']['id']
+						]);
+					}
+					$this->ml->actualizar($resource);
+				}
+				break;
+		}
 	}
 
 
@@ -155,12 +221,6 @@ class OrdenService
 		$clientes = MLApp::with('usuario')->whereHas('usuario')->get();
 
 		foreach ($clientes as $key => $value) {
-			/*
-			$query = MLOrden::select('id','orden_id', 'client_id')
-				->where('client_id', '=', $value['app_id'])
-					->count()
-					;
-					*/
 			array_push($datos, [
 				'client_id' => $value['app_id'],
 				'cantidad' => 0,
@@ -187,8 +247,10 @@ class OrdenService
 				throw new \Exception("envio ({$response['status_code']}): " . json_encode($response['body']));
 			}
 			MLOrden::where('orden_id', $ordenId)->update([
-				'envio' => $response['body']
+				'envio_id' => $shippingId,
+				'envio' => $response['body'],
 			]);
+			app(EnvioService::class)->forClient($client_id)->guardarActualizar($response['body'], $client_id);
 		}
 	}
 
@@ -228,8 +290,10 @@ class OrdenService
 					throw new \Exception("costo_envio ({$response['status_code']}): " . json_encode($response['body']));
 				}
 				MLOrden::where('orden_id', $ordenId)->update([
+					'envio_id' => $shippingId,
 					'costo_envio' => $response['body']
 				]);
+				app(EnvioService::class)->forClient($client_id)->guardarCosto($shippingId, $response['body'], $client_id);
 			}
 		}
 	}

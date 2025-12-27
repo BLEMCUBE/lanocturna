@@ -6,6 +6,7 @@ use App\Services\MercadoLibre\MensajeService;
 use App\Services\MercadoLibre\PreguntaService;
 use App\Services\MercadoLibre\OrdenService;
 use App\Services\MercadoLibre\ItemService;
+use App\Services\MercadoLibre\ReclamoService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -50,6 +51,9 @@ class ProcessMercadoLibreNotification implements ShouldQueue
 					break;
 				case 'messages':
 					app(MensajeService::class)->forClient($appId)->storeNotificacion($this->payload);
+					break;
+				case 'post_purchase':
+					app(ReclamoService::class)->forClient($appId)->storeNotificacion($this->payload);
 					break;
 				default:
 					Log::warning("Notificación ML ignorada, topic no manejado: {$topic}");

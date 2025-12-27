@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
 		$schedule->command('log:limpiar')->daily()
 		->withoutOverlapping()
         ->onOneServer();
-		$schedule->command('datos:items-paused')->everyTwoMinutes()
+		$schedule->command('datos:items-paused')->everyFiveMinutes()
 		->withoutOverlapping()
         ->onOneServer();
 
@@ -26,22 +26,22 @@ class Kernel extends ConsoleKernel
 
 		//$schedule->command('woo:sincronizar-stock')->dailyAt('02:00');
 
-		$schedule->job(new \App\Jobs\RunFetchPreguntasForAllClientsJob, 'meli')->everyTwoMinutes()
+		$schedule->job(new \App\Jobs\RunFetchPreguntasForAllClientsJob, 'meli')->everyFiveMinutes()
         ->withoutOverlapping()
         ->onOneServer();
 
-		$schedule->job(new \App\Jobs\RunFetchMensajesForAllClientsJob, 'meli')->everyTwoMinutes()
+		$schedule->job(new \App\Jobs\RunFetchMensajesForAllClientsJob, 'meli')->everyFiveMinutes()
         ->withoutOverlapping()
         ->onOneServer();
 
-		$schedule->job(new \App\Jobs\RunFetchRespuestasForAllClientsJob, 'meli')->everyTwoMinutes()
+		$schedule->job(new \App\Jobs\RunFetchRespuestasForAllClientsJob, 'meli')->everyFiveMinutes()
         ->withoutOverlapping()
         ->onOneServer();
-/*
-		$schedule->job(new \App\Jobs\NotificacionesPerdidasJob, 'meli')->everyTwoMinutes()
+
+		$schedule->job(new \App\Jobs\RunFetchReclamosForAllClientsJob, 'meli')->everyFiveMinutes()
         ->withoutOverlapping()
         ->onOneServer();
-*/
+
 	}
 
 	/**

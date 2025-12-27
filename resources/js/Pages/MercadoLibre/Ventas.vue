@@ -65,8 +65,8 @@ const shortcuts = [
 	},
 ]
 
-const btnDetalle = (client_id, venta_id,tipo) => {
-	router.get(route(ruta + '.detalle', [client_id, venta_id,tipo]));
+const btnDetalle = (client_id, venta_id, tipo) => {
+	router.get(route(ruta + '.detalle', [client_id, venta_id, tipo]));
 
 };
 
@@ -252,7 +252,7 @@ const filtrado = (value) => {
 										</div>
 
 									</div>
-								<!--
+									<!--
 
 								<div class="ml-6 my-1 text-sm  font-bold text-gray-800 flex items-center gap-3">
 									<span class="inline-flex items-center gap-2"><i
@@ -276,11 +276,11 @@ const filtrado = (value) => {
 								</div>
 								<!-- button -->
 								<div class="w-50 h-full flex  px-5 items-center justify-center py-auto">
-									{{ item.tipo }}
-																		<button
+									<button
 										class="rounded bg-blue-700  border border-white px-3 py-2 text-base font-normal text-white m-1 hover:bg-blue-600"
 										v-tooltip.top="{ value: `Ver Detalle`, pt: { text: 'bg-gray-500 p-1 text-xs text-white rounded' } }"
-										@click.prevent="btnDetalle(client_id,item.venta_id,item.tipo)">Ver Detalle</button>
+										@click.prevent="btnDetalle(client_id, item.venta_id, item.tipo)">Ver
+										Detalle</button>
 
 								</div>
 							</div>

@@ -68,8 +68,6 @@ class FetchRespuestasJob implements ShouldQueue
 					$pre = $response['body'];
 					$respuesta = $response['body']['answer'];
 					if (!is_null($respuesta)) {
-						Log::info('pre', ['pre' => $pre]);
-						Log::info('respuesta', ['respuesta' => $respuesta]);
 						MLRespuesta::updateOrCreate(
 							['pregunta_id' => $pre['id']],
 							[
@@ -82,8 +80,7 @@ class FetchRespuestasJob implements ShouldQueue
 						);
 						$row = MLItem::where('item_id', '=', $pre['item_id'])->first();
 						if (is_null($row)) {
-								Log::info("dds2 {$pre['item_id']}");
-							dispatch((new DetalleItemJob($pre['item_id'], $pre['seller_id']))->onQueue('meli'));
+							dispatch((new DetalleItemJob($pre['item_id'], $this->clientId))->onQueue('meli'));
 						}
 					}
 				}

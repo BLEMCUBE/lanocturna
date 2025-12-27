@@ -33,7 +33,8 @@ const formatHora = (str) => {
 			<!-- ENCABEZADO -->
 			<div class="bg-white shadow rounded-lg p-6 flex justify-between items-start w-full">
 				<div>
-					<h1 class="text-xl font-semibold">Orden #{{ datos.data.orden_id }}</h1>
+
+					<h1 class="text-xl font-semibold">Orden #{{ datos.data.pack_id?datos.data.pack_id:datos.data.orden_id }}</h1>
 					<p class="text-sm text-gray-500 mt-1">{{ datos.data.fecha }}</p>
 
 					<div class="flex gap-2 mt-4">

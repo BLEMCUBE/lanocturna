@@ -3,33 +3,37 @@
 namespace App\Jobs;
 
 use App\Models\MLApp;
-use App\Services\MercadoLibre\MissedFeedService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 
-class NotificacionesPerdidasJob implements ShouldQueue
+
+
+class RunFetchReclamosForAllClientsJob implements ShouldQueue
 {
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+	public $tries = 5; // cantidad de intentos antes de fallar
+	//public $backoff = 30; // segundos entre intentos (Laravel 10+)
 	public function backoff()
 	{
 		return [10, 30, 60, 120, 300];
 	}
 
-
 	public function handle()
 	{
-		$clientes=MLApp::with('usuario')->get();
+		$clientes = MLApp::with('usuario')
+			->whereHas('usuario')
+			->get();
 
-
-		foreach ($clientes as $cliente) {
-            $service = app(MissedFeedService::class)->forClient($cliente->app_id);
-
-            $service->syncAllTopics($cliente->app_id);
-        }
+		foreach ($clientes as $cli) {
+			FetchUnreadReclamosJob::dispatch(
+				$cli->app_id,
+				$cli->usuario->meli_user_id,
+				null
+			)->onQueue('meli');
+		}
 	}
 }

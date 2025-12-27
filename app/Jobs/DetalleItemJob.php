@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\MLApp;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -24,26 +25,27 @@ class DetalleItemJob implements ShouldQueue
 	}
 
 	protected $payload;
-	protected $userId;
+	protected $clientId;
 
-	public function __construct($payload, $userId)
+	public function __construct($payload, $clientId)
 	{
 		$this->payload = $payload;
-		$this->userId = $userId;
+		$this->clientId = $clientId;
 	}
 
 	public function handle()
 	{
 
-		$user = MLCLient::with('cliente')
-			->where('meli_user_id', $this->userId)
+		$cliente = MLApp::with('usuario')
+			->whereHas('usuario')
+			->where('app_id', $this->clientId)
 			->first();
-		if (!is_null($user)) {
+		if (!is_null($cliente)) {
 
 			$row = MLItem::where('item_id', '=',  $this->payload)->first();
 			if (is_null($row)) {
-				$ml = app(MercadoLibreService::class)->forClient($user->cliente->app_id);
-				$item = $ml->apiGet('/items/' . $this->payload, $this->userId, []);
+				$ml = app(MercadoLibreService::class)->forClient($this->clientId);
+				$item = $ml->apiGet('/items/' . $this->payload, $$cliente->usuario->meli_user_id, []);
 
 				$newItem = app(ItemService::class)->updateOrCreate($item);
 

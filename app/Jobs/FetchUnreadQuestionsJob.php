@@ -95,7 +95,7 @@ class FetchUnreadQuestionsJob implements ShouldQueue
 			$row = MLItem::where('item_id', '=', $q['item_id'])->first();
 			if (is_null($row )) {
 				Log::info("dds3 {$q['item_id']}");
-				dispatch((new DetalleItemJob($q['item_id'], $q['seller_id']))->onQueue('meli'));
+				dispatch((new DetalleItemJob($q['item_id'],$this->clientId ))->onQueue('meli'));
 			}
 		}
 	}

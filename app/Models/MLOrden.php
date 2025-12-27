@@ -13,6 +13,7 @@ class MLOrden extends Model
 		'client_id',
 		'pack_id',
 		'orden_id',
+		'envio_id',
 		'buyer_id',
 		'seller_id',
 		'status',
@@ -59,7 +60,7 @@ class MLOrden extends Model
 
 	public function reclamos()
 	{
-		return $this->hasMany(MLReclamo::class, 'order_id', 'order_id');
+		return $this->hasMany(MLReclamo::class, 'resource_id', 'order_id');
 	}
 
 	public function items()

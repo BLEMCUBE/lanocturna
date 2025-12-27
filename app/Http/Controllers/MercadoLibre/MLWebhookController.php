@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\MercadoLibre;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\ProcesarItemJob;
 use Illuminate\Http\Request;
 use App\Models\MLCLient;
 use App\Jobs\ProcessMercadoLibreNotification;
@@ -66,7 +65,7 @@ class MLWebhookController extends Controller
 		$topic = $payload['topic'] ?? null;
 		$userId   = $request->user_id;
 
-		Log::info('ML Notification received', ['payload' => $payload]);
+
 
 		if (!$resource) {
 			return response()->json(['error' => 'Notificación sin resource'], 400);
@@ -80,7 +79,8 @@ class MLWebhookController extends Controller
 
 		// Evitar duplicados (resource + acción)
 		$exists = MLNotificacion::where('resource', $resource)
-			->whereIn('status', ['processed', 'received'])
+			//->whereIn('status', ['processed', 'received'])
+			->where('status', 'received')
 			->when(count($actions) > 0, function ($q) use ($actions) {
 				$q->whereIn('actions', [
 					implode(',', $actions)
@@ -89,12 +89,12 @@ class MLWebhookController extends Controller
 			->exists();
 
 		if ($exists) {
-			/*
+
 			Log::info("ML Notificación duplicada", [
 				'resource' => $resource,
 				'actions'  => $actions
 			]);
-			*/
+
 
 			return response()->json(['status' => 'duplicate'], 200);
 		}
@@ -123,7 +123,6 @@ class MLWebhookController extends Controller
 			'resource' => $resource,
 			'actions'  => $actions
 		]);
-
 		// Enviar a cola (pasamos el modelo, no el payload suelto)
 		ProcessMercadoLibreNotification::dispatch($payload)
 			->onQueue('meli');
@@ -131,29 +130,4 @@ class MLWebhookController extends Controller
 		return response()->json(['status' => 'ok'], 200);
 	}
 
-
-	public function handle2(Request $request)
-	{
-		$topic    = $request->topic;
-		$resource = $request->resource;
-		$userId   = $request->user_id;
-
-		// Obtener al usuario para saber qué CLIENT_ID utiliza
-		$usuario = MLCLient::with('cliente')->where('meli_user_id', $userId)->first();
-
-		if (! $usuario) {
-			return response()->json(['error' => 'Usuario ML no encontrado'], 404);
-		}
-
-		$clientId = $usuario->cliente->app_id;
-
-		// Enviar a Job según tema
-		match ($topic) {
-			'items'  => ProcesarItemJob::dispatch($clientId, $userId, $resource)->onQueue('meli'),
-
-			default     => null
-		};
-
-		return response()->json(['status' => 'ok']);
-	}
 }

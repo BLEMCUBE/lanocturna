@@ -69,7 +69,7 @@ class PreguntaService
 		$appId = $payload['application_id'] ?? null;
 
 		if (! $appId) {
-			Log::warning('MensajeService sin application_id', $payload);
+			Log::warning('PreguntaService sin application_id', $payload);
 			return;
 		}
 		$this->forClient($appId);

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\MercadoLibre;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MLVentaCollection;
-use App\Http\Resources\MLVentaResource;
 use App\Models\MLApp;
 use App\Models\MLOrden;
 use App\Helpers\MercadoLibreShippingHelper;
@@ -12,12 +11,9 @@ use App\Http\Resources\MLVentaPackResource;
 use App\Http\Resources\MLVentaSimpleResource;
 use App\Services\MercadoLibre\OrdenService;
 use Inertia\Inertia;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Request as Req;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 
 class VentasController extends Controller
 {
@@ -69,6 +65,7 @@ class VentasController extends Controller
   '%Y-%m-%d %H:%i:%s'
 ) AS pp");
 
+		/** @var \Illuminate\Support\Collection<int, object> $rows */
 		// Ejecutar union y traer resultados
 		$rows = collect($query1->union($query2)->get());
 
@@ -146,7 +143,6 @@ class VentasController extends Controller
 			]);
 		} else {
 			$datos = MLOrden::where('pack_id', $venta_id)->get();
-			$orden_ids=[];
 			foreach ($datos as $key => $da) {
 				$envio = MLOrden::where('orden_id', $da->orden_id)->first();
 				//act datos
@@ -164,7 +160,6 @@ class VentasController extends Controller
 				'client_id' => $client_id,
 				'datos' => $venta
 			]);
-
 		}
 	}
 

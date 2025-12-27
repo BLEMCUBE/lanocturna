@@ -17,10 +17,10 @@ class ItemService
 	public function updateOrCreate($item)
 	{
 
-		/*
+
 		$row = MLItem::where('item_id', '=', $item['id'])->first();
 		if ($row === null) {
-			*/
+
 		$data =	MLItem::updateOrCreate(
 			['item_id' => $item['id']],
 			[
@@ -32,10 +32,10 @@ class ItemService
 			]
 		);
 		return $data;
-		/*
+
 		}
 		return null;
-		*/
+
 	}
 
 
@@ -46,7 +46,7 @@ class ItemService
 		$appId = $payload['application_id'] ?? null;
 
 		if (! $appId) {
-			Log::warning('MensajeService sin application_id', $payload);
+			Log::warning('ItemService sin application_id', $payload);
 			return;
 		}
 		$this->forClient($appId);

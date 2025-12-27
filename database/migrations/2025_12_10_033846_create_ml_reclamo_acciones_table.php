@@ -8,18 +8,11 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('ml_reclamo_acciones', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('reclamo_id');
-            $table->string('action_id')->unique();
-            $table->string('type');
-            $table->string('source')->nullable();
+            $table->unsignedBigInteger('reclamo_id')->nullable();
             $table->timestamp('date')->nullable();
-            $table->json('raw')->nullable();
+            $table->json('payload')->nullable();
             $table->timestamps();
 
-            $table->foreign('reclamo_id')
-                ->references('id')
-                ->on('ml_reclamos')
-                ->cascadeOnDelete();
         });
     }
 

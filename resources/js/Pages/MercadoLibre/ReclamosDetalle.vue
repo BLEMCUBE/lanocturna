@@ -3,22 +3,27 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted, computed } from 'vue'
 import { Head, usePage, Link, useForm, router } from '@inertiajs/vue3';
 import ModalRepuestaRapidas from '@/Pages/MercadoLibre/Partials/ModalRepuestaRapidas.vue';
-import Swal from 'sweetalert2';
-import axios from 'axios';
+
 import { useCustomToast } from '@/composables/customToast';
 
 const { setShow } = useCustomToast()
 const { datos } = usePage().props
-const titulo = "Venta Mensajes"
-const ruta = 'mercadolibre.mensajes'
+const titulo = "Reclamos Mensajes"
+const ruta = 'mercadolibre.reclamos'
 const { client_id } = usePage().props
 const formResponder = useForm({
-	packId: null,
+	reclamoId: null,
 	sellerId: null,
 	clientId: null,
 	buyerId: null,
 	text: '',
+	files: []
 });
+
+const onFiles = (e) => {
+	formResponder.files = Array.from(e.target.files)
+}
+
 
 const enviarRespuesta = () => {
 	let rr = formResponder.text
@@ -33,7 +38,7 @@ const enviarRespuesta = () => {
 		onSuccess: () => {
 			setShow('success', 'Mensaje', 'Mensaje enviado')
 			setTimeout(() => {
-				router.get(route(ruta + '.showMensajes', {client_id,id:formResponder.packId}));
+				router.get(route(ruta + '.index', { client_id }));
 			}, 500);
 		},
 		onFinish: () => {
@@ -44,7 +49,7 @@ const enviarRespuesta = () => {
 	});
 }
 onMounted(() => {
-	formResponder.packId = datos.id
+	formResponder.reclamoId = datos.id
 	formResponder.sellerId = datos.comprador.seller
 	formResponder.buyerId = datos.comprador.id
 	formResponder.clientId = client_id
@@ -82,44 +87,6 @@ const formatHoraWsp = (fechaString) => {
 const parsedMessages = computed(() => datos.mensajes);
 
 
-const descargar = (attachment) => {
-    router.visit(route('ml.descargarAdjunto'), {
-        method: 'get',
-        data: {
-            filename: attachment.filename,
-            original_filename: attachment.original_filename,
-            client_id: attachment.client_id
-        },
-        preserveScroll: true,
-        preserveState: true,
-        onBefore: () => {
-            // Forzar que Inertia NO intercepte el binario
-            const form = document.createElement('form');
-            form.method = 'GET';
-            form.action = route('ml.descargarAdjunto');
-            form.style.display = 'none';
-
-            // Pasar parámetros
-            Object.entries({
-                filename: attachment.filename,
-                original_filename: attachment.original_filename,
-                client_id: attachment.client_id
-            }).forEach(([key, value]) => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = value;
-                form.appendChild(input);
-            });
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-    });
-};
-
-
-
 </script>
 <template>
 
@@ -129,7 +96,7 @@ const descargar = (attachment) => {
 		<div class="mb-4 col-span-12   dark:border-gray-700  dark:bg-gray-800">
 			<div class="w-2/3 flex justify-between">
 				<div class=" px-5 pb-2">
-					<h5 class="text-2xl font-medium">Orden</h5>
+					<h5 class="text-2xl font-medium">Reclamo: </h5>
 					<p class="text-lg font-medium">#{{ datos.id }}</p>
 					<p>
 						{{ datos.date_created }}
@@ -137,8 +104,8 @@ const descargar = (attachment) => {
 				</div>
 				<span
 					class=" h-8 p-2 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
-					<a :href="'https://www.mercadolibre.com.uy/ventas/' + datos.orden_id + '/detalle'"
-						target="_blank" class="py-auto">Ver ficha de venta</a>
+					<a :href="'https://www.mercadolibre.com.uy/ventas/' + datos.orden_id + '/detalle'" target="_blank"
+						class="py-auto">Ver ficha de venta</a>
 				</span>
 
 			</div>
@@ -149,10 +116,8 @@ const descargar = (attachment) => {
 					<div class="bg-white rounded-xl shadow p-6">
 
 						<div class="w-full h-screen flex flex-col ">
-
 							<!-- Contenedor scroll -->
-							<div class="flex-1 overflow-y-auto p-4 space-y-2">
-
+							<div class="flex-1 overflow-y-auto p-4 space-y-2 ">
 								<!-- Loop por fechas -->
 								<template v-for="(messages, fechaVisual) in parsedMessages" :key="fechaVisual">
 
@@ -163,46 +128,31 @@ const descargar = (attachment) => {
 
 									<!-- Mensajes -->
 									<div class="space-y-2">
+
 										<div v-for="msg in messages" :key="msg.raw.id" class="flex"
-											:class="msg.is_from_seller ? 'justify-end' : 'justify-start'">
+											:class="msg.sender_role == 'complainant' ? 'justify-start' : 'justify-end'">
 											<div class="p-2 rounded-xl max-w-lg shadow-md"
-												:class="msg.is_from_seller ? ' bg-blue-100 text-gray-800' : 'bg-white  text-gray-800'">
+												:class="msg.sender_role == 'complainant' ? ' bg-white text-gray-800' : 'bg-blue-100  text-gray-800'">
 												<!-- Mensaje con HTML permitido -->
-												<p class="text-xs" v-html="msg.raw.text"></p>
-												<div v-if="msg.attachment_path!==null" class="w-auto text-xs">
+												<p class="text-xs" v-html="msg.raw.message"></p>
+												<div v-if="msg.attachment_path !== null" class="w-auto text-xs">
 													<a class="text-blue-700" :href="route(ruta + '.descargarAdjunto', {
-														filename: msg.raw.message_attachments[0].filename,
-														original_filename: msg.raw.message_attachments[0].original_filename,
-														client_id:client_id
+														filename: msg.raw.attachments[0].filename,
+														original_filename: msg.raw.attachments[0].original_filename,
+														client_id: client_id,
+														reclamo_id: datos.id
 													})" target="_blank">
 														<i class="fa fa-paperclip"></i>
-														{{ msg.raw.message_attachments[0].original_filename }}
+														{{ msg.raw.attachments[0].original_filename }}
 													</a>
 													<span class="ml-1" style="font-size: 12px;">({{
-														convertirMB(msg.raw.message_attachments[0].size) }}MB)</span>
+														convertirMB(msg.raw.attachments[0].size) }}MB)</span>
 												</div>
 												<!-- Hora -->
 												<div class="flex items-center justify-end gap-1 mt-1">
 													<span class=" text-[12px] text-gray-500">
 														{{ formatHoraWsp(msg.fecha) }}
 													</span>
-													<!-- Tildes estilo WhatsApp -->
-
-													<svg v-if="msg.raw.message_date.read"
-														xmlns="http://www.w3.org/2000/svg" width="15" height="8"
-														viewBox="0 0 15 8">
-														<path fill="#3483FA" fill-rule="nonzero"
-															d="M8.635.646a.5.5 0 1 1 .707.708L3.753 6.942a.5.5 0 0 1-.707 0l-2.4-2.4a.5.5 0 0 1 .708-.707L3.4 5.881 8.635.646zm5 0a.5.5 0 1 1 .707.708L8.753 6.942a.5.5 0 0 1-.707 0l-1.4-1.4a.5.5 0 0 1 .708-.707L8.4 5.881 13.635.646z">
-														</path>
-													</svg>
-
-													<!-- Un solo tilde (enviado no leído) -->
-													<svg v-else xmlns="http://www.w3.org/2000/svg" width="15" height="8"
-														viewBox="0 0 15 8">
-														<path fill="#9b9b9b" fill-rule="nonzero"
-															d="M8.635.646a.5.5 0 1 1 .707.708L3.753 6.942a.5.5 0 0 1-.707 0l-2.4-2.4a.5.5 0 0 1 .708-.707L3.4 5.881 8.635.646zm5 0a.5.5 0 1 1 .707.708L8.753 6.942a.5.5 0 0 1-.707 0l-1.4-1.4a.5.5 0 0 1 .708-.707L8.4 5.881 13.635.646z">
-														</path>
-													</svg>
 
 												</div>
 											</div>
@@ -216,37 +166,78 @@ const descargar = (attachment) => {
 							<!-- Formulario de respuesta -->
 							<form class="border-t p-4 bg-white flex items-center gap-3"
 								@submit.prevent="enviarRespuesta()">
+
+								<!-- Icono adjuntar -->
+								<label class="cursor-pointer text-gray-500 hover:text-gray-700" 	v-if="datos.estado!=='closed'">
+									<i class="fa-solid fa-paperclip fa-xl"></i>
+									<input type="file" multiple class="hidden" @change="onFiles" />
+								</label>
+
 								<textarea rows="1" maxlength="340" v-model="formResponder.text"
+								:readOnly="datos.estado==='closed'"
 									placeholder="Ingresá tu mensaje..."
 									class="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
-								<div class="flex justify-end">
+								<div class="flex justify-end" v-if="datos.estado!=='closed'">
 									<button type="submit"
 										class="bg-blue-600 text-white font-medium px-4 py-2 rounded hover:bg-blue-700"
-										:class="{ 'opacity-50': formResponder.processing }" :disabled="formResponder.processing">
+										:class="{ 'opacity-50': formResponder.processing }"
+										:disabled="formResponder.processing">
 										Enviar
 									</button>
 								</div>
 							</form>
+							<!-- errores Laravel -->
+							<div v-if="formResponder.errors.text" class="text-red-500">
+								{{ formResponder.errors.text }}
+							</div>
+							<div v-if="formResponder.errors['files.0']" class="text-red-500">
+								{{ formResponder.errors['files.0'] }}
+							</div>
 						</div>
 					</div>
 				</div>
 
 				<!-- Columna derecha-->
 				<div class="col-span-4">
-					<div class="bg-white rounded-xl shadow p-5 mb-5">
-						<div class="text-lg font-semibold">
-							Comprador
-						</div>
-						<div>
-							<p>
-								{{ datos.comprador.first_name }} {{ datos.comprador.last_name }}
-							</p>
-							<p>
-								{{ datos.comprador.nickname }}
-							</p>
-						</div>
+					<TabView class="py-2">
 
-					</div>
+						<TabPanel>
+							<template #header>
+								<div class="flex align-items-center gap-2">
+									<span class="font-bold white-space-nowrap">Reclamo</span>
+								</div>
+							</template>
+							<div>
+								<p>
+									<b>Tipo: </b>
+									Reclamo
+								</p>
+								<p>
+									<b>Motivo: </b>
+									{{ datos.motivo }}
+								</p>
+
+							</div>
+						</TabPanel>
+						<TabPanel>
+							<template #header>
+								<div class="flex align-items-center gap-2">
+									<span class="font-bold white-space-nowrap">Comprador</span>
+								</div>
+							</template>
+							<div>
+								<p>
+									<b>Nombre: </b>
+									{{ datos.comprador.first_name }} {{ datos.comprador.last_name }}
+								</p>
+								<p>
+									<b>Usuario: </b>
+									{{ datos.comprador.nickname }}
+								</p>
+							</div>
+						</TabPanel>
+					</TabView>
+
 					<div class="bg-white rounded-xl shadow p-5 mb-5">
 						<div class="text-lg font-semibold pb-2">
 							Compra
@@ -272,7 +263,7 @@ const descargar = (attachment) => {
 					<div class="bg-white rounded-xl shadow p-5 overflow-y-auto">
 						<h5 class="text-lg font-semibold mb-4">Respuestas rápidas</h5>
 						<div class="hidden sm:block flex-wrap gap-2 mb-4">
-							<ModalRepuestaRapidas @add-texto="setRespuesta" tipo="mensaje">
+							<ModalRepuestaRapidas @add-texto="setRespuesta" tipo="reclamo">
 							</ModalRepuestaRapidas>
 						</div>
 

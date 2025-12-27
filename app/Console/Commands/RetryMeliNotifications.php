@@ -29,8 +29,9 @@ class RetryMeliNotifications extends Command
 	{
 		$this->info('Buscando notificaciones pendientes...');
 
-		$notifications = MLNotificacion::whereIn('status', ['failed', 'error', 'received'])
-		->select('status','id','payload')
+		$notifications = MLNotificacion::
+			select('status','id','payload')
+			->where('status','received')
 		->get();
 
 		if ($notifications->isEmpty()) {
@@ -42,7 +43,11 @@ class RetryMeliNotifications extends Command
 			dispatch((new ProcessMercadoLibreNotification($notif->payload))->onQueue('meli'));
 			$this->info("📨 Notificación {$notif->id} enviada a la cola.");
 		}
+		$notifications2 = MLNotificacion::
+			select('status','id','payload')
+			->where('status', 'received')
+		->count();
 
-		$this->info('🚀 Todas las notificaciones fueron encoladas.');
+		$this->info("{$notifications2} Todas las notificaciones fueron encoladas.");
 	}
 }

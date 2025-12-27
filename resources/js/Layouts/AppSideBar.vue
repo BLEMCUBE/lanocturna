@@ -39,6 +39,7 @@ const { total_rmas } = usePage().props.auth
 const { menu_preguntas } = usePage().props.auth
 const { menu_mensajes } = usePage().props.auth
 const { menu_ventas } = usePage().props.auth
+const { menu_reclamos } = usePage().props.auth
 const configStore = useConfigStore();
 const setMenu = (menu) => {
 	configStore.showMenu(menu);
@@ -894,6 +895,18 @@ const ok = (icono, mensaje) => {
 					:href="route('mercadolibre.ventas.index',{ client_id: item.client_id })"
 					:active="route().current('mercadolibre.ventas.index')">
 					<span class="ml-2 uppercase">ML Ventas "{{ iniciales[index] }}"
+					</span>
+				</NavLinkSideBar>
+			</li>
+			<li v-for="item, index in menu_reclamos" @click="setMenu('reclamos')"
+				v-show="permissions.includes('mercadoLibre-mensajes')">
+				<NavLinkSideBar icon-class="fas fa-boxes"
+					class="flex items-center justify-start px-3 py-2 text-base font-medium"
+					:href="route('mercadolibre.reclamos.index',{ client_id: item.client_id })"
+					:active="route().current('mercadolibre.reclamos.index')">
+					<span class="ml-2 uppercase">Reclamos "{{ iniciales[index] }}"
+						<Badge v-if="item.cantidad > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+							severity="danger" :value="item.cantidad" />
 					</span>
 				</NavLinkSideBar>
 			</li>

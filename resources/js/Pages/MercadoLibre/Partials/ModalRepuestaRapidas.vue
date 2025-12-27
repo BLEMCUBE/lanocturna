@@ -265,7 +265,7 @@ const show = (tipo, titulo, mensaje) => {
 					</div>
 				</div>
 
-				<div class="grid grid-cols-12 gap-4 p-2 mt-3">
+				<div class="grid grid-cols-12 gap-4 p-2 mt-3" v-if="props.tipo=='pregunta'">
 					<div
 						class=" w-full flex flex-col items-start col-span-12 sm:col-span-6  md:col-span-6  lg:col-span-6   rounded-lg text-center">
 						<label class="px-2 text-gray-900 font-medium">Saludo inicial:</label>

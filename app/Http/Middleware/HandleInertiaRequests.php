@@ -15,6 +15,7 @@ use App\Services\MercadoLibre\PreguntaService;
 use App\Models\Venta;
 use App\Services\MercadoLibre\MensajeService;
 use App\Services\MercadoLibre\OrdenService;
+use App\Services\MercadoLibre\ReclamoService;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -100,6 +101,7 @@ class HandleInertiaRequests extends Middleware
 		$menu_preguntas=app(PreguntaService::class)->getSinLeer();
 		$menu_mensajes=app(MensajeService::class)->getSinLeerLocal();
 		$menu_ventas=app(OrdenService::class)->getSinLeerLocal();
+		$menu_reclamos=app(ReclamoService::class)->getSinLeerLocal();
 		$total_ues = 0;
 		$total_flex = 0;
 		$total_dac = 0;
@@ -158,6 +160,7 @@ class HandleInertiaRequests extends Middleware
 				'configuracion' => $configuracion,
 				'menu_preguntas' => $menu_preguntas,
 				'menu_mensajes' => $menu_mensajes,
+				'menu_reclamos' => $menu_reclamos,
 				'menu_ventas' => $menu_ventas
 			],
 			//'csrf_token' => csrf_token(),
