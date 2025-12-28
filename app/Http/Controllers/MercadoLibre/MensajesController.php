@@ -10,6 +10,7 @@ use App\Models\MLClient;
 use App\Models\MLOrden;
 use App\Services\MercadoLibre\MensajeService;
 use App\Services\MercadoLibre\MercadoLibreService;
+use App\Services\MercadoLibre\MLAppService;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
@@ -33,6 +34,7 @@ class MensajesController extends Controller
 		$datosFinal = new MensajeCollection($datos);
 		return Inertia::render('MercadoLibre/Mensajes', [
 			'client_id' => $client_id,
+			'tienda' => app(MLAppService::class)->getNombre($client_id),
 			'datos' => $datosFinal,
 		]);
 	}
@@ -54,6 +56,7 @@ class MensajesController extends Controller
 		$datosFinal = new MensajeCollection($datos);
 		return Inertia::render('MercadoLibre/MensajesSinLeer', [
 			'client_id' => $client_id,
+			'tienda' => app(MLAppService::class)->getNombre($client_id),
 			'datos' => $datosFinal,
 		]);
 	}
@@ -76,6 +79,7 @@ class MensajesController extends Controller
 
 		return Inertia::render('MercadoLibre/MensajesDetalle', [
 			'client_id' => $client_id,
+			'tienda' => app(MLAppService::class)->getNombre($client_id),
 			'datos' => $detalle,
 		]);
 	}

@@ -3,8 +3,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, Link, useForm, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
-
-const titulo = "ML Mensajes sin leer"
+const { tienda } = usePage().props
+const titulo =  `ML Mensajes sin leer "${tienda}"`
 const datosNoLeido = ref([]);
 const ruta = 'mercadolibre.mensajes'
 const { client_id } = usePage().props

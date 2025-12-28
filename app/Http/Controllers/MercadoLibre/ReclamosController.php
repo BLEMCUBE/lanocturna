@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MLApp;
 use App\Http\Resources\MLReclamoCollection;
 use App\Services\MercadoLibre\MercadoLibreService;
+use App\Services\MercadoLibre\MLAppService;
 use App\Services\MercadoLibre\ReclamoService;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
@@ -126,6 +127,7 @@ class ReclamosController extends Controller
 		return Inertia::render('MercadoLibre/Reclamos', [
 			'client_id' => $client_id,
 			'datos' => $datosFinal,
+			'tienda' => app(MLAppService::class)->getNombre($client_id),
 			'filtro' => $request->only(['buscar', 'inicio', 'fin', 'estado']),
 		]);
 	}
@@ -137,6 +139,7 @@ class ReclamosController extends Controller
 		$detalle = $reclamo->mensajesDetalleMejorado($reclamo_id);
 		return Inertia::render('MercadoLibre/ReclamosDetalle', [
 			'client_id' => $client_id,
+			'tienda' => app(MLAppService::class)->getNombre($client_id),
 			'datos' => $detalle
 		]);
 	}
