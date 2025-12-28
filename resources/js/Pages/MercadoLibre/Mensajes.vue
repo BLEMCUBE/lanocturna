@@ -8,6 +8,7 @@ const titulo = "ML Mensajes todos"
 const datosTodos = ref([]);
 const ruta = 'mercadolibre.mensajes'
 const { client_id } = usePage().props
+const { tienda } = usePage().props
 const filters = ref({
 	global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
@@ -52,7 +53,7 @@ onMounted(() => {
 	<AppLayout :pagina="[{ 'label': titulo, link: false }]">
 		<div class="px-4 py-3 mb-4 bg-white col-span-12   dark:border-gray-700  dark:bg-gray-800">
 			<div class=" px-5 pb-2 col-span-full flex justify-between items-center">
-				<h5 class="text-2xl font-medium">{{ titulo }}</h5>
+				<h5 class="text-2xl font-medium">{{ titulo }} "{{ tienda }}"</h5>
 			</div>
 			<div class="align-middle">
 				<Button :class="{ 'opacity-60': route().current('mercadolibre.mensajes.sinLeer') }" @click="todos"

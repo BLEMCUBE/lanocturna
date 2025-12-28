@@ -8,7 +8,8 @@ import { useCustomToast } from '@/composables/customToast';
 
 const { setShow } = useCustomToast()
 const { datos } = usePage().props
-const titulo = "Reclamos Mensajes"
+const { tienda } = usePage().props
+const titulo =  `Reclamos Mensajes "${tienda}"`
 const ruta = 'mercadolibre.reclamos'
 const { client_id } = usePage().props
 const formResponder = useForm({

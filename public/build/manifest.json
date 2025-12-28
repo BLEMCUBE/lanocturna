@@ -3137,7 +3137,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/Mensajes.vue": {
-    "file": "assets/Mensajes-BBhjPm-4.js",
+    "file": "assets/Mensajes-CcOnOiA5.js",
     "name": "Mensajes",
     "src": "resources/js/Pages/MercadoLibre/Mensajes.vue",
     "isDynamicEntry": true,
@@ -3179,7 +3179,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/MensajesDetalle.vue": {
-    "file": "assets/MensajesDetalle-C2I3FoDw.js",
+    "file": "assets/MensajesDetalle-BiVIv78j.js",
     "name": "MensajesDetalle",
     "src": "resources/js/Pages/MercadoLibre/MensajesDetalle.vue",
     "isDynamicEntry": true,
@@ -3224,7 +3224,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/MensajesSinLeer.vue": {
-    "file": "assets/MensajesSinLeer-DQtAlBK7.js",
+    "file": "assets/MensajesSinLeer-BDrLFM2E.js",
     "name": "MensajesSinLeer",
     "src": "resources/js/Pages/MercadoLibre/MensajesSinLeer.vue",
     "isDynamicEntry": true,
@@ -3371,7 +3371,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/PreguntaHistorial.vue": {
-    "file": "assets/PreguntaHistorial-JlfQOsWM.js",
+    "file": "assets/PreguntaHistorial-DZjAdDE6.js",
     "name": "PreguntaHistorial",
     "src": "resources/js/Pages/MercadoLibre/PreguntaHistorial.vue",
     "isDynamicEntry": true,
@@ -3413,7 +3413,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/Preguntas.vue": {
-    "file": "assets/Preguntas-t0OIthXM.js",
+    "file": "assets/Preguntas-BcuqNHy6.js",
     "name": "Preguntas",
     "src": "resources/js/Pages/MercadoLibre/Preguntas.vue",
     "isDynamicEntry": true,
@@ -3459,7 +3459,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/Reclamos.vue": {
-    "file": "assets/Reclamos-NX-RbSlM.js",
+    "file": "assets/Reclamos-DopxEwy8.js",
     "name": "Reclamos",
     "src": "resources/js/Pages/MercadoLibre/Reclamos.vue",
     "isDynamicEntry": true,
@@ -3508,7 +3508,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/ReclamosDetalle.vue": {
-    "file": "assets/ReclamosDetalle-rNErV-f6.js",
+    "file": "assets/ReclamosDetalle-BflF80GJ.js",
     "name": "ReclamosDetalle",
     "src": "resources/js/Pages/MercadoLibre/ReclamosDetalle.vue",
     "isDynamicEntry": true,
@@ -3553,7 +3553,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/Ventas.vue": {
-    "file": "assets/Ventas-C6YL5div.js",
+    "file": "assets/Ventas-DcfzkrZc.js",
     "name": "Ventas",
     "src": "resources/js/Pages/MercadoLibre/Ventas.vue",
     "isDynamicEntry": true,
@@ -3602,7 +3602,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/VentasDetalle.vue": {
-    "file": "assets/VentasDetalle-BilptzlG.js",
+    "file": "assets/VentasDetalle-CYJaDNXc.js",
     "name": "VentasDetalle",
     "src": "resources/js/Pages/MercadoLibre/VentasDetalle.vue",
     "isDynamicEntry": true,
@@ -6187,7 +6187,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-C31hUGHl.js",
+    "file": "assets/app-CF4rSwCf.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

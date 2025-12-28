@@ -9,7 +9,8 @@ import { useCustomToast } from '@/composables/customToast';
 
 const { setShow } = useCustomToast()
 const { datos } = usePage().props
-const titulo = "Venta Mensajes"
+const { tienda } = usePage().props
+const titulo = "Venta Mensajes "+ tienda
 const ruta = 'mercadolibre.mensajes'
 const { client_id } = usePage().props
 const formResponder = useForm({
@@ -129,6 +130,7 @@ const descargar = (attachment) => {
 		<div class="mb-4 col-span-12   dark:border-gray-700  dark:bg-gray-800">
 			<div class="w-2/3 flex justify-between">
 				<div class=" px-5 pb-2">
+
 					<h5 class="text-2xl font-medium">Orden</h5>
 					<p class="text-lg font-medium">#{{ datos.id }}</p>
 					<p>
