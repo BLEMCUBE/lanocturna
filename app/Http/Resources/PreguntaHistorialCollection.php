@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\HelperMercadoLibre;
-use App\Services\ItemService;
+use App\Services\MercadoLibre\ItemService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -29,15 +29,13 @@ class PreguntaHistorialCollection extends ResourceCollection
 					'pregunta' => $row->text,
 					"date_created" => Carbon::parse($pregunta['date_created'])->setTimezone(config('app.timezone'))->format("d-m-Y H:i") ?? '',
 					'publicado' => $publicado->diffForHumans(),
-					'mercadolibre_pregunta_id' => $row->mercadolibre_pregunta_id,
+					'pregunta_id' => $row->pregunta_id,
 					'from_user_id' => $row->from_user_id,
 					'producto' => $product,
-					//'respuesta' =>$row['respuesta']['payload']['text']??'',
-					//'fecha_respuesta' =>$row['respuesta']['payload']['date_created']?Carbon::parse($row['respuesta']['payload']['date_created'])->setTimezone(config('app.timezone'))->format("d-m-Y H:i") : '',
-
-					'respuesta' => $row->respuesta?->payload['text'] ?? '',
-					'fecha_respuesta' => $row->respuesta && data_get($row->respuesta->payload, 'date_created')
-						? Carbon::parse(data_get($row->respuesta->payload, 'date_created'))
+					//'respuesta' => $row->respuesta?->payload['text'] ?? '',
+					'respuesta' => $row->respuesta?$row->respuesta['text']:'',
+					'fecha_respuesta' => $row->respuesta && data_get($row->respuesta, 'date_created')
+						? Carbon::parse(data_get($row->respuesta, 'date_created'))
 						->setTimezone(config('app.timezone'))
 						->format("d-m-Y H:i")
 						: '',
@@ -45,8 +43,8 @@ class PreguntaHistorialCollection extends ResourceCollection
 					'usuario' => [
 						'nickname' => !is_null($user) ? $user['nickname'] : '',
 						'permalink' => !is_null($user) ? $user['permalink'] : '',
-						'city' =>  !is_null($user) ? $user['address']['city'] : '',
-						'state' => !is_null($user) ? HelperMercadoLibre::departamento($user['address']['state']) : '',
+						'city' =>  !is_null($user['address']) ? $user['address']['city'] : '',
+						'state' => !is_null($user['address']) ? HelperMercadoLibre::departamento($user['address']['state']) : '',
 					],
 
 				];

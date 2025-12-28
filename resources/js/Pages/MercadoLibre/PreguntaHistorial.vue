@@ -53,8 +53,8 @@ onMounted(() => {
 																<span v-if="item.usuario.city" class="px-1">
 
 											| <i class="fa fa-map-marker-alt text-gray-500"></i>  ${item.usuario.city}
-											<span v-if="item.usuario.state">
-												, ${item.usuario.state}
+											,<span v-if="item.usuario.state">
+												 ${item.usuario.state}
 											</span>
 										</span>
 										</p>

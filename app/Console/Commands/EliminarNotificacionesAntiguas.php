@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\MercadoLibreNotificacion;
+use App\Models\MLNotificacion;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 
@@ -29,7 +29,7 @@ class EliminarNotificacionesAntiguas extends Command
 	{
 		$fechaLimite = Carbon::now()->subDays(2)->startOfDay();
 
-		$total = MercadoLibreNotificacion::where('created_at', '<', $fechaLimite)->delete();
+		$total = MLNotificacion::where('created_at', '<', $fechaLimite)->delete();
 
 		$this->info("✅ Se eliminaron {$total} registros creados antes de {$fechaLimite->toDateString()}.");
 

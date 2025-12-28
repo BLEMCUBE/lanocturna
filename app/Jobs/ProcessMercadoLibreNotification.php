@@ -2,10 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Services\ItemService;
-use App\Services\MensajeService;
-use App\Services\MLVentaService;
-use App\Services\PreguntaService;
+use App\Services\MercadoLibre\MensajeService;
+use App\Services\MercadoLibre\PreguntaService;
+use App\Services\MercadoLibre\OrdenService;
+use App\Services\MercadoLibre\ItemService;
+use App\Services\MercadoLibre\ReclamoService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -35,20 +36,24 @@ class ProcessMercadoLibreNotification implements ShouldQueue
 	public function handle(): void
 	{
 		try {
-			$topic = $this->payload['topic'];
+			$topic = $this->payload['topic'] ?? null;
+			$appId = $this->payload['application_id'] ?? null;
 
 			switch ($topic) {
 				case 'items':
-					app(ItemService::class)->storeNotificacion($this->payload);
+					app(ItemService::class)->forClient($appId)->storeNotificacion($this->payload);
 					break;
 				case 'questions':
-					app(PreguntaService::class)->storeNotificacion($this->payload);
+					app(PreguntaService::class)->forClient($appId)->storeNotificacion($this->payload);
 					break;
 				case 'orders_v2':
-					app(MLVentaService::class)->storeNotificacion($this->payload);
+					app(OrdenService::class)->forClient($appId)->storeNotificacion($this->payload);
 					break;
 				case 'messages':
-					app(MensajeService::class)->storeNotificacion($this->payload);
+					app(MensajeService::class)->forClient($appId)->storeNotificacion($this->payload);
+					break;
+				case 'post_purchase':
+					app(ReclamoService::class)->forClient($appId)->storeNotificacion($this->payload);
 					break;
 				default:
 					Log::warning("Notificación ML ignorada, topic no manejado: {$topic}");

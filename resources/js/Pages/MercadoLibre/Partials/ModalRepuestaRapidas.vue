@@ -207,7 +207,7 @@ const show = (tipo, titulo, mensaje) => {
 					class="w-full flex flex-col items-center col-span-12 sm:col-span-3  md:col-span-3  lg:col-span-3  text-white rounded-lg text-center">
 					<input type="text" placeholder="ETIQUETA" @input="mayuscula($event)" v-model="etiqueta"
 						class="placeholder:text-white text-center text-[16px] border font-normal  h-10 rounded-md w-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-						:style="{ backgroundColor: colorSeleccionado || '#ffffff' }" />
+						:style="{ backgroundColor: colorSeleccionado || '#484545' }" />
 
 					<div class="flex flex-wrap justify-center mt-2">
 						<button v-for="(item, i) in colores" :key="i"
@@ -265,7 +265,7 @@ const show = (tipo, titulo, mensaje) => {
 					</div>
 				</div>
 
-				<div class="grid grid-cols-12 gap-4 p-2 mt-3">
+				<div class="grid grid-cols-12 gap-4 p-2 mt-3" v-if="props.tipo=='pregunta'">
 					<div
 						class=" w-full flex flex-col items-start col-span-12 sm:col-span-6  md:col-span-6  lg:col-span-6   rounded-lg text-center">
 						<label class="px-2 text-gray-900 font-medium">Saludo inicial:</label>

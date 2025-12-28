@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\HelperMercadoLibre;
-use App\Services\ItemService;
+use App\Services\MercadoLibre\ItemService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -27,7 +27,7 @@ class PreguntaCollection extends ResourceCollection
 					'id' => $row->id,
 					'pregunta' => $row->text,
 					'publicado'=>$publicado->diffForHumans(),
-					'mercadolibre_pregunta_id'=>$row->mercadolibre_pregunta_id,
+					'pregunta_id'=>$row->pregunta_id,
 					'from_user_id'=>$row->from_user_id,
 					'producto' =>$product,
 					'usuario' => [
