@@ -115,7 +115,7 @@ const parsedMessages = computed(() => datos.mensajes);
 				<div class="col-span-8">
 					<div class="bg-white rounded-xl shadow p-6">
 
-						<div class="w-full h-screen flex flex-col ">
+						<div class="w-full max-h-screen flex flex-col ">
 							<!-- Contenedor scroll -->
 							<div class="flex-1 overflow-y-auto p-4 space-y-2 ">
 								<!-- Loop por fechas -->

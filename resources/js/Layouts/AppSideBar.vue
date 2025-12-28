@@ -857,7 +857,7 @@ const ok = (icono, mensaje) => {
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.preguntas.lista', { client_id: item.client_id })"
-					:active="route().current('mercadolibre.preguntas.lista')">
+					:active="route().current('mercadolibre.preguntas.lista',{ client_id: item.client_id })">
 					<span class="ml-2 uppercase">Preguntas "{{ iniciales[index] }}"
 						<Badge v-if="item.cantidad > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
 							severity="danger" :value="item.cantidad" />
@@ -870,7 +870,7 @@ const ok = (icono, mensaje) => {
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.preguntas.historial', { client_id: item.client_id })"
-					:active="route().current('mercadolibre.preguntas.historial')">
+					:active="route().current('mercadolibre.preguntas.historial',{ client_id: item.client_id })">
 					<span class="ml-2 uppercase">Hist. preguntas "{{ iniciales[index] }}"
 
 					</span>
@@ -881,7 +881,7 @@ const ok = (icono, mensaje) => {
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.mensajes.sinLeer',{ client_id: item.client_id })"
-					:active="route().current('mercadolibre.mensajes.sinLeer')">
+					:active="route().current('mercadolibre.mensajes.sinLeer',{ client_id: item.client_id })">
 					<span class="ml-2 uppercase">Mensajes "{{ iniciales[index] }}"
 						<Badge v-if="item.cantidad > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
 							severity="danger" :value="item.cantidad" />
@@ -893,7 +893,7 @@ const ok = (icono, mensaje) => {
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.ventas.index',{ client_id: item.client_id })"
-					:active="route().current('mercadolibre.ventas.index')">
+					:active="route().current('mercadolibre.ventas.index',{ client_id: item.client_id })">
 					<span class="ml-2 uppercase">ML Ventas "{{ iniciales[index] }}"
 					</span>
 				</NavLinkSideBar>
@@ -903,7 +903,7 @@ const ok = (icono, mensaje) => {
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.reclamos.index',{ client_id: item.client_id })"
-					:active="route().current('mercadolibre.reclamos.index')">
+					:active="route().current('mercadolibre.reclamos.index',{ client_id: item.client_id })">
 					<span class="ml-2 uppercase">Reclamos "{{ iniciales[index] }}"
 						<Badge v-if="item.cantidad > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
 							severity="danger" :value="item.cantidad" />

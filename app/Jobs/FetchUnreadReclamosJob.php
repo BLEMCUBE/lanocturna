@@ -41,7 +41,9 @@ class FetchUnreadReclamosJob implements ShouldQueue
 
 		$ml = app(MercadoLibreService::class)->forClient($this->clientId);
 
-		$oldRelamos = MLReclamo::where('status', '!=', 'closed')->get();
+		$oldRelamos = MLReclamo::where('status', '!=', 'closed')
+		->where('meli_user_id', '=', $this->clientId)
+		->get();
 
 		if ($oldRelamos === null) return;
 
@@ -50,9 +52,9 @@ class FetchUnreadReclamosJob implements ShouldQueue
 			if ($oldUpdated === null) continue;
 			$response = $ml->apiGetDos('/post-purchase/v1/claims/' . $value['reclamo_id'], $this->meliUserId);
 
-			$item = $response['body'] ?? [];
-
-			if ($item['last_updated']  !==$oldUpdated ) {
+			$item = $response['body'] ?? null;
+			if ($item === null) continue;
+			//if ($item['last_updated']  !== $oldUpdated) {
 
 				Log::info("claims", ['data' => $item]);
 				// Guardar reclamo
@@ -73,7 +75,7 @@ class FetchUnreadReclamosJob implements ShouldQueue
 						'payload'     => $item,
 					]
 				);
-			}
+			//}
 			app(ReclamoService::class)->mensajes($item['id'], $this->clientId);
 		}
 	}
