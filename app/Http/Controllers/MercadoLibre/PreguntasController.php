@@ -10,6 +10,7 @@ use App\Models\MLApp;
 use App\Models\MLPregunta;
 use App\Models\MLRespuesta;
 use App\Services\MercadoLibre\MercadoLibreService;
+use App\Services\MercadoLibre\MLAppService;
 use App\Services\MercadoLibre\PreguntaService;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -46,6 +47,7 @@ class PreguntasController extends Controller
 		);
 		return Inertia::render('MercadoLibre/Preguntas', [
 			'client_id' => $client_id,
+			'tienda' => app(MLAppService::class)->getNombre($client_id),
 			'items' => $datos,
 			'saludo' => $saludo,
 			'firma' => $firma

@@ -3,7 +3,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted, computed } from 'vue'
 import { Head, usePage, Link, useForm, router } from '@inertiajs/vue3';
 const { datos } = usePage().props
-const titulo = "Venta Detalle"
+const { tienda } = usePage().props
+const titulo =  `Venta Detalle "${tienda}"`
 const ruta = 'mercadolibre.ventas'
 const { client_id } = usePage().props
 

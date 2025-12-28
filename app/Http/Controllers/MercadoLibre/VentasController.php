@@ -9,6 +9,7 @@ use App\Models\MLOrden;
 use App\Helpers\MercadoLibreShippingHelper;
 use App\Http\Resources\MLVentaPackResource;
 use App\Http\Resources\MLVentaSimpleResource;
+use App\Services\MercadoLibre\MLAppService;
 use App\Services\MercadoLibre\OrdenService;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -114,6 +115,7 @@ class VentasController extends Controller
 		return Inertia::render('MercadoLibre/Ventas', [
 			'client_id' => $client_id,
 			'datos' => $datosFinal,
+			'tienda' => app(MLAppService::class)->getNombre($client_id),
 			'filtro' => $request->only(['buscar', 'inicio', 'fin', 'estado']),
 		]);
 	}
@@ -139,6 +141,7 @@ class VentasController extends Controller
 			// PASAR RESOURCE A INERTIA
 			return Inertia::render('MercadoLibre/VentasDetalle', [
 				'client_id' => $client_id,
+				'tienda' => app(MLAppService::class)->getNombre($client_id),
 				'datos' => $venta
 			]);
 		} else {
@@ -158,6 +161,7 @@ class VentasController extends Controller
 
 			return Inertia::render('MercadoLibre/VentasDetalle', [
 				'client_id' => $client_id,
+				'tienda' => app(MLAppService::class)->getNombre($client_id),
 				'datos' => $venta
 			]);
 		}

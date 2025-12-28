@@ -3,8 +3,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, onMounted } from 'vue'
 import { Head, usePage, Link, useForm, router } from '@inertiajs/vue3';
 import { FilterMatchMode } from 'primevue/api';
-
-const titulo = "Historial de preguntas"
+const { tienda } = usePage().props
+const titulo =  `Historial de preguntas "${tienda}"`
 const datosTodos = ref([]);
 const ruta = 'mercadolibre.preguntas'
 

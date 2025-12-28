@@ -9,7 +9,8 @@ import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import Pagination from '@/Components/Pagination.vue';
-const titulo = "ML Ventas"
+const { tienda } = usePage().props
+const titulo =  `Reclamos Ventas "${tienda}"`
 const ruta = 'mercadolibre.ventas'
 
 const { client_id } = usePage().props
