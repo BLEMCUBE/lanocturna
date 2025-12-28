@@ -21,6 +21,9 @@ const props = defineProps({
 });
 
 
+//Utilice 97 en lugar de 65 para obtener las letras minúsculas.
+const iniciales = new Array(26).fill(1).map((_, i) => String.fromCharCode(65 + i))
+
 
 const { permissions } = usePage().props.auth
 const { hoy_tipo_cambio } = usePage().props.auth
@@ -33,8 +36,10 @@ const { total_flash } = usePage().props.auth
 const { total_retiro } = usePage().props.auth
 const { pagos_compras } = usePage().props.auth
 const { total_rmas } = usePage().props.auth
-const { cant_preguntas } = usePage().props.auth
-const { cant_mensajes } = usePage().props.auth
+const { menu_preguntas } = usePage().props.auth
+const { menu_mensajes } = usePage().props.auth
+const { menu_ventas } = usePage().props.auth
+const { menu_reclamos } = usePage().props.auth
 const configStore = useConfigStore();
 const setMenu = (menu) => {
 	configStore.showMenu(menu);
@@ -840,40 +845,68 @@ const ok = (icono, mensaje) => {
 			<li @click="setMenu('mercadolibre')" v-show="permissions.includes('mercadoLibre-apis')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.clientes.index')"
-					:active="route().current('mercadolibre.clientes.index')">
+					:href="route('mercadolibre.apps.index')" :active="route().current('mercadolibre.apps.index')">
 					<span class="ml-2 uppercase">App Keys</span>
 				</NavLinkSideBar>
+
 			</li>
-			<li @click="setMenu('preguntas')" v-show="permissions.includes('mercadoLibre-preguntas')">
+			<li v-for="item, index in menu_preguntas" @click="setMenu('preguntas')"
+				v-show="permissions.includes('mercadoLibre-preguntas')">
+
+
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.preguntas.lista')"
-					:active="route().current('mercadolibre.preguntas.lista')">
-					<span class="ml-2 uppercase">Preguntas
-						<Badge v-if="cant_preguntas > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
-							severity="danger" :value="cant_preguntas" />
+					:href="route('mercadolibre.preguntas.lista', { client_id: item.client_id })"
+					:active="route().current('mercadolibre.preguntas.lista',{ client_id: item.client_id })">
+					<span class="ml-2 uppercase">Preguntas "{{ iniciales[index] }}"
+						<Badge v-if="item.cantidad > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+							severity="danger" :value="item.cantidad" />
 					</span>
 				</NavLinkSideBar>
+
 			</li>
-			<li @click="setMenu('preguntas')" v-show="permissions.includes('mercadoLibre-preguntas')">
+			<li v-for="item, index in menu_preguntas" @click="setMenu('preguntas')"
+				v-show="permissions.includes('mercadoLibre-preguntas')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.preguntas.historial')"
-					:active="route().current('mercadolibre.preguntas.historial')">
-					<span class="ml-2 uppercase">Historial preguntas
+					:href="route('mercadolibre.preguntas.historial', { client_id: item.client_id })"
+					:active="route().current('mercadolibre.preguntas.historial',{ client_id: item.client_id })">
+					<span class="ml-2 uppercase">Hist. preguntas "{{ iniciales[index] }}"
 
 					</span>
 				</NavLinkSideBar>
 			</li>
-			<li @click="setMenu('mensajes')" v-show="permissions.includes('mercadoLibre-mensajes')">
+			<li v-for="item, index in menu_mensajes" @click="setMenu('mensajes')"
+				v-show="permissions.includes('mercadoLibre-mensajes')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
-					:href="route('mercadolibre.mensajes.sinLeer')"
-					:active="route().current('mercadolibre.mensajes.sinLeer')">
-					<span class="ml-2 uppercase">Mensajes
-						<Badge v-if="cant_mensajes > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
-							severity="danger" :value="cant_mensajes" />
+					:href="route('mercadolibre.mensajes.sinLeer',{ client_id: item.client_id })"
+					:active="route().current('mercadolibre.mensajes.sinLeer',{ client_id: item.client_id })">
+					<span class="ml-2 uppercase">Mensajes "{{ iniciales[index] }}"
+						<Badge v-if="item.cantidad > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+							severity="danger" :value="item.cantidad" />
+					</span>
+				</NavLinkSideBar>
+			</li>
+			<li v-for="item, index in menu_ventas" @click="setMenu('mlventas')"
+				v-show="permissions.includes('mercadoLibre-mensajes')">
+				<NavLinkSideBar icon-class="fas fa-boxes"
+					class="flex items-center justify-start px-3 py-2 text-base font-medium"
+					:href="route('mercadolibre.ventas.index',{ client_id: item.client_id })"
+					:active="route().current('mercadolibre.ventas.index',{ client_id: item.client_id })">
+					<span class="ml-2 uppercase">ML Ventas "{{ iniciales[index] }}"
+					</span>
+				</NavLinkSideBar>
+			</li>
+			<li v-for="item, index in menu_reclamos" @click="setMenu('reclamos')"
+				v-show="permissions.includes('mercadoLibre-mensajes')">
+				<NavLinkSideBar icon-class="fas fa-boxes"
+					class="flex items-center justify-start px-3 py-2 text-base font-medium"
+					:href="route('mercadolibre.reclamos.index',{ client_id: item.client_id })"
+					:active="route().current('mercadolibre.reclamos.index',{ client_id: item.client_id })">
+					<span class="ml-2 uppercase">Reclamos "{{ iniciales[index] }}"
+						<Badge v-if="item.cantidad > 0" class="ml-4 px-0.5 mr-auto text-[12px] font-normal"
+							severity="danger" :value="item.cantidad" />
 					</span>
 				</NavLinkSideBar>
 			</li>

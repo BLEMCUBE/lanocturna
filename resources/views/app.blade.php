@@ -2,21 +2,21 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title inertia>{{ config('app.name', 'Laravel') }}</title>
+	<title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
+	<!-- Fonts -->
 
-    <!-- Scripts -->
-    @routes
-    @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
-    @inertiaHead
+	<!-- Scripts -->
+	@routes
+	@vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+	@inertiaHead
 </head>
 
-<body class="font-body antialiased bg-gray-100 dark:bg-gray-800" >
-    @inertia
+<body class="font-body antialiased bg-gray-100 dark:bg-gray-800">
+	@inertia
 </body>
 
 </html>

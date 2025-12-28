@@ -7,6 +7,7 @@ import { ref, onMounted } from 'vue';
 import { useToast } from "primevue/usetoast";
 import Button from 'primevue/button'
 import DatePicker from 'vue-datepicker-next';
+import axios from 'axios';
 import 'vue-datepicker-next/index.css';
 import 'vue-datepicker-next/locale/es.es.js';
 

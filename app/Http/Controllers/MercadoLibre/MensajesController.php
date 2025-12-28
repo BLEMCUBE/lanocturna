@@ -4,26 +4,24 @@ namespace App\Http\Controllers\MercadoLibre;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MensajeCollection;
-use App\Models\MercadoLibreMensaje;
-use App\Models\MercadoLibreVenta;
-use Illuminate\Support\Facades\DB;
-use App\Services\MensajeService;
-use App\Services\MercadoLibreService;
-use App\Services\MLUsuarioService;
-use Illuminate\Support\Facades\Log;
+use App\Models\MLApp;
+use App\Models\MLMensaje;
+use App\Models\MLClient;
+use App\Models\MLOrden;
+use App\Services\MercadoLibre\MensajeService;
+use App\Services\MercadoLibre\MercadoLibreService;
 use Inertia\Inertia;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Request as Req;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
 class MensajesController extends Controller
 {
 
-	public function index()
+	public function index($client_id)
 	{
-		$datos = MercadoLibreMensaje::withVenta()
+		$datos = MLMensaje::withVenta()
 			->where('is_from_seller', '=', 0)
+			->where('client_id', '=', $client_id)
 			->orderByDesc('date_created')
 			->get()
 			->unique('pack_id')
@@ -34,14 +32,16 @@ class MensajesController extends Controller
 			});
 		$datosFinal = new MensajeCollection($datos);
 		return Inertia::render('MercadoLibre/Mensajes', [
+			'client_id' => $client_id,
 			'datos' => $datosFinal,
 		]);
 	}
 
-	public function sinLeer()
+	public function sinLeer($client_id)
 	{
-		$datos = MercadoLibreMensaje::withVenta()
+		$datos = MLMensaje::withVenta()
 			->orderByDesc('date_created')
+			->where('client_id', '=', $client_id)
 			->where('is_from_seller', '=', 0)
 			->where('is_read', '=', 0)
 			->get()
@@ -53,86 +53,95 @@ class MensajesController extends Controller
 			});
 		$datosFinal = new MensajeCollection($datos);
 		return Inertia::render('MercadoLibre/MensajesSinLeer', [
+			'client_id' => $client_id,
 			'datos' => $datosFinal,
 		]);
 	}
 
-	public function showMensajes($id)
+	public function showMensajes($client_id, $id)
 	{
-		$noLeidos=MercadoLibreMensaje::where('is_read',0)->where('pack_id',$id)->count();
-		if($noLeidos>0){
-			$this->marcarLeido($id);
+		$noLeidos = MLMensaje::where('is_read', 0)
+			->where('client_id', '=', $client_id)->where('pack_id', $id)->count();
+		if ($noLeidos > 0) {
+			$this->marcarLeido($id, $client_id);
 		}
-		$datos = MercadoLibreVenta::where('pack_id', $id)
-		->orWhere('mercadolibre_venta_id', $id)
-		->select('mercadolibre_venta_id', 'pack_id', 'payload')
-		->first();
+		$datos = MLOrden::where('pack_id', $id)
+			->orWhere('orden_id', $id)
+			->select('orden_id', 'pack_id', 'payload')
+			->first();
 		$mensaje = app(MensajeService::class);
 
 		$detalle = $mensaje->mensajesDetalleMejorado($id, $datos);
 
 
 		return Inertia::render('MercadoLibre/MensajesDetalle', [
+			'client_id' => $client_id,
 			'datos' => $detalle,
 		]);
 	}
 
 	public function descargarAdjunto(Request $request)
 	{
-		$user = app(MLUsuarioService::class)->datosUsuario();
-		if (!$user) return;
-		$ml = app(MercadoLibreService::class);
-
-
 		$request->validate([
 			'filename'  => 'required',
 			'original_filename' => 'required',
+			'client_id' => 'required'
 		]);
 
 		$realName = $request->original_filename;
 		$filename = $request->filename;
 
-		$token = $ml->getAccessToken($user->meli_user_id);  // renueva automáticamente el access token
+		$cliente = MLApp::with('usuario')
+			->where('app_id', $request->client_id)
+			->first();
+
+		if (!$cliente) {
+			abort(404, 'Cliente no encontrado');
+		}
+
+		$ml = app(MercadoLibreService::class)->forClient($request->client_id);
+		$token = $ml->getAccessToken($cliente->usuario->meli_user_id);
 
 		$url = "https://api.mercadolibre.com/messages/attachments/{$filename}?tag=post_sale&site_id=MLU";
 
 		try {
-			$response = Http::withToken($token)->withOptions([
-				'stream' => true,
-			])->get($url);
+			// LA CLAVE: headers correctos + stream
+			$response = Http::withToken($token)
+				->withHeaders([
+					'Accept' => '*/*',
+					'X-Meli-Format' => 'binary' // <-- IMPORTANTE PARA PDFs, JPG, ZIP
+				])
+				->withOptions(['stream' => true])
+				->get($url);
 
 			if (!$response->successful()) {
-				return response()->json([
-					'success' => false,
-					'message' => 'Error al descargar adjunto',
-					'status' => $response->status(),
-					'body' => $response->body(),
-				], 400);
+				return abort(400, "Error al descargar adjunto: API ML");
 			}
 
-			// Tipo MIME real
-			$contentType = $response->header('Content-Type');
+			$stream = $response->toPsrResponse()->getBody();
+			$contentType = $response->header('Content-Type') ?? 'application/octet-stream';
 
-			return response()->streamDownload(function () use ($response) {
-				echo $response->body();
+			return response()->streamDownload(function () use ($stream) {
+				while (!$stream->eof()) {
+					echo $stream->read(1024 * 8); // leer en chunks de 8KB
+				}
 			}, $realName, [
-				'Content-Type' => $contentType,
+				'Content-Type' => $contentType
 			]);
-		} catch (\Exception $e) {
-			return response()->json([
-				'success' => false,
-				'message' => 'Error inesperado',
-				'error' => $e->getMessage(),
-			], 500);
+		} catch (\Throwable $e) {
+			return abort(500, "Error interno: " . $e->getMessage());
 		}
 	}
 
 	public function responder(Request $request)
 	{
 		$request->merge(['date_created' => now()]);
-		$user = app(MLUsuarioService::class)->datosUsuario();
+
+		$user = MLClient::with('cliente')
+			->where('meli_user_id', $request->sellerId)
+			->first();
 		if (!$user) return;
-		$ml = app(MercadoLibreService::class);
+		$ml = app(MercadoLibreService::class)->forClient($user->cliente->app_id);
 
 		//enviar a mercado libre
 		$respuestaML = $ml->apiPost("/messages/packs/{$request->packId}/sellers/{$request->sellerId}?tag=post_sale",  [
@@ -147,15 +156,16 @@ class MensajesController extends Controller
 
 		$respuestaML;
 		$created = $respuestaML['message_date']['created'] ?? null;
-		MercadoLibreMensaje::updateOrCreate(
+		MLMensaje::updateOrCreate(
 			['message_id' => $respuestaML['id']],
 			[
+				'client_id' => $request->clientId,
 				'pack_id' => $request->packId,
 				'message_id' => $respuestaML['id'],
 				'from_user_id' => $respuestaML['from']['user_id'] ?? null,
 				'to_user_id'   => $respuestaML['to']['user_id'] ?? null,
 				'date_created' => $created,
-				'body' => $request->text,
+				'text' => $request->text,
 				'attachment_path' => $respuestaML['message_attachments'][0]['filename']
 					?? null,
 				// si read ≠ null → lo leyó alguien → marcar como leído
@@ -169,7 +179,7 @@ class MensajesController extends Controller
 			]
 		);
 	}
-	public function marcarLeido($packId)
+	public function marcarLeido($packId, $client_id)
 	{
 		$offset = 0;
 		$limit = 50;
@@ -180,11 +190,13 @@ class MensajesController extends Controller
 			'offset' => $offset,
 			'limit' => $limit,
 		];
-		$user = app(MLUsuarioService::class)->datosUsuario();
-		if (!$user) return;
-		$ml = app(MercadoLibreService::class);
+
+		$cliente = MLApp::with('usuario')
+			->where('app_id', $client_id)->first();
+		if (!$cliente) return;
+		$ml = app(MercadoLibreService::class)->forClient($client_id);
 		do {
-			$response = $ml->apiGet("/messages/packs/".$packId."/sellers/".$user->meli_user_id , $user->meli_user_id, $parametros);
+			$response = $ml->apiGet("/messages/packs/" . $packId . "/sellers/" . $cliente->usuario->meli_user_id, $cliente->usuario->meli_user_id, $parametros);
 			$messages = $response['messages'] ?? [];
 
 			foreach ($messages as $msg) {
@@ -192,18 +204,18 @@ class MensajesController extends Controller
 				$read = $msg['message_date']['read'] ?? null;
 				// dato clave para saber si el vendedor lo envió
 				$fromSeller = isset($msg['from']['user_id'])
-					&& strval($msg['from']['user_id']) === strval($user->meli_user_id);
+					&& strval($msg['from']['user_id']) === strval($cliente->usuario->meli_user_id);
 				$pack_id = collect($msg['message_resources'])
 					->firstWhere('name', 'packs')['id'] ?? null;
-				MercadoLibreMensaje::updateOrCreate(
+				MLMensaje::updateOrCreate(
 					['message_id' => $msg['id']],
 					[
 						'pack_id' => $pack_id,
 						'message_id' => $msg['id'],
 						'from_user_id' => $msg['from']['user_id'] ?? null,
 						'to_user_id'   => $msg['to']['user_id'] ?? null,
-					//	'date_created' => $created,
-						'body' => strval($msg['text']),
+						//	'date_created' => $created,
+						'text' => strval($msg['text']),
 						'attachment_path' => $msg['message_attachments'][0]['filename']
 							?? null,
 						// si read ≠ null → lo leyó alguien → marcar como leído
@@ -220,5 +232,17 @@ class MensajesController extends Controller
 			$offset += $limit;
 			$total = $response['paging']['total'] ?? $offset;
 		} while ($offset < $total);
+	}
+
+	public function setAppId($client_id)
+	{
+
+		$items = MLMensaje::get();
+		foreach ($items as $value) {
+			$value->update(['client_id' => $client_id]);
+		}
+		return response()->json([
+			"item" => "ok"
+		]);
 	}
 }

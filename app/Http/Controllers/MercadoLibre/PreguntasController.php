@@ -5,17 +5,13 @@ namespace App\Http\Controllers\MercadoLibre;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PreguntaCollection;
 use App\Http\Resources\PreguntaHistorialCollection;
-use App\Jobs\FetchMercadoLibrePreguntasHistorial;
 use App\Models\Configuracion;
-use App\Models\MercadoLibreCliente;
-use App\Models\MercadoLibreListaUsuario;
-use App\Models\MercadoLibrePregunta;
-use App\Models\MercadoLibreRespuesta;
-use App\Services\MercadoLibreService;
-use App\Services\PreguntaService;
-use Illuminate\Support\Facades\Log;
+use App\Models\MLApp;
+use App\Models\MLPregunta;
+use App\Models\MLRespuesta;
+use App\Services\MercadoLibre\MercadoLibreService;
+use App\Services\MercadoLibre\PreguntaService;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Request as Req;
 use Illuminate\Http\Request;
 
 
@@ -23,11 +19,10 @@ class PreguntasController extends Controller
 {
 
 	public function __construct(
-		private	MercadoLibreService $ml,
 		private PreguntaService $preguntaService,
 	) {}
 
-	public function index()
+	public function index($client_id)
 	{
 		$datos = [];
 
@@ -37,14 +32,20 @@ class PreguntasController extends Controller
 		$firma = Configuracion::select('slug', 'value')
 			->where('slug', 'pregunta-firma')
 			->first();
-
-		$datos = new PreguntaCollection(
-			MercadoLibrePregunta::where('status', '=', 'UNANSWERED')->with('from_user')->with('item')->whereHas('item', function ($query) {
+		$cliente = MLApp::with('usuario')
+			->where('app_id', $client_id)->first();
+		$query = MLPregunta::where('status', '=', 'UNANSWERED')->with('from_user')
+			->with('item')->whereHas('item', function ($query) {
 				$query->where('status', 'active');
 			})
-				->orderBy('date_created', 'ASC')->get()
+			->where('seller_id', '=', $cliente->usuario->meli_user_id)
+			->orderBy('date_created', 'ASC')->get();
+
+		$datos = new PreguntaCollection(
+			$query
 		);
 		return Inertia::render('MercadoLibre/Preguntas', [
+			'client_id' => $client_id,
 			'items' => $datos,
 			'saludo' => $saludo,
 			'firma' => $firma
@@ -53,7 +54,7 @@ class PreguntasController extends Controller
 
 	public function store($payload)
 	{
-		$exists = MercadoLibrePregunta::where('mercadolibre_pregunta_id', $payload['id'] ?? null)->exists();
+		$exists = MLPregunta::where('pregunta_id', $payload['id'] ?? null)->exists();
 		if ($exists) return;
 		$this->preguntaService->updateOrCreate($payload);
 	}
@@ -61,27 +62,28 @@ class PreguntasController extends Controller
 	public function responder(Request $request)
 	{
 		$request->merge(['date_created' => now()]);
-		$cliente = MercadoLibreCliente::with('usuario')->first();
+		$cliente = MLApp::with('usuario')
+			->where('app_id', $request->client_id)->first();
 
-		MercadoLibreRespuesta::create([
-			'mercadolibre_pregunta_id' => $request->mercadolibre_pregunta_id,
+		MLRespuesta::create([
+			'pregunta_id' => $request->pregunta_id,
 			'from_user_id' => $request->from_user_id,
 			'date_created' => $request->date_created,
 			'text' => $request->text,
 			'payload' => $request->payload,
 
 		]);
-
+		$ml = app(MercadoLibreService::class)->forClient($request->client_id);
 		//enviar a mercado libre
-		$respuestaML = $this->ml->apiPost('/answers', [
-			'question_id' => $request->mercadolibre_pregunta_id,
+		$respuestaML = $ml->apiPost('/answers', [
+			'question_id' => $request->pregunta_id,
 			'text' => $request->text,
 
 		], $cliente->usuario->meli_user_id);
 
 		$tokenData = $respuestaML;
 
-		$item = MercadoLibrePregunta::where('mercadolibre_pregunta_id', '=', $request->mercadolibre_pregunta_id)->first();
+		$item = MLPregunta::where('pregunta_id', '=', $request->pregunta_id)->first();
 		if (!is_null($item)) {
 			$item->update([
 				'status' => 'ANSWERED',
@@ -99,40 +101,30 @@ class PreguntasController extends Controller
 	//eliminar
 	public function destroy($id)
 	{
-		//$item = MercadoLibrePregunta::find($id);
+		//$item = MLPregunta::find($id);
 		//$item->delete();
 	}
 
-	public function historial()
+	public function historial($client_id)
 	{
-		$items = MercadoLibrePregunta::select('item_id', 'from_user_id')->groupBy('item_id')->get();
+		$cliente = MLApp::with('usuario')
+			->where('app_id', $client_id)
+			->firstOrFail();
 
-		foreach ($items as $key => $value) {
-			$user = MercadoLibreListaUsuario::where('user_id', $value->from_user_id)->first();
-			if (is_null($user)) {
-
-				FetchMercadoLibrePreguntasHistorial::dispatch($value->item_id)->onQueue('meli');
-			}
-		}
-
-		$queryDatos = MercadoLibrePregunta::with(['from_user', 'respuesta', 'item'])
-			->whereHas('item', function ($q) {
-				$q->where('status', 'active');
+		// 2️⃣ Consultar historial con filtros correctos
+		$queryDatos = MLPregunta::with('from_user')
+			->with('item')->whereHas('item', function ($query) {
+				$query->where('status', 'active');
 			})
-			->where('status', '=', 'UNANSWERED')
-		->orWhere('status', '=', 'ANSWERED')
-			->whereHas('respuesta') // <-- Solo preguntas que tengan respuesta
-			->orderBy('date_created', 'ASC')
-			->get();
-
-
-
-		$datos = new PreguntaHistorialCollection(
-			$queryDatos
-		);
+			->with('respuesta')
+			->where('status', '=', 'ANSWERED')
+			->where('seller_id', '=', $cliente->usuario->meli_user_id)
+			->orderBy('date_created', 'desc')->get();
+		// 3️⃣ Collection para Inertia
+		$datos = new PreguntaHistorialCollection($queryDatos);
 
 		return Inertia::render('MercadoLibre/PreguntaHistorial', [
-			'datos' => $datos,
+			'datos' => $datos
 		]);
 	}
 }
