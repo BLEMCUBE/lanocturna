@@ -23,8 +23,8 @@ class MLCLient extends Model
 	];
 	public function cliente()
 	{
-		//return $this->belongsTo(MLApp::class, 'app_id', 'id');
-		return $this->belongsTo(MLApp::class);
+		return $this->belongsTo(MLApp::class, 'app_id', 'id');
+		//return $this->belongsTo(MLApp::class,'');
 	}
 
 	/** Relación con reclamos */
