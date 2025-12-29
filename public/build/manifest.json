@@ -3553,7 +3553,7 @@
     ]
   },
   "resources/js/Pages/MercadoLibre/Ventas.vue": {
-    "file": "assets/Ventas-DcfzkrZc.js",
+    "file": "assets/Ventas-DKBXdxcq.js",
     "name": "Ventas",
     "src": "resources/js/Pages/MercadoLibre/Ventas.vue",
     "isDynamicEntry": true,
@@ -6187,7 +6187,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-CF4rSwCf.js",
+    "file": "assets/app-C1kaFyId.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -6364,7 +6364,7 @@
       "resources/js/Pages/Welcome.vue"
     ],
     "css": [
-      "assets/app-5syGy3wK.css",
+      "assets/app-CC3F2l_V.css",
       "assets/primeicons-DxZHhItS.css"
     ],
     "assets": [
