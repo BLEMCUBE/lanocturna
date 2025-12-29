@@ -13,7 +13,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\VentaResource;
 use App\Models\Destino;
-use App\Jobs\ActualizarStockWooJob;
+use App\Jobs\WCActualizarStockJob;
 
 class CajaController extends Controller
 {
@@ -169,7 +169,7 @@ class CajaController extends Controller
 					"stock_futuro" => $new_stock + $prod->en_camino
 				]);
 				//actualizar stock web
-				dispatch((new ActualizarStockWooJob($prod->origen, $new_stock))->onQueue('meli'));
+				dispatch((new WCActualizarStockJob($prod->origen, $new_stock))->onQueue('meli'));
 			}
 
 			DB::commit();
