@@ -126,6 +126,7 @@ class PreguntasController extends Controller
 		$datos = new PreguntaHistorialCollection($queryDatos);
 
 		return Inertia::render('MercadoLibre/PreguntaHistorial', [
+				'tienda' => app(MLAppService::class)->getNombre($client_id),
 			'datos' => $datos
 		]);
 	}
