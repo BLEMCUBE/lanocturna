@@ -23,7 +23,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
-use App\Jobs\ActualizarStockWooJob;
+use App\Jobs\WCActualizarStockJob;
 use App\Services\ProductoService;
 
 class ImportacionController extends Controller
@@ -202,7 +202,7 @@ class ImportacionController extends Controller
 				]);
 
 				//actualizar stock web
-				dispatch((new ActualizarStockWooJob($producto->origen, $add_stock))->onQueue('meli'));
+				dispatch((new WCActualizarStockJob($producto->origen, $add_stock))->onQueue('meli'));
 
 				//Guardando producto importacion
 				$importacion_detalle->precio = $request->precio;
@@ -278,9 +278,6 @@ class ImportacionController extends Controller
 							"en_camino" => $new_encamino,
 							"stock_futuro" => $new_futuro,
 						]);
-
-						//actualizar stock web
-						//dispatch((new ActualizarStockWooJob($producto->origen, $new_stock))->onQueue('meli'));
 
 						//actualizando importacion detall
 						$impor_detall = ImportacionDetalle::where('importacion_id', '=', $importacion->id);
@@ -382,8 +379,6 @@ class ImportacionController extends Controller
 							"arribado" => $new_arribado,
 							"stock_futuro" => $new_futuro,
 						]);
-						//actualizar stock web
-						//dispatch((new ActualizarStockWooJob($producto->origen, $new_stock))->onQueue('meli'));
 					}
 				}
 			}

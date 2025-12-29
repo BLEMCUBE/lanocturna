@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use App\Jobs\ActualizarStockWooJob;
+use App\Jobs\WCActualizarStockJob;
 
 class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
 {
@@ -78,7 +78,7 @@ class ImportacionesImport implements ToCollection, WithHeadingRow, WithCalculate
 							]);
 
 							//actualizar stock web
-							dispatch((new ActualizarStockWooJob($producto->origen, $stock_new))->onQueue('meli'));
+							dispatch((new WCActualizarStockJob($producto->origen, $stock_new))->onQueue('meli'));
 						}
 
 						if ($this->estado == "En camino") {
