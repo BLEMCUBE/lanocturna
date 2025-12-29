@@ -10,7 +10,7 @@ import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import Pagination from '@/Components/Pagination.vue';
 const { tienda } = usePage().props
-const titulo =  `Reclamos Ventas "${tienda}"`
+const titulo =  `ML Ventas "${tienda}"`
 const ruta = 'mercadolibre.ventas'
 
 const { client_id } = usePage().props

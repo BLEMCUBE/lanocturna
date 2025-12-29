@@ -43,8 +43,8 @@ class PreguntaHistorialCollection extends ResourceCollection
 					'usuario' => [
 						'nickname' => !is_null($user) ? $user['nickname'] : '',
 						'permalink' => !is_null($user) ? $user['permalink'] : '',
-						'city' =>  !is_null($user['address']) ? $user['address']['city'] : '',
-						'state' => !is_null($user['address']) ? HelperMercadoLibre::departamento($user['address']['state']) : '',
+						'city' =>  !is_null($user) ? $user['address']['city'] : '',
+						'state' => !is_null($user) ? HelperMercadoLibre::departamento($user['address']['state']) : '',
 					],
 
 				];
