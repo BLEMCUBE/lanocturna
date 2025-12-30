@@ -225,17 +225,5 @@ class ReclamosController extends Controller
 			$attachments = collect($uploaded)->pluck('id')->toArray();
 		}
 
-		$response = app(ReclamoService::class)->sendMessageWithAttachments(
-			$request->clientId,
-			$request->reclamoId,
-			$request->text,
-			$attachments
-		);
-
-		/*return response()->json([
-			'success' => true,
-			'message' => 'Mensaje enviado correctamente',
-			'ml_response' => $response
-		]);*/
 	}
 }

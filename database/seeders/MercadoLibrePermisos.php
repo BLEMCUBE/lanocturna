@@ -22,6 +22,7 @@ class MercadoLibrePermisos extends Seeder
             ['name' => 'mercadoLibre-apis', 'description' => 'Listado de apis mercado libre'],
             ['name' => 'mercadoLibre-preguntas', 'description' => 'Listado de preguntas mercado libre'],
             ['name' => 'mercadoLibre-mensajes', 'description' => 'Listado de mensajes mercado libre'],
+            ['name' => 'mercadoLibre-ventas', 'description' => 'Listado de ventas mercado libre'],
             ['name' => 'mercadoLibre-reclamos', 'description' => 'Listado de reclamos mercado libre'],
 
 

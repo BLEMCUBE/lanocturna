@@ -35,7 +35,7 @@ class MLReclamoCollection extends ResourceCollection
 
 				$reclamo = MLReclamo::where('reclamo_id', $r->reclamo_id)
 				->with('mensajes')
-				->select('reclamo_id', 'motivos', 'payload', 'reputacion')->first();
+				->select('reclamo_id', 'motivos', 'payload','detalle', 'reputacion')->first();
 
 				$payload = $reclamo->payload;
 				$order_items = $orden->payload['order_items'];
@@ -60,10 +60,13 @@ class MLReclamoCollection extends ResourceCollection
 					'comprador' => $comprador,
 					'venta_estado'=>$orden->status,
 					'productos' => $productos,
+					/*
 					'motivo' => MercadoLibreClaimHelper::buildReason(
 						$reclamo->motivos['name']??null,
 						$reclamo->motivos['detail']??null
 					),
+					*/
+					'motivo'=>$reclamo['detalle']??[],
 					'espera'=> app(ReclamoService::class)->waitingForByMessages($reclamo)
 				];
 
