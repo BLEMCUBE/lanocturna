@@ -108,6 +108,87 @@ class ReclamoService
 
 		return $reclamo;
 	}
+	public function updatedLast($item, $clientId)
+	{
+		$this->forClient($clientId);
+		$meli_user_id = $this->usuarioMeliId();
+		if (!$meli_user_id) return;
+
+		// Guardar reclamo
+		$reclamo = MLReclamo::updateOrCreate(
+			['reclamo_id' => $item['id']],
+			[
+				'meli_user_id'   => $this->clienteId(),
+				'reclamo_id' => $item['id'],
+				'resource'     => $item['resource'] ?? null,
+				'type'     => $item['type'] ?? null,
+				'stage'     => $item['stage'] ?? null,
+				'resource_id'    => $item['resource_id'] ?? null,
+				'reason'   => $item['resolution']['reason'] ?? null,
+				'status'      => $item['status'] ?? 'opened',
+				'reason_id'   => $item['reason_id'] ?? null,
+				'date_created'     =>  $item['date_created'] ?? null,
+				'last_updated'     =>  $item['last_updated'] ?? null,
+				'payload'     => $item,
+			]
+		);
+		// consultar orden por por orden_id
+		if ($item['resource'] == 'order') {
+			$exist = MLOrden::where('orden_id', '=', $item['resource_id'])->first();
+			if ($exist === null) {
+
+				$orden = $this->mlForClient()->apiGetDos('/orders/' . $item['resource_id'], $meli_user_id);
+
+				if (!$orden['success']) {
+					// Lanzamos excepción para forzar reintento
+					throw new \Exception("Error ML ({$orden['status_code']}): " . json_encode($orden['body']));
+				}
+
+				// Guardamos o actualizamos la venta
+				app(OrdenService::class)->updateOrCreate($orden['body'], $this->clienteId());
+			}
+		}
+
+		//detalle
+		$det = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/' . $item['id'] . '/detail', $meli_user_id);
+		if ($det['success']) {
+			$det = MLReclamo::updateOrCreate(
+				['reclamo_id' => $item['id']],
+				[
+					'detalle'     => $det['body'],
+				]
+			);
+		}
+
+		//motivo
+		/*
+		$motivos = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/reasons/' . $item['reason_id'], $meli_user_id);
+		if ($motivos['success']) {
+			$reclamo = MLReclamo::updateOrCreate(
+				['reclamo_id' => $item['id']],
+				[
+					'motivos'     => $motivos['body'],
+				]
+			);
+		}
+		*/
+
+		//reputacion
+		$reputacion = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/' . $item['id'] . '/affects-reputation', $meli_user_id);
+		if ($reputacion['success']) {
+			$reclamo = MLReclamo::updateOrCreate(
+				['reclamo_id' => $item['id']],
+				[
+					'reputacion'     => $reputacion['body'],
+				]
+			);
+		}
+
+		//mensajes
+		$this->mensajes($item['id'], $clientId);
+
+		return $reclamo;
+	}
 
 	public function updateOrCreateAcciones($rId, $item, $clientId)
 	{
@@ -143,6 +224,7 @@ class ReclamoService
 		$resource = $payload['resource'] ?? null;
 		$userId   = $payload['user_id'] ?? null;
 		$coleccion = new Collection($payload['actions']);
+		$acciones = implode(',', $payload['actions']);
 		if (!$resource || !$userId) return;
 		if ($coleccion->contains('claims')) {
 			$aact = $coleccion->first(function ($value) {
@@ -166,7 +248,7 @@ class ReclamoService
 						'claims_id' => $response['body']['id']
 					]);
 				}
-				$this->ml->actualizar($resource);
+				$this->ml->actualizar($resource,$acciones);
 				break;
 			case 'claims_actions':
 				$racciones = $this->mlForClient()->apiGetDos($resource, $userId);
@@ -179,7 +261,7 @@ class ReclamoService
 						'claims_id' => $returnValue
 					]);
 				}
-				$this->ml->actualizar($resource);
+				$this->ml->actualizar($resource,$acciones);
 
 				break;
 		}

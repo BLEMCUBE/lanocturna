@@ -14,7 +14,7 @@ class EliminarArchivosAntiguos extends Command
     public function handle()
     {
        $path = storage_path('logs');
-        $limite = now()->subMonth(); // hace 1 mes
+        $limite = now()->subDays(2)->startOfDay(); // hace 2 dias
 
         foreach (File::files($path) as $file) {
 
@@ -25,7 +25,7 @@ class EliminarArchivosAntiguos extends Command
 
                 $fechaArchivo = Carbon::createFromFormat('Y-m-d', $m[1]);
 
-                // Eliminar si es menor a hace 1 mes
+                // Eliminar si es menor a hace 2 meses
                 if ($fechaArchivo->lt($limite)) {
                     File::delete($file->getRealPath());
                 }

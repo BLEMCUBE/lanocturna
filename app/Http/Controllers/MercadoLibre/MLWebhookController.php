@@ -90,10 +90,12 @@ class MLWebhookController extends Controller
 
 		if ($exists) {
 
+			/*
 			Log::info("ML Notificación duplicada", [
 				'resource' => $resource,
 				'actions'  => $actions
 			]);
+			*/
 
 
 			return response()->json(['status' => 'duplicate'], 200);

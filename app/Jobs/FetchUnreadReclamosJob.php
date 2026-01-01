@@ -56,8 +56,10 @@ class FetchUnreadReclamosJob implements ShouldQueue
 			if ($item === null) continue;
 			//if ($item['last_updated']  !== $oldUpdated) {
 
-				Log::info("claims", ['data' => $item]);
+				//Log::info("claims", ['data' => $item]);
 				// Guardar reclamo
+				app(ReclamoService::class)->updateOrCreate($item,$this->clientId);
+			/*
 				MLReclamo::updateOrCreate(
 					['reclamo_id' => $item['id']],
 					[
@@ -75,8 +77,9 @@ class FetchUnreadReclamosJob implements ShouldQueue
 						'payload'     => $item,
 					]
 				);
+				*/
 			//}
-			app(ReclamoService::class)->mensajes($item['id'], $this->clientId);
+			//app(ReclamoService::class)->mensajes($item['id'], $this->clientId);
 		}
 	}
 }

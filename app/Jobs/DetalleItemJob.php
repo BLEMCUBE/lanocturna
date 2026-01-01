@@ -11,8 +11,6 @@ use Illuminate\Queue\SerializesModels;
 use App\Services\MercadoLibre\MercadoLibreService;
 use App\Services\MercadoLibre\ItemService;
 use App\Models\MLItem;
-use App\Models\MLCLient;
-use Illuminate\Support\Facades\Log;
 
 class DetalleItemJob implements ShouldQueue
 {
@@ -48,10 +46,6 @@ class DetalleItemJob implements ShouldQueue
 				$item = $ml->apiGet('/items/' . $this->payload, $cliente->usuario->meli_user_id, []);
 
 				$newItem = app(ItemService::class)->updateOrCreate($item);
-
-				if ($newItem !== null) {
-					Log::info("Item Creado [{$item['id']}]");
-				}
 			}
 		}
 	}

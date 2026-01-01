@@ -11,11 +11,8 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('mercadolibre_lista_usuarios', function (Blueprint $table) {
-			$table->id();
-			$table->unsignedBigInteger('user_id')->nullable();
-			$table->json('payload')->nullable(); // JSON completo del ítem
-			$table->timestamps();
+		Schema::table('ml_items', function (Blueprint $table) {
+			$table->timestamp('last_updated')->nullable()->after('item_id');
 		});
 	}
 
@@ -24,6 +21,10 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists('mercadolibre_lista_usuarios');
+		Schema::table('ml_items', function (Blueprint $table) {
+			$table->dropColumn([
+				'last_updated'
+			]);
+		});
 	}
 };

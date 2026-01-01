@@ -42,6 +42,7 @@ class MensajeService
 		$this->forClient($appId);
 		$resource = $payload['resource'] ?? null;
 		$userId   = $payload['user_id'] ?? null;
+		$acciones = implode(',', $payload['actions']);
 		if (!$resource || !$userId) return;
 		$parametros = [
 			'tag' => 'post_sale',
@@ -55,7 +56,7 @@ class MensajeService
 		if ($order !== null) {
 			Log::info("Mensaje registrada Notificacion [{$resource}]");
 		}
-		$this->ml->actualizar($resource);
+		$this->ml->actualizar($resource,$acciones);
 
 		//notificion
 		//$this->ml->pusherNotificacion('ml', 'question');

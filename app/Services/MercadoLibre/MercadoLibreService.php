@@ -89,9 +89,11 @@ class MercadoLibreService
 	}
 
 
-	public function actualizar($resource): void
+	public function actualizar($resource,$action): void
 	{
-		$notif = MLNotificacion::where('resource', '=', $resource)->first();
+		$notif = MLNotificacion::where('resource', '=', $resource)
+		->whereIn('actions', [$action])
+		->first();
 		if (!is_null($notif)) {
 			$notif->update(['status' => 'processed']);
 		}

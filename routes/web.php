@@ -452,6 +452,12 @@ Route::prefix('mercadolibre')->name('mercadolibre.')
 			Route::post('/responder', [ReclamosController::class, 'responder'])->name('responder');
 			Route::get('/{client_id}/detalle/{reclamo_id}', [ReclamosController::class, 'show'])->name('detalle');
 		});
+
+			//actualizaciones
+		Route::prefix('act')->name('act.')->group(function () {
+			Route::get('/{tipo}', [AppController::class, 'actualizar'])->name('actualizar');
+
+		});
 	});
 
 //respuestas rapidas
