@@ -52,6 +52,7 @@ class ReclamoService
 			]
 		);
 		// consultar orden por por orden_id
+
 		if ($item['resource'] == 'order') {
 			$exist = MLOrden::where('orden_id', '=', $item['resource_id'])->first();
 			if ($exist === null) {
@@ -132,22 +133,9 @@ class ReclamoService
 				'payload'     => $item,
 			]
 		);
-		// consultar orden por por orden_id
-		if ($item['resource'] == 'order') {
-			$exist = MLOrden::where('orden_id', '=', $item['resource_id'])->first();
-			if ($exist === null) {
 
-				$orden = $this->mlForClient()->apiGetDos('/orders/' . $item['resource_id'], $meli_user_id);
 
-				if (!$orden['success']) {
-					// Lanzamos excepción para forzar reintento
-					throw new \Exception("Error ML ({$orden['status_code']}): " . json_encode($orden['body']));
-				}
 
-				// Guardamos o actualizamos la venta
-				app(OrdenService::class)->updateOrCreate($orden['body'], $this->clienteId());
-			}
-		}
 
 		//detalle
 		$det = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/' . $item['id'] . '/detail', $meli_user_id);

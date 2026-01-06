@@ -41,11 +41,13 @@ class DetalleItemJob implements ShouldQueue
 		if (!is_null($cliente)) {
 
 			$row = MLItem::where('item_id', '=',  $this->payload)->first();
+			$ml = app(MercadoLibreService::class)->forClient($this->clientId);
 			if (is_null($row)) {
-				$ml = app(MercadoLibreService::class)->forClient($this->clientId);
 				$item = $ml->apiGet('/items/' . $this->payload, $cliente->usuario->meli_user_id, []);
-
-				$newItem = app(ItemService::class)->updateOrCreate($item);
+				app(ItemService::class)->crear($item);
+			} else {
+				$item = $ml->apiGet('/items/' . $this->payload, $cliente->usuario->meli_user_id, []);
+				app(ItemService::class)->actualizar($item['id'], $item);
 			}
 		}
 	}

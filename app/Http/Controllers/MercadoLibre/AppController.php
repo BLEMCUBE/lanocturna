@@ -10,7 +10,9 @@ use App\Http\Resources\MercadoLibreCollection;
 use App\Models\MLItem;
 use Illuminate\Support\Str;
 use App\Models\MLOrden;
+use App\Services\MercadoLibre\MercadoLibreService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class AppController extends Controller
@@ -80,7 +82,7 @@ class AppController extends Controller
 						->filter()
 						->values()
 						->toArray();
-							$item_sku = collect($fActu['order_items'])
+					$item_sku = collect($fActu['order_items'])
 						->pluck('item.seller_sku')
 						->filter()
 						->values()
@@ -114,4 +116,94 @@ class AppController extends Controller
 				break;
 		}
 	}
+	public function publicidad($adId)
+	{
+		$cliente = MLApp::with('usuario')->whereHas('usuario', function ($query) use ($adId) {
+			$query->where('ml_clients.meli_user_id', $adId);
+		})->first();
+		if (! $cliente->app_id) {
+			return response()->json(['error' => 'Usuario ML no encontrado'], 404);
+		}
+
+		$client_id = $cliente->app_id;
+		$ml = app(MercadoLibreService::class)->forClient($client_id);
+		$response = $ml->apiGetDos(
+			"/advertising/MLU/advertisers/" . $cliente->usuario->ad_id . "/product_ads/ads/search",
+			$cliente->usuario->meli_user_id,
+			[
+				"date_from" => "2025-12-29",
+				"date_to" => "2026-01-03",
+				"filters[statuses]" => "active",
+				"metrics" => "clicks,cpc,prints,cost,acos,direct_units_quantity,indirect_units_quantity,total_amount",
+			]
+		);
+
+		if (! $response['success']) {
+			return response()->json(['error' => 'Error al obtener datos de publicidad'], 500);
+		}
+		$datos = [];
+		foreach ($response['body']['results'] as $ad) {
+			$datos[] = [
+				"item_id"=>$ad['item_id'],
+				"sku" => $this->extractSkuFromMercadoLibrePayload($ad['item_id']),
+				"sku2" => $this->getSku($ad['item_id']),
+				//"direct_units_quantity"=>$ad['metrics']['direct_units_quantity'],
+				"total_venta" => $ad['metrics']['direct_units_quantity'] + $ad['metrics']['indirect_units_quantity'],
+				//"indirect_units_quantity"=>$ad['metrics']['indirect_units_quantity'],
+
+			];
+		}
+		return response()->json([
+			"tienda1" => $datos,
+			//"tienda1" => $datos
+		]);
+	}
+
+	public function getSku($itemId)
+	{
+		$item = MLOrden::where('item_id', $itemId)->first();
+		return $item ? $item->item_sku : "";
+	}
+
+		public function getSkuItem($itemId)
+	{
+
+		$item = MLItem::where('item_id', $itemId)->first();
+		//return $item ? $item->item_sku : "";
+		return $item ? $item->payload : "";
+	}
+	function extractSkuFromMercadoLibrePayload($itemId) {
+    // Buscar en la base de datos
+    $item = DB::table('ml_items')
+        ->whereRaw("payload->>'$.id' = ?", [$itemId])
+        ->first();
+
+    if (!$item) {
+        $ord = MLOrden::where('item_id', $itemId)->first();
+		return $ord ? $ord->item_sku : "no existe";
+    }
+
+    // Decodificar JSON
+    $payload = json_decode($item->payload, true);
+
+    // Buscar SKU en attributes (formato de tu ejemplo)
+    if (isset($payload['attributes']) && is_array($payload['attributes'])) {
+        foreach ($payload['attributes'] as $attribute) {
+            // Verificar si es el atributo SKU
+            if (isset($attribute['id']) && $attribute['id'] === 'SELLER_SKU') {
+                // Tu ejemplo tiene el SKU en value_name
+                if (isset($attribute['value_name']) && !empty($attribute['value_name'])) {
+                    return $attribute['value_name']; // "MAR-3148"
+                }
+
+                // Algunos items podrían tenerlo en values[0].name
+                if (isset($attribute['values'][0]['name']) && !empty($attribute['values'][0]['name'])) {
+                    return $attribute['values'][0]['name'];
+                }
+            }
+        }
+    }
+
+    return null;
+}
 }

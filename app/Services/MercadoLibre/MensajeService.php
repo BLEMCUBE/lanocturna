@@ -4,7 +4,7 @@ namespace App\Services\MercadoLibre;
 
 use App\Models\MLMensaje;
 use App\Models\MLOrden;
-use App\Models\MLCLient;
+use App\Models\MLClient;
 use App\Models\MLApp;
 use App\Jobs\DetalleOrdenJob;
 use App\Traits\BaseMLService;
@@ -56,10 +56,7 @@ class MensajeService
 		if ($order !== null) {
 			Log::info("Mensaje registrada Notificacion [{$resource}]");
 		}
-		$this->ml->actualizar($resource,$acciones);
-
-		//notificion
-		//$this->ml->pusherNotificacion('ml', 'question');
+		$this->ml->actualizar($resource, $acciones);
 	}
 
 	/**
@@ -117,13 +114,14 @@ class MensajeService
 				$pack_id = collect($msg['message_resources'])
 					->firstWhere('name', 'packs')['id'] ?? null;
 
-				$seller_id = collect($msg['message_resources'])
-					->firstWhere('name', 'sellers')['id'] ?? null;
-
+				Log::info("pack_id registrada Notificacion [{$pack_id}]");
+				Log::info("message_resources questions", ['data' => $msg['message_resources']]);
 
 				$orden = MLOrden::where('pack_id', $pack_id)
-					->orWhere('orden_id', $pack_id)->first();
-				if (is_null($orden)) {
+				->where('client_id', $this->clienteId())
+					//->orWhere('orden_id', $pack_id)
+					->first();
+				if (!is_null($orden)) {
 					$response = $this->mlForClient()->apiGetDos('/packs/' . $pack_id, $meli_user_id);
 					if ($response['success']) {
 						foreach ($response['body']['orders'] as  $value) {
@@ -133,27 +131,39 @@ class MensajeService
 						DetalleOrdenJob::dispatch($pack_id, $this->clienteId(), $meli_user_id)->onQueue('meli');
 					}
 				}
-				MLMensaje::updateOrCreate(
-					['message_id' => $msg['id']],
-					[
-						'pack_id' => $pack_id,
-						'message_id' => $msg['id'],
-						'from_user_id' => $msg['from']['user_id'] ?? null,
-						'to_user_id'   => $msg['to']['user_id'] ?? null,
-						'date_created' => $created,
-						'text' => strval($msg['text']),
-						'attachment_path' => $msg['message_attachments'][0]['filename']
-							?? null,
-						// si read ≠ null → lo leyó alguien → marcar como leído
-						'is_read' => $read ? 1 : 0,
-						// marcar si lo envió el vendedor
-						'is_from_seller' => $fromSeller ? 1 : 0,
-						'client_id' => $this->clienteId(),
-						// guardar JSON entero
-						'payload' => $msg,
 
-					]
-				);
+				$leido = MLMensaje::where('message_id', '=', $msg['id'])
+				->where('client_id', $this->clienteId())
+				->first();
+				//if($leido->is_read!==$read) continue;
+				if (!$leido) {
+
+
+					//if ($leido->is_read!==$read) {
+
+					MLMensaje::updateOrCreate(
+						['message_id' => $msg['id']],
+						[
+							'pack_id' => $pack_id,
+							'message_id' => $msg['id'],
+							'from_user_id' => $msg['from']['user_id'] ?? null,
+							'to_user_id'   => $msg['to']['user_id'] ?? null,
+							'date_created' => $created,
+							'text' => strval($msg['text']),
+							'attachment_path' => $msg['message_attachments'][0]['filename']
+								?? null,
+							// si read ≠ null → lo leyó alguien → marcar como leído
+							'is_read' => $read ? 1 : 0,
+							// marcar si lo envió el vendedor
+							'is_from_seller' => $fromSeller ? 1 : 0,
+							'client_id' => $this->clienteId(),
+							// guardar JSON entero
+							'payload' => $msg,
+
+						]
+					);
+					//}
+				}
 			}
 
 			// Paginación
@@ -187,8 +197,10 @@ class MensajeService
 					->firstWhere('name', 'sellers')['id'] ?? null;
 
 				$orden = MLOrden::where('pack_id', $pack_id)
-					->orWhere('orden_id', $pack_id)->first();
-
+				->where('client_id', $this->clienteId())
+					//->orWhere('orden_id', $pack_id)
+					->first();
+/*
 				if (is_null($orden)) {
 					$response = $this->mlForClient()->apiGetDos('/packs/' . $pack_id, $meli_user_id);
 					if ($response['success']) {
@@ -198,12 +210,12 @@ class MensajeService
 					} else {
 						DetalleOrdenJob::dispatch($pack_id, $this->clienteId(), $meli_user_id)->onQueue('meli');
 					}
-				}
-				$item = MLCLient::with('cliente')
+				}*/
+				$item = MLClient::with('cliente')
 					->where('meli_user_id', $seller_id)
 					->first();
 
-				$data =	MLMensaje::updateOrCreate(
+				MLMensaje::updateOrCreate(
 					['message_id' => $msg['id']],
 					[
 						'pack_id' => $pack_id,
@@ -218,7 +230,8 @@ class MensajeService
 						'is_read' => $read ? 1 : 0,
 						// marcar si lo envió el vendedor
 						'is_from_seller' => $fromSeller ? 1 : 0,
-						'client_id' => $this->clienteId(),
+						//'client_id' => $this->clienteId(),
+						'client_id' => $item->cliente->app_id,
 						// guardar JSON entero
 						'payload' => $msg,
 
@@ -263,7 +276,7 @@ class MensajeService
 				"producto" => $this->itemService->detalle($i['item']['id']),
 				"cantidad" => $i['quantity'] ?? '',
 				"seller_sku" => $i['item']['seller_sku'] ?? '',
-				"precio"   => number_format($i['full_unit_price'],2,',','.') ?? '',
+				"precio"   => number_format($i['full_unit_price'], 2, ',', '.') ?? '',
 				"color" =>	collect($i['item']['variation_attributes'])
 					->firstWhere('id', 'COLOR')['value_name'] ?? null
 			])
@@ -273,7 +286,7 @@ class MensajeService
 		// 3) Mensajes agrupados por fecha + normalizados
 		$mensajes = MLMensaje::where('pack_id', $ventaId)
 			->orderBy('date_created')
-			->select('date_created', 'payload', 'is_from_seller','attachment_path')
+			->select('date_created', 'payload', 'is_from_seller', 'attachment_path')
 			->get()
 			->map(function ($m) {
 
@@ -284,7 +297,7 @@ class MensajeService
 
 				return [
 					"fecha"          => $m->date_created->format("Y-m-d H:i:s"),
-					"attachment_path"=> $m->attachment_path ?? null,
+					"attachment_path" => $m->attachment_path ?? null,
 					//"from_id"        => $payload["from"]["user_id"] ?? null,
 					"is_from_seller" => $m->is_from_seller,
 					"raw"            => $payload

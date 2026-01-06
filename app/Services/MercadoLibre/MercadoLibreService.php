@@ -3,7 +3,7 @@
 namespace App\Services\MercadoLibre;
 
 use App\Models\MLApp;
-use App\Models\MLCLient;
+use App\Models\MLClient;
 use App\Models\MLNotificacion;
 use App\Services\ConfiguracionService;
 use Pusher\Pusher;
@@ -49,7 +49,7 @@ class MercadoLibreService
 			throw new Exception("Debes llamar a forClient(app_id) antes de getAccessToken()");
 		}
 
-		$usuario = MLCLient::where('meli_user_id', $meliUserId)
+		$usuario = MLClient::where('meli_user_id', $meliUserId)
 			->where('app_id', $this->clienteActual->id)
 			->first();
 
@@ -108,7 +108,7 @@ class MercadoLibreService
 			throw new Exception("Debes llamar a forClient(app_id) antes de refreshAccessToken()");
 		}
 
-		$usuario = MLCLient::where('meli_user_id', $meliUserId)
+		$usuario = MLClient::where('meli_user_id', $meliUserId)
 			->where('app_id', $this->clienteActual->id)
 			->first();
 
@@ -253,7 +253,7 @@ class MercadoLibreService
 			return $error;
 		}
 
-		// ❗ Captura cualquier otro error inesperado
+		// Captura cualquier otro error inesperado
 		catch (\Throwable $e) {
 			$error = [
 				'success'     => false,
@@ -356,7 +356,7 @@ class MercadoLibreService
 		try {
 			$response = Http::withToken($token)
 				->acceptJson()
-				->timeout(30)
+				->timeout(60)
 				->connectTimeout(10)
 				->retry(3, 200)
 				->withOptions(['verify' => true])
