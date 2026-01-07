@@ -10,7 +10,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 
 class CheckMeliPackStatus implements ShouldQueue
@@ -49,9 +48,7 @@ class CheckMeliPackStatus implements ShouldQueue
 		$messages = app(MensajeService::class)->forClient($this->clientId)->getSinLeer($this->clientId);
 		$ml = app(MercadoLibreService::class)->forClient($this->clientId);
 		foreach ($messages as $message) {
-
 			$this->getPack($message['resource'], $this->clientId, $this->meliUserId, $ml);
-			//app(MensajeService::class)->forClient($this->clientId)->getPack($message['resource'],$this->clientId);
 		}
 	}
 

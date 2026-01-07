@@ -10,8 +10,6 @@ use App\Models\MLReclamoMensaje;
 use App\Traits\BaseMLService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
-use App\Helpers\MercadoLibreClaimHelper;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class ReclamoService

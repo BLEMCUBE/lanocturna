@@ -460,10 +460,7 @@ Route::prefix('mercadolibre')->name('mercadolibre.')
 
 			//actualizaciones
 		Route::prefix('act')->name('act.')->group(function () {
-			Route::get('/publicidad/{adId}', [AppController::class, 'publicidad'])->name('publicidad');
 			Route::get('/{tipo}', [AppController::class, 'actualizar'])->name('actualizar');
-
-
 		});
 	});
 

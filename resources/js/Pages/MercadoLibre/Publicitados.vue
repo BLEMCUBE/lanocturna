@@ -5,11 +5,12 @@ import InputLabel from '@/Components/InputLabel.vue';
 import { Head, usePage, Link, useForm, router } from '@inertiajs/vue3';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear } from 'date-fns';
+import { endOfMonth, endOfYear, startOfMonth, subDays, startOfYear, subMonths } from 'date-fns';
 import moment from 'moment';
 import 'vue-datepicker-next/locale/es.es.js';
 import Pagination from '@/Components/Pagination.vue';
 const titulo = `Productos publicados activos`
+import { FilterMatchMode } from 'primevue/api';
 const ruta = 'reportes'
 
 const { tiendas } = usePage().props
@@ -18,7 +19,9 @@ const fin = ref(props.filtro.fin ?? null);
 let date = ref([props.filtro.inicio, props.filtro.fin]);
 const buscar = ref(props.filtro.buscar ?? "");
 const datosFinal = computed(() => usePage().props.datos)
-
+const filters = ref({
+	'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
 //*datepicker  */
 const props = defineProps({
 	/*datos: {
@@ -35,53 +38,95 @@ const funcBuscar = () => {
 	router.get(
 		route(ruta + '.mlpublicidad'),
 		{
-			buscar: buscar.value,
+			//buscar: buscar.value,
 			inicio: inicio.value,
 			fin: fin.value,
 		},
 		{
 			preserveState: true,
-			preserveScroll: true,
 			replace: true,
 		}
 	);
 }
 
 const shortcuts = [
+
 	{
-		text: 'Hoy',
+		text: 'Últimos 7 días',
 		onClick() {
-			const date = [new Date(), new Date()];
-			return date;
-		},
-	},
-	{
-		text: 'Ayer',
-		onClick() {
-			const date = [subDays(new Date(), 1), subDays(new Date(), 1)];
+			const date = [subDays(new Date(), 7), new Date()];
 
 			return date;
 		},
 	},
 	{
-		text: 'Este mes',
+		text: 'Últimos 15 días',
 		onClick() {
-			const date = [startOfMonth(new Date()), endOfMonth(new Date())];
+			const date = [subDays(new Date(), 15), new Date()];
 
 			return date;
 		},
 	},
 	{
-		text: 'Este año',
+		text: 'Últimos 30 días',
 		onClick() {
-			const date = [startOfYear(new Date()), endOfYear(new Date())];
-
+			const date = [subDays(new Date(), 30), new Date()];
 			return date;
 		},
 	},
+	{
+		text: 'Últimos 60 días',
+		onClick() {
+			const date = [subDays(new Date(), 60), new Date()];
+			return date;
+		},
+	},
+	{
+		text: 'Últimos 90 días',
+		onClick() {
+			const date = [subDays(new Date(), 90), new Date()];
+			return date;
+		},
+	},
+
 ]
 
+//Fechas desde hace 90 días hasta hoy
+const disabledBefore90DaysAndAfterToday = (date) => {
+	const today = new Date();
+	today.setHours(23, 59, 59, 999); // Fin del día hoy
 
+	const ninetyDaysAgo = new Date();
+	ninetyDaysAgo.setDate(today.getDate() - 90);
+	ninetyDaysAgo.setHours(0, 0, 0, 0); // Inicio del día hace 90 días
+
+	// Deshabilitar si es antes de 90 días atrás O después de hoy
+	return date < ninetyDaysAgo || date > today;
+};
+
+//Si quieres incluir hoy en las fechas disponibles
+const disabledOutsideLast90Days = (date) => {
+	const today = new Date();
+	today.setHours(0, 0, 0, 0); // Inicio del día hoy
+
+	const ninetyDaysAgo = new Date(today);
+	ninetyDaysAgo.setDate(today.getDate() - 90);
+
+	// Deshabilitar si es antes de 90 días atrás O después de ayer
+	return date < ninetyDaysAgo || date >= today;
+};
+
+const rowClass = (data) => {
+	console.log(data);
+
+	if (data.ambas_tiendas>=1) {
+
+		return "bg-green-300"
+	}else{
+
+		return " "
+	}
+};
 
 //filtrado
 const filtrado = (value) => {
@@ -98,13 +143,12 @@ const filtrado = (value) => {
 		router.get(
 			route(ruta + '.mlpublicidad'),
 			{
-				buscar: buscar.value,
+				//buscar: buscar.value,
 				inicio: inicio.value,
 				fin: fin.value,
 			},
 			{
 				preserveState: true,
-				preserveScroll: true,
 				replace: true,
 			}
 
@@ -131,10 +175,9 @@ onMounted(() => {
 				<div class="grid grid-cols-6 gap-4 mx-1.5 mt-3 mb-6">
 					<div class="col-span-2">
 						<InputLabel for="buscar" value="Buscar" class="text-base font-medium leading-1 text-gray-900" />
-						<InputText id="buscar" v-model="buscar" v-debounce:500ms="funcBuscar"
-							:debounce-events="['keyup']" placeholder="sku" :pt="{
-								root: { class: 'col-span-6 lg:col-span-2 w-full' }
-							}" />
+						<InputText id="buscar" v-model="filters['global'].value" placeholder="sku" :pt="{
+							root: { class: 'col-span-6 lg:col-span-2 w-full' }
+						}" />
 					</div>
 					<div class="col-span-2">
 						<InputLabel for="date1" value="Rango de Fecha"
@@ -142,73 +185,50 @@ onMounted(() => {
 						<DatePicker id="date1" @change="filtrado" type="date" range value-type="YYYY-MM-DD"
 							format="DD/MM/YYYY"
 							class="col-span-6 lg:col-span-2 font-sans  font-normal text-gray-700  bg-white  transition-colors duration-200 border-0 text-sm"
-							v-model:value="date" :shortcuts="shortcuts" lang="es" editable="false"
-							placeholder="Seleccione Fecha"></DatePicker>
+							v-model:value="date" :clearable="false" :disabled-date="disabledBefore90DaysAndAfterToday"
+							:shortcuts="shortcuts" lang="es" editable="false" placeholder="Seleccione Fecha">
+						</DatePicker>
 					</div>
 
 				</div>
-				<div class="w-full  flex items-center justify-center min-h-full p-2">
+
+				<div class="w-full  flex items-center min-h-full p-2">
 					<div class="container max-w-4xl">
-						<div class="bg-white rounded-xl shadow-md overflow-hidden">
-							<!-- Table -->
-							<div class="overflow-x-auto">
-								<table class="min-w-full divide-y divide-gray-200">
-									<thead class="bg-gray-50 uppercase">
-										<tr>
+						<div class="bg-white rounded shadow-md overflow-hidden">
 
-											<th scope="col"
-												class="px-6 py-3 text-center text-xs font-medium text-gray-800  tracking-wider">
-												Sku
-											</th>
-											<th
-												class="px-6 py-3 text-center text-xs font-medium text-gray-800  tracking-wider">
-												{{ tiendas[0].nombre }}
-											</th>
-											<th
-												class="px-6 py-3 text-center text-xs font-medium text-gray-800  tracking-wider">
-												{{ tiendas[1].nombre }}
-											</th>
+							<DataTable :filters="filters"
+							sortField="sku" :sortOrder="-1" v-bind:rowClass="rowClass" :value="datosFinal.data" scrollable paginator :rows="50" :pt="{
 
-										</tr>
-									</thead>
-									<tbody class="bg-white divide-y divide-gray-200">
-										<!-- Row 1 -->
-										<tr v-for="value in datosFinal.data"
-											:class="value.ambas_tiendas > 0 ? 'bg-green-300 ' : ' '">
+								root: { class: 'text-base' }
+							}" size="small">
 
-											<td class="p-3 whitespace-nowrap text-center">
-												<div class="text-sm text-gray-900">{{ value.item_sku }}</div>
-											</td>
-											<td class="p-3 whitespace-nowrap text-center">
-												<div class="text-sm text-gray-900">{{
-													value['tienda_1'] }}</div>
-											</td>
-											<td class="p-3 whitespace-nowrap text-center">
-												<div class="text-sm text-gray-900">{{
-													value['tienda_2'] }}</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+								<template #empty> No existe Resultado </template>
+								<template #loading> Cargando... </template>
 
-							<!-- Pagination -->
-							<div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-								<div class="flex items-center justify-between flex-col sm:flex-row">
-									<div class="mb-4 sm:mb-0">
-										<p class="text-xs text-gray-700">
-											total <span class="font-medium">{{ datosFinal.total }}</span>
-										</p>
-									</div>
-									<div>
-										<Pagination :elements="datosFinal"></Pagination>
-									</div>
-								</div>
-							</div>
+								<Column field="sku" header="SKU" sortable :pt="{
+									bodyCell: {
+										class: 'py-2 text-center border-y-[1px] border-gray-300'
+									}
+								}">
+								</Column>
+								<Column field="tienda_1" :header="tiendas[0].nombre" sortable :pt="{
+									bodyCell: {
+										class: 'py-2 text-center  border-y-[1px] border-gray-300'
+									}
+								}">
+								</Column>
+								<Column field="tienda_2" :header="tiendas[1].nombre" sortable :pt="{
+									bodyCell: {
+										class: 'py-2 text-center  border-y-[1px]  border-gray-300'
+									}
+								}">
+								</Column>
+							</DataTable>
 						</div>
 					</div>
 				</div>
 			</div>
+
 		</div>
 	</AppLayout>
 </template>

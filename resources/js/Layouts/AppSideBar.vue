@@ -286,6 +286,17 @@ const ok = (icono, mensaje) => {
 							</NavLinkSideBarNotIcon>
 						</li>
 					</div>
+					<div class="flex items-center">
+						<li @click="setMenu('reportes')" class="w-full"
+							v-show="permissions.includes('reportes-mlpublicidad')">
+							<NavLinkSideBarNotIcon
+								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+								:href="route('reportes.mlpublicidad')"
+								:active="route().current('reportes.mlpublicidad')">
+								<span class="ml-2 uppercase">Productos publicados Activos</span>
+							</NavLinkSideBarNotIcon>
+						</li>
+					</div>
 
 				</DisclosurePanel>
 			</Disclosure>

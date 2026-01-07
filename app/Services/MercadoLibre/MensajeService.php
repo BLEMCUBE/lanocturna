@@ -6,10 +6,8 @@ use App\Models\MLMensaje;
 use App\Models\MLOrden;
 use App\Models\MLClient;
 use App\Models\MLApp;
-use App\Jobs\DetalleOrdenJob;
 use App\Traits\BaseMLService;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class MensajeService
 {
@@ -82,95 +80,6 @@ class MensajeService
 		return $response['results'] ?? [];
 	}
 
-
-
-	/**
-	 * Obtener un pack completo
-	 */
-	public function getPack($packId, $clientId)
-	{
-		$offset = 0;
-		$limit = 50;
-
-		$parametros = [
-			'tag' => 'post_sale',
-			'mark_as_read' => false,
-			'offset' => $offset,
-			'limit' => $limit,
-		];
-		$this->forClient($clientId);
-		$meli_user_id = $this->usuarioMeliId();
-		if (!$meli_user_id) return [];
-		do {
-			$response = $this->mlForClient()->apiGet("/messages" . $packId, $meli_user_id, $parametros);
-			$messages = $response['messages'] ?? [];
-
-			foreach ($messages as $msg) {
-				$created = $msg['message_date']['created'] ?? null;
-				$read = $msg['message_date']['read'] ?? null;
-				// dato clave para saber si el vendedor lo envió
-				$fromSeller = isset($msg['from']['user_id'])
-					&& strval($msg['from']['user_id']) === strval($meli_user_id);
-				$pack_id = collect($msg['message_resources'])
-					->firstWhere('name', 'packs')['id'] ?? null;
-
-				Log::info("pack_id registrada Notificacion [{$pack_id}]");
-				Log::info("message_resources questions", ['data' => $msg['message_resources']]);
-
-				$orden = MLOrden::where('pack_id', $pack_id)
-				->where('client_id', $this->clienteId())
-					//->orWhere('orden_id', $pack_id)
-					->first();
-				if (!is_null($orden)) {
-					$response = $this->mlForClient()->apiGetDos('/packs/' . $pack_id, $meli_user_id);
-					if ($response['success']) {
-						foreach ($response['body']['orders'] as  $value) {
-							DetalleOrdenJob::dispatch($value['id'], $this->clienteId(), $meli_user_id)->onQueue('meli');
-						}
-					} else {
-						DetalleOrdenJob::dispatch($pack_id, $this->clienteId(), $meli_user_id)->onQueue('meli');
-					}
-				}
-
-				$leido = MLMensaje::where('message_id', '=', $msg['id'])
-				->where('client_id', $this->clienteId())
-				->first();
-				//if($leido->is_read!==$read) continue;
-				if (!$leido) {
-
-
-					//if ($leido->is_read!==$read) {
-
-					MLMensaje::updateOrCreate(
-						['message_id' => $msg['id']],
-						[
-							'pack_id' => $pack_id,
-							'message_id' => $msg['id'],
-							'from_user_id' => $msg['from']['user_id'] ?? null,
-							'to_user_id'   => $msg['to']['user_id'] ?? null,
-							'date_created' => $created,
-							'text' => strval($msg['text']),
-							'attachment_path' => $msg['message_attachments'][0]['filename']
-								?? null,
-							// si read ≠ null → lo leyó alguien → marcar como leído
-							'is_read' => $read ? 1 : 0,
-							// marcar si lo envió el vendedor
-							'is_from_seller' => $fromSeller ? 1 : 0,
-							'client_id' => $this->clienteId(),
-							// guardar JSON entero
-							'payload' => $msg,
-
-						]
-					);
-					//}
-				}
-			}
-
-			// Paginación
-			$offset += $limit;
-			$total = $response['paging']['total'] ?? $offset;
-		} while ($offset < $total);
-	}
 
 	/**
 	 * Guardar mensajes en DB siempre con app_id
