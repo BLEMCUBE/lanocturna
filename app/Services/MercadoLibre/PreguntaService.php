@@ -4,7 +4,6 @@ namespace App\Services\MercadoLibre;
 
 use App\Models\MLPregunta;
 use App\Models\MLApp;
-use App\Models\MLItem;
 use Illuminate\Support\Facades\Log;
 use App\Models\MLListaUsuario;
 use App\Models\MLRespuesta;
@@ -23,12 +22,8 @@ class PreguntaService
 	{
 		$meli_user_id = $this->usuarioMeliId();
 
-		// item
-		$existsItem = MLItem::where('item_id', $question['item_id'] ?? null)->exists();
-		if (!$existsItem) {
 			$item = $this->mlForClient()->apiGet('/items/' . $question['item_id'], $meli_user_id);
 			$this->itemService->updateOrCreate($item);
-		}
 
 		//usuario
 		$existsUser = MLListaUsuario::where('user_id', $question['from']['id'] ?? null)->exists();
@@ -75,6 +70,7 @@ class PreguntaService
 		$this->forClient($appId);
 		$resource = $payload['resource'] ?? null;
 		$userId   = $payload['user_id'] ?? null;
+		$acciones = implode(',', $payload['actions']);
 		if (!$resource || !$userId) return;
 
 		$question = $this->mlForClient()->apiGet($resource, $userId);
@@ -83,7 +79,7 @@ class PreguntaService
 		if ($newItem !== null) {
 			Log::info("Pregunta registrada Notificacion [{$question['id']}]");
 		}
-		$this->ml->actualizar($resource);
+		$this->ml->actualizar($resource,$acciones);
 	}
 
 

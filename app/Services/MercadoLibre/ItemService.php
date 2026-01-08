@@ -6,6 +6,7 @@ use App\Models\MLItem;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\HelperMercadoLibre;
 use App\Traits\BaseMLService;
+use Carbon\Carbon;
 
 class ItemService
 {
@@ -14,30 +15,81 @@ class ItemService
 		private	MercadoLibreService $ml,
 	) {}
 
-	public function updateOrCreate($item)
+	public function crear($data)
 	{
-
-
-		$row = MLItem::where('item_id', '=', $item['id'])->first();
-		if ($row === null) {
-
-		$data =	MLItem::updateOrCreate(
-			['item_id' => $item['id']],
+		$data =	MLItem::create(
 			[
-				'title' => $item['title'] ?? null,
-				'category_id' => $item['category_id'] ?? null,
-				'seller_id' => $item['seller_id'] ?? null,
+				'item_id' => $data['id'],
+				'title' => $data['title'] ?? null,
+				'last_updated'     =>  $data['last_updated'] ?? null,
+				'category_id' => $data['category_id'] ?? null,
+				'seller_id' => $data['seller_id'] ?? null,
 				'status' => $item['status'] ?? null,
-				'payload' => $item,
+				'payload' => $data
 			]
 		);
+		Log::info("Item Creado [{$data}]");
 		return $data;
-
-		}
-		return null;
-
 	}
 
+
+	public function actualizar($id, $data)
+	{
+		$item = MLItem::where('item_id', $id)->first();
+		$fA = Carbon::parse($item['last_updated'])->format('Y-m-d H:i');
+		$fI = Carbon::parse($data['last_updated'])->format('Y-m-d H:i');
+		if ($fA !== $fI) {
+			$item->update([
+				'title' => $data['title'] ?? null,
+				'last_updated'     =>  $data['last_updated'] ?? null,
+				'category_id' => $data['category_id'] ?? null,
+				'seller_id' => $data['seller_id'] ?? null,
+				'status' => $item['status'] ?? null,
+				'payload' => $data
+			]);
+			Log::info("Item Actualizado [{$id}]");
+			return $item;
+		}
+	}
+
+	public function updateOrCreate($item)
+	{
+		$row = MLItem::where('item_id', '=', $item['id'])->first();
+		if ($row == null) {
+			$data =	MLItem::updateOrCreate(
+				['item_id' => $item['id']],
+				[
+					'title' => $item['title'] ?? null,
+					'last_updated'     =>  $item['last_updated'] ?? null,
+					'category_id' => $item['category_id'] ?? null,
+					'seller_id' => $item['seller_id'] ?? null,
+					'status' => $item['status'] ?? null,
+					'payload' => $item,
+				]
+			);
+			Log::info("Item Creado [{$item['id']}]");
+			return $data;
+		} else {
+
+			$fA = Carbon::parse($row['last_updated'])->format('Y-m-d H:i');
+			$fI = Carbon::parse($item['last_updated'])->format('Y-m-d H:i');
+			if ($fA !== $fI) {
+				$data =	MLItem::updateOrCreate(
+					['item_id' => $item['id']],
+					[
+						'title' => $item['title'] ?? null,
+						'last_updated'     =>  $item['last_updated'] ?? null,
+						'category_id' => $item['category_id'] ?? null,
+						'seller_id' => $item['seller_id'] ?? null,
+						'status' => $item['status'] ?? null,
+						'payload' => $item,
+					]
+				);
+				Log::info("Item Actualizado [{$item['id']}]");
+				return $row;
+			}
+		}
+	}
 
 
 	//crear desde notificacion
@@ -52,34 +104,36 @@ class ItemService
 		$this->forClient($appId);
 		$resource = $payload['resource'] ?? null;
 		$userId   = $payload['user_id'] ?? null;
+		$acciones = !is_null($payload['actions']) ? implode(',', $payload['actions']) : null;
 		if (!$resource || !$userId) return;
 
 		$item = $this->mlForClient()->apiGet($resource, $userId, []);
-
-		$newItem = $this->updateOrCreate($item);
-
-		if ($newItem !== null) {
-			Log::info("Item Creado [{$item['id']}]");
+		$returnValue = explode('/', $resource);
+		$exist = MLItem::where('item_id', '=', $returnValue[2])->first();
+		if (is_null($exist)) {
+			$this->crear($item);
+		} else {
+			$this->actualizar($returnValue[2], $item);
 		}
-		$this->ml->actualizar($resource);
+		$this->ml->actualizar($resource, $acciones);
 	}
+
 
 	public function detalle($item_id, $lista = false)
 	{
 
 		if ($lista == false) {
 			$query_item = MLItem::where('item_id', $item_id)->first();
-			if (is_null($query_item)){
-			return [
-				'title' =>'',
-				'id' => '',
-				'thumbnail' =>'/images/productos/sin_foto.png',
-				'sku' => '',
-				'permalink' =>'',
-				'base_price' =>'',
-				'listing_type_id' =>'',
-
-			];
+			if (is_null($query_item)) {
+				return [
+					'title' => '',
+					'id' => '',
+					'thumbnail' => '/images/productos/sin_foto.png',
+					'sku' => '',
+					'permalink' => '',
+					'base_price' => '',
+					'listing_type_id' => '',
+				];
 			}
 			$item = $query_item->payload;
 			$sellerSku = collect($item['attributes'])
@@ -96,7 +150,7 @@ class ItemService
 			];
 		} else {
 
-			$query_item = MLItem::whereIn('item_id', $item_id)->get();
+			$query_item = MLItem::whereIn('item_id', [$item_id])->get();
 
 			if (!is_null($query_item)) {
 				$datos = [];

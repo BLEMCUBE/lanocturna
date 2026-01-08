@@ -19,7 +19,7 @@ return new class extends Migration
 			$table->string('buyer_id')->nullable();
 			$table->string('seller_id')->nullable();
 			$table->string('status')->default('pending');
-			$table->json('item_ids')->nullable();
+			//$table->json('item_ids')->nullable();
 			$table->timestamp('date_created')->nullable();
 			$table->json('payload')->nullable(); // JSON completo
 			$table->timestamps();

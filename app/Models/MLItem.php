@@ -8,18 +8,19 @@ class MLItem extends Model
 {
 
 	protected $table = 'ml_items';
-	 protected $fillable = [
-        'item_id',
-        'title',
-        'category_id',
-        'seller_id',
-        'status',
-        'payload',
-    ];
+	protected $fillable = [
+		'item_id',
+		'last_updated',
+		'title',
+		'category_id',
+		'seller_id',
+		'status',
+		'payload',
+	];
 
-    protected $casts = [
-        'payload' => 'array',
-    ];
+	protected $casts = [
+		'payload' => 'array',
+	];
 
 
 	public function preguntas()

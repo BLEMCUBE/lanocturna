@@ -7,7 +7,7 @@ import { useForm, router } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import Multiselect from '@vueform/multiselect';
 import { useToast } from "primevue/usetoast";
-
+import axios from 'axios';
 const toast = useToast();
 const isShowModal = ref(false);
 

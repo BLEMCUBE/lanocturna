@@ -286,6 +286,17 @@ const ok = (icono, mensaje) => {
 							</NavLinkSideBarNotIcon>
 						</li>
 					</div>
+					<div class="flex items-center">
+						<li @click="setMenu('reportes')" class="w-full"
+							v-show="permissions.includes('reportes-mlpublicidad')">
+							<NavLinkSideBarNotIcon
+								class="flex items-center justify-start pl-6 pr-3 py-2 text-base font-medium"
+								:href="route('reportes.mlpublicidad')"
+								:active="route().current('reportes.mlpublicidad')">
+								<span class="ml-2 uppercase">Productos publicados Activos</span>
+							</NavLinkSideBarNotIcon>
+						</li>
+					</div>
 
 				</DisclosurePanel>
 			</Disclosure>
@@ -889,7 +900,7 @@ const ok = (icono, mensaje) => {
 				</NavLinkSideBar>
 			</li>
 			<li v-for="item, index in menu_ventas" @click="setMenu('mlventas')"
-				v-show="permissions.includes('mercadoLibre-mensajes')">
+				v-show="permissions.includes('mercadoLibre-ventas')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.ventas.index',{ client_id: item.client_id })"
@@ -899,7 +910,7 @@ const ok = (icono, mensaje) => {
 				</NavLinkSideBar>
 			</li>
 			<li v-for="item, index in menu_reclamos" @click="setMenu('reclamos')"
-				v-show="permissions.includes('mercadoLibre-mensajes')">
+				v-show="permissions.includes('mercadoLibre-reclamos')">
 				<NavLinkSideBar icon-class="fas fa-boxes"
 					class="flex items-center justify-start px-3 py-2 text-base font-medium"
 					:href="route('mercadolibre.reclamos.index',{ client_id: item.client_id })"
