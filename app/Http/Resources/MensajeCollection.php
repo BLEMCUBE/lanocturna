@@ -21,7 +21,7 @@ class MensajeCollection extends ResourceCollection
 			$this->collection->transform(function ($row, $key) {
 				$fecha = $row->date_created;
 				$comprador=app(OrdenService::class)->comprador($row->venta->id);
-				$items=app(ItemService::class)->detalle($row->venta->item_ids,true);
+				$items=app(ItemService::class)->detalle($row->venta->item_id,true);
 				return [
 					'pack_id' => $row->pack_id,
 					'client_id' => $row->client_id,

@@ -13,12 +13,15 @@ class MLOrden extends Model
 		'client_id',
 		'pack_id',
 		'orden_id',
+		'item_id',
+		'item_sku',
 		'envio_id',
 		'buyer_id',
 		'seller_id',
 		'status',
-		'item_ids',
+		//'item_ids',
 		'date_created',
+		'last_updated',
 		'envio',
 		'facturacion',
 		'payload',
@@ -32,7 +35,7 @@ class MLOrden extends Model
 		'envio' => 'array',
 		'facturacion' => 'array',
 		'payload' => 'array',
-		'item_ids' => 'array',
+		//'item_ids' => 'array',
 	];
 
 
@@ -53,10 +56,6 @@ class MLOrden extends Model
 		return $this->hasOne(MLListaUsuario::class, 'user_id', 'buyer_id');
 	}
 
-	public function getItemsAttribute()
-	{
-		return MLItem::whereIn('item_id', $this->item_ids ?? [])->get();
-	}
 
 	public function reclamos()
 	{
@@ -65,6 +64,6 @@ class MLOrden extends Model
 
 	public function items()
 	{
-		return MLItem::whereIn('item_id', $this->item_ids)->get();
+		return MLItem::hasOne('item_id', 'item_id')->get();
 	}
 }

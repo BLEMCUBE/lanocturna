@@ -9,7 +9,7 @@ import { useCustomToast } from '@/composables/customToast';
 const { setShow } = useCustomToast()
 const { datos } = usePage().props
 const { tienda } = usePage().props
-const titulo =  `Reclamos Mensajes "${tienda}"`
+const titulo = `Reclamos Mensajes "${tienda}"`
 const ruta = 'mercadolibre.reclamos'
 const { client_id } = usePage().props
 const formResponder = useForm({
@@ -20,6 +20,20 @@ const formResponder = useForm({
 	text: '',
 	files: []
 });
+
+const formatDeadlineDate = (dateString) => {
+	if (!dateString) return ''
+	const date = new Date(dateString)
+	const options = {
+		weekday: 'long',
+		day: 'numeric',
+		month: 'long',
+		year: 'numeric',
+		//hour: '2-digit',
+		//minute: '2-digit',
+	}
+	return date.toLocaleDateString('es-ES', options)
+}
 
 const onFiles = (e) => {
 	formResponder.files = Array.from(e.target.files)
@@ -165,28 +179,45 @@ const parsedMessages = computed(() => datos.mensajes);
 							</div>
 							<!-- Input abajo -->
 							<!-- Formulario de respuesta -->
-							<form class="border-t p-4 bg-white flex items-center gap-3"
-								@submit.prevent="enviarRespuesta()">
+							<div class="border-t  py-3 bg-white">
+								<!--
+									<b class="text-xs my-4">
+										{{ datos.motivo.title ?? '' }}
+									</b>
+									<p class="text-xs mb-3">
+									{{ datos.motivo.description ?? '' }}
 
-								<!-- Icono adjuntar -->
-								<label class="cursor-pointer text-gray-500 hover:text-gray-700" 	v-if="datos.estado!=='closed'">
-									<i class="fa-solid fa-paperclip fa-xl"></i>
-									<input type="file" multiple class="hidden" @change="onFiles" />
-								</label>
+								</p>
+								<div class="flex justify-start items-center my-4">
+									<button type="button" v-for="(item, index) in datos.displayActions"
+									class="bg-blue-300 mx-3 px-2 py-2 text-black text-xs font-medium rounded hover:bg-blue-200">
+									{{ item.label }}
+								</button>
 
-								<textarea rows="1" maxlength="340" v-model="formResponder.text"
-								:readOnly="datos.estado==='closed'"
-									placeholder="Ingresá tu mensaje..."
-									class="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
-								<div class="flex justify-end" v-if="datos.estado!=='closed'">
-									<button type="submit"
-										class="bg-blue-600 text-white font-medium px-4 py-2 rounded hover:bg-blue-700"
-										:class="{ 'opacity-50': formResponder.processing }"
-										:disabled="formResponder.processing">
-										Enviar
-									</button>
-								</div>
-							</form>
+							</div>
+							-->
+								<form class=" flex items-center gap-3" @submit.prevent="enviarRespuesta()">
+
+									<!-- Icono adjuntar -->
+									<label class="cursor-pointer text-gray-500 hover:text-gray-700"
+										v-if="datos.estado !== 'closed'">
+										<i class="fa-solid fa-paperclip fa-xl"></i>
+										<input type="file" multiple class="hidden" @change="onFiles" />
+									</label>
+
+									<textarea rows="1" maxlength="340" v-model="formResponder.text"
+										:readOnly="datos.estado === 'closed'" placeholder="Ingresá tu mensaje..."
+										class="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
+									<div class="flex justify-end" v-if="datos.estado !== 'closed'">
+										<button type="submit"
+											class="bg-blue-600 text-white font-medium px-4 py-2 rounded hover:bg-blue-700"
+											:class="{ 'opacity-50': formResponder.processing }"
+											:disabled="formResponder.processing">
+											Enviar
+										</button>
+									</div>
+								</form>
+							</div>
 							<!-- errores Laravel -->
 							<div v-if="formResponder.errors.text" class="text-red-500">
 								{{ formResponder.errors.text }}
@@ -215,7 +246,7 @@ const parsedMessages = computed(() => datos.mensajes);
 								</p>
 								<p>
 									<b>Motivo: </b>
-									{{ datos.motivo }}
+									{{ datos.motivo.problem }}
 								</p>
 
 							</div>

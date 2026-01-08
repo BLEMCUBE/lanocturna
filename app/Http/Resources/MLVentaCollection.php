@@ -28,14 +28,14 @@ class MLVentaCollection extends ResourceCollection
 				if ($r->tipo == 'orden') {
 					$comprador = app(OrdenService::class)->compradorPorOrdenId($r->venta_id);
 					$orden = MLOrden::where('orden_id', $r->venta_id)
-						->select('orden_id', 'payload', 'item_ids')->first();
+						->select('orden_id', 'payload', 'item_id')->first();
 
 					$payload = $orden->payload;
 					$order_items = $payload['order_items'];
 
 					if (!is_null($order_items)) {
 						foreach ($order_items as $key => $it) {
-							$ii = app(ItemService::class)->detalle($orden->item_ids[0], false);
+							$ii = app(ItemService::class)->detalle($orden->item_id, false);
 							if (!empty($ii)) {
 								array_push($productos, [
 									"titulo" => $it['item']['title'],
@@ -60,11 +60,11 @@ class MLVentaCollection extends ResourceCollection
 				} else {
 
 					$ordenes = MLOrden::where('pack_id', $r->venta_id)
-						->select('orden_id', 'pack_id', 'payload', 'item_ids')->get();
+						->select('orden_id', 'pack_id', 'payload', 'item_id')->get();
 					$total_pack=0;
 					foreach ($ordenes as $key => $orden1) {
 						$orden2 = MLOrden::where('orden_id', $orden1->orden_id)
-							->select('orden_id', 'pack_id', 'payload', 'item_ids')->first();
+							->select('orden_id', 'pack_id', 'payload', 'item_id')->first();
 						$comprador2 = app(OrdenService::class)->compradorPorOrdenId($orden2->orden_id);
 						$payload2 = $orden2->payload;
 

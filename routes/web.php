@@ -20,6 +20,7 @@ use App\Http\Controllers\MercadoLibre\AuthController;
 use App\Http\Controllers\MercadoLibre\PreguntasController;
 use App\Http\Controllers\MercadoLibre\MensajesController;
 use App\Http\Controllers\MercadoLibre\MLWebhookController;
+use App\Http\Controllers\MercadoLibre\PublicitadosController;
 use App\Http\Controllers\MercadoLibre\ReclamosController;
 use App\Http\Controllers\MercadoLibre\VentasController;
 use App\Http\Controllers\MetodoPagoController;
@@ -275,6 +276,10 @@ Route::get('/reportes-vendedores-pedidos/exportvendedorespedidos', [ReporteVende
 Route::get('/reportes-productos-stock', [ReporteStockProductosController::class, 'index'])->name('reportes.stockproductos')->middleware(['auth', 'verified']);
 Route::get('/reportes-productos-stock/exportxls', [ReporteStockProductosController::class, 'exportXls'])->name('reportes.exportxls')->middleware('auth');
 
+//reportes Mercado Libre
+Route::get('/reportes-ml-publicidades', [PublicitadosController::class, 'index'])->name('reportes.mlpublicidad')->middleware(['auth', 'verified']);
+Route::get('/reportes-ml-ventas', [PublicitadosController::class, 'ventas'])->name('reportes.mlventas')->middleware(['auth', 'verified']);
+
 
 //Rma -Presupuesto
 Route::controller(RmaController::class)->prefix('rmas')->name('rmas.')->middleware('auth')->group(function () {
@@ -451,6 +456,11 @@ Route::prefix('mercadolibre')->name('mercadolibre.')
 			Route::get('/{client_id}', [ReclamosController::class, 'index'])->name('index');
 			Route::post('/responder', [ReclamosController::class, 'responder'])->name('responder');
 			Route::get('/{client_id}/detalle/{reclamo_id}', [ReclamosController::class, 'show'])->name('detalle');
+		});
+
+			//actualizaciones
+		Route::prefix('act')->name('act.')->group(function () {
+			Route::get('/{tipo}', [AppController::class, 'actualizar'])->name('actualizar');
 		});
 	});
 

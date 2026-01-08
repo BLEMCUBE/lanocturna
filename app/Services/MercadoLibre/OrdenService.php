@@ -5,7 +5,9 @@ namespace App\Services\MercadoLibre;
 use App\Models\MLApp;
 use App\Models\MLOrden;
 use App\Traits\BaseMLService;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
 class OrdenService
@@ -36,38 +38,65 @@ class OrdenService
 			->filter()
 			->values()
 			->toArray();
+		$item_sku = collect($item['order_items'])
+			->pluck('item.seller_sku')
+			->filter()
+			->values()
+			->toArray();
 
 		// Guardar venta
 		$venta = [];
-		$exite = MLOrden::where('orden_id', $item['id'])
-			//->whereNot('status', 'paid')
-			->first();
-		/*
-			if (!$exite) {
-*/
-		$venta = MLOrden::updateOrCreate(
-			['orden_id' => $item['id']],
-			[
-				'client_id'   => $this->clienteId(),
-				'orden_id' => $item['id'],
-				'pack_id'     => $item['pack_id'] ?? null,
-				'buyer_id'    => $item['buyer']['id'] ?? null,
-				'seller_id'   => $item['seller']['id'] ?? null,
-				'status'      => $item['status'] ?? 'pending',
-				'date_created'     =>  $item['date_created'] ?? null,
-				'payload'     => $item,
-				'envio_id'    => $item['shipping']['id'] ?? null,
-				'item_ids'    => $items,
-			]
-		);
-
-
+		$row = MLOrden::where('orden_id', '=', $item['id'])->first();
+		if ($row == null) {
+			$venta = MLOrden::updateOrCreate(
+				['orden_id' => $item['id']],
+				[
+					'client_id'   => $this->clienteId(),
+					'orden_id' => $item['id'],
+					'pack_id'     => $item['pack_id'] ?? null,
+					'buyer_id'    => $item['buyer']['id'] ?? null,
+					'seller_id'   => $item['seller']['id'] ?? null,
+					'status'      => $item['status'] ?? 'pending',
+					'date_created'     =>  $item['date_created'] ?? null,
+					'last_updated'     =>  $item['last_updated'] ?? null,
+					'payload'     => $item,
+					'item_id'     => $items[0],
+				'item_sku' => Str::upper($item_sku[0] ?? ''),
+					'envio_id'    => $item['shipping']['id'] ?? null,
+					//	'item_ids'    => $items,
+				]
+			);
+			Log::info("Orden Creado [{$item['id']}]");
+		} else {
+			$fA = Carbon::parse($row['last_updated'])->format('Y-m-d H:i');
+			$fI = Carbon::parse($item['last_updated'])->format('Y-m-d H:i');
+			if ($fA !== $fI) {
+				$venta = MLOrden::updateOrCreate(
+					['orden_id' => $item['id']],
+					[
+						'client_id'   => $this->clienteId(),
+						'orden_id' => $item['id'],
+						'pack_id'     => $item['pack_id'] ?? null,
+						'buyer_id'    => $item['buyer']['id'] ?? null,
+						'seller_id'   => $item['seller']['id'] ?? null,
+						'status'      => $item['status'] ?? 'pending',
+						'date_created'     =>  $item['date_created'] ?? null,
+						'last_updated'     =>  $item['last_updated'] ?? null,
+						'payload'     => $item,
+						'item_id'     => $items[0],
+						'item_sku' => Str::upper($item_sku[0] ?? ''),
+						'envio_id'    => $item['shipping']['id'] ?? null,
+						//'item_ids'    => $items,
+					]
+				);
+				Log::info("Orden Actualizado [{$item['id']}]");
+			}
+		}
 		// Registrar detalles de los items
 		foreach ($items as $itemId) {
 			$itemData = $this->mlForClient()->apiGet('/items/' . $itemId, $meli_user_id);
 			$this->itemService->updateOrCreate($itemData);
 		}
-		//}
 		$this->agregarEnvio($item['id'], $clientId);
 		$this->agregarCostoEnvio($item['id'], $clientId);
 
@@ -89,6 +118,7 @@ class OrdenService
 		$this->forClient($appId);
 		$resource = $payload['resource'] ?? null;
 		$userId   = $payload['user_id'] ?? null;
+		$acciones = implode(',', $payload['actions']);
 
 		$coleccion = new Collection($payload['actions']);
 		if (!$resource || !$userId) return;
@@ -110,10 +140,9 @@ class OrdenService
 
 				if ($response['success']) {
 					$returnValue = explode('/', $resource);
-					//$exist = MLOrden::where('orden_id', '=', $returnValue[2])->first();
 					$exist = MLOrden::where('orden_id', '=', $returnValue[2])
-					->where('status',$response['body']['status'])
-					->first();
+						->where('status', $response['body']['status'])
+						->first();
 					if (is_null($exist)) {
 
 						$order = $this->updateOrCreate($response['body'], $this->clienteId());
@@ -121,7 +150,7 @@ class OrdenService
 							'orden_id' => $response['body']['id']
 						]);
 					}
-					$this->ml->actualizar($resource);
+					$this->ml->actualizar($resource, $acciones);
 				}
 
 				break;
@@ -138,7 +167,7 @@ class OrdenService
 							'orden_id' => $response['body']['id']
 						]);
 					}
-					$this->ml->actualizar($resource);
+					$this->ml->actualizar($resource, $acciones);
 				}
 
 				break;
@@ -158,8 +187,8 @@ class OrdenService
 							'orden_id' => $response['body']['id']
 						]);
 					}
-					$this->ml->actualizar($resource);
 				}
+				$this->ml->actualizar($resource, $acciones);
 				break;
 		}
 	}

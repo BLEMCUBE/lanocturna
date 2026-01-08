@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MLCLient extends Model
+class MLClient extends Model
 {
 	protected $table = 'ml_clients';
 	protected $fillable = [
@@ -14,6 +14,7 @@ class MLCLient extends Model
 		'app_id',
 		'access_token',
 		'refresh_token',
+		'ad_id',
 		'expires_at',
 		'payload'
 	];
@@ -24,7 +25,6 @@ class MLCLient extends Model
 	public function cliente()
 	{
 		return $this->belongsTo(MLApp::class, 'app_id', 'id');
-		//return $this->belongsTo(MLApp::class,'');
 	}
 
 	/** Relación con reclamos */

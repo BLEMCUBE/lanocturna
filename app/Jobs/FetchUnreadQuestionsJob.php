@@ -9,9 +9,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Services\MercadoLibre\MercadoLibreService;
 use App\Models\MLPregunta;
-use App\Jobs\DetalleItemJob;
 use App\Models\MLItem;
 use App\Models\MLRespuesta;
+use App\Services\MercadoLibre\ItemService;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
@@ -49,11 +49,21 @@ class FetchUnreadQuestionsJob implements ShouldQueue
 			->subDays(2)
 			->startOfDay()
 			->format('Y-m-d\TH:i:s.vP');
+
+		$fInicio = Carbon::now()
+			->subDays(2)
+			->startOfDay()
+			->format('Y-m-d');
 		$fechaFin = Carbon::now()
 			->setHour(23)
 			->setMinute(59)
 			->setSecond(0)
 			->format('Y-m-d\TH:i:s.vP');
+		$fFin = Carbon::now()
+			->setHour(23)
+			->setMinute(59)
+			->setSecond(0)
+			->format('Y-m-d');
 
 		$parametros = [
 			'seller_id' => $this->meliUserId,
@@ -62,11 +72,32 @@ class FetchUnreadQuestionsJob implements ShouldQueue
 			'date_created.from' => $fechaInicio,
 			'date_created.to' => $fechaFin,
 		];
+		$par2 = [
+			'seller_id' => $this->meliUserId,
+			'sort_fields' =>'date_created',
+			'sort_types' =>'DESC',
 
-		$response = $ml->apiGetDos('/questions/search', $this->meliUserId, $parametros);
-		$questions = $response['body'] ?? [];
-		Log::info("FetchUnreadQuestionsJob questions", ['data' => $questions]);
-		foreach ($questions['questions'] as $key => $q) {
+			'status' => 'UNANSWERED',
+			'api_version' => '4',
+		];
+
+		//$response = $ml->apiGetDos('/questions/search', $this->meliUserId, $parametros);
+		$response = $ml->apiGetDos('/my/received_questions/search', $this->meliUserId, $par2);
+
+		$questions = $response['body'];
+		$allQuestions = collect($questions['questions']);
+
+		$filtered = $allQuestions->filter(
+			fn($q) =>
+			Carbon::parse($q['date_created'])->between(
+				$fInicio.' 00:00:00',
+				$fFin.' 23:59:59'
+			)
+		);
+		Log::info("FetchUnreadQuestionsJob questions", ['data' => $filtered]);
+
+		foreach ($filtered as $key => $q) {
+
 			MLPregunta::updateOrCreate(
 				['pregunta_id' => $q['id']],
 				[
@@ -80,7 +111,9 @@ class FetchUnreadQuestionsJob implements ShouldQueue
 				]
 			);
 
-			if (!is_null($q['answer'])) {
+			if (($q['answer'] != null) && isset($q['answer'])) {
+				$exist = MLRespuesta::where('pregunta_id', '=',  $q['id'])->first();
+				if (!$exist) continue;
 				MLRespuesta::updateOrCreate(
 					['pregunta_id' => $q['id']],
 					[
@@ -92,9 +125,15 @@ class FetchUnreadQuestionsJob implements ShouldQueue
 					]
 				);
 			}
-			$row = MLItem::where('item_id', '=', $q['item_id'])->first();
-			if (is_null($row )) {
-				dispatch((new DetalleItemJob($q['item_id'],$this->clientId ))->onQueue('meli'));
+
+			$row = MLItem::where('item_id', '=',  $q['item_id'])->first();
+			$ml = app(MercadoLibreService::class)->forClient($this->clientId);
+			$item = $ml->apiGet('/items/' . $q['item_id'], $this->meliUserId, []);
+			if (is_null($row)) {
+				app(ItemService::class)->crear($item);
+			} else {
+				//$item = $ml->apiGet('/items/' . $q['item_id'], $this->meliUserId, []);
+				app(ItemService::class)->actualizar($q['item_id'], $item);
 			}
 		}
 	}

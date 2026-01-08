@@ -20,6 +20,6 @@ class MLApp extends Model
 
 	public function usuario()
 	{
-		return $this->hasOne(MLCLient::class, 'app_id', 'id');
+		return $this->hasOne(MLClient::class, 'app_id', 'id');
 	}
 }
