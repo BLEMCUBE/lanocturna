@@ -27,7 +27,7 @@ class MLVentaResource extends JsonResource
 		$orderPagos = $jOrden['payments'];
 		$productos = [];
 		foreach ($orderItems as $key => $it) {
-			$ii = app(ItemService::class)->detalle($this->item_ids[0], false);
+			$ii = app(ItemService::class)->detalle($this->item_id, false);
 			if (!empty($ii)) {
 				$attrItem = collect($it['item']['variation_attributes'])->map(fn($attr) => $attr['name'] . ': ' . $attr['value_name'])->implode(', ');
 				array_push($productos, [

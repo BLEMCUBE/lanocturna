@@ -31,18 +31,18 @@ class MLReclamoCollection extends ResourceCollection
 
 				$comprador = app(OrdenService::class)->compradorPorOrdenId($r->orden_id);
 				$orden = MLOrden::where('orden_id', $r->orden_id)
-					->select('orden_id', 'payload', 'item_ids','status')->first();
+					->select('orden_id', 'payload', 'item_id','status')->first();
 
 				$reclamo = MLReclamo::where('reclamo_id', $r->reclamo_id)
 				->with('mensajes')
-				->select('reclamo_id', 'motivos', 'payload', 'reputacion')->first();
+				->select('reclamo_id', 'motivos', 'payload','detalle', 'reputacion')->first();
 
 				$payload = $reclamo->payload;
 				$order_items = $orden->payload['order_items'];
 
 				if (!is_null($order_items)) {
 					foreach ($order_items as $key => $it) {
-						$ii = app(ItemService::class)->detalle($orden->item_ids[0], false);
+						$ii = app(ItemService::class)->detalle($orden->item_id, false);
 						if (!empty($ii)) {
 							array_push($productos, [
 								"titulo" => $it['item']['title'],
@@ -60,10 +60,13 @@ class MLReclamoCollection extends ResourceCollection
 					'comprador' => $comprador,
 					'venta_estado'=>$orden->status,
 					'productos' => $productos,
+					/*
 					'motivo' => MercadoLibreClaimHelper::buildReason(
 						$reclamo->motivos['name']??null,
 						$reclamo->motivos['detail']??null
 					),
+					*/
+					'motivo'=>$reclamo['detalle']??[],
 					'espera'=> app(ReclamoService::class)->waitingForByMessages($reclamo)
 				];
 

@@ -10,8 +10,6 @@ use App\Models\MLReclamoMensaje;
 use App\Traits\BaseMLService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
-use App\Helpers\MercadoLibreClaimHelper;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class ReclamoService
@@ -52,6 +50,7 @@ class ReclamoService
 			]
 		);
 		// consultar orden por por orden_id
+
 		if ($item['resource'] == 'order') {
 			$exist = MLOrden::where('orden_id', '=', $item['resource_id'])->first();
 			if ($exist === null) {
@@ -69,17 +68,18 @@ class ReclamoService
 		}
 
 		//detalle
-		$detalle = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/' . $item['id'] . '/detail', $meli_user_id);
-		if ($detalle['success']) {
-			$reclamo = MLReclamo::updateOrCreate(
+		$det = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/' . $item['id'] . '/detail', $meli_user_id);
+		if ($det['success']) {
+			$det = MLReclamo::updateOrCreate(
 				['reclamo_id' => $item['id']],
 				[
-					'detalle'     => $detalle['body'],
+					'detalle'     => $det['body'],
 				]
 			);
 		}
 
 		//motivo
+		/*
 		$motivos = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/reasons/' . $item['reason_id'], $meli_user_id);
 		if ($motivos['success']) {
 			$reclamo = MLReclamo::updateOrCreate(
@@ -89,6 +89,75 @@ class ReclamoService
 				]
 			);
 		}
+		*/
+
+		//reputacion
+		$reputacion = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/' . $item['id'] . '/affects-reputation', $meli_user_id);
+		if ($reputacion['success']) {
+			$reclamo = MLReclamo::updateOrCreate(
+				['reclamo_id' => $item['id']],
+				[
+					'reputacion'     => $reputacion['body'],
+				]
+			);
+		}
+
+		//mensajes
+		$this->mensajes($item['id'], $clientId);
+
+		return $reclamo;
+	}
+	public function updatedLast($item, $clientId)
+	{
+		$this->forClient($clientId);
+		$meli_user_id = $this->usuarioMeliId();
+		if (!$meli_user_id) return;
+
+		// Guardar reclamo
+		$reclamo = MLReclamo::updateOrCreate(
+			['reclamo_id' => $item['id']],
+			[
+				'meli_user_id'   => $this->clienteId(),
+				'reclamo_id' => $item['id'],
+				'resource'     => $item['resource'] ?? null,
+				'type'     => $item['type'] ?? null,
+				'stage'     => $item['stage'] ?? null,
+				'resource_id'    => $item['resource_id'] ?? null,
+				'reason'   => $item['resolution']['reason'] ?? null,
+				'status'      => $item['status'] ?? 'opened',
+				'reason_id'   => $item['reason_id'] ?? null,
+				'date_created'     =>  $item['date_created'] ?? null,
+				'last_updated'     =>  $item['last_updated'] ?? null,
+				'payload'     => $item,
+			]
+		);
+
+
+
+
+		//detalle
+		$det = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/' . $item['id'] . '/detail', $meli_user_id);
+		if ($det['success']) {
+			$det = MLReclamo::updateOrCreate(
+				['reclamo_id' => $item['id']],
+				[
+					'detalle'     => $det['body'],
+				]
+			);
+		}
+
+		//motivo
+		/*
+		$motivos = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/reasons/' . $item['reason_id'], $meli_user_id);
+		if ($motivos['success']) {
+			$reclamo = MLReclamo::updateOrCreate(
+				['reclamo_id' => $item['id']],
+				[
+					'motivos'     => $motivos['body'],
+				]
+			);
+		}
+		*/
 
 		//reputacion
 		$reputacion = $this->mlForClient()->apiGetDos('/post-purchase/v1/claims/' . $item['id'] . '/affects-reputation', $meli_user_id);
@@ -141,6 +210,7 @@ class ReclamoService
 		$resource = $payload['resource'] ?? null;
 		$userId   = $payload['user_id'] ?? null;
 		$coleccion = new Collection($payload['actions']);
+		$acciones = implode(',', $payload['actions']);
 		if (!$resource || !$userId) return;
 		if ($coleccion->contains('claims')) {
 			$aact = $coleccion->first(function ($value) {
@@ -164,7 +234,7 @@ class ReclamoService
 						'claims_id' => $response['body']['id']
 					]);
 				}
-				$this->ml->actualizar($resource);
+				$this->ml->actualizar($resource,$acciones);
 				break;
 			case 'claims_actions':
 				$racciones = $this->mlForClient()->apiGetDos($resource, $userId);
@@ -177,7 +247,7 @@ class ReclamoService
 						'claims_id' => $returnValue
 					]);
 				}
-				$this->ml->actualizar($resource);
+				$this->ml->actualizar($resource,$acciones);
 
 				break;
 		}
@@ -204,27 +274,6 @@ class ReclamoService
 			];
 		}
 
-		return $datos;
-	}
-	public function getSinLeerLocal2()
-	{
-		$datos = [];
-		$clientes = MLApp::with('usuario')->whereHas('usuario')->get();
-
-		foreach ($clientes as $key => $value) {
-			$query = MLReclamo::select('status', 'meli_user_id', 'payload')
-				->where('meli_user_id', $value['app_id'])
-				->with('mensajes')
-				->where('status', 'opened')
-				->get();
-			$filtrados = $query->filter(function ($reclamo) {
-				return $this->waitingFor($reclamo) !== null;
-			});
-			array_push($datos, [
-				'client_id' => $value['app_id'],
-				'cantidad' => $filtrados->count()
-			]);
-		}
 		return $datos;
 	}
 
@@ -315,6 +364,75 @@ class ReclamoService
 		return null;
 	}
 
+	private function processClaimActions(array $claim): array
+	{
+		$actions = [];
+		$deadline = null;
+		$hasMandatoryAction = false;
+
+		foreach ($claim['players'] as $player) {
+			if ($player['role'] === 'respondent' && $player['type'] === 'seller') {
+				foreach ($player['available_actions'] as $actionData) {
+					$action = $actionData['action'];
+
+					// Guardar deadline si existe
+					if ($action === 'send_message_to_complainant' && $actionData['due_date']) {
+						$deadline = $actionData['due_date'];
+						$hasMandatoryAction = $actionData['mandatory'];
+					}
+
+					// Filtrar acciones para mostrar (como en la imagen)
+					if (in_array($action, ['allow_partial_refund', 'refund', 'open_dispute'])) {
+						$actions[] = [
+							'action' => $action,
+							'label' => $this->getActionLabel($action),
+							'due_date' => $actionData['due_date'],
+							'mandatory' => $actionData['mandatory'],
+						];
+					}
+					$this->sortActions($actions);
+				}
+				break;
+			}
+		}
+
+		return [
+			'display_actions' => $actions, // Las 3 que se muestran
+			'deadline' => $deadline,
+			'has_mandatory_action' => $hasMandatoryAction,
+			'mandatory_action' => 'send_message_to_complainant',
+		];
+	}
+
+	private function sortActions(array &$actions): void
+	{
+		$order = [
+			'allow_partial_refund' => 1,
+			'refund' => 2,
+			'open_dispute' => 3,
+			'send_message_to_complainant' => 4,
+			'allow_return' => 5
+		];
+
+		usort($actions, function ($a, $b) use ($order) {
+			return ($order[$a['action']] ?? 999) <=> ($order[$b['action']] ?? 999);
+		});
+	}
+
+	private function getActionLabel(string $action): string
+	{
+		$labels = [
+			'allow_partial_refund' => 'Elegir monto a reembolsar',
+			'refund' => 'Ofrecer devolución',
+			'open_dispute' => 'Contactar a Mercado Libre',
+			'send_message_to_complainant' => 'Responder al comprador',
+			'allow_return' => 'Permitir devolución',
+		];
+
+
+		return $labels[$action] ?? $action;
+	}
+
 	public function mensajesDetalleMejorado($reclamoId)
 	{
 		$reclamo = MLReclamo::where('reclamo_id', $reclamoId)
@@ -366,7 +484,7 @@ class ReclamoService
 				\Carbon\Carbon::parse($m["fecha"])->format("d/m/Y")
 			)
 			->toArray();
-
+		$detReclamo = $this->processClaimActions($reclamo['payload']);
 		// 4) Estructura final
 		return [
 			"id"                    => $reclamoId,
@@ -380,12 +498,17 @@ class ReclamoService
 				"last_name"  => $venta_payload['buyer']['last_name'] ?? '',
 				"seller"  => $venta_payload['seller']['id'] ?? ''
 			],
-			'motivo' => MercadoLibreClaimHelper::buildReason(
+
+			/*'motivo' => MercadoLibreClaimHelper::buildReason(
 				$reclamo->motivos['name'] ?? '',
 				$reclamo->motivos['detail']
-			),
-			'espera' => app(ReclamoService::class)->waitingFor($reclamo),
+			),*/
+			'motivo'=>$reclamo['detalle']??[],
 			"compra"   => $productos,
+			'displayActions' => $detReclamo['display_actions'],
+			'deadline' => $detReclamo['deadline'],
+			'hasMandatoryAction' => $detReclamo['has_mandatory_action'],
+			'mandatoryAction' => $detReclamo['mandatory_action'],
 			"mensajes" => $mensajes
 		];
 	}
@@ -472,47 +595,6 @@ class ReclamoService
 			]);
 
 			throw new \Exception($response->json('message') ?? 'Error al enviar mensaje del reclamo');
-		}
-
-		return $response->json();
-	}
-
-	public function sendMessageWithAttachments2(
-		$clientId,
-		int $claimId,
-		string $message,
-		array $attachmentIds = []
-	) {
-		$cliente = MLApp::with('usuario')
-			->where('app_id', $clientId)
-			->first();
-		$ml = app(MercadoLibreService::class)->forClient($clientId);
-		$token = $ml->getAccessToken($cliente->usuario->meli_user_id);
-
-		$payload = [
-			'receiver_role' => 'complainant',
-			'message' => $message,
-		];
-
-		if (!empty($attachmentIds)) {
-			$payload['attachments'] = collect($attachmentIds)
-				->map(fn($id) => ['id' => $id])
-				->values()
-				->toArray();
-		}
-
-		$response = Http::withToken($token)
-			->post("https://api.mercadolibre.com/post-purchase/v1/claims/{$claimId}/actions/send-message", $payload);
-
-		if ($response->failed()) {
-			Log::error('Error enviando mensaje reclamo ML', [
-				'claim_id' => $claimId,
-				'payload' => $payload,
-
-				'error' => $response->body()
-			]);
-
-			throw new \Exception('Error al enviar mensaje del reclamo');
 		}
 
 		return $response->json();

@@ -31,7 +31,7 @@ class DetalleOrdenJob implements ShouldQueue
 		return [10, 30, 60, 120, 300];
 	}
 
-	public function __construct($orderId,$clientId,$userId)
+	public function __construct($orderId, $clientId, $userId)
 	{
 		$this->orderId = $orderId;
 		$this->clientId = $clientId;
@@ -40,26 +40,20 @@ class DetalleOrdenJob implements ShouldQueue
 
 	public function handle()
 	{
-		$orden2 = MLOrden::where('orden_id', $this->orderId)->first();
-		if (is_null($orden2)) {
+		$ml = app(MercadoLibreService::class)->forClient($this->clientId);
 
+		// Llamada a la API
+		$response = $ml->apiGetDos("/orders/{$this->orderId}", $this->userId);
 
-				$ml = app(MercadoLibreService::class)->forClient($this->clientId);
-
-				// Llamada a la API
-				$response = $ml->apiGetDos("/orders/{$this->orderId}", $this->userId);
-
-				if (!$response['success']) {
-					// Lanzamos excepción para forzar reintento
-					throw new \Exception("Error ML ({$response['status_code']}): " . json_encode($response['body']));
-				}
-
-				$order = $response['body'];
-
-				// Guardamos o actualizamos la venta
-				app(OrdenService::class)->updateOrCreate($order,$this->clientId);
-
+		if (!$response['success']) {
+			// Lanzamos excepción para forzar reintento
+			throw new \Exception("Error ML2 ({$response['status_code']}): " . json_encode($response['body']));
 		}
+
+		$order = $response['body'];
+
+		// Guardamos o actualizamos la venta
+		app(OrdenService::class)->updateOrCreate($order, $this->clientId);
 	}
 
 	public function failed(Throwable $exception)

@@ -249,7 +249,7 @@ const filtrado = (value) => {
 									</div>
 									<div class="ml-6">
 										<i class="fa-solid fa-circle-exclamation"></i>
-										{{ item.motivo }}
+										{{ item.motivo.problem??'' }}
 									</div>
 								</div>
 

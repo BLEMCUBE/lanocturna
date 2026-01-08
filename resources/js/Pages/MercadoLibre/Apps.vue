@@ -148,21 +148,21 @@ const conectar = (id) => {
 						<template #body="slotProps">
 							<div class="flex justify-end justify-items-center ">
 								<span v-if="slotProps.data.usuario == 0"
-									class="mx-2 inline-block rounded bg-green-700 px-2 py-1 text-xs font-medium text-white mb-0 hover:bg-green-600">
-									<button @click.prevent="conectar(slotProps.data.client_id)">Conectar </button>
+									class="mx-2 inline-block rounded bg-green-700 p-2 text-xs font-medium text-white mb-0 hover:bg-green-600">
+									<button class="h-5" @click.prevent="conectar(slotProps.data.client_id)">Conectar </button>
 								</span>
 								<div class="flex" v-else>
 
 
 									<span
-										class="mx-2  rounded bg-red-700 px-1 py-1 text-xs font-normal text-white mb-0 hover:bg-red-600">
-										<button class="h-8"
+										class="mx-2  rounded bg-red-700 p-2 text-xs font-medium text-white mb-0 hover:bg-red-600">
+										<button class="h-5 font-semibold"
 											@click.prevent="desconectar(slotProps.data.id, slotProps.data.nombre)">Desconectar
 										</button>
 									</span>
 									<span v-if="slotProps.data.is_expired==1"
-										class="mx-2 inline-block rounded bg-blue-700 p-1 py-1 text-xs font-normal text-white mb-0 hover:bg-blue-600">
-										<button
+										class="mx-2 inline-block rounded bg-blue-700 p-2 text-xs font-medium text-white mb-0 hover:bg-blue-600">
+										<button class="h-5"
 											@click.prevent="refreshToken(slotProps.data.id)">Refrescar token
 										</button>
 									</span>

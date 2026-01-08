@@ -314,6 +314,15 @@ class ImportacionController extends Controller
 				}
 			}
 
+			//actualizar stock en web
+			foreach ($importacion->importaciones_detalles as $detalle) {
+				$codigo = $detalle->sku;
+				$producto = Producto::where('origen', '=', $codigo)
+					->first();
+				if (is_null($producto)) continue;
+				WCActualizarStockJob::dispatch($producto->origen, $producto->stock)->onQueue('meli');
+			}
+
 			$importacion->nro_carpeta = $request->input('nro_carpeta');
 			$importacion->nro_contenedor = $request->input('nro_contenedor');
 			$importacion->estado = $request->input('estado');

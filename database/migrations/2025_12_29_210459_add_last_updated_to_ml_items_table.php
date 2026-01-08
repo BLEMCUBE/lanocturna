@@ -11,13 +11,8 @@ return new class extends Migration
 	 */
 	public function up(): void
 	{
-		Schema::create('respuestas_rapidas', function (Blueprint $table) {
-			$table->id();
-			$table->string('titulo');
-			$table->text('descripcion');
-			$table->string('color');
-			$table->string('tipo')->nullable();
-			$table->timestamps();
+		Schema::table('ml_items', function (Blueprint $table) {
+			$table->timestamp('last_updated')->nullable()->after('item_id');
 		});
 	}
 
@@ -26,6 +21,10 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists('respuestas_rapidas');
+		Schema::table('ml_items', function (Blueprint $table) {
+			$table->dropColumn([
+				'last_updated'
+			]);
+		});
 	}
 };

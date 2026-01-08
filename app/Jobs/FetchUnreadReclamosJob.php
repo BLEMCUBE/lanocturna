@@ -21,10 +21,6 @@ class FetchUnreadReclamosJob implements ShouldQueue
 	public ?string $meliUserId;
 	public ?string $resourceId;
 
-	/**
-	 * Constructor flexible: permite jobs con datos (webhook)
-	 * o sin datos (cron scheduler)
-	 */
 	public function __construct(
 		?string $clientId = null,
 		?string $meliUserId = null,
@@ -41,42 +37,91 @@ class FetchUnreadReclamosJob implements ShouldQueue
 
 		$ml = app(MercadoLibreService::class)->forClient($this->clientId);
 
-		$oldRelamos = MLReclamo::where('status', '!=', 'closed')
-		->where('meli_user_id', '=', $this->clientId)
-		->get();
+		// Obtener reclamos activos
+		$oldReclamos = MLReclamo::where('status', '!=', 'closed')
+			->where('meli_user_id', '=', $this->clientId)
+			->get();
 
-		if ($oldRelamos === null) return;
+		if ($oldReclamos->isEmpty()) return;
 
-		foreach ($oldRelamos as $key => $value) {
-			$oldUpdated = $value['last_updated'];
-			if ($oldUpdated === null) continue;
-			$response = $ml->apiGetDos('/post-purchase/v1/claims/' . $value['reclamo_id'], $this->meliUserId);
+		foreach ($oldReclamos as $reclamo) {
+			$oldUpdated = Carbon::parse($reclamo->last_updated)->format('Y-m-d H:i');
+			if ($oldUpdated === null) {
+				// Si no hay fecha, actualizar siempre
+				$this->fetchAndUpdateReclamo($ml, $reclamo->reclamo_id);
+				continue;
+			}
 
+			// Obtener información actualizada del reclamo
+			$response = $ml->apiGetDos('/post-purchase/v1/claims/' . $reclamo->reclamo_id, $this->meliUserId);
 			$item = $response['body'] ?? null;
-			if ($item === null) continue;
-			//if ($item['last_updated']  !== $oldUpdated) {
 
-				Log::info("claims", ['data' => $item]);
-				// Guardar reclamo
-				MLReclamo::updateOrCreate(
-					['reclamo_id' => $item['id']],
-					[
-						'meli_user_id'   => $this->clientId,
-						'reclamo_id' => $item['id'],
-						'resource'     => $item['resource'] ?? null,
-						'type'     => $item['type'] ?? null,
-						'stage'     => $item['stage'] ?? null,
-						'resource_id'    => $item['resource_id'] ?? null,
-						'reason'   => $item['resolution']['reason'] ?? null,
-						'status'      => $item['status'] ?? 'opened',
-						'reason_id'   => $item['reason_id'] ?? null,
-						'date_created'     =>  $item['date_created'] ?? null,
-						'last_updated'     =>  $item['last_updated'] ?? null,
-						'payload'     => $item,
-					]
-				);
-			//}
-			app(ReclamoService::class)->mensajes($item['id'], $this->clientId);
+			if ($item === null) continue;
+
+			// Comparar fechas de actualización
+			$newLastUpdated = Carbon::parse($item['last_updated'])->format('Y-m-d H:i') ?? null;
+
+			if ($this->shouldUpdate($oldUpdated, $newLastUpdated)) {
+				Log::info("Actualizando reclamo {$reclamo->reclamo_id}", [
+					'old' => $oldUpdated,
+					'new' => $newLastUpdated
+				]);
+
+
+				app(ReclamoService::class)->updateOrCreate($item, $this->clientId);
+			} else {
+				/*
+				Log::debug("Reclamo {$reclamo->reclamo_id} no requiere actualización", [
+					'last_updated_bd' => $oldUpdated,
+					'last_updated_api' => $newLastUpdated
+				]);*/
+			}
+
+			// Opcional: Actualizar mensajes solo si hubo cambios
+			// app(ReclamoService::class)->mensajes($item['id'], $this->clientId);
+		}
+	}
+
+	/**
+	 * Determina si se debe actualizar el reclamo
+	 */
+	private function shouldUpdate(?string $oldUpdated, ?string $newLastUpdated): bool
+	{
+		// Si no hay fecha nueva, no actualizar
+		if ($newLastUpdated === null) return false;
+
+		// Si no había fecha vieja, actualizar
+		if ($oldUpdated === null) return true;
+
+		// Convertir a objetos Carbon para comparación precisa
+		try {
+			$oldDate = Carbon::parse($oldUpdated);
+			$newDate = Carbon::parse($newLastUpdated);
+
+			// Actualizar solo si la fecha nueva es más reciente
+			return $newDate->greaterThan($oldDate);
+		} catch (\Exception $e) {
+			Log::error("Error al comparar fechas", [
+				'old' => $oldUpdated,
+				'new' => $newLastUpdated,
+				'error' => $e->getMessage()
+			]);
+
+			// Si hay error en el parseo, actualizar por precaución
+			return true;
+		}
+	}
+
+	/**
+	 * Método auxiliar para obtener y actualizar un reclamo
+	 */
+	private function fetchAndUpdateReclamo($ml, string $reclamoId): void
+	{
+		$response = $ml->apiGetDos('/post-purchase/v1/claims/' . $reclamoId, $this->meliUserId);
+		$item = $response['body'] ?? null;
+
+		if ($item !== null) {
+			app(ReclamoService::class)->updateOrCreate($item, $this->clientId);
 		}
 	}
 }
