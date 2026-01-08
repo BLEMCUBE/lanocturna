@@ -27,7 +27,7 @@ class MLClient extends Model
 		return $this->belongsTo(MLApp::class, 'app_id', 'id');
 	}
 
-	/** Relación con reclamos */
+	/** Relación con reclamos  */
 	public function reclamos()
 	{
 		return $this->hasMany(MLReclamo::class, 'meli_user_id', 'meli_user_id');
