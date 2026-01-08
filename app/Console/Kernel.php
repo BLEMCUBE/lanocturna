@@ -12,19 +12,21 @@ class Kernel extends ConsoleKernel
 	 */
 	protected function schedule(Schedule $schedule): void
 	{
-		$schedule->command('datos:eliminar-notificaciones-antiguas')->dailyAt('01:00')
+		$schedule->command('datos:eliminar-notificaciones-antiguas')->dailyAt('00:15')
 		->withoutOverlapping()
         ->onOneServer();
+
 		$schedule->command('log:limpiar')->daily()
 		->withoutOverlapping()
         ->onOneServer();
+
 		$schedule->command('datos:items-paused')->everyFiveMinutes()
 		->withoutOverlapping()
         ->onOneServer();
 
-		$schedule->command('woo:consultar-skus')->dailyAt('02:00');
+		$schedule->command('woo:consultar-skus')->dailyAt('01:00');
 
-		//$schedule->command('woo:sincronizar-stock')->dailyAt('02:00');
+		$schedule->command('woo:sincronizar-stock')->dailyAt('02:00');
 
 		$schedule->job(new \App\Jobs\RunFetchPreguntasForAllClientsJob, 'meli')->everyFiveMinutes()
         ->withoutOverlapping()
