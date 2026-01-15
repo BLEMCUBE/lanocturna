@@ -23,6 +23,7 @@ use App\Http\Controllers\MercadoLibre\MLWebhookController;
 use App\Http\Controllers\MercadoLibre\PublicitadosController;
 use App\Http\Controllers\MercadoLibre\ReclamosController;
 use App\Http\Controllers\MercadoLibre\VentasController;
+use App\Http\Controllers\MercadoLibre\VendidosController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\OpcionesController;
 use App\Http\Controllers\PagoCompraController;
@@ -278,7 +279,7 @@ Route::get('/reportes-productos-stock/exportxls', [ReporteStockProductosControll
 
 //reportes Mercado Libre
 Route::get('/reportes-ml-publicidades', [PublicitadosController::class, 'index'])->name('reportes.mlpublicidad')->middleware(['auth', 'verified']);
-Route::get('/reportes-ml-ventas', [PublicitadosController::class, 'ventas'])->name('reportes.mlventas')->middleware(['auth', 'verified']);
+Route::get('/reportes-ml-ventas', [VendidosController::class, 'index'])->name('mlventas');
 
 
 //Rma -Presupuesto
@@ -458,7 +459,7 @@ Route::prefix('mercadolibre')->name('mercadolibre.')
 			Route::get('/{client_id}/detalle/{reclamo_id}', [ReclamosController::class, 'show'])->name('detalle');
 		});
 
-			//actualizaciones
+		//actualizaciones
 		Route::prefix('act')->name('act.')->group(function () {
 			Route::get('/{tipo}', [AppController::class, 'actualizar'])->name('actualizar');
 		});
