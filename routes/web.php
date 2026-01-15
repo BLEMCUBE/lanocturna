@@ -279,7 +279,7 @@ Route::get('/reportes-productos-stock/exportxls', [ReporteStockProductosControll
 
 //reportes Mercado Libre
 Route::get('/reportes-ml-publicidades', [PublicitadosController::class, 'index'])->name('reportes.mlpublicidad')->middleware(['auth', 'verified']);
-Route::get('/reportes-ml-ventas', [VendidosController::class, 'index'])->name('mlventas');
+Route::get('/reportes-ml-ventas', [VendidosController::class, 'index'])->name('reportes.mlventas')->middleware(['auth', 'verified']);
 
 
 //Rma -Presupuesto
