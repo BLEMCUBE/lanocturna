@@ -17,7 +17,7 @@ class MercadoLibrePermisos extends Seeder
         /*
         set the default permissions
         */
-        $this->permissions =  [
+        $this->permissions = [
 
             ['name' => 'mercadoLibre-apis', 'description' => 'Listado de apis mercado libre'],
             ['name' => 'mercadoLibre-preguntas', 'description' => 'Listado de preguntas mercado libre'],
@@ -25,6 +25,7 @@ class MercadoLibrePermisos extends Seeder
             ['name' => 'mercadoLibre-ventas', 'description' => 'Listado de ventas mercado libre'],
             ['name' => 'mercadoLibre-reclamos', 'description' => 'Listado de reclamos mercado libre'],
             ['name' => 'reportes-mlpublicidad', 'description' => 'Productos publicados Activos mercado libre'],
+            ['name' => 'reportes-mlventas', 'description' => 'ML Productos Vendidos'],
 
 
 
@@ -37,7 +38,7 @@ class MercadoLibrePermisos extends Seeder
         // Reset cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
 
-  		//eliminando permisos
+        //eliminando permisos
         foreach ($this->permissions as $permission) {
             Permission::where('name', $permission['name'])->delete();
         }
