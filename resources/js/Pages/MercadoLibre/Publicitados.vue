@@ -117,7 +117,6 @@ const disabledOutsideLast90Days = (date) => {
 };
 
 const rowClass = (data) => {
-	console.log(data);
 
 	if (data.ambas_tiendas>=1) {
 

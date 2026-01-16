@@ -111,18 +111,24 @@ const parsedMessages = computed(() => datos.mensajes);
 		<div class="mb-4 col-span-12   dark:border-gray-700  dark:bg-gray-800">
 			<div class="w-2/3 flex justify-between">
 				<div class=" px-5 pb-2">
-					<h5 class="text-2xl font-medium">Reclamo: </h5>
-					<p class="text-lg font-medium">#{{ datos.id }}</p>
+					<h5 class="text-2xl font-medium">Venta: </h5>
+					<p class="text-lg font-medium">#{{ datos.pack_id }}</p>
 					<p>
 						{{ datos.date_created }}
 					</p>
 				</div>
-				<span
+				<!--
+					<span
 					class=" h-8 p-2 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
 					<a :href="'https://www.mercadolibre.com.uy/ventas/' + datos.orden_id + '/detalle'" target="_blank"
+					class="py-auto">Ver ficha de venta</a>
+				</span>
+				-->
+				<span
+					class=" h-8 p-2 rounded bg-green-600 flex justify-center items-center text-base font-semibold text-white mr-1 hover:bg-green-600">
+					<a :href="'https://www.mercadolibre.com.uy/ventas/nueva/mensajeria/' + datos.pack_id + '/reclamo/'+datos.id" target="_blank"
 						class="py-auto">Ver ficha de venta</a>
 				</span>
-
 			</div>
 
 			<div class="grid grid-cols-12 gap-6">
@@ -241,6 +247,10 @@ const parsedMessages = computed(() => datos.mensajes);
 							</template>
 							<div>
 								<p>
+									<b>Reclamo:   </b>
+									#{{ datos.id }}
+								</p>
+								<p>
 									<b>Tipo: </b>
 									Reclamo
 								</p>
@@ -295,7 +305,7 @@ const parsedMessages = computed(() => datos.mensajes);
 					<div class="bg-white rounded-xl shadow p-5 overflow-y-auto">
 						<h5 class="text-lg font-semibold mb-4">Respuestas rápidas</h5>
 						<div class="hidden sm:block flex-wrap gap-2 mb-4">
-							<ModalRepuestaRapidas @add-texto="setRespuesta" tipo="reclamo">
+							<ModalRepuestaRapidas :app-id="client_id" @add-texto="setRespuesta" tipo="reclamo">
 							</ModalRepuestaRapidas>
 						</div>
 

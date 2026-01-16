@@ -274,7 +274,7 @@ const descargar = (attachment) => {
 					<div class="bg-white rounded-xl shadow p-5 overflow-y-auto">
 						<h5 class="text-lg font-semibold mb-4">Respuestas rápidas</h5>
 						<div class="hidden sm:block flex-wrap gap-2 mb-4">
-							<ModalRepuestaRapidas @add-texto="setRespuesta" tipo="mensaje">
+							<ModalRepuestaRapidas :app-id="client_id" @add-texto="setRespuesta" tipo="mensaje">
 							</ModalRepuestaRapidas>
 						</div>
 

@@ -340,7 +340,7 @@ const setTexto = (index) => {
 					<div class="bg-white rounded-xl shadow p-5 fixed overflow-y-auto">
 						<h5 class="text-lg font-semibold mb-4">Respuestas rápidas</h5>
 						<div class="hidden sm:block flex-wrap gap-2 mb-4">
-							<ModalRepuestaRapidas @add-texto="setRespuesta" tipo="pregunta">
+							<ModalRepuestaRapidas @add-texto="setRespuesta" :app-id="client_id" tipo="pregunta">
 							</ModalRepuestaRapidas>
 						</div>
 						<!--

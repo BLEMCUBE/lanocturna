@@ -19,114 +19,58 @@ class ReclamosController extends Controller
 
 	public function index($client_id, Request $request)
 	{
-		// Obtener cliente y usuario
 		$cliente = MLApp::with('usuario')
 			->where('app_id', $client_id)
-			->first();
+			->firstOrFail();
 
-
-		if (!$cliente || !$cliente->usuario) {
-			abort(404, 'Cliente no encontrado');
-		}
-
-
-		// Subconsultas ordenes
-		$query1 = DB::table('ml_reclamos as mlr')
+		// Ordenes
+		$ordenes = DB::table('ml_reclamos as mlr')
 			->where('mlr.meli_user_id', $client_id)
 			->where('mlr.resource', 'order')
+			->whereNotNull('mlo.pack_id')
 			->join('ml_ordenes as mlo', 'mlo.orden_id', '=', 'mlr.resource_id')
-
-			->selectRaw("mlo.orden_id as orden_id,mlr.reclamo_id as reclamo_id,mlr.resource_id as resource_id,mlr.status as status,mlo.envio_id,
-			DATE_FORMAT(
-  STR_TO_DATE(
-    SUBSTRING_INDEX(
-      JSON_UNQUOTE(JSON_EXTRACT(mlr.payload, '$.date_created')),
-      '.',
-      1
-    ),
-    '%Y-%m-%dT%H:%i:%s'
-  ),
-   '%Y-%m-%d %H:%i:%s'
-) AS fecha_orden");
+			->selectRaw($this->baseSelect());
 
 
-		//envios
-		$query2 = DB::table('ml_reclamos as mlr')
+		// Envíos
+		$envios = DB::table('ml_reclamos as mlr')
 			->where('mlr.meli_user_id', $client_id)
 			->where('mlr.resource', 'shipment')
+			->whereNotNull('mlo.pack_id')
 			->join('ml_ordenes as mlo', 'mlo.envio_id', '=', 'mlr.resource_id')
+			->selectRaw($this->baseSelect());
 
-			->selectRaw("mlo.orden_id as orden_id,mlr.reclamo_id as reclamo_id,mlr.resource_id as resource_id,mlr.status as status,mlo.envio_id,
-			DATE_FORMAT(
-  STR_TO_DATE(
-    SUBSTRING_INDEX(
-      JSON_UNQUOTE(JSON_EXTRACT(mlr.payload, '$.date_created')),
-      '.',
-      1
-    ),
-    '%Y-%m-%dT%H:%i:%s'
-  ),
-   '%Y-%m-%d %H:%i:%s'
-) AS fecha_orden");
+		// UNION
+		$query = $ordenes->unionAll($envios);
 
+		// Subquery para poder filtrar y paginar
+		$reclamos = DB::query()->fromSub($query, 'r');
 
-
-		/** @var \Illuminate\Support\Collection<int, object> $rows */
-		// Ejecutar union y traer resultados
-		$rows = collect($query1->union($query2)->get());
-
-		// Filtrar estado
+		// 🔎 Filtros SQL
 		if ($request->filled('estado')) {
-			$estado = $request->estado;
-			$rows = $rows->filter(fn($r) => $r->status === $estado);
+			$reclamos->where('status', $request->estado);
 		}
 
-		// Filtrar rango de fechas
 		if ($request->filled(['inicio', 'fin'])) {
-			$inicio = $request->inicio . ' 00:00:00';
-			$fin = $request->fin . ' 23:59:59';
-			$rows = $rows->filter(fn($r) => $r->fecha_orden >= $inicio && $r->fecha_orden <= $fin);
+			$reclamos->whereBetween('fecha_orden', [
+				$request->inicio . ' 00:00:00',
+				$request->fin . ' 23:59:59'
+			]);
 		}
 
-		// Ordenar por fecha descendente
-		$rows =
-			$rows
-			->sortByDesc(function ($row) {
-				return strtotime($row->fecha_orden);
-			})
-			/*->sortByDesc(function ($row) {
-				return $row->status === 'opened';
-			})*/
-			->values();
-
-		// Filtrar búsqueda
 		if ($request->filled('buscar')) {
-			$buscar = strtolower($request->buscar);
-
-			$rows = $rows->filter(function ($r) use ($buscar) {
-				// Convertimos a string y lowercase para evitar errores y hacer búsqueda insensible a mayúsculas
-				return str_contains(strtolower((string) $r->resource_id), $buscar);
-			})->values(); // Reindexa la collection
+			$reclamos->where('pack_id', 'like', '%' . $request->buscar . '%');
 		}
 
-		// Paginar manualmente
-		$perPage = 20;
-		$page = $request->input('page', 1);
-		$total = $rows->count();
-		$paginated = new LengthAwarePaginator(
-			$rows->forPage($page, $perPage),
-			$total,
-			$perPage,
-			$page,
-			['path' => $request->url(), 'query' => $request->query()]
-		);
+		// Ordenar
+		$reclamos->orderByDesc('fecha_orden');
 
-		// Enviar a colección de recursos (si usas MLVentaCollection)
-		$datosFinal = new MLReclamoCollection($paginated);
+		// Paginar en DB ✅
+		$datos = $reclamos->paginate(20)->withQueryString();
 
 		return Inertia::render('MercadoLibre/Reclamos', [
 			'client_id' => $client_id,
-			'datos' => $datosFinal,
+			'datos' => new MLReclamoCollection($datos),
 			'tienda' => app(MLAppService::class)->getNombre($client_id),
 			'filtro' => $request->only(['buscar', 'inicio', 'fin', 'estado']),
 		]);
@@ -224,6 +168,27 @@ class ReclamosController extends Controller
 
 			$attachments = collect($uploaded)->pluck('id')->toArray();
 		}
-
+	}
+	private function baseSelect()
+	{
+		return "
+        mlo.orden_id as orden_id,
+        mlo.pack_id as pack_id,
+        mlr.reclamo_id as reclamo_id,
+        mlr.resource_id as resource_id,
+        mlr.status as status,
+        mlo.envio_id as envio_id,
+        DATE_FORMAT(
+            STR_TO_DATE(
+                SUBSTRING_INDEX(
+                    JSON_UNQUOTE(JSON_EXTRACT(mlr.payload, '$.date_created')),
+                    '.',
+                    1
+                ),
+                '%Y-%m-%dT%H:%i:%s'
+            ),
+            '%Y-%m-%d %H:%i:%s'
+        ) AS fecha_orden
+    ";
 	}
 }

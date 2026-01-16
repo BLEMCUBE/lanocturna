@@ -108,7 +108,7 @@ const textEspera = (estado) => {
 }
 
 onMounted(() => {
- reclamos.value = [...props.datos.data].sort((a, b) => {
+ /*reclamos.value = [...props.datos.data].sort((a, b) => {
     const prioridad = (r) => {
       if (r.espera === 'seller') return 1
       if (r.espera === 'buyer') return 2
@@ -116,7 +116,7 @@ onMounted(() => {
     }
 
     return prioridad(a) - prioridad(b)
-  })
+  })*/
 })
 
 const funcBuscar = () => {
@@ -212,24 +212,24 @@ const filtrado = (value) => {
 					</div>
 
 				</div>
-
 				<!-- Card with list of reclamos -->
 				<div class="bg-white  shadow-md border border-gray-300 overflow-hidden">
 					<!-- Reclamos -->
 
-					<div v-for="(item, index) in reclamos"
+					<div v-for="(item, index) in datos.data"
 						class="flex flex-col md:flex-row items-stretch border-b border-dashed border-gray-300">
 
-						<!-- left status strip -->
+						<!-- left status strip
 						<div class="w-2 hidden md:block" :class="textEspera(item.espera)[2]">
 						</div>
+						-->
 						<!-- content -->
 						<div class="flex-1 p-4">
 							<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
 								<!-- left column: id, title, meta -->
 								<div class="flex-1">
-									<div class="ml-6 my-1 text-lg text-gray-900">Reclamo <span
-											class="font-semibold text-gray-800">#{{ item.reclamo_id }}</span>
+									<div class="ml-6 my-1 text-lg text-gray-900"><span
+											class="font-semibold text-gray-800">#{{ item.pack_id }}</span>
 											 <span v-if="item.estado!=='closed'"
 											class="ml-3 px-2 py-0.5 text-[15px] rounded font-semibold"
 											:class="textEspera(item.espera)[1]">{{ textEspera(item.espera)[0] }}</span>

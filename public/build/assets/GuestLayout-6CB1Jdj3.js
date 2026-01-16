@@ -1,0 +1,1 @@
+import{_ as t}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{e as s,f as r,k as o}from"./@vue-BG0wrCoO.js";const c={},n={class:"h-screen flex flex-col sm:justify-center items-center pt-0 mx-6 sm:pt-0 bg-gray-100"};function a(e,f){return r(),s("div",n,[o(e.$slots,"default")])}const _=t(c,[["render",a]]);export{_ as G};

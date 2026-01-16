@@ -53,6 +53,7 @@
         "vue-debounce": "^5.0.1",
         "vue-router": "^4.2.4",
         "vue-template-compiler": "^0.1.0",
-        "vue3-apexcharts": "^1.4.4"
+        "vue3-apexcharts": "^1.4.4",
+        "ziggy-js": "^2.6.0"
     }
 }

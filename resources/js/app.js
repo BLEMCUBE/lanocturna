@@ -13,7 +13,7 @@ import PrimeVue from 'primevue/config';
 import Tailwind_PT from "@/passthrough/tailwind";
 import vueDebounce from 'vue-debounce'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { ZiggyVue } from 'ziggy-js';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import VueApexCharts from "vue3-apexcharts";

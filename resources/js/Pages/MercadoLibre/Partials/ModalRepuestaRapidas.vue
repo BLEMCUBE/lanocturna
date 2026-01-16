@@ -19,6 +19,9 @@ const props = defineProps({
 	tipo: {
 		type: String
 	},
+	appId: {
+		type: String
+	},
 
 });
 const form = useForm({
@@ -79,7 +82,7 @@ const agregarEtiqueta = () => {
 				{
 					id: null,
 					titulo: etiqueta.value,
-					tipo:props.tipo,
+					tipo: props.tipo,
 					descripcion: descripcion.value,
 					color: color.value,
 				}
@@ -119,16 +122,15 @@ onMounted(() => {
 
 const dataEdit = () => {
 
-	axios.get(route(ruta + '.index',props.tipo))
+	axios.get(route(ruta + '.index', {tipo:props.tipo,app_id:props.appId}))
 		.then(res => {
-
 			respuestas.value = res.data.respuestas
 			var firma = res.data.firma
 			var saludo = res.data.saludo
 			form.etiquetas = respuestas.value.map(el => ({
 				id: el.id,
 				titulo: el.titulo,
-				tipo:el.tipo,
+				tipo: el.tipo,
 				descripcion: el.descripcion,
 				color: el.color,
 			}));
@@ -155,9 +157,9 @@ const submit = () => {
 		onSuccess: () => {
 			isShowModal.value = false
 			show('success', 'Mensaje', 'Se ha editado')
-			if(props.tipo=='pregunta'){
+			if (props.tipo == 'pregunta') {
 				setTimeout(() => {
-					router.get(route(mlruta + '.preguntas.lista'));
+					router.get(route(mlruta + '.preguntas.lista',props.appId));
 				}, 500);
 			}
 			dataEdit()
@@ -191,7 +193,6 @@ const show = (tipo, titulo, mensaje) => {
 			class="w-full bg-gray-200 hover:bg-gray-300 text-xs p-2 rounded mt-3 flex items-center justify-center gap-2">
 			<i class="fas fa-pen"></i> Modificar respuestas rápidas
 		</button>
-
 		<Dialog v-model:visible="isShowModal" modal :header="titulo" :style="{ width: '70rem' }"
 			:breakpoints="{ '1199px': '75vw', '575px': '90vw' }" position="top" :pt="{
 				header: {
@@ -265,7 +266,7 @@ const show = (tipo, titulo, mensaje) => {
 					</div>
 				</div>
 
-				<div class="grid grid-cols-12 gap-4 p-2 mt-3" v-if="props.tipo=='pregunta'">
+				<div class="grid grid-cols-12 gap-4 p-2 mt-3" v-if="props.tipo == 'pregunta'">
 					<div
 						class=" w-full flex flex-col items-start col-span-12 sm:col-span-6  md:col-span-6  lg:col-span-6   rounded-lg text-center">
 						<label class="px-2 text-gray-900 font-medium">Saludo inicial:</label>

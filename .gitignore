@@ -1,6 +1,7 @@
 /.phpunit.cache
 /node_modules
-
+!/public/build/
+/public/hot
 /devnocturna
 /public/storage
 /storage/*.key
@@ -19,8 +20,3 @@ yarn-error.log
 /.idea
 /.vscode
 /developer
-/vendor
-/node_modules
-.env
-.DS_Store
-storage/*.key
