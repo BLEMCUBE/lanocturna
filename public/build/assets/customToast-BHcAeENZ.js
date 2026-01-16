@@ -1,1 +1,0 @@
-import{aH as a}from"./primevue-DlS7f910.js";import{b as r}from"./@vue-BG0wrCoO.js";r({});function n(){const t=a();return{setShow:(s,o,e)=>{t.add({severity:s,summary:o,detail:e,life:3e3})}}}export{n as u};
