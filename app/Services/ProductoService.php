@@ -191,4 +191,9 @@ class ProductoService
 			return $nueva - $actual;
 		}
 	}
+
+	public function valorEnCamino($valor): int
+	{
+		return $valor > 0 ? $valor : 0;
+	}
 }
