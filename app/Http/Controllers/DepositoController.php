@@ -28,20 +28,25 @@ use Illuminate\Support\Facades\Request as Req;
 
 class DepositoController extends Controller
 {
-		public function __construct(
+	public function __construct(
 		private ProductoService $productoService
-	) {}
+	) {
+	}
 
 	public function index()
 	{
 
-		$query_depositos = DepositoLista::with(['depositos_productos' => function ($query) {
-			$query->select('id', 'sku', 'bultos', 'pcs_bulto', 'deposito_lista_id', 'cantidad_total')
-				->where('bultos', '>', 0)
-				->with(['producto' => function ($query) {
-					$query->select('id', 'origen', 'nombre', 'imagen', 'codigo_barra');
-				}]);
-		}])->select('id', 'nombre')->orderBy('nombre', 'ASC')->get();
+		$query_depositos = DepositoLista::with([
+			'depositos_productos' => function ($query) {
+				$query->select('id', 'sku', 'bultos', 'pcs_bulto', 'deposito_lista_id', 'cantidad_total')
+					->where('bultos', '>', 0)
+					->with([
+						'producto' => function ($query) {
+							$query->select('id', 'origen', 'nombre', 'imagen', 'codigo_barra');
+						}
+					]);
+			}
+		])->select('id', 'nombre')->orderBy('nombre', 'ASC')->get();
 
 
 		$depositos = [];
@@ -53,12 +58,33 @@ class DepositoController extends Controller
 
 				$pr = Producto::where('origen', $prod->sku)
 					->select('id', 'nombre', 'imagen')
-					->with(['costos_reales' => function ($query) {
-						$query->whereNot('monto', '=', 0)
-							->select('monto', 'producto_id')->orderBy('fecha', 'DESC')->limit(1)->first();
-					}])
+					->with([
+						'costos_reales' => function ($query) {
+							$query->whereNot('monto', '=', 0)
+								->select('monto', 'producto_id')->orderBy('fecha', 'DESC')->limit(1);
+						}
+					])
 					->first();
 
+				// Skip if product not found in database
+				if (empty($pr) || is_null($pr)) {
+					array_push($det_producto, [
+						"id" => $prod->id,
+						"sku" => $prod->sku,
+						"bultos" => $prod->bultos,
+						"pcs_bulto" => $prod->pcs_bulto,
+						"cantidad_total" => $prod->cantidad_total,
+						"costo_real" => 0,
+						"total" => 0,
+						"producto_id" => null,
+						"nombre" => "Producto no encontrado ({$prod->sku})",
+						"imagen" => null,
+						'deposito_lista_id' => $deposito->id
+					]);
+					continue;
+				}
+
+				$costoReal = ($pr->costos_reales && count($pr->costos_reales) > 0) ? $pr->costos_reales[0]['monto'] : 0;
 
 				array_push($det_producto, [
 					"id" => $prod->id,
@@ -66,8 +92,8 @@ class DepositoController extends Controller
 					"bultos" => $prod->bultos,
 					"pcs_bulto" => $prod->pcs_bulto,
 					"cantidad_total" => $prod->cantidad_total,
-					"costo_real" => count($pr->costos_reales) > 0 ? $pr->costos_reales[0]['monto'] : 0,
-					"total" => count($pr->costos_reales) > 0 ? $prod->cantidad_total * $pr->costos_reales[0]['monto'] : 0,
+					"costo_real" => $costoReal,
+					"total" => $prod->cantidad_total * $costoReal,
 					"producto_id" => $pr->id,
 					"nombre" => $pr->nombre,
 					"imagen" => $pr->imagen,
@@ -181,9 +207,11 @@ class DepositoController extends Controller
 			->where('id', $id)->first();
 		$importacion = Deposito::find($id);
 
-		$detalle_deposito = DepositoDetalle::with(['producto' => function ($query) {
-			$query->select('id', 'nombre', 'codigo_barra', 'origen');
-		}])->select('*')->where('deposito_id', $id)->get();
+		$detalle_deposito = DepositoDetalle::with([
+			'producto' => function ($query) {
+				$query->select('id', 'nombre', 'codigo_barra', 'origen');
+			}
+		])->select('*')->where('deposito_id', $id)->get();
 
 		$lista_productos_movidos = [];
 
@@ -223,11 +251,15 @@ class DepositoController extends Controller
 	public function showProductoModal($id)
 	{
 
-		$importacion_detalle = DepositoDetalle::with(['deposito' => function ($query) {
-			$query->select('*');
-		}])->with(['producto' => function ($query) {
-			$query->select('id', 'nombre', 'codigo_barra', 'origen');
-		}])->where('id', $id)->first();
+		$importacion_detalle = DepositoDetalle::with([
+			'deposito' => function ($query) {
+				$query->select('*');
+			}
+		])->with([
+					'producto' => function ($query) {
+						$query->select('id', 'nombre', 'codigo_barra', 'origen');
+					}
+				])->where('id', $id)->first();
 		return response()->json([
 			"importacion_detalle" => $importacion_detalle
 		]);
@@ -235,11 +267,15 @@ class DepositoController extends Controller
 	public function showCambiarProducto($id)
 	{
 
-		$deposito_detalle = DepositoProducto::with(['deposito_lista' => function ($query) {
-			$query->select('id', 'nombre');
-		}])->with(['producto' => function ($query) {
-			$query->select('id', 'origen', 'nombre');
-		}])->select('id', 'sku', 'bultos', 'pcs_bulto', 'cantidad_total', 'deposito_lista_id')->where('id', $id)->first();
+		$deposito_detalle = DepositoProducto::with([
+			'deposito_lista' => function ($query) {
+				$query->select('id', 'nombre');
+			}
+		])->with([
+					'producto' => function ($query) {
+						$query->select('id', 'origen', 'nombre');
+					}
+				])->select('id', 'sku', 'bultos', 'pcs_bulto', 'cantidad_total', 'deposito_lista_id')->where('id', $id)->first();
 
 
 		//Lista deposito_detalle
@@ -250,7 +286,7 @@ class DepositoController extends Controller
 		foreach ($lista_depo as $destino) {
 			array_push($lista_depositos, [
 				'code' => $destino->id,
-				'name' =>  $destino->nombre,
+				'name' => $destino->nombre,
 			]);
 		}
 		return response()->json([
@@ -265,16 +301,18 @@ class DepositoController extends Controller
 		$origen_id = $request->input('origen_id');
 		$detalle_productos = [];
 		foreach ($productos as $key => $producto) {
-			$deposito_detalle = DepositoProducto::with(['deposito_lista' => function ($query) {
-				$query->select('id', 'nombre');
-			}])
-			/*->with(['producto' => function ($query) {
-				$query->select('id', 'origen', 'nombre');
-			}])*/
-			->select('id', 'sku', 'bultos', 'pcs_bulto', 'cantidad_total', 'deposito_lista_id')->where('id', $producto['id'])->first();
+			$deposito_detalle = DepositoProducto::with([
+				'deposito_lista' => function ($query) {
+					$query->select('id', 'nombre');
+				}
+			])
+				/*->with(['producto' => function ($query) {
+					$query->select('id', 'origen', 'nombre');
+				}])*/
+				->select('id', 'sku', 'bultos', 'pcs_bulto', 'cantidad_total', 'deposito_lista_id')->where('id', $producto['id'])->first();
 
 			if (!empty($deposito_detalle)) {
-				$nProduct=$this->productoService->ProductoBySku($deposito_detalle->sku);
+				$nProduct = $this->productoService->ProductoBySku($deposito_detalle->sku);
 				array_push($detalle_productos, [
 					'id' => $deposito_detalle->id,
 					'sku' => $deposito_detalle->sku,
@@ -282,7 +320,7 @@ class DepositoController extends Controller
 					'maxBultos' => $deposito_detalle->bultos,
 					'pcs_bulto' => $deposito_detalle->pcs_bulto,
 					//'nombre_producto' => $deposito_detalle->producto->nombre,
-					'nombre_producto' => $nProduct->nombre??'',
+					'nombre_producto' => $nProduct->nombre ?? '',
 				]);
 			}
 		}
@@ -293,7 +331,7 @@ class DepositoController extends Controller
 		foreach ($lista_depo as $destino) {
 			array_push($lista_depositos, [
 				'code' => $destino->id,
-				'name' =>  $destino->nombre,
+				'name' => $destino->nombre,
 			]);
 		}
 
@@ -307,26 +345,30 @@ class DepositoController extends Controller
 	//detalle de excel importado a deposito
 	public function show($id)
 	{
-		$deposito = Deposito::with(['depositos_detalles' => function ($query) {
-			$query->select(
+		$deposito = Deposito::with([
+			'depositos_detalles' => function ($query) {
+				$query->select(
+					'id',
+					'sku',
+					'pcs_bulto',
+					'bultos',
+					'cantidad_total',
+					'deposito_id',
+				)->with([
+							'producto' => function ($query) {
+								$query->select('id', 'nombre', 'codigo_barra', 'origen', 'imagen');
+							}
+						]);
+			}
+		])->select(
 				'id',
-				'sku',
-				'pcs_bulto',
-				'bultos',
-				'cantidad_total',
-				'deposito_id',
-			)->with(['producto' => function ($query) {
-				$query->select('id', 'nombre', 'codigo_barra', 'origen', 'imagen');
-			}]);
-		}])->select(
-			'id',
-			'nro_carpeta',
-			'nro_contenedor',
-			'estado',
-			'fecha_arribado',
-			'fecha_camino',
-			DB::raw("DATE_FORMAT(created_at,'%d/%m/%y %H:%i:%s') AS fecha")
-		)
+				'nro_carpeta',
+				'nro_contenedor',
+				'estado',
+				'fecha_arribado',
+				'fecha_camino',
+				DB::raw("DATE_FORMAT(created_at,'%d/%m/%y %H:%i:%s') AS fecha")
+			)
 			->where('id', $id)->first();
 
 		return Inertia::render('Deposito/Show', [
@@ -550,8 +592,8 @@ class DepositoController extends Controller
 					$nuevo = [
 						"sku" => $datosOrigen->sku,
 						"pcs_bulto" => $datosOrigen->pcs_bulto,
-						"bultos" =>  $producto['bultos'],
-						"cantidad_total" =>  $producto['bultos'] * $datosOrigen->pcs_bulto,
+						"bultos" => $producto['bultos'],
+						"cantidad_total" => $producto['bultos'] * $datosOrigen->pcs_bulto,
 						"deposito_lista_id" => $destino_id
 					];
 					DepositoProducto::create($nuevo);
